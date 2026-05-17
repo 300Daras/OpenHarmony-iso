@@ -9,8 +9,9 @@
             --bg-color: #090d16;
             --card-bg: #111827;
             --text-color: #e2e8f0;
-            --accent-color: #ef4444; /* Huawei Kırmızısı */
-            --accent-blue: #3b82f6;
+            --accent-root: #f59e0b;  /* Huawei Root Altın Sarısı */
+            --accent-admin: #ef4444; /* Admin Huawei Kırmızısı */
+            --accent-user: #3b82f6;  /* Standart Mavi */
             --border-color: #1f2937;
             --terminal-green: #10b981;
         }
@@ -67,7 +68,7 @@
         }
 
         #login-screen h2 {
-            color: var(--accent-color);
+            color: #ef4444;
             margin-bottom: 1.5rem;
             font-size: 1.8rem;
         }
@@ -96,14 +97,14 @@
         }
 
         .input-group input:focus {
-            border-color: var(--accent-blue);
+            border-color: var(--accent-user);
             outline: none;
         }
 
         .login-btn {
             width: 100%;
             padding: 12px;
-            background-color: var(--accent-color);
+            background-color: #ef4444;
             color: white;
             border: none;
             border-radius: 6px;
@@ -124,12 +125,12 @@
             display: none;
         }
 
-        /* --- MAIN DASHBOARD (HIDDEN BY DEFAULT) --- */
+        /* --- MAIN DASHBOARD --- */
         #dashboard {
             display: none;
             width: 100%;
             max-width: 1400px;
-            padding: 4rem 2rem 2rem 2rem; /* Üstten bar için boşluk */
+            padding: 4rem 2rem 2rem 2rem;
             box-sizing: border-box;
         }
 
@@ -148,15 +149,14 @@
         }
 
         header h1 span {
-            color: var(--accent-color);
+            color: #ef4444;
         }
 
         .user-tag {
             background-color: #1e293b;
             padding: 6px 12px;
             border-radius: 20px;
-            border: 1px solid var(--accent-color);
-            color: var(--accent-color);
+            border: 1px solid #fff;
             font-weight: bold;
         }
 
@@ -181,7 +181,7 @@
 
         .panel h2 {
             margin-top: 0;
-            color: var(--accent-blue);
+            color: var(--accent-user);
             font-size: 1.4rem;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 0.5rem;
@@ -209,13 +209,13 @@
         .countdown-box div:first-child {
             font-size: 2rem;
             font-weight: bold;
-            color: var(--accent-color);
+            color: #ef4444;
         }
 
-        /* HUAWEI ROOT TERMINAL */
+        /* TERMINAL */
         .terminal {
             background-color: #030712;
-            border: 1px solid var(--accent-color);
+            border: 1px solid var(--border-color);
             border-radius: 6px;
             font-family: 'Courier New', Courier, monospace;
             padding: 1rem;
@@ -238,7 +238,6 @@
         }
 
         .terminal-prompt {
-            color: var(--accent-color);
             font-weight: bold;
             margin-right: 8px;
             white-space: nowrap;
@@ -290,35 +289,12 @@
         }
 
         .msg.user {
-            background-color: var(--accent-blue);
+            background-color: var(--accent-user);
             color: white;
             margin-left: auto;
         }
 
-        .ai-input-box {
-            display: flex;
-            gap: 10px;
-        }
-
-        .ai-input-box input {
-            flex: 1;
-            background-color: #1f2937;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 10px;
-            color: white;
-        }
-
-        .ai-input-box button {
-            background-color: var(--accent-blue);
-            color: white;
-            border: none;
-            padding: 0 15px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        /* ANNOUNCEMENT MAKER PANEL */
+        /* ANNOUNCEMENT */
         .announcement-controls input {
             width: 100%;
             padding: 10px;
@@ -332,52 +308,53 @@
         .announcement-controls button {
             width: 100%;
             padding: 10px;
-            background-color: var(--accent-color);
+            background-color: #ef4444;
             border: none;
             color: white;
             font-weight: bold;
             border-radius: 6px;
             cursor: pointer;
         }
+
+        .announcement-controls button:disabled {
+            background-color: #374151;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Üst Duyuru Çubuğu -->
-    <div id="global-alert-bar">KÖK SİSTEM DUYURUSU: Sisteme Yeni Modüller Entegre Edildi!</div>
+    <div id="global-alert-bar">KÖK SİSTEM DUYURUSU: 3 Kademeli Güvenlik ve Yerel CMD Köprüsü Aktif.</div>
 
-    <!-- 1. GİRİŞ EKRANI -->
     <div id="login-screen">
         <h2>OpenHarmony 5.0.1</h2>
-        <p style="color: #6b7280; font-size: 0.9rem; margin-bottom: 1.5rem;">Geliştirici Giriş Paneli</p>
+        <p style="color: #6b7280; font-size: 0.9rem; margin-bottom: 1.5rem;">Sistem Giriş Terminali</p>
         
         <div class="input-group">
-            <label>Kullanıcı Adı</label>
-            <input type="text" id="username" placeholder="Örn: OHOSDev" autocomplete="off">
+            <label>Sistem Kimliği (User)</label>
+            <input type="text" id="username" placeholder="Kullanıcı adınız..." autocomplete="off">
         </div>
         <div class="input-group">
-            <label>Özel Erişim Kodu</label>
+            <label>Erişim Kodu (Password)</label>
             <input type="password" id="access-code" placeholder="••••">
         </div>
         
-        <button class="login-btn" onclick="checkLogin()">Sisteme Bağlan</button>
-        <div id="login-error">Hatalı Kullanıcı Adı veya Kod!</div>
+        <button class="login-btn" onclick="checkLogin()">Kimliği Doğrula</button>
+        <div id="login-error">Yetkisiz Kimlik veya Hatalı Kod!</div>
     </div>
 
-    <!-- 2. ANA PANEL -->
     <div id="dashboard">
         <header>
             <h1>OpenHarmony <span>5.0.1</span> Central OS</h1>
-            <div class="user-tag">HUAWEI ROOT ACCESS</div>
+            <div class="user-tag" id="role-tag">GUEST</div>
         </header>
 
         <div class="grid-layout">
-            <!-- SOL TARAF: ISO VE ROOT TERMİNALİ -->
             <div>
-                <!-- ISO COUNTDOWN PANEL -->
                 <div class="panel">
                     <h2>OpenHarmony 5.0.1 Resmi ISO Dağıtım Sayacı</h2>
-                    <p style="margin: 0 0 1rem 0; color: #9ca3af;">Yeni kararlı yapının derlenip tüm cihazlarda yayına girmesine kalan süre:</p>
+                    <p style="margin: 0 0 1rem 0; color: #9ca3af;">Yeni kararlı yapının derlenip yayına girmesine kalan süre:</p>
                     <div class="countdown-container">
                         <div class="countdown-box"><div id="days">00</div><div style="font-size:0.8rem; color:#9ca3af;">GÜN</div></div>
                         <div class="countdown-box"><div id="hours">00</div><div style="font-size:0.8rem; color:#9ca3af;">SAAT</div></div>
@@ -386,46 +363,36 @@
                     </div>
                 </div>
 
-                <!-- HUAWEI ROOT KONSOLU -->
                 <div class="panel">
-                    <h2>Huawei SuperUser Root Console <span style="font-size: 0.8rem; color: var(--accent-color);">[ÜST DÜZEY]</span></h2>
-                    <div class="terminal">
-                        <div class="terminal-logs" id="terminal-logs">
-                            <div>[SİSTEM] Huawei Root Kernel v5.0.1 başarıyla yüklendi.</div>
-                            <div>[SİSTEM] Kullanılabilir komutları görmek için 'help' yazın.</div>
-                            <div>&nbsp;</div>
-                        </div>
+                    <h2>Sistem Terminal Konsolu <span id="terminal-badge" style="font-size: 0.8rem;"></span></h2>
+                    <div class="terminal" id="terminal-container">
+                        <div class="terminal-logs" id="terminal-logs"></div>
                         <div class="terminal-input-line">
-                            <span class="terminal-prompt">huawei-root@OHOSDev:~#</span>
+                            <span class="terminal-prompt" id="terminal-prompt-text">guest@OHOS:~$</span>
                             <input type="text" id="terminal-input" onkeydown="handleTerminalCommand(event)" autocomplete="off">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- SAĞ TARAF: AI VE YÖNETİM DUYURULARI -->
             <div>
-                <!-- AI ASİSTANI -->
                 <div class="panel">
                     <h2>Gelişmiş Dev-AI Modeli</h2>
                     <div class="ai-container">
-                        <div class="ai-messages" id="ai-messages">
-                            <div class="msg ai">Merhaba OHOSDev! Ben sisteme gömülü yapay zeka modeliyim. Derleme, root yönetimi veya OpenHarmony mimarisi hakkında neyi kontrol etmek istersin?</div>
-                        </div>
+                        <div class="ai-messages" id="ai-messages"></div>
                         <div class="ai-input-box">
                             <input type="text" id="ai-input" placeholder="AI'a bir şey sor..." onkeydown="if(event.key === 'Enter') sendToAI()">
-                            <button onclick="sendToAI()">Gönder</button>
+                            <button onclick="sendToAI()" style="background-color: var(--accent-user);">Gönder</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- DUYURU SİSTEMİ MERKEZİ -->
                 <div class="panel">
                     <h2>Global Duyuru Yönetimi</h2>
-                    <p style="font-size: 0.85rem; color: #9ca3af; margin-bottom: 1rem;">Buradan yapacağınız duyurular tüm cihazlarda en üstte ve öncelikli gözükür.</p>
+                    <p id="announcement-desc" style="font-size: 0.85rem; color: #9ca3af; margin-bottom: 1rem;"></p>
                     <div class="announcement-controls">
                         <input type="text" id="announcement-text" placeholder="Tüm sistemi uyaracak mesaj yazın...">
-                        <button onclick="broadcastAnnouncement()">Sistem Genelinde Yayınla</button>
+                        <button id="broadcast-btn" onclick="broadcastAnnouncement()">Sistem Genelinde Yayınla</button>
                     </div>
                 </div>
             </div>
@@ -433,31 +400,111 @@
     </div>
 
     <script>
-        // GİRİŞ KONTROLÜ (Sadece OHOSDev ve Özel Kod)
+        let currentUserRole = "Guest"; 
+        let isLocalCMDActive = false; // Bilgisayar CMD modu aktif mi kontrolü
+
+        // 3 KADEMELİ KULLANICI HESAP VERİLERİ
+        const ACCOUNTS = {
+            "daras": { code: "1905", role: "HuaweiRoot" },       // SEN
+            "OHOSDev": { code: "admin123", role: "Admin" },      // ADMIN
+            "StandartUser": { code: "user123", role: "Standard" } // NORMAL KULLANICI
+        };
+
         function checkLogin() {
-            const user = document.getElementById('username').value;
-            const code = document.getElementById('access-code').value;
+            const user = document.getElementById('username').value.trim();
+            const code = document.getElementById('access-code').value.trim();
             
-            // Kullanıcı adı: OHOSDev, Kod: 1905
-            if(user === "OHOSDev" && code === "1905") {
+            if (ACCOUNTS[user] && ACCOUNTS[user].code === code) {
+                currentUserRole = ACCOUNTS[user].role;
+                
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
-                document.body.style.display = 'block'; // Düzeni rahatlat
-                // İlk girişte üst çubuğu göster
+                document.body.style.display = 'block';
                 document.getElementById('global-alert-bar').style.display = 'block';
+                
+                setupPanelsByRole(user);
                 startCountdown();
             } else {
-                const err = document.getElementById('login-error');
-                err.style.display = 'block';
-                err.style.animation = 'shake 0.2s 2';
+                document.getElementById('login-error').style.display = 'block';
             }
         }
 
-        // AUTOMATIC COUNTDOWN (Geri Sayım Sayacı - Hedef Sürüm Çıkışı)
+        function setupPanelsByRole(username) {
+            const roleTag = document.getElementById('role-tag');
+            const termBadge = document.getElementById('terminal-badge');
+            const termPrompt = document.getElementById('terminal-prompt-text');
+            const termLogs = document.getElementById('terminal-logs');
+            const aiMessages = document.getElementById('ai-messages');
+            const announceDesc = document.getElementById('announcement-desc');
+            const broadcastBtn = document.getElementById('broadcast-btn');
+            const announceInput = document.getElementById('announcement-text');
+            const termContainer = document.getElementById('terminal-container');
+
+            if (currentUserRole === "HuaweiRoot") {
+                roleTag.textContent = "HUAWEI ROOT [DARAS]";
+                roleTag.style.borderColor = "var(--accent-root)";
+                roleTag.style.color = "var(--accent-root)";
+                termContainer.style.borderColor = "var(--accent-root)";
+                
+                termBadge.textContent = "[KÖK ÇEKİRDEK - TAM YETKİ]";
+                termBadge.style.color = "var(--accent-root)";
+                termPrompt.textContent = "root@daras_huawei:~#";
+                termPrompt.style.color = "var(--accent-root)";
+                
+                termLogs.innerHTML = `<div>[SİSTEM] Mutlak Kök (Huawei Root) Erişimi Sağlandı. Hoş geldin Daras.</div><div>[SİSTEM] Yardım için 'help' yazın. Bilgisayar CMD köprüsü için 'connect-cmd' kullanın.</div>`;
+                aiMessages.innerHTML = `<div class="msg ai">Saygılar Daras! Huawei Root protokolü devrede. Emirlerini bekliyorum.</div>`;
+                
+                announceDesc.textContent = "Sistem Sahibi Yetkisi: Yazacağınız duyuru tüm ağ aygıtlarında en üstte kırmızı bar olarak yanacaktır.";
+                broadcastBtn.disabled = false;
+                broadcastBtn.style.backgroundColor = "var(--accent-root)";
+                announceInput.disabled = false;
+
+            } else if (currentUserRole === "Admin") {
+                roleTag.textContent = "ADMIN ACCESS [OHOSDEV]";
+                roleTag.style.borderColor = "var(--accent-admin)";
+                roleTag.style.color = "var(--accent-admin)";
+                termContainer.style.borderColor = "var(--accent-admin)";
+                
+                termBadge.textContent = "[YÖNETİCİ MODU]";
+                termBadge.style.color = "var(--accent-admin)";
+                termPrompt.textContent = "admin@OHOSDev:~#";
+                termPrompt.style.color = "var(--accent-admin)";
+                
+                termLogs.innerHTML = `<div>[SİSTEM] Admin oturumu aktif. Yardım için 'help' yazın. CMD köprüsü için 'connect-cmd' yazın.</div>`;
+                aiMessages.innerHTML = `<div class="msg ai">Merhaba Admin (OHOSDev). Sistem yönetim paneline hoş geldiniz.</div>`;
+                
+                announceDesc.textContent = "Yönetici Yetkisi: Ağ genelinde duyuru yayınlayabilirsiniz.";
+                broadcastBtn.disabled = false;
+                broadcastBtn.style.backgroundColor = "var(--accent-admin)";
+                announceInput.disabled = false;
+
+            } else {
+                // STANDART KULLANICI AYARLARI
+                roleTag.textContent = "STANDARD USER";
+                roleTag.style.borderColor = "var(--accent-user)";
+                roleTag.style.color = "var(--accent-user)";
+                termContainer.style.borderColor = "var(--border-color)";
+                
+                termBadge.textContent = "[KISITLI ERİŞİM]";
+                termBadge.style.color = "var(--accent-user)";
+                termPrompt.textContent = "user@StandartUser:~$";
+                termPrompt.style.color = "var(--accent-user)";
+                
+                termLogs.innerHTML = `<div>[SİSTEM] Standart kullanıcı oturumu açıldı.</div><div>[SİSTEM] Sistem durumunu denetlemek için '<span style="color:white">sys-check</span>' komutunu, bilgisayar terminali için '<span style="color:white">connect-cmd</span>' komutunu çalıştırabilirsiniz.</div>`;
+                aiMessages.innerHTML = `<div class="msg ai">Merhaba Standart Kullanıcı. Bu panelden OpenHarmony durumlarını izleyebilirsin.</div>`;
+                
+                announceDesc.textContent = "HATA: Duyuru yönetim yetkiniz yok. Bu alan kilitlidir.";
+                broadcastBtn.disabled = true;
+                broadcastBtn.style.backgroundColor = "#374151";
+                announceInput.disabled = true;
+                announceInput.placeholder = "Giriş engellendi...";
+            }
+        }
+
+        // OTOMATİK GERI SAYIM
         function startCountdown() {
-            // Şimdiki zamana 30 gün ekleyerek dinamik bir hedef oluşturuyoruz
             const targetDate = new Date();
-            targetDate.setDate(targetDate.getDate() + 14); // 14 gün sonrasına ayarlı
+            targetDate.setDate(targetDate.getDate() + 14); 
 
             function updateTimer() {
                 const now = new Date().getTime();
@@ -472,58 +519,117 @@
                 document.getElementById('hours').textContent = h.toString().padStart(2, '0');
                 document.getElementById('minutes').textContent = m.toString().padStart(2, '0');
                 document.getElementById('seconds').textContent = s.toString().padStart(2, '0');
-
-                if (difference < 0) {
-                    clearInterval(interval);
-                    document.querySelector('.countdown-container').innerHTML = "<b style='color:var(--terminal-green)'>ISO YAYINLANDI! COMPILING READY.</b>";
-                }
             }
             updateTimer();
-            const interval = setInterval(updateTimer, 1000);
+            setInterval(updateTimer, 1000);
         }
 
-        // HUAWEI ROOT KONSOL KOMUTLARI
+        // TERMİNAL KOMUTLARI
         function handleTerminalCommand(e) {
             if (e.key === 'Enter') {
                 const inputElement = document.getElementById('terminal-input');
-                const cmd = inputElement.value.trim().toLowerCase();
+                const rawCmd = inputElement.value.trim();
+                const cmd = rawCmd.toLowerCase();
                 const logs = document.getElementById('terminal-logs');
 
                 if(cmd === "") return;
 
-                // Kullanıcının yazdığı komutu logla
-                logs.innerHTML += `<div><span style="color:var(--accent-color)">huawei-root@OHOSDev:~#</span> ${inputElement.value}</div>`;
+                // Mevcut prompt yazısını ve rengini belirleme
+                let pText = document.getElementById('terminal-prompt-text').textContent;
+                let pColor = currentUserRole === "HuaweiRoot" ? "var(--accent-root)" : (currentUserRole === "Admin" ? "var(--accent-admin)" : "var(--accent-user)");
+                if(isLocalCMDActive) { pColor = "#ffffff"; }
 
-                // Komut Ağacı
-                switch(cmd) {
-                    case 'help':
-                        logs.innerHTML += `<div>--- KULLANILABİLİR KÖK KOMUTLARI ---</div>`;
-                        logs.innerHTML += `<div><span style="color:var(--accent-blue)">sys-update</span> - Çekirdek yamalarını ve ISO bütünlüğünü denetler.</div>`;
-                        logs.innerHTML += `<div><span style="color:var(--accent-blue)">system-flash</span> - Sisteme yeni bileşen enjekte eder ve herkesi uyarır.</div>`;
-                        logs.innerHTML += `<div><span style="color:var(--accent-blue)">network-scan</span> - Bağlı OHOS istemci cihazlarını tarar.</div>`;
-                        logs.innerHTML += `<div><span style="color:var(--accent-blue)">clear-logs</span> - Terminal geçmişini temizler.</div>`;
-                        break;
-                    case 'sys-update':
-                        logs.innerHTML += `<div>[BİLGİ] OpenHarmony 5.0.1 kaynak kodları taranıyor...</div>`;
-                        logs.innerHTML += `<div>[BAŞARILI] ISO Derleme ağacı kararlı durumda. Sayıcı aktif.</div>`;
-                        break;
-                    case 'system-flash':
-                        logs.innerHTML += `<div>[KRİTİK] Yeni sistem güncelleme paketi sisteme eklendi!</div>`;
-                        logs.innerHTML += `<div>[UYARI] Global sistem uyarı tetikleyicisi ateşlendi.</div>`;
-                        // Otomatik olarak üst çubuğu güncelle ve sistemi uyar
-                        document.getElementById('global-alert-bar').style.display = 'block';
-                        document.getElementById('global-alert-bar').textContent = "SİSTEM UYARISI: Root Tarafından Yeni Bir Sistem Bileşeni Eklendi! Herkesin Dikkatine.";
-                        break;
-                    case 'network-scan':
-                        logs.innerHTML += `<div>[TARAMA] Huawei MatePad Pro (OHOS İstemci) - <span style='color:var(--terminal-green)'>ONLINE</span></div>`;
-                        logs.innerHTML += `<div>[TARAMA] Mate 60 Pro (OHOS İstemci) - <span style='color:var(--terminal-green)'>ONLINE</span></div>`;
-                        logs.innerHTML += `<div>[TARAMA] Dev-Board Allwinner (Derleme Aygıtı) - <span style='color:var(--terminal-green)'>COMPILING...</span></div>`;
-                        break;
-                    case 'clear-logs':
-                        logs.innerHTML = '';
-                        break;
-                    default:
-                        logs.innerHTML += `<div style="color:#f87171">[HATA] '${cmd}' geçerli bir root komutu değil. Yardım için 'help' yazın.</div>`;
+                logs.innerHTML += `<div><span style="color:${pColor}">${pText}</span> ${rawCmd}</div>`;
+
+                // --- EĞER BİLGİSAYAR CMD MODU AKTİFSE ---
+                if (isLocalCMDActive) {
+                    if (cmd === "exit") {
+                        isLocalCMDActive = false;
+                        logs.innerHTML += `<div style="color:var(--accent-admin)">[CMD] Bilgisayar CMD bağlantısı kapatıldı. OpenHarmony terminaline dönüldü.</div>`;
+                        setupPanelsByRole(); // Prompt stilini eski haline getirir
+                    } else if (cmd === "dir") {
+                        logs.innerHTML += `<div> C Sürücüsündeki Birim Etiketi yok.<br> Cilt Seri Numarası: 4A72-E89B<br><br> C:\\Users\\OpenHarmony\\Desktop dizini:<br>18.05.2026  12:00    &lt;DIR&gt;          .<br>18.05.2026  12:00    &lt;DIR&gt;          ..<br>18.05.2026  12:01             4.218  index.html<br>               1 Dosya          4.218 bayt</div>`;
+                    } else if (cmd === "ipconfig") {
+                        logs.innerHTML += `<div>Windows IP Yapılandırması<br><br>Ethernet adaptörü Ethernet:<br>   Bağlantıya özgü DNS Eki. . . . . . : local<br>   IPv4 Adresi. . . . . . . . . . . : 192.168.1.45<br>   Alt Ağ Maskesi . . . . . . . . . : 255.255.255.0<br>   Varsayılan Ağ Geçidi . . . . . . : 192.168.1.1</div>`;
+                    } else {
+                        logs.innerHTML += `<div>'${rawCmd}' geçerli bir dahili veya harici komut, çalıştırılabilir program veya toplu iş dosyası olarak tanınmıyor.</div>`;
+                    }
+                    inputElement.value = "";
+                    logs.scrollTop = logs.scrollHeight;
+                    return;
+                }
+
+                // --- STANDART OPENHARMONY TERMINAL KOMUTLARI ---
+                
+                // Ortak Komut: connect-cmd (İzin İstemeli CMD Protokolü)
+                if (cmd === 'connect-cmd') {
+                    const permission = prompt("DİKKAT! Bu site yerel bilgisayarınızın Komut İstemi'ne (CMD) erişmek istiyor. İzin veriyor musunuz? (evet / hayır)");
+                    if (permission && permission.toLowerCase() === 'evet') {
+                        isLocalCMDActive = true;
+                        document.getElementById('terminal-prompt-text').textContent = "C:\\Users\\Computer\\cmd>";
+                        document.getElementById('terminal-prompt-text').style.color = "#ffffff";
+                        logs.innerHTML += `<div style="color:var(--terminal-green)">[BAŞARILI] Bilgisayar CMD hattına bağlanıldı. Çıkmak için 'exit' yazın.</div>`;
+                    } else {
+                        logs.innerHTML += `<div style="color:#f87171">[REDDEDİLDİ] Kullanıcı bilgisayar CMD iznini reddetti.</div>`;
+                    }
+                    inputElement.value = "";
+                    logs.scrollTop = logs.scrollHeight;
+                    return;
+                }
+
+                // Ortak Komut: sys-check (Herkes çalıştırabilir)
+                if (cmd === 'sys-check') {
+                    logs.innerHTML += `<div>[KONTROL] OpenHarmony Entegre Sistemi taranıyor...</div>`;
+                    logs.innerHTML += `<div>[DURUM] Donanım: Lenovo Aygıtı Algılandı.</div>`;
+                    logs.innerHTML += `<div>[DURUM] Çekirdek: Stabil (Sürüm 5.0.1). Sistem Kullanıma UYGUN.</div>`;
+                    inputElement.value = "";
+                    logs.scrollTop = logs.scrollHeight;
+                    return;
+                }
+
+                // Rol Sınırlandırması (Kısıtlı Kullanıcı Diğer Komutları Yapamaz)
+                if (currentUserRole === "Standard") {
+                    if (cmd === 'help') {
+                        logs.innerHTML += `<div>--- KULLANILABİLİR KOMUTLARINIZ ---</div>`;
+                        logs.innerHTML += `<div><span style="color:var(--accent-user)">sys-check</span> - Sistem uygunluğunu kontrol eder.</div>`;
+                        logs.innerHTML += `<div><span style="color:var(--accent-user)">connect-cmd</span> - İzin alarak yerel bilgisayar CMD'sine bağlanır.</div>`;
+                    } else {
+                        logs.innerHTML += `<div style="color:#f87171">[YETKİ ENGELLENDİ] Standart kullanıcılar sadece 'sys-check' ve 'connect-cmd' komutlarını kullanabilir. Tüm komutlar için 'help' yazın.</div>`;
+                    }
+                    inputElement.value = "";
+                    logs.scrollTop = logs.scrollHeight;
+                    return;
+                }
+
+                // ADMIN VE HUAWEI ROOT ÖZEL KOMUTLARI
+                if (cmd === 'help') {
+                    logs.innerHTML += `<div>--- SİSTEM KOMUT PROTOKOLLERİ ---</div>`;
+                    logs.innerHTML += `<div><span style="color:var(--accent-user)">sys-check</span> - Sistem uygunluk kontrolü. (Herkes)</div>`;
+                    logs.innerHTML += `<div><span style="color:var(--accent-user)">connect-cmd</span> - İzinli bilgisayar CMD köprüsü. (Herkes)</div>`;
+                    logs.innerHTML += `<div><span style="color:var(--accent-user)">sys-update</span> - ISO bütünlüğünü denetler. (Admin & Root)</div>`;
+                    logs.innerHTML += `<div><span style="color:var(--accent-user)">clear-logs</span> - Ekranı temizler. (Admin & Root)</div>`;
+                    logs.innerHTML += `<div><span style="color:var(--accent-root)">system-flash</span> - Çekirdeğe veri enjekte eder. <b style="color:var(--accent-root)">[SADECE ROOT]</b></div>`;
+                    logs.innerHTML += `<div><span style="color:var(--accent-root)">network-scan</span> - Bağlı cihazları listeler. <b style="color:var(--accent-root)">[SADECE ROOT]</b></div>`;
+                } else if (cmd === 'sys-update') {
+                    logs.innerHTML += `<div>[BİLGİ] OpenHarmony 5.0.1 paket kodları kararlı durumda. Derleme hatasız.</div>`;
+                } else if (cmd === 'clear-logs') {
+                    logs.innerHTML = '';
+                } else if (cmd === 'system-flash') {
+                    if(currentUserRole === "HuaweiRoot") {
+                        logs.innerHTML += `<div style="color:var(--accent-root)">[KRİTİK] Çekirdeğe yeni veri yazıldı! Sistem uyarısı tetiklendi.</div>`;
+                        document.getElementById('global-alert-bar').textContent = "SİSTEM UYARISI: Huawei Root (Daras) Çekirdek Yapısını Güncelledi!";
+                    } else {
+                        logs.innerHTML += `<div style="color:#f87171">[YETKİ REDDEDİLDİ] Bu işlem en üst düzey 'Huawei Root' izni gerektirir! Admin yetkisi yetersiz.</div>`;
+                    }
+                } else if (cmd === 'network-scan') {
+                    if(currentUserRole === "HuaweiRoot") {
+                        logs.innerHTML += `<div>[TARAMA] Lenovo Ana Makine - <span style='color:var(--terminal-green)'>ONLINE</span></div>`;
+                        logs.innerHTML += `<div>[TARAMA] Huawei Sunucu Grubu - <span style='color:var(--terminal-green)'>AKTİF</span></div>`;
+                    } else {
+                        logs.innerHTML += `<div style="color:#f87171">[YETKİ REDDEDİLDİ] Ağ tarama protokolü yalnızca Huawei Root yetkisindedir.</div>`;
+                    }
+                } else {
+                    logs.innerHTML += `<div style="color:#f87171">[HATA] Bilinmeyen komut. 'help' yazarak listeyi kontrol edin.</div>`;
                 }
 
                 inputElement.value = "";
@@ -531,54 +637,45 @@
             }
         }
 
-        // GLOBAL DUYURU SİSTEMİ TETİKLEYİCİSİ
+        // ANONS YAYINLAMA
         function broadcastAnnouncement() {
+            if(currentUserRole === "Standard") return;
             const txt = document.getElementById('announcement-text').value.trim();
-            const alertBar = document.getElementById('global-alert-bar');
-            
             if (txt !== "") {
-                alertBar.textContent = `KÖK SİSTEM DUYURUSU: ${txt}`;
-                alertBar.style.display = 'block';
-                
-                // Terminale de log düşürelim
-                const logs = document.getElementById('terminal-logs');
-                logs.innerHTML += `<div>[DUYURU] "${txt}" mesajı tüm cihazların ekranına üst bilgi olarak gönderildi.</div>`;
+                const prefix = currentUserRole === "HuaweiRoot" ? "HUAWEI ROOT (DARAS)" : "ADMIN (OHOSDEV)";
+                document.getElementById('global-alert-bar').textContent = `${prefix} DUYURUSU: ${txt}`;
                 document.getElementById('announcement-text').value = "";
-                logs.scrollTop = logs.scrollHeight;
             }
         }
 
-        // GELİŞMİŞ AI ASİSTAN MOTORU (SİMÜLE)
+        // YAPAY ZEKA TEPKİLERİ
         function sendToAI() {
             const input = document.getElementById('ai-input');
             const msgText = input.value.trim();
             if(msgText === "") return;
 
             const chatArea = document.getElementById('ai-messages');
-
-            // Kullanıcı mesajı ekle
             chatArea.innerHTML += `<div class="msg user">${msgText}</div>`;
             input.value = "";
             chatArea.scrollTop = chatArea.scrollHeight;
 
-            // Yapay zeka cevap simülasyonu
             setTimeout(() => {
-                let aiResponse = "Anlaşılmadı. Geliştirici modunda mimari sorular veya derleme komutları vermeyi deneyin.";
+                let aiResponse = "Rol grubunuz gereği bu komutu/soruyu işleyemiyorum.";
                 const lowerText = msgText.toLowerCase();
 
-                if(lowerText.includes("merhaba") || lowerText.includes("selam")) {
-                    aiResponse = "Selam OHOSDev! Kodlama ve root yetkileri hazır. ISO durumunu kontrol etmemi ister misin?";
-                } else if(lowerText.includes("iso") || lowerText.includes("sayaç") || lowerText.includes("ne zaman")) {
-                    aiResponse = "OpenHarmony 5.0.1 ISO yapısı otomatik sayaçta çalışıyor. Şu an her şey stabil, derleme hatası görünmüyor.";
-                } else if(lowerText.includes("root") || lowerText.includes("huawei")) {
-                    aiResponse = "Şu anda en yüksek yetki seviyesindesiniz (Huawei Root). Terminalden 'system-flash' komutunu vererek tüm sistemi uyarabilirsiniz.";
-                } else if(lowerText.includes("duyuru")) {
-                    aiResponse = "Yandaki paneli kullanarak sistem ağındaki tüm cihazların tepesinde görünecek canlı anonslar geçebilirsin.";
+                if (lowerText.includes("selam") || lowerText.includes("merhaba")) {
+                    if (currentUserRole === "HuaweiRoot") aiResponse = "Ooo selam Daras, sistemin asıl sahibi! Emirlerini bekliyorum.";
+                    else if (currentUserRole === "Admin") aiResponse = "Merhaba Admin. Sistem modüllerini denetlemek için hazırım.";
+                    else aiResponse = "Merhaba Kullanıcı. 'sys-check' yazarak sistem uygunluğunu kontrol edebilirsin.";
+                } else if (lowerText.includes("iso") || lowerText.includes("sayaç")) {
+                    aiResponse = "OpenHarmony 5.0.1 resmi sürüm dağıtım sayacı ana ekranda çalışmaktadır.";
+                } else if (lowerText.includes("cmd") || lowerText.includes("bilgisayar")) {
+                    aiResponse = "Terminal üzerinden 'connect-cmd' komutunu yazıp ekrandaki kutucuğa onay vererek bilgisayarın kendi terminal simülasyonuna geçiş yapabilirsin.";
                 }
 
                 chatArea.innerHTML += `<div class="msg ai">${aiResponse}</div>`;
                 chatArea.scrollTop = chatArea.scrollHeight;
-            }, 600);
+            }, 500);
         }
     </script>
 </body>
