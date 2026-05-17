@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cordex OS Gelişmiş Dağıtım</title>
+    <title>Cordex OS Mega Dağıtım Çekirdeği</title>
     <style>
         html, body {
             margin: 0;
@@ -24,46 +24,54 @@
             align-items: center;
         }
 
-        /* Ana Panel Kutusu */
+        /* İstediğin gibi alan genişletildi: 950px */
         .login-container {
             border: 3px solid #00ffcc;
-            box-shadow: 0 0 30px rgba(0, 255, 204, 0.3);
-            background-color: rgba(22, 27, 34, 0.95);
+            box-shadow: 0 0 40px rgba(0, 255, 204, 0.4);
+            background-color: rgba(22, 27, 34, 0.98);
             padding: 35px;
             border-radius: 16px;
-            width: 720px; 
-            max-height: 85vh; 
+            width: 950px; 
+            max-height: 90vh; 
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
+            transition: all 0.5s ease;
         }
 
         .panel-body {
             overflow-y: auto !important;
-            padding-right: 10px;
+            padding-right: 15px;
             flex-grow: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
 
-        /* Kaydırma Çubuğu Tasarımı */
-        .panel-body::-webkit-scrollbar, .readonly-notes::-webkit-scrollbar, textarea::-webkit-scrollbar {
+        .full-width-section {
+            grid-column: span 2;
+        }
+
+        /* Kaydırma Çubukları */
+        .panel-body::-webkit-scrollbar, .readonly-notes::-webkit-scrollbar, textarea::-webkit-scrollbar, .cmd-output::-webkit-scrollbar {
             width: 8px;
         }
-        .panel-body::-webkit-scrollbar-track, .readonly-notes::-webkit-scrollbar-track, textarea::-webkit-scrollbar-track {
+        .panel-body::-webkit-scrollbar-track, .readonly-notes::-webkit-scrollbar-track, textarea::-webkit-scrollbar-track, .cmd-output::-webkit-scrollbar-track {
             background: #0d1117;
             border-radius: 4px;
         }
-        .panel-body::-webkit-scrollbar-thumb, .readonly-notes::-webkit-scrollbar-thumb, textarea::-webkit-scrollbar-thumb {
+        .panel-body::-webkit-scrollbar-thumb, .readonly-notes::-webkit-scrollbar-thumb, textarea::-webkit-scrollbar-thumb, .cmd-output::-webkit-scrollbar-thumb {
             background: #30363d;
             border-radius: 4px;
         }
-        .panel-body::-webkit-scrollbar-thumb:hover, .readonly-notes::-webkit-scrollbar-thumb:hover, textarea::-webkit-scrollbar-thumb:hover {
+        .panel-body::-webkit-scrollbar-thumb:hover, .readonly-notes::-webkit-scrollbar-thumb:hover, textarea::-webkit-scrollbar-thumb:hover, .cmd-output::-webkit-scrollbar-thumb:hover {
             background: #00ffcc;
         }
 
         .header-area {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .system-logo {
@@ -75,114 +83,152 @@
 
         h1 {
             color: #00ffcc;
-            font-size: 28px;
+            font-size: 32px;
             margin: 0;
-            letter-spacing: 3px;
-            text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+            letter-spacing: 4px;
+            text-shadow: 0 0 15px rgba(0, 255, 204, 0.6);
         }
 
         h2 {
             font-size: 24px;
             margin-top: 0;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             text-align: center;
         }
 
         .section-title {
-            font-size: 17px;
+            font-size: 16px;
             font-weight: bold;
-            margin-top: 5px;
-            margin-bottom: 12px;
-            padding-bottom: 5px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .input-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             text-align: left;
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: bold;
+            font-size: 14px;
         }
 
         input[type="password"], input[type="text"], textarea {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             background-color: #0d1117;
             border: 2px solid #30363d;
             border-radius: 8px;
             color: #fff;
-            font-size: 15px;
+            font-size: 14px;
             box-sizing: border-box;
             transition: 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #00ffcc;
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
+        }
+
+        /* CMD Terminal Tasarımı */
+        .cmd-box {
+            background-color: #05070a;
+            border: 2px solid #30363d;
+            border-radius: 8px;
+            padding: 12px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .cmd-output {
+            height: 120px;
+            overflow-y: auto;
+            color: #00ff00;
+            font-size: 13px;
+            margin-bottom: 8px;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        .cmd-input-row {
+            display: flex;
+            gap: 5px;
+        }
+        .cmd-prefix {
+            color: #00ffcc;
+            font-weight: bold;
+            line-height: 35px;
+        }
+
+        /* Yorum Alanı Tasarımı */
+        .comment-display-area {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 10px;
+            height: 140px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        .single-comment {
+            background: rgba(255,255,255,0.03);
+            border-left: 3px solid #00ffcc;
+            padding: 6px 10px;
+            margin-bottom: 8px;
+            border-radius: 0 6px 6px 0;
+            font-size: 13px;
+            text-align: left;
         }
 
         .copyright-box {
             background-color: rgba(218, 54, 55, 0.1);
             border: 1px solid #da3637;
             border-radius: 8px;
-            padding: 12px;
-            font-size: 13px;
-            max-height: 90px;
+            padding: 10px;
+            font-size: 12px;
+            max-height: 70px;
             overflow-y: auto;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             color: #f0f6fc;
         }
 
         .devices-box {
-            background-color: rgba(0, 255, 204, 0.05);
+            background-color: rgba(0, 255, 204, 0.03);
             border: 1px dashed #00ffcc;
             border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 15px;
-            font-size: 14px;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 13px;
         }
-
-        .devices-box ul {
-            margin: 5px 0 0 0;
-            padding-left: 20px;
-            color: #fff;
-        }
-
-        .devices-box li {
-            margin-bottom: 4px;
-        }
+        .devices-box ul { margin: 5px 0 0 0; padding-left: 15px; color: #fff;}
 
         .checkbox-group {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 15px;
-            font-size: 14px;
+            margin-bottom: 10px;
+            font-size: 13px;
             color: #ff9900;
-        }
-
-        .checkbox-group input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
         }
 
         button {
             background-color: #00ffcc;
             color: #0d1117;
             border: none;
-            padding: 14px 24px;
-            font-size: 16px;
+            padding: 12px 20px;
+            font-size: 15px;
             font-weight: bold;
             border-radius: 8px;
             cursor: pointer;
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
             transition: 0.3s;
             width: 100%;
         }
 
         button:hover:not(:disabled) {
             background-color: #00cc99;
-            box-shadow: 0 0 25px #00cc99;
-            transform: translateY(-2px);
+            box-shadow: 0 0 20px #00cc99;
         }
 
         button:disabled {
@@ -191,114 +237,66 @@
             border: 1px solid #30363d;
             cursor: not-allowed;
             box-shadow: none;
-            transform: none;
         }
 
-        .dev-btn-style {
-            background-color: transparent;
-            color: #ff9900;
-            border: 2px solid #ff9900;
-            margin-top: 12px;
-            box-shadow: 0 0 10px rgba(255, 153, 0, 0.2);
-        }
+        .dev-btn-style { background-color: transparent; color: #ff9900; border: 2px solid #ff9900; margin-top: 10px; }
+        .dev-btn-style:hover { background-color: #ff9900; color: #0d1117; box-shadow: 0 0 15px #ff9900; }
+        .ohos-btn-style { background-color: transparent; color: #00ffcc; border: 2px solid #00ffcc; margin-top: 10px; }
+        .ohos-btn-style:hover { background-color: #00ffcc; color: #0d1117; box-shadow: 0 0 15px #00ffcc; }
 
-        .dev-btn-style:hover {
-            background-color: #ff9900;
-            color: #0d1117;
-            box-shadow: 0 0 20px #ff9900;
-        }
-
-        .ohos-btn-style {
-            background-color: transparent;
-            color: #00ffcc;
-            border: 2px solid #00ffcc;
-            margin-top: 12px;
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
-        }
-
-        .ohos-btn-style:hover {
-            background-color: #00ffcc;
-            color: #0d1117;
-            box-shadow: 0 0 20px #00ffcc;
-        }
-
-        .login-sub-box {
-            display: none;
-            margin-top: 15px;
-            padding-top: 20px;
-        }
-
-        .panel-screen {
-            display: none;
-            text-align: left;
-        }
+        .login-sub-box { display: none; margin-top: 15px; padding-top: 15px; }
+        .panel-screen { display: none; text-align: left; }
 
         .progress-container {
-            background-color: #0d1117;
-            border-radius: 8px;
-            border: 1px solid #30363d;
-            overflow: hidden;
-            margin-bottom: 20px;
+            background-color: #0d1117; border-radius: 8px; border: 1px solid #30363d; overflow: hidden; margin-bottom: 15px;
         }
-
         .progress-bar {
-            background-color: #00ffcc;
-            height: 25px;
-            width: 51%; 
-            text-align: center;
-            line-height: 25px;
-            color: #0d1117;
-            font-weight: bold;
-            transition: width 0.4s ease;
-            box-shadow: 0 0 10px #00ffcc;
+            background-color: #00ffcc; height: 22px; width: 51%; text-align: center; line-height: 22px; color: #0d1117; font-weight: bold; box-shadow: 0 0 10px #00ffcc;
         }
 
         .readonly-notes {
-            background-color: #0d1117;
-            border: 2px solid #30363d;
-            border-radius: 8px;
-            padding: 15px;
-            height: 120px; 
-            overflow-y: auto !important; 
-            white-space: pre-wrap;
-            font-family: monospace;
-            color: #fff;
-            font-size: 14px;
-            line-height: 1.5;
+            background-color: #0d1117; border: 2px solid #30363d; border-radius: 8px; padding: 10px; height: 100px; overflow-y: auto !important; white-space: pre-wrap; font-family: monospace; font-size: 13px;
         }
 
-        .range-slider {
-            display: flex;
+        /* Saldırı Altında Ekran Kilidi */
+        #attackLockdownScreen {
+            display: none;
+            position: fixed;
+            top:0; left:0; width:100%; height:100%;
+            background-color: rgba(255, 0, 50, 0.95);
+            z-index: 99999;
+            color: white;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
+            font-family: monospace;
+            text-align: center;
         }
-
-        .range-slider input {
-            flex: 1;
-            height: 10px;
-            cursor: pointer;
-        }
-
-        .dev-sub-section {
-            border: 1px dashed #30363d;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            background-color: rgba(13, 17, 23, 0.4);
+        .lock-alert-box {
+            border: 5px solid white; padding: 40px; border-radius: 20px; background: black; box-shadow: 0 0 50px red;
         }
     </style>
 </head>
 <body>
 
-    <div class="login-container" id="loginBox">
+    <div id="attackLockdownScreen">
+        <div class="lock-alert-box">
+            <h1 style="color: #ff0033; text-shadow: 0 0 20px red; font-size: 40px;">⚠️ CRITICAL SECURITY LOCKDOWN ⚠️</h1>
+            <p style="font-size: 20px; margin: 20px 0;">Sistem siber saldırı altında olduğu için OHOSDev Root motoru tarafından BİLGİLER KİLİTLENMİŞTİR!</p>
+            <p style="color: #00ffcc;">Kilidi kaldırmak için Root Şifresini girin:</p>
+            <input type="password" id="unlockRootPassword" placeholder="Root Şifresi" style="width: 300px; text-align: center; margin-bottom: 15px;"><br>
+            <button onclick="saldiriKilidiniAc()" style="width: 200px; background-color: #00ffcc; color: black;">KİLİDİ AÇ</button>
+        </div>
+    </div>
+
+    <div class="login-container" id="loginBox" style="width: 500px;">
         <div class="header-area">
             <img src="https://raw.githubusercontent.com/300Daras/OpenHarmony-iso/main/logo.png" id="mainLogo" class="system-logo" onerror="this.style.display='none'">
             <h1>CORDEX OS KERNEL</h1>
         </div>
         
         <div id="standardLoginSection">
-            <p style="color: #8b949e; font-size: 18px; text-align: center;">Sisteme erişmek için şifrenizi giriniz:</p>
+            <p style="color: #8b949e; font-size: 16px; text-align: center;">Sisteme erişmek için şifrenizi giriniz:</p>
             <div class="input-group">
                 <input type="password" id="sitePassword" placeholder="Kullanıcı Giriş Şifresi">
             </div>
@@ -309,84 +307,105 @@
         </div>
 
         <div class="login-sub-box" id="adminLoginBox" style="border-top: 2px dashed #ff9900;">
-            <p style="color: #ff9900; font-weight: bold; font-size: 18px; text-align: center;">ADMIN KİMLİK DOĞRULAMA</p>
+            <p style="color: #ff9900; font-weight: bold; font-size: 16px; text-align: center;">ADMIN KİMLİK DOĞRULAMA</p>
             <div class="input-group">
                 <input type="password" id="adminPassword" placeholder="Admin Şifresini Girin">
             </div>
-            <button onclick="adminGirisiniKontrolEt()" style="background-color: #ff9900; box-shadow: 0 0 15px #ff9900; color: #fff;">Doğrula ve Giriş Yap</button>
-            <button onclick="altGirisKapat()" style="background-color: #da3637; border: none; color: #fff; margin-top: 10px; padding: 10px; font-size: 14px; width: 100%;">İptal Et</button>
+            <button onclick="adminGirisiniKontrolEt()" style="background-color: #ff9900; color: #fff;">Doğrula ve Giriş Yap</button>
+            <button onclick="altGirisKapat()" style="background-color: #da3637; border: none; color: #fff; margin-top: 10px; padding: 5px; font-size: 12px; width: 100%;">İptal Et</button>
         </div>
 
         <div class="login-sub-box" id="ohosLoginBox" style="border-top: 2px dashed #00ffcc;">
-            <p style="color: #00ffcc; font-weight: bold; font-size: 18px; text-align: center;">OHOSDev KÖK DOĞRULAMA (ROOT)</p>
+            <p style="color: #00ffcc; font-weight: bold; font-size: 16px; text-align: center;">OHOSDev KÖK DOĞRULAMA (ROOT)</p>
             <div class="input-group">
                 <input type="password" id="ohosPassword" placeholder="OHOSDev Özel Root Şifresini Girin">
             </div>
-            <button onclick="ohosGirisiniKontrolEt()" style="background-color: #00ffcc; box-shadow: 0 0 15px #00ffcc; color: #0d1117;">Root Girişi Yap</button>
-            <button onclick="altGirisKapat()" style="background-color: #da3637; border: none; color: #fff; margin-top: 10px; padding: 10px; font-size: 14px; width: 100%;">İptal Et</button>
+            <button onclick="ohosGirisiniKontrolEt()" style="background-color: #00ffcc; color: #0d1117;">Root Girişi Yap</button>
+            <button onclick="altGirisKapat()" style="background-color: #da3637; border: none; color: #fff; margin-top: 10px; padding: 5px; font-size: 12px; width: 100%;">İptal Et</button>
         </div>
     </div>
 
     <div class="login-container panel-screen" id="userPanel">
-        <h2 style="color: #00ffcc; border-bottom: 2px solid #00ffcc; padding-bottom: 15px;">📊 CORDEX OS SİSTEM DURUMU</h2>
+        <h2 style="color: #00ffcc; border-bottom: 2px solid #00ffcc; padding-bottom: 10px;">📊 CORDEX OS SİSTEM DURUMU (STANDART USER)</h2>
         <div class="panel-body">
-            <div style="text-align: center; margin-bottom: 15px;">
-                <img src="https://raw.githubusercontent.com/300Daras/OpenHarmony-iso/main/logo.png" class="system-logo user-panel-logo" onerror="this.style.display='none'">
-            </div>
-
-            <div class="dev-sub-section" style="border-color: #da3637; margin-bottom: 15px;">
-                <div class="section-title" style="color: #da3637; margin-top: 0;">⚠️ CORDEX OS YASAL TELİF HAKKI SÖZLEŞMESİ</div>
-                <div class="copyright-box">
-                    Bu yazılım ve beraberindeki OpenHarmony ISO imaj dosyası Cordex OS geliştirici ekibine (OHOSDev) aittir. Kopyalanması, izinsiz dağıtılması ve ticari amaçlarla kullanılması kesinlikle yasaktır. İndirme işlemini başlatarak tüm telif haklarını ve kullanım şartlarını kabul etmiş sayılırsınız.
+            <div>
+                <div class="dev-sub-section" style="border: 1px dashed #da3637; padding:10px; border-radius:8px; margin-bottom:10px; background: rgba(218,54,55,0.05);">
+                    <div class="section-title" style="color: #da3637; margin:0 0 5px 0;">⚠️ YASAL TELİF SÖZLEŞMESİ</div>
+                    <div class="copyright-box">
+                        Bu yazılım ve OpenHarmony ISO imaj dosyası Cordex OS ekibine (OHOSDev) aittir. İzinsiz satılamaz. İndirerek telif haklarını kabul etmiş olursunuz.
+                    </div>
+                    <div class="devices-box">
+                        <strong style="color: #00ffcc;">🖥️ Desteklenen Mimariler:</strong>
+                        <ul>
+                            <li>Lenovo PC'ler (Oyun & Günlük Optimize Dual-Boot)</li>
+                            <li>Allwinner SoC Tabanlı Geliştirme Kartları / PC x86_64</li>
+                        </ul>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="copyrightCheck" onchange="telifKontrolEt(this.checked)">
+                        <label for="copyrightCheck">Telif şartlarını kabul ediyorum.</label>
+                    </div>
+                    <button id="downloadIsoBtn" onclick="isoDosyasiniIndir()" disabled style="background-color: #238636; color: #fff;">💿 ISO Dosyasını İndir (Live USB)</button>
                 </div>
                 
-                <div class="devices-box">
-                    <strong style="color: #00ffcc;">🖥️ Desteklenen Cihaz Mimarileri:</strong>
-                    <ul>
-                        <li>Lenovo Bilgisayarlar (Oyun ve Günlük Kullanım Dual-Boot Optimizasyonu)</li>
-                        <li>Allwinner SoC Tabanlı Sistem Geliştirme Kartları</li>
-                        <li>Genel PC x86_64 Yapılandırmaları</li>
-                    </ul>
+                <div class="input-group">
+                    <label>Çekirdek Gelişim Durumu:</label>
+                    <div class="progress-container"><div class="progress-bar" id="userProgressBar">%51</div></div>
                 </div>
-
-                <div class="checkbox-group">
-                    <input type="checkbox" id="copyrightCheck" onchange="telifKontrolEt(this.checked)">
-                    <label for="copyrightCheck">Telif haklarını ve yasal şartları kabul ediyorum.</label>
-                </div>
-                <button id="downloadIsoBtn" onclick="isoDosyasiniIndir()" disabled style="background-color: #238636; color: #fff; box-shadow: 0 0 15px rgba(35,134,54,0.4);">💿 Cordex OpenHarmony ISO Dosyasını İndir (Live USB)</button>
-            </div>
-
-            <div class="input-group">
-                <label style="color: #c9d1d9;">Cordex OS Geliştirilme Yüzdesi:</label>
-                <div class="progress-container">
-                    <div class="progress-bar" id="userProgressBar">%51</div>
+                <div class="input-group">
+                    <label>Sürüm Notları:</label>
+                    <div class="readonly-notes" id="userVersionNotesView">Yükleniyor...</div>
                 </div>
             </div>
-            <div class="input-group">
-                <label style="color: #c9d1d9;">Aktif Sürüm Notları:</label>
-                <div class="readonly-notes" id="userVersionNotesView">Yükleniyor...</div>
+
+            <div>
+                <div class="section-title" style="color: #00ffcc;">💻 CMD Kernel Test Sistemi</div>
+                <div class="cmd-box">
+                    <div class="cmd-output" id="userCmdOutput">Cordex Kernel Terminal v1.0\nKomutları görmek için 'help' yazın.</div>
+                    <div class="cmd-input-row">
+                        <span class="cmd-prefix">user$</span>
+                        <input type="text" id="userCmdInput" onkeydown="if(event.key==='Enter') executeCommand('user')" placeholder="Komut girin...">
+                    </div>
+                </div>
+                <br>
+                <div class="section-title" style="color: #ff9900;">💬 Sistem Hakkında Yorum Yap</div>
+                <div class="comment-display-area" id="userCommentsContainer"></div>
+                <div class="cmd-input-row">
+                    <input type="text" id="userCommentInput" placeholder="Sistem hakkındaki görüşünüz...">
+                    <button onclick="yorumGonder()" style="width:100px; background-color:#ff9900; color:black;">Gönder</button>
+                </div>
             </div>
         </div>
-        <button onclick="panellerdenCikisYap()" style="background-color: #da3637; box-shadow: 0 0 15px #da3637; color: #fff; margin-top: 15px;">Sistemden Çıkış Yap</button>
+        <button onclick="panellerdenCikisYap()" style="background-color: #da3637; color: #fff; margin-top: 15px;">Sistemden Çıkış Yap</button>
     </div>
 
     <div class="login-container panel-screen" id="adminPanel">
-        <h2 style="color: #ff9900; border-bottom: 2px solid #ff9900; padding-bottom: 15px;">🛠️ ADMIN KONTROL PANELİ</h2>
+        <h2 style="color: #ff9900; border-bottom: 2px solid #ff9900; padding-bottom: 10px;">🛠️ ADMIN KONTROL PANELİ</h2>
         <div class="panel-body">
-            <div class="dev-sub-section">
-                <div class="section-title" style="color: #ff9900; margin-top: 0;">🖼️ Logo Düzenleme</div>
+            <div>
                 <div class="input-group">
                     <label>Sistem Logo URL Değiştir:</label>
-                    <input type="text" id="adminLogoInput" placeholder="https://resim-linki.com/logo.png">
-                    <button onclick="logoGuncelle('adminLogoInput')" style="background-color: #ff9900; color: #0d1117; margin-top: 10px; padding: 8px; font-size: 14px;">Logoyu Güncelle</button>
+                    <input type="text" id="adminLogoInput">
+                    <button onclick="logoGuncelle('adminLogoInput')" style="background-color: #ff9900; color: #0d1117; margin-top: 5px; padding: 6px;">Logoyu Güncelle</button>
                 </div>
-            </div>
-            <div class="dev-sub-section">
-                <div class="section-title" style="color: #ff9900; margin-top: 0;">📝 Dokümantasyon Sürüm Notları</div>
                 <div class="input-group">
                     <label>Sürüm Notlarını Düzenle:</label>
-                    <textarea id="adminVersionNotes" rows="5" style="font-size: 14px; font-family: monospace;"></textarea>
-                    <button onclick="notlariKaydet('adminVersionNotes')" style="background-color: #238636; color: #fff; margin-top: 10px; padding: 10px;">Sürüm Notlarını Güncelle</button>
+                    <textarea id="adminVersionNotes" rows="4"></textarea>
+                    <button onclick="notlariKaydet('adminVersionNotes')" style="background-color: #238636; color: #fff; margin-top: 5px;">Sürüm Notlarını Güncelle</button>
+                </div>
+                <div class="section-title" style="color: #ff9900; margin-top:10px;">📋 Kullanıcı Yorumları (Salt Okunur)</div>
+                <div class="comment-display-area" id="adminCommentsContainer"></div>
+                <p style="color:#8b949e; font-size:11px; margin:0;">*Admin modunda yorum yazılamaz. Yorum yapmak için Standart User hesabına geçin.</p>
+            </div>
+
+            <div>
+                <div class="section-title" style="color: #ff9900;">💻 CMD Kernel Test Sistemi (Admin Yetkisi)</div>
+                <div class="cmd-box">
+                    <div class="cmd-output" id="adminCmdOutput">Admin Kernel Console Active.\nTip 'help' for utilities.</div>
+                    <div class="cmd-input-row">
+                        <span class="cmd-prefix">admin#</span>
+                        <input type="text" id="adminCmdInput" onkeydown="if(event.key==='Enter') executeCommand('admin')" placeholder="Komut girin...">
+                    </div>
                 </div>
             </div>
         </div>
@@ -394,40 +413,58 @@
     </div>
 
     <div class="login-container panel-screen" id="ohosPanel">
-        <h2 style="color: #00ffcc; border-bottom: 2px solid #00ffcc; padding-bottom: 15px;">⚡ OHOSDev ROOT PANEL</h2>
+        <h2 style="color: #00ffcc; border-bottom: 2px solid #00ffcc; padding-bottom: 10px;">⚡ OHOSDev ROOT KERNEL SYSTEM PANEL</h2>
         <div class="panel-body">
-            <div class="dev-sub-section" style="border-color: #ff3366; background-color: rgba(218,54,55,0.1);">
-                <div class="section-title" style="color: #ff3366; margin-top: 0;">💾 ISO DOSYA ADRESİ DEĞİŞTİRİCİ</div>
+            <div>
+                <div style="border: 1px dashed #00ffcc; padding: 10px; border-radius:8px; margin-bottom:10px; background:rgba(0,255,204,0.02);">
+                    <div class="section-title" style="color:#00ffcc; margin:0 0 5px 0;">🔐 Çekirdek Şifre Değiştirme Sistemi</div>
+                    <div class="input-group">
+                        <label>Yeni Standart User Şifresi:</label>
+                        <input type="text" id="newSUserPass" placeholder="Yeni Kullanıcı Şifresi">
+                        <button onclick="sifreGuncelle('user')" style="padding:4px; font-size:12px; margin-top:3px;">Kullanıcı Şifresini Değiştir</button>
+                    </div>
+                    <div class="input-group">
+                        <label>Yeni Admin Şifresi:</label>
+                        <input type="text" id="newAdminPass" placeholder="Yeni Admin Şifresi">
+                        <button onclick="sifreGuncelle('admin')" style="padding:4px; font-size:12px; margin-top:3px; background-color:#ff9900; color:black;">Admin Şifresini Değiştir</button>
+                    </div>
+                    <div class="input-group">
+                        <label>Yeni OHOSDev Root Şifresi:</label>
+                        <input type="text" id="newRootPass" placeholder="Yeni Root Şifresi">
+                        <button onclick="sifreGuncelle('root')" style="padding:4px; font-size:12px; margin-top:3px; background-color:#ff3366; color:white;">Root Şifresini Değiştir</button>
+                    </div>
+                </div>
+
                 <div class="input-group">
-                    <label>Kullanıcıların İndireceği ISO Linkini Güncelle:</label>
-                    <input type="text" id="ohosIsoLinkInput" placeholder="https://github.com/300Daras/.../openharmony.iso">
-                    <button onclick="isoLinkiniGuncelle()" style="background-color: #ff3366; color: #fff; margin-top: 10px; padding: 10px;">ISO İndirme Linkini Kalıcı Değiştir</button>
+                    <label style="color:#ff3366;">Kullanıcıların İndireceği ISO Linki:</label>
+                    <input type="text" id="ohosIsoLinkInput">
+                    <button onclick="isoLinkiniGuncelle()" style="background-color: #ff3366; color: #fff; margin-top: 5px; padding: 8px;">ISO Linkini Kalıcı Değiştir</button>
+                </div>
+                <div class="input-group">
+                    <label>Geliştirilme Yüzdesi:</label>
+                    <input type="range" id="ohosPercent" min="0" max="100" value="51" oninput="yuzdeGuncelle(this.value)">
+                    <span id="ohosPercentText" style="font-weight: bold; color: #00ffcc; font-size: 16px;">%51</span>
                 </div>
             </div>
 
-            <div class="dev-sub-section" style="border-color: #00ffcc;">
-                <div class="section-title" style="color: #00ffcc; margin-top: 0;">📈 Çekirdek Gelişim Durumu</div>
-                <div class="input-group">
-                    <label>Geliştirilme Yüzdesini Ayarla:</label>
-                    <div class="range-slider">
-                        <input type="range" id="ohosPercent" min="0" max="100" value="51" oninput="yuzdeGuncelle(this.value)">
-                        <span id="ohosPercentText" style="font-weight: bold; color: #00ffcc; font-size: 20px;">%51</span>
+            <div>
+                <div style="border: 2px solid red; padding:12px; border-radius:8px; margin-bottom:12px; background: rgba(255,0,0,0.1); text-align:center;">
+                    <div class="section-title" style="color:red; margin-top:0;">🚨 ACİL DURUM SİBER KORUMA KALKANI</div>
+                    <p style="font-size:12px; margin:0 0 8px 0; color:#fff;">Siber saldırı anında tüm bilgileri, şifreleri ve panelleri tek tuşla dondurup kilitleyin!</p>
+                    <button onclick="saldiriKilitModunuAktifEt()" style="background-color:red; color:white; box-shadow:0 0 15px red;">SİSTEMİ KİLİTLE VE VERİLERİ DONDUR</button>
+                </div>
+
+                <div class="section-title" style="color: #00ffcc;">💻 CMD Kernel Test Sistemi (Root Konsol)</div>
+                <div class="cmd-box">
+                    <div class="cmd-output" id="rootCmdOutput">OHOSDev KERNEL ROOT CONSOLE CONFIRMED.\nType 'test-kernel' to begin diagnostic loop.</div>
+                    <div class="cmd-input-row">
+                        <span class="cmd-prefix">root#</span>
+                        <input type="text" id="rootCmdInput" onkeydown="if(event.key==='Enter') executeCommand('root')" placeholder="Komut girin...">
                     </div>
                 </div>
-            </div>
-            <div class="dev-sub-section" style="border-color: #00ffcc;">
-                <div class="section-title" style="color: #00ffcc; margin-top: 0;">🖼️ Logo Düzenleme (Admin Dahil)</div>
-                <div class="input-group">
-                    <label>Sistem Logo URL Değiştir:</label>
-                    <input type="text" id="ohosLogoInput" placeholder="https://resim-linki.com/logo.png">
-                    <button onclick="logoGuncelle('ohosLogoInput')" style="background-color: #00ffcc; color: #0d1117; margin-top: 10px; padding: 8px; font-size: 14px;">Logoyu Güncelle</button>
-                </div>
-            </div>
-            <div class="dev-sub-section" style="border-color: #00ffcc;">
-                <div class="section-title" style="color: #00ffcc; margin-top: 0;">📝 Global Sürüm Dokümantasyonu (Admin Dahil)</div>
-                <div class="input-group">
-                    <textarea id="ohosVersionNotes" rows="4" style="font-size: 14px; font-family: monospace;"></textarea>
-                    <button onclick="notlariKaydet('ohosVersionNotes')" style="background-color: #238636; color: #fff; margin-top: 10px; padding: 10px;">Değişiklikleri Yayınla</button>
+
+                <div style="margin-top:15px;">
+                    <button onclick="sistemiRestartEt()" style="background-color:#ff7700; color:white; box-shadow:0 0 15px #ff7700;">🔄 SISTEMI TAMAMIYLA RESTART ET</button>
                 </div>
             </div>
         </div>
@@ -435,22 +472,29 @@
     </div>
 
     <script>
+        // Başlangıç Şifre Değişkenleri (Canlı Değiştirilebilir)
         let aktifKullaniciSifresi = "CordexxElo/StandartUser";
         let aktifAdminSifresi = "DaghanCordexxElo2024";
         let aktifOhosSifresi = "OHOSDev/Root"; 
 
         let guncelYuzde = "51";
         let guncelLogo = "https://raw.githubusercontent.com/300Daras/OpenHarmony-iso/main/logo.png";
-        let guncelNotlar = "Cordex OS - Geliştirme Notları\n\n- Telif Hakkı sözleşmeli ISO indirme sistemi kuruldu.\n- Desteklenen cihaz listesi (Lenovo, Allwinner SoC vb.) panele eklendi.\n- İndirme butonuna Live USB ibaresi yerleştirildi.";
+        let guncelNotlar = "Cordex OS - Geliştirme Notları\n\n- Siber saldırı koruma kalkanı aktif edildi.\n- Root şifre yönetim motoru entegre edildi.\n- Tüm kategoriler için CMD Çekirdek Test simülatörü kuruldu.";
         let guncelIsoLink = "https://github.com/300Daras/OpenHarmony-iso/releases/latest";
+        
+        // Global Veri Bankaları
+        let guncelYorumlar = [
+            { kimden: "Geliştirici Ekip", metin: "Cordex OS v1.0 Çekirdek modülleri kararlı çalışıyor." }
+        ];
+        let sistemSaldiriAltinda = false;
 
         window.onload = function() {
             SenkronizeEt();
+            yorumListesiniGuncelle();
         };
 
         function SenkronizeEt() {
             document.getElementById("adminVersionNotes").value = guncelNotlar;
-            document.getElementById("ohosVersionNotes").value = guncelNotlar;
             document.getElementById("userVersionNotesView").innerText = guncelNotlar;
             
             document.getElementById("ohosPercent").value = guncelYuzde;
@@ -460,18 +504,117 @@
 
             document.getElementById("mainLogo").src = guncelLogo;
             document.getElementById("adminLogoInput").value = guncelLogo;
-            document.getElementById("ohosLogoInput").value = guncelLogo;
             document.getElementById("ohosIsoLinkInput").value = guncelIsoLink;
-            
-            const uLogos = document.getElementsByClassName("user-panel-logo");
-            for(let img of uLogos) {
-                img.src = guncelLogo;
+        }
+
+        // YORUM MOTORU
+        function yorumListesiniGuncelle() {
+            let htmlYorum = "";
+            guncelYorumlar.forEach(function(y) {
+                htmlYorum += `<div class="single-comment"><b>[${y.kimden}]:</b> ${y.metin}</div>`;
+            });
+            document.getElementById("userCommentsContainer").innerHTML = htmlYorum;
+            document.getElementById("adminCommentsContainer").innerHTML = htmlYorum;
+        }
+
+        function yorumGonder() {
+            const inp = document.getElementById("userCommentInput");
+            if(inp.value.trim() !== "") {
+                guncelYorumlar.push({ kimden: "StandartUser", metin: inp.value });
+                inp.value = "";
+                yorumListesiniGuncelle();
             }
         }
 
+        // ŞİFRE DEĞİŞTİRME MOTORU
+        function sifreGuncelle(tur) {
+            if(tur === 'user') {
+                const val = document.getElementById("newSUserPass").value;
+                if(val.trim() !== "") { aktifKullaniciSifresi = val; alert("Kullanıcı şifresi başarıyla '" + val + "' yapıldı!"); }
+            } else if(tur === 'admin') {
+                const val = document.getElementById("newAdminPass").value;
+                if(val.trim() !== "") { aktifAdminSifresi = val; alert("Admin şifresi başarıyla '" + val + "' yapıldı!"); }
+            } else if(tur === 'root') {
+                const val = document.getElementById("newRootPass").value;
+                if(val.trim() !== "") { aktifOhosSifresi = val; alert("OHOSDev Root şifresi başarıyla '" + val + "' yapıldı!"); }
+            }
+        }
+
+        // SİBER SALDIRI ACİL KİLİTLEME SİSTEMİ
+        function saldiriKilitModunuAktifEt() {
+            sistemSaldiriAltinda = true;
+            document.getElementById("attackLockdownScreen").style.display = "flex";
+            // Tüm panelleri arkada gizle
+            document.getElementById("ohosPanel").style.display = "none";
+            document.getElementById("adminPanel").style.display = "none";
+            document.getElementById("userPanel").style.display = "none";
+        }
+
+        function saldiriKilidiniAc() {
+            const pass = document.getElementById("unlockRootPassword").value;
+            if(pass === aktifOhosSifresi) {
+                sistemSaldiriAltinda = false;
+                document.getElementById("attackLockdownScreen").style.display = "none";
+                document.getElementById("ohosPanel").style.display = "flex";
+                document.getElementById("unlockRootPassword").value = "";
+                alert("🔓 SİBER KALKAN KALDIRILDI: Veriler çözüldü, Root erişimi tekrar aktif!");
+            } else {
+                alert("❌ HATALI ROOT ŞİFRESİ! Veri koruma kilidi açılamadı.");
+            }
+        }
+
+        // SİSTEMİ RESTART ETME FONKSİYONU
+        function sistemiRestartEt() {
+            if(confirm("Tüm sistemi kapatıp yazılımsal olarak yeniden başlatmak istediğinize emin misiniz, Dağhan Bey?")) {
+                alert("🔄 Cordex OS Çekirdeği yeniden başlatılıyor... Bellek temizlendi.");
+                // Bütün girdi alanlarını temizle ve ana kutuya dön
+                document.getElementById("sitePassword").value = "";
+                document.getElementById("adminPassword").value = "";
+                document.getElementById("ohosPassword").value = "";
+                document.getElementById("newSUserPass").value = "";
+                document.getElementById("newAdminPass").value = "";
+                document.getElementById("newRootPass").value = "";
+                
+                // Panelleri kapat, ana ekranı aç
+                document.getElementById("ohosPanel").style.display = "none";
+                document.getElementById("adminPanel").style.display = "none";
+                document.getElementById("userPanel").style.display = "none";
+                document.getElementById("loginBox").style.display = "flex";
+                altGirisKapat();
+            }
+        }
+
+        // CMD KERNEL TEST TERMİNAL MOTORU
+        function executeCommand(role) {
+            const inputId = role + "CmdInput";
+            const outputId = role + "CmdOutput";
+            const cmd = document.getElementById(inputId).value.trim().toLowerCase();
+            const outBox = document.getElementById(outputId);
+
+            if(cmd === "") return;
+
+            let response = "";
+            if(cmd === "help") {
+                response = "\n--- MEVCUT KERNEL KOMUTLARI ---\n> help : Komut listesi\n> test-kernel : İşlemci ve ISO bütünlük testi yap\n> status : Çekirdek hat durum raporu\n> clear : Ekranı temizle";
+            } else if(cmd === "test-kernel") {
+                response = "\n⚡ [KONTROL] Lenovo Dual-Boot sürücüleri kontrol ediliyor...\n⚡ [KONTROL] Allwinner SoC uyumluluk katmanı taranıyor...\n🟢 [BAŞARILI] Kernel Test döngüsü sıfır hata ile tamamlandı! Sistem kararlı.";
+            } else if(cmd === "status") {
+                response = `\n[DURUM] Cordex OS Gelişim: %${guncelYuzde}\n[DURUM] Aktif Rol Yetkisi: ${role.toUpperCase()}\n[DURUM] Siber Güvenlik Modu: Korumalı`;
+            } else if(cmd === "clear") {
+                outBox.innerText = `Terminal temizlendi. (Rol: ${role})`;
+                document.getElementById(inputId).value = "";
+                return;
+            } else {
+                response = `\n❌ '${cmd}' geçerli bir çekirdek komutu değil. 'help' yazın.`;
+            }
+
+            outBox.innerText += response;
+            outBox.scrollTop = outBox.scrollHeight; // Kaydır
+            document.getElementById(inputId).value = "";
+        }
+
         function telifKontrolEt(isChecked) {
-            const btn = document.getElementById("downloadIsoBtn");
-            btn.disabled = !isChecked;
+            document.getElementById("downloadIsoBtn").disabled = !isChecked;
         }
 
         function isoDosyasiniIndir() {
@@ -483,7 +626,7 @@
             const yeniLink = document.getElementById("ohosIsoLinkInput").value;
             if(yeniLink.trim() !== "") {
                 guncelIsoLink = yeniLink;
-                alert("🟢 OHOSDev BAŞARILI: ISO indirme linki başarıyla DEĞİŞTİRİLDİ!");
+                alert("🟢 ISO indirme linki Root tarafından kalıcı olarak DEĞİŞTİRİLDİ!");
                 SenkronizeEt();
             }
         }
@@ -501,7 +644,7 @@
 
         function adminGirisiniKontrolEt() {
             if (document.getElementById("adminPassword").value === aktifAdminSifresi) {
-                alert("Admin Girişi Başarılı! Değişiklik yetkiniz sınırlandırılmıştır.");
+                alert("Admin Girişi Başarılı! Yorumları inceleyebilirsiniz.");
                 SenkronizeEt();
                 document.getElementById("loginBox").style.display = "none";
                 document.getElementById("adminPanel").style.display = "flex";
@@ -510,7 +653,7 @@
 
         function ohosGirisiniKontrolEt() {
             if (document.getElementById("ohosPassword").value === aktifOhosSifresi) {
-                alert("OHOSDev Root Erişimi Başarılı! ISO Link Değiştirme Paneli Aktif.");
+                alert("OHOSDev Root Erişimi Başarılı! Gelişmiş siber ve şifre yönetim araçları aktif.");
                 SenkronizeEt();
                 document.getElementById("loginBox").style.display = "none";
                 document.getElementById("ohosPanel").style.display = "flex";
