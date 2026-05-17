@@ -10,7 +10,7 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden; /* Sayfanın aşağı kaymasını tamamen engeller */
+            overflow: hidden;
         }
 
         body {
@@ -21,10 +21,9 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
-            align-items: center; /* Kutuyu dikeyde tam ekranın ortasına alır */
+            align-items: center;
         }
 
-        /* İyice büyütülen devasa kare giriş alanı */
         .login-container {
             border: 3px solid #00ffcc;
             box-shadow: 0 0 30px rgba(0, 255, 204, 0.3);
@@ -36,7 +35,7 @@
             text-align: center;
             box-sizing: border-box;
             backdrop-filter: blur(8px);
-            position: relative; /* Pozisyonunu sabitledik */
+            position: relative;
         }
 
         h1 {
@@ -193,7 +192,7 @@
             <div class="input-group">
                 <input type="password" id="devPassword" placeholder="Geliştirici Admin Şifresini Girin">
             </div>
-            <button onclick="devGirisYap()" style="background-color: #ff9900; box-shadow: 0 0 15px #ff9900; color: #fff;">Doğrula ve Giriş Yap</button>
+            <button onclick="developerGirisiniKontrolEt()" style="background-color: #ff9900; box-shadow: 0 0 15px #ff9900; color: #fff;">Doğrula ve Giriş Yap</button>
             <button onclick="devGirisiniKapat()" style="background-color: #da3637; border: none; box-shadow: 0 0 10px #da3637; color: #fff; margin-top: 10px; padding: 10px; font-size: 14px; width: 100%;">İptal Et</button>
         </div>
     </div>
@@ -275,4 +274,52 @@
             document.getElementById("devLoginBox").style.display = "block";
         }
 
-        function
+        function devGirisiniKapat() {
+            document.getElementById("devLoginBox").style.display = "none";
+            document.getElementById("standardLoginSection").style.display = "block";
+            document.getElementById("devPassword").value = "";
+        }
+
+        // İsmini değiştirdiğimiz donmayan yeni fonksiyon
+        function developerGirisiniKontrolEt() {
+            const girilenDevSifre = document.getElementById("devPassword").value;
+            if (girilenDevSifre === aktifAdminSifresi) {
+                alert("Yönetici Kimliği Doğrulandı! Geliştirici Değişiklik Paneli Açılıyor...");
+                document.getElementById("loginBox").style.display = "none";
+                document.getElementById("devPanel").style.display = "block";
+            } else {
+                alert("Yetkisiz Geliştirici Şifresi! Erişim Reddedildi.");
+            }
+        }
+
+        function yuzdeGuncelle(val) {
+            document.getElementById("percentText").innerText = "%" + val;
+            guncelYuzde = val; 
+        }
+
+        function sifreDegistir() {
+            const yeniSifre = document.getElementById("newPasswordInput").value;
+            if(yeniSifre.trim() !== "") {
+                aktifAdminSifresi = yeniSifre;
+                alert("Admin Geliştirici Şifresi Güncellendi: " + yeniSifre);
+            } else {
+                alert("Lütfen geçerli bir şifre yazın!");
+            }
+        }
+
+        function notlariKaydet() {
+            const yeniNotlar = document.getElementById("versionNotes").value;
+            guncelNotlar = yeniNotlar; 
+            alert("Sürüm Notları Sistem Belleğinde Başarıyla Güncellendi!");
+        }
+
+        function panellerdenCikisYap() {
+            document.getElementById("devPanel").style.display = "none";
+            document.getElementById("userPanel").style.display = "none";
+            document.getElementById("loginBox").style.display = "block";
+            devGirisiniKapat();
+            document.getElementById("sitePassword").value = "";
+        }
+    </script>
+</body>
+</html>
