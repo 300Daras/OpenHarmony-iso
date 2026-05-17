@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Cordex OS Gelişmiş Dağıtım Merkezi</title>
+    <style>
+        body { background-color: #0d1117; color: #ffffff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .ana-kutu { border: 2px solid #00ffcc; border-radius: 12px; padding: 30px; background-color: #0d1117; width: 500px; box-shadow: 0 0 15px rgba(0, 255, 204, 0.2); text-align: center; }
+        .baslik-alani { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px; }
+        .site-logo { width: 50px; height: 50px; border-radius: 8px; object-fit: contain; }
+        .baslik { font-size: 24px; font-weight: bold; color: #00ffcc; }
+        .sifre-input { padding: 10px; font-size: 16px; border-radius: 4px; border: 1px solid #ffffff; width: 60%; margin-bottom: 15px; background-color: #161b22; color: white; text-align: center; }
+        .giris-btn { padding: 10px 20px; font-size: 16px; background-color: #00ffcc; color: #0d1117; font-weight: bold; border: none; cursor: pointer; border-radius: 4px; box-shadow: 0 4px 10px rgba(0, 255, 204, 0.2); }
+        .download-btn { display: inline-block; background-color: #00ffcc; color: #0d1117; font-weight: bold; text-decoration: none; padding: 12px 25px; border-radius: 8px; font-size: 16px; margin-top: 15px; }
+        .icerik-alani { display: none; text-align: left; }
+        .admin-bolumu { display: none; background-color: #161b22; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px dashed #ffcc00; }
+        .admin-textarea { width: 95%; height: 50px; background-color: #0d1117; color: white; border: 1px solid #30363d; padding: 5px; margin-top: 5px; margin-bottom: 10px; }
+        .kaydet-btn { background-color: #238636; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; font-weight: bold; width: 100%; }
+        .gizli-asama { display: none; }
+    </style>
+</head>
+<body>
+    <div class="ana-kutu">
+        <div class="baslik-alani">
+            <img id="projeLogosu" class="site-logo" src="https://gitee.com/openharmony/docs/raw/master/zh-cn/figures/OpenHarmony_logo.png" alt="Logo">
+            <div class="baslik">CORDEX OS KERNEL</div>
+        </div>
+        <div id="anaGirisEkrani">
+            <p style="color: #8b949e; font-size: 14px;">Sisteme erişmek için şifrenizi giriniz:</p>
+            <input type="password" id="genelSifreKutusu" class="sifre-input" placeholder="Giriş Şifresi"><br>
+            <button onclick="sistemGirisKontrol()" class="giris-btn">Sisteme Giriş Yap</button>
+        </div>
+        <div id="korumaliIcerik" class="icerik-alani">
+            <h3 style="color: #00ffcc; margin-top:0; text-align: center;">Cordex OS Dağıtım Merkezi</h3>
+            <p id="projeAciklamasi">Geliştirdiğimiz özel OpenHarmony (OHOS) tabanlı işletim sistemi imajı hazırdır. Bu ISO dosyası, sistemler için optimize edilmiştir.</p>
+            <p><strong>Boyut:</strong> 22 KB (Test Sürümü)</p>
+            <center><a href="openharmony_cordex_debug.iso" download class="download-btn">📥 TEST ISO DOSYASINI İNDİR</a></center>
+            <hr style="border: 0; border-top: 1px solid #21262d; margin: 20px 0;">
+            <div id="adminGirisKutusu" style="text-align: center;">
+                <p style="font-size: 12px; color: #8b949e; margin-bottom: 5px;">Yönetici Girişi (Aşama 1/2):</p>
+                <input type="password" id="adminSifreKutusu" style="width:50%; padding:5px; text-align:center;" placeholder="Admin Şifresi">
+                <button onclick="adminAsama1()" style="padding:5px 10px;">İlerle</button>
+            </div>
+            <div id="admin2FAKutusu" class="gizli-asama" style="background-color: #1f242c; padding: 10px; border-radius: 6px; border: 1px solid #ffcc00; text-align: center;">
+                <p style="font-size: 12px; color: #ffcc00; margin-bottom: 5px;">🔐 İki Aşamalı Doğrulama (Aşama 2/2):</p>
+                <input type="text" id="adminPinKutusu" style="width:40%; padding:5px; text-align:center;" placeholder="Gizli PIN Kodu">
+                <button onclick="adminAsama2()" style="padding:5px 10px; background-color: #ffcc00; border:none; font-weight:bold; cursor:pointer;">Doğrula</button>
+            </div>
+            <div id="adminPanel" class="admin-bolumu">
+                <h4 style="color: #ffcc00; margin: 0 0 10px 0; text-align: center;">🛠️ Yönetici Yetkisi Aktif</h4>
+                <label style="font-size: 12px; color: #00ffcc;">Açıklama Metnini Değiştir:</label>
+                <textarea id="yeniAciklamaMetni" class="admin-textarea">Geliştirdiğimiz özel OpenHarmony (OHOS) tabanlı işletim sistemi imajı hazırdır. Bu ISO dosyası, sistemler için optimize edilmiştir.</textarea>
+                <label style="font-size: 12px; color: #00ffcc;">Logo Görsel URL Adresi:</label>
+                <textarea id="yeniLogoUrl" class="admin-textarea">https://gitee.com/openharmony/docs/raw/master/zh-cn/figures/OpenHarmony_logo.png</textarea>
+                <button onclick="sistemiGuncelle()" class="kaydet-btn">Tüm Değişiklikleri Kilitle ve Güncelle</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function sistemGirisKontrol() {
+            var girilenSifre = document.getElementById("genelSifreKutusu").value;
+            if (girilenSifre === "CordexxElo/StandartUser") {
+                document.getElementById("anaGirisEkrani").style.display = "none";
+                document.getElementById("korumaliIcerik").style.display = "block";
+            } else {
+                alert("Hatalı Giriş Şifresi! Kalabalık yapmayın lütfen.");
+            }
+        }
+        function adminAsama1() {
+            var adminSifresi = document.getElementById("adminSifreKutusu").value;
+            if (adminSifresi === "DaghanCordexxElo2024") {
+                alert("1. Aşama Başarılı! Şimdi İki Aşamalı Doğrulama (2FA) PIN kodunu girin.");
+                document.getElementById("adminGirisKutusu").style.display = "none";
+                document.getElementById("admin2FAKutusu").style.display = "block";
+            } else {
+                alert("Yetkisiz Giriş Denemesi! Yönetici değilsiniz.");
+            }
+        }
+        function adminAsama2() {
+            var pinKodu = document.getElementById("adminPinKutusu").value;
+            if (pinKodu === "OHOS5.0.1") {
+                alert("Troller tamamen engellendi ve admin kimliği doğrulandı!");
+                document.getElementById("admin2FAKutusu").style.display = "none";
+                document.getElementById("adminPanel").style.display = "block";
+            } else {
+                alert("2FA PIN Kodu Hatalı! Erişim derhal reddedildi.");
+            }
+        }
+        function sistemiGuncelle() {
+            document.getElementById("projeAciklamasi").innerText = document.getElementById("yeniAciklamaMetni").value;
+            document.getElementById("projeLogosu").src = document.getElementById("yeniLogoUrl").value;
+            alert("Harika! Logo ve Açıklama trollerden korunarak başarıyla güncellendi!");
+        }
+    </script>
+</body>
+</html>
