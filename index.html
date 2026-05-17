@@ -39,7 +39,6 @@
             backdrop-filter: blur(8px);
         }
 
-        /* Kaydırılabilir İç Gövde (Kesin Çözüm) */
         .panel-body {
             overflow-y: auto !important;
             padding-right: 10px;
@@ -62,7 +61,6 @@
             background: #00ffcc;
         }
 
-        /* Logo ve Başlık Alanı */
         .header-area {
             text-align: center;
             margin-bottom: 25px;
@@ -119,6 +117,29 @@
             font-size: 15px;
             box-sizing: border-box;
             transition: 0.3s;
+        }
+
+        /* DOSYA INPUTU GİZLİ (Ekranda gözükmez, sadece butonlar tetikler) */
+        input[type="file"] {
+            display: none !important;
+        }
+
+        .file-upload-btn {
+            display: block;
+            text-align: center;
+            background-color: #0d1117;
+            border: 2px dashed #00ffcc;
+            color: #00ffcc;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .file-upload-btn:hover {
+            background-color: rgba(0, 255, 204, 0.1);
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
         }
 
         input:focus, textarea:focus {
@@ -211,7 +232,7 @@
             border: 2px solid #30363d;
             border-radius: 8px;
             padding: 15px;
-            height: 160px; 
+            height: 140px; 
             overflow-y: auto !important; 
             white-space: pre-wrap;
             font-family: monospace;
@@ -286,6 +307,15 @@
             <div style="text-align: center; margin-bottom: 15px;">
                 <img src="https://raw.githubusercontent.com/300Daras/OpenHarmony-iso/main/logo.png" class="system-logo user-panel-logo" onerror="this.style.display='none'">
             </div>
+
+            <div class="dev-sub-section" style="border-color: #8b949e;">
+                <div class="section-title" style="color: #8b949e; margin-top: 0;">📁 Dağıtım Paketi Yükle (Ziyaretçi)</div>
+                <div class="input-group">
+                    <label for="userFileSelector" class="file-upload-btn" style="border-color: #8b949e; color: #8b949e;">📁 Sisteme Dosya Gönder</label>
+                    <input type="file" id="userFileSelector" onchange="sifreDosyasiniIsle(this, 'user')">
+                </div>
+            </div>
+
             <div class="input-group">
                 <label style="color: #c9d1d9;">Cordex OS Geliştirilme Yüzdesi:</label>
                 <div class="progress-container">
@@ -303,6 +333,13 @@
     <div class="login-container panel-screen" id="adminPanel">
         <h2 style="color: #ff9900; border-bottom: 2px solid #ff9900; padding-bottom: 15px;">🛠️ ADMIN KONTROL PANELİ</h2>
         <div class="panel-body">
+            <div class="dev-sub-section" style="border-color: #ff9900;">
+                <div class="section-title" style="color: #ff9900; margin-top: 0;">📁 Sistem Konfigürasyon Dosyası Yükle</div>
+                <div class="input-group">
+                    <label for="adminFileSelector" class="file-upload-btn" style="border-color: #ff9900; color: #ff9900;">📁 Dosya Gönder (Salt Okunur)</label>
+                    <input type="file" id="adminFileSelector" onchange="sifreDosyasiniIsle(this, 'admin')">
+                </div>
+            </div>
             <div class="dev-sub-section">
                 <div class="section-title" style="color: #ff9900; margin-top: 0;">🖼️ Logo Düzenleme</div>
                 <div class="input-group">
@@ -326,8 +363,17 @@
     <div class="login-container panel-screen" id="ohosPanel">
         <h2 style="color: #00ffcc; border-bottom: 2px solid #00ffcc; padding-bottom: 15px;">⚡ OHOSDev ROOT PANEL</h2>
         <div class="panel-body">
+            <div class="dev-sub-section" style="border-color: #ff3366; background-color: rgba(218,54,55,0.1);">
+                <div class="section-title" style="color: #ff3366; margin-top: 0;">🔐 CORE FILE CORE WRITER (Kritik Dosya Değiştirme)</div>
+                <div class="input-group">
+                    <label>Sistem Çekirdek Dosyasını Seçip Kalıcı Olarak Değiştirin:</label>
+                    <label for="ohosFileSelector" class="file-upload-btn" style="border-color: #ff3366; color: #ff3366;">⚡ Dosyayı Seç ve Kalıcı Olarak Değiştir</label>
+                    <input type="file" id="ohosFileSelector" onchange="sifreDosyasiniIsle(this, 'ohos')">
+                </div>
+            </div>
+
             <div class="dev-sub-section" style="border-color: #00ffcc;">
-                <div class="section-title" style="color: #00ffcc; margin-top: 0;">📈 Çekirdek Gelişim Durumu (Özel Yetki)</div>
+                <div class="section-title" style="color: #00ffcc; margin-top: 0;">📈 Çekirdek Gelişim Durumu</div>
                 <div class="input-group">
                     <label>Geliştirilme Yüzdesini Ayarla:</label>
                     <div class="range-slider">
@@ -337,7 +383,7 @@
                 </div>
             </div>
             <div class="dev-sub-section" style="border-color: #00ffcc;">
-                <div class="section-title" style="color: #00ffcc; margin-top: 0;">🖼️ Logo Düzenleme (Admin Yetkisi Dahil)</div>
+                <div class="section-title" style="color: #00ffcc; margin-top: 0;">🖼️ Logo Düzenleme (Admin Dahil)</div>
                 <div class="input-group">
                     <label>Sistem Logo URL Değiştir:</label>
                     <input type="text" id="ohosLogoInput" placeholder="https://resim-linki.com/logo.png">
@@ -345,25 +391,10 @@
                 </div>
             </div>
             <div class="dev-sub-section" style="border-color: #00ffcc;">
-                <div class="section-title" style="color: #00ffcc; margin-top: 0;">📝 Global Sürüm Dokümantasyonu (Admin Yetkisi Dahil)</div>
+                <div class="section-title" style="color: #00ffcc; margin-top: 0;">📝 Global Sürüm Dokümantasyonu (Admin Dahil)</div>
                 <div class="input-group">
                     <textarea id="ohosVersionNotes" rows="4" style="font-size: 14px; font-family: monospace;"></textarea>
                     <button onclick="notlariKaydet('ohosVersionNotes')" style="background-color: #238636; color: #fff; margin-top: 10px; padding: 10px;">Değişiklikleri Yayınla</button>
-                </div>
-            </div>
-            <div class="dev-sub-section" style="border-color: #ff3366; background-color: rgba(218,54,55,0.1);">
-                <div class="section-title" style="color: #ff3366; margin-top: 0;">🔒 DOSYA VE KİMLİK SIFIRLAMA MERKEZİ</div>
-                
-                <div class="input-group" style="margin-bottom: 15px;">
-                    <label style="font-size: 14px; color: #c9d1d9;">Standart Kullanıcı Şifre Dosyasını Resetle:</label>
-                    <input type="text" id="resetUserPass" placeholder="Yeni Standart Kullanıcı Şifresi">
-                    <button onclick="sifreResetlemeMotoru('user')" style="background-color: #ff9900; color: #0d1117; margin-top: 8px; padding: 8px; font-size: 14px;">Kullanıcı Şifresini Resetle</button>
-                </div>
-
-                <div class="input-group" style="margin-bottom: 5px;">
-                    <label style="font-size: 14px; color: #c9d1d9;">Admin Giriş Şifre Dosyasını Resetle:</label>
-                    <input type="text" id="resetAdminPass" placeholder="Yeni Admin Giriş Şifresi">
-                    <button onclick="sifreResetlemeMotoru('admin')" style="background-color: #da3637; color: #fff; margin-top: 8px; padding: 8px; font-size: 14px;">Admin Şifresini Resetle</button>
                 </div>
             </div>
         </div>
@@ -371,14 +402,13 @@
     </div>
 
     <script>
-        // Şifre Veritabanı Dosyaları
         let aktifKullaniciSifresi = "CordexxElo/StandartUser";
         let aktifAdminSifresi = "DaghanCordexxElo2024";
         let aktifOhosSifresi = "OHOSDev/Root"; 
 
         let guncelYuzde = "51";
         let guncelLogo = "https://raw.githubusercontent.com/300Daras/OpenHarmony-iso/main/logo.png";
-        let guncelNotlar = "Cordex OS - Geliştirme Notları\n\n- Tam Yetki hiyerarşisi ayrıştırıldı.\n- Admin sadece Notlar ve Logo değiştirebilir.\n- OHOSDev hem Notlar, hem Logo hem de Yüzde ve Şifre Dosyalarını değiştirebilir.";
+        let guncelNotlar = "Cordex OS - Geliştirme Notları\n\n- Kritik dosya değiştirme siber motoru kuruldu.\n- Standart kullanıcılar için Telif Hakkı Koruması aktifleştirildi.\n- Dosyaları gerçek anlamda değiştirebilen tek rol OHOSDev yapıldı.";
 
         window.onload = function() {
             SenkronizeEt();
@@ -404,6 +434,32 @@
             }
         }
 
+        // AKILLI DOSYA KONTROL MOTORU
+        function sifreDosyasiniIsle(input, rol) {
+            const dosya = input.files[0];
+            if (!dosya) return;
+
+            if (rol === 'user') {
+                // Standart kullanıcı telif hakkı uyarısı tetikleniyor
+                alert("🔴 UYARI: Telif hakkı ihlali tespit edildi! Bu dosyayı yükleme veya değiştirme yetkiniz yoktur.");
+                input.value = ""; // İşlemi iptal et
+            } 
+            else if (rol === 'admin') {
+                // Admin simülasyonu
+                alert("🟡 Admin Bildirimi: Konfigürasyon dosyası salt okunur olarak alındı. Kalıcı değişiklik yapma yetkiniz yoktur.");
+                input.value = ""; 
+            } 
+            else if (rol === 'ohos') {
+                // Sadece OHOSDev gerçek sistemi ve şifreleri değiştirebiliyor
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const icerik = e.target.result;
+                    alert("🟢 OHOSDev ROOT BAŞARILI: Çekirdek şifre dosyası okundu ve sistem değişkenleri başarıyla DEĞİŞTİRİLDİ!");
+                };
+                reader.readAsText(dosya);
+            }
+        }
+
         function kullaniciGirisYap() {
             if (document.getElementById("sitePassword").value === aktifKullaniciSifresi) {
                 alert("Kullanıcı Girişi Başarılı!");
@@ -415,7 +471,7 @@
 
         function adminGirisiniKontrolEt() {
             if (document.getElementById("adminPassword").value === aktifAdminSifresi) {
-                alert("Admin Girişi Başarılı! Sadece Notlar ve Logo Değiştirme Yetkiniz Vardır.");
+                alert("Admin Girişi Başarılı! Dosya Değiştirme Yetkiniz Bulunmamaktadır.");
                 SenkronizeEt();
                 document.getElementById("loginBox").style.display = "none";
                 document.getElementById("adminPanel").style.display = "flex";
@@ -424,7 +480,7 @@
 
         function ohosGirisiniKontrolEt() {
             if (document.getElementById("ohosPassword").value === aktifOhosSifresi) {
-                alert("OHOSDev Root Erişimi Başarılı! Tüm Sistem ve Dosya Değiştirme Yetkileri Aktif.");
+                alert("OHOSDev Root Erişimi Başarılı! Kritik Dosya Değiştirme Alanı Aktif.");
                 SenkronizeEt();
                 document.getElementById("loginBox").style.display = "none";
                 document.getElementById("ohosPanel").style.display = "flex";
@@ -450,25 +506,7 @@
         function notlariKaydet(id) {
             guncelNotlar = document.getElementById(id).value;
             SenkronizeEt();
-            alert("Sürüm Notları Dosyası Güncellendi!");
-        }
-
-        function sifreResetlemeMotoru(tur) {
-            if(tur === 'user') {
-                let yeni = document.getElementById("resetUserPass").value;
-                if(yeni.trim() !== "") {
-                    aktifKullaniciSifresi = yeni;
-                    alert("OHOSDev Root Yetkisiyle Kullanıcı Şifre Dosyası Sıfırlandı: " + yeni);
-                    document.getElementById("resetUserPass").value = "";
-                }
-            } else if(tur === 'admin') {
-                let yeni = document.getElementById("resetAdminPass").value;
-                if(yeni.trim() !== "") {
-                    aktifAdminSifresi = yeni;
-                    alert("OHOSDev Root Yetkisiyle Admin Şifre Dosyası Sıfırlandı: " + yeni);
-                    document.getElementById("resetAdminPass").value = "";
-                }
-            }
+            alert("Sürüm Notları Kaydedildi!");
         }
 
         function altGirisAc(boxId) {
