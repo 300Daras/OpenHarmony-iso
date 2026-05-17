@@ -68,13 +68,13 @@
             gap: 20px;
         }
 
-        .panel-body::-webkit-scrollbar, .readonly-notes::-webkit-scrollbar, textarea::-webkit-scrollbar, .cmd-output::-webkit-scrollbar, .ai-output::-webkit-scrollbar {
+        .panel-body::-webkit-scrollbar, .cmd-output::-webkit-scrollbar, .ai-output::-webkit-scrollbar {
             width: 6px;
         }
-        .panel-body::-webkit-scrollbar-track, .readonly-notes::-webkit-scrollbar-track, .cmd-output::-webkit-scrollbar-track, .ai-output::-webkit-scrollbar-track {
+        .panel-body::-webkit-scrollbar-track, .cmd-output::-webkit-scrollbar-track, .ai-output::-webkit-scrollbar-track {
             background: #0d1117;
         }
-        .panel-body::-webkit-scrollbar-thumb, .readonly-notes::-webkit-scrollbar-thumb, .cmd-output::-webkit-scrollbar-thumb, .ai-output::-webkit-scrollbar-thumb {
+        .panel-body::-webkit-scrollbar-thumb, .cmd-output::-webkit-scrollbar-thumb, .ai-output::-webkit-scrollbar-thumb {
             background: #30363d;
             border-radius: 4px;
         }
@@ -137,7 +137,7 @@
             box-sizing: border-box;
         }
 
-        /* CMD Terminal Tasarımı */
+        /* CMD Terminal */
         .cmd-box {
             background-color: #05070a;
             border: 2px solid #30363d;
@@ -165,7 +165,7 @@
             font-size: 13px;
         }
 
-        /* AI Yapay Zeka Kutusu Tasarımı */
+        /* AI Yapay Zeka Kutusu */
         .ai-box {
             background-color: #0a0f1d;
             border: 2px solid #0055ff;
@@ -184,7 +184,7 @@
             text-align: left;
         }
 
-        /* Yorum Alanı Tasarımı */
+        /* Yorum Alanı */
         .comment-display-area {
             background-color: #0d1117;
             border: 1px solid #30363d;
@@ -247,7 +247,6 @@
             color: #8b949e;
             border: 1px solid #30363d;
             cursor: not-allowed;
-            box-shadow: none;
         }
 
         .dev-btn-style { background-color: transparent; color: #ff9900; border: 2px solid #ff9900; margin-top: 8px; }
@@ -261,10 +260,6 @@
         }
         .progress-bar {
             background-color: #00ffcc; height: 20px; width: 51%; text-align: center; line-height: 20px; color: #0d1117; font-weight: bold;
-        }
-
-        .readonly-notes {
-            background-color: #0d1117; border: 2px solid #30363d; border-radius: 8px; padding: 8px; height: 80px; overflow-y: auto !important; white-space: pre-wrap; font-family: monospace; font-size: 12px;
         }
 
         #attackLockdownScreen, #systemUpdateScreen {
@@ -294,7 +289,6 @@
         <div class="lock-alert-box">
             <h1 style="color: #ff0033; text-shadow: 0 0 20px red; font-size: 35px;">⚠️ CRITICAL SECURITY LOCKDOWN ⚠️</h1>
             <p style="font-size: 18px; margin: 20px 0;">Sistem siber saldırı altında olduğu için OHOSDev Root motoru tarafından BİLGİLER KİLİTLENMİŞTİR!</p>
-            <p style="color: #00ffcc;">Kilidi kaldırmak için Root Şifresini girin:</p>
             <input type="password" id="unlockRootPassword" placeholder="Root Şifresi" style="width: 300px; text-align: center; margin-bottom: 15px;"><br>
             <button onclick="saldiriKilidiniAc()" style="width: 200px; background-color: #00ffcc; color: black;">KİLİDİ AÇ</button>
         </div>
@@ -304,7 +298,6 @@
         <div class="lock-alert-box" style="box-shadow: 0 0 50px #00ffcc; border-color: #00ffcc;">
             <h1 style="color: #00ffcc; text-shadow: 0 0 20px #00ffcc; font-size: 35px;">⚠️ SİSTEM GÜNCELLEME UYARISI ⚠️</h1>
             <p style="font-size: 20px; margin: 20px 0; color: #fff;">Root Geliştiricisi sisteme şu an **Yeni Bir Özellik/Kod** entegre ediyor!</p>
-            <p style="color: #ff9900; font-weight: bold; font-size: 16px;">Lütfen sistem yüklemesi bitene kadar bekleyiniz...</p>
         </div>
     </div>
 
@@ -410,11 +403,6 @@
                     <input type="text" id="adminLogoInput">
                     <button onclick="logoGuncelle('adminLogoInput')" style="background-color: #ff9900; color: #0d1117; margin-top: 5px;">Logoyu Güncelle</button>
                 </div>
-                <div class="input-group">
-                    <label>Sürüm Notlarını Düzenle:</label>
-                    <textarea id="adminVersionNotes" rows="3"></textarea>
-                    <button onclick="notlariKaydet('adminVersionNotes')" style="background-color: #238636; color: #fff; margin-top: 5px;">Güncelle</button>
-                </div>
                 <div class="section-title" style="color: #ff9900; margin-top:8px;">📋 Kullanıcı Yorumları (Salt Okunur)</div>
                 <div class="comment-display-area" id="adminCommentsContainer"></div>
             </div>
@@ -478,31 +466,25 @@
     </div>
 
     <script>
-        let aktifKullaniciSifresi = "CordexxElo/StandartUser";
-        let aktifAdminSifresi = "DaghanCordexxElo2024";
-        let aktifOhosSifresi = "OHOSDev/Root"; 
+        var aktifKullaniciSifresi = "CordexxElo/StandartUser";
+        var aktifAdminSifresi = "DaghanCordexxElo2024";
+        var aktifOhosSifresi = "OHOSDev/Root"; 
 
-        let guncelYuzde = "51";
-        let guncelLogo = "https://raw.githubusercontent.com/300Daras/OpenHarmony-iso/main/logo.png";
-        let guncelNotlar = "Cordex OS - Geliştirme Notları";
-        let guncelIsoLink = "https://github.com/300Daras/OpenHarmony-iso/releases/latest";
-        
-        let guncelYorumlar = [{ kimden: "Geliştirici Ekip", metin: "Cordex OS v1.0 kararlı çalışıyor." }];
-        let sistemUpdateModunda = false;
+        var guncelYuzde = "51";
+        var guncelLogo = "https://raw.githubusercontent.com/300Daras/OpenHarmony-iso/main/logo.png";
+        var guncelIsoLink = "https://github.com/300Daras/OpenHarmony-iso/releases/latest";
+        var guncelYorumlar = [{ kimden: "Geliştirici Ekip", metin: "Cordex OS v1.0 kararlı çalışıyor." }];
+        var sistemUpdateModunda = false;
 
         window.onload = function() {
-            SenkronizeEt();
-            yorumListesiniGuncelle();
-        };
-
-        function SenkronizeEt() {
             document.getElementById("userProgressBar").style.width = guncelYuzde + "%";
             document.getElementById("userProgressBar").innerText = "%" + guncelYuzde;
             document.getElementById("mainLogo").src = guncelLogo;
-        }
+            yorumListesiniGuncelle();
+        };
 
         function duyuruYayinla() {
-            const mesaj = document.getElementById("ohosAnnouncementInput").value;
+            var mesaj = document.getElementById("ohosAnnouncementInput").value;
             if(mesaj.trim() !== "") {
                 document.getElementById("globalAnnouncementView").innerText = "📢 DUYURU: " + mesaj;
                 alert("Duyuru yayında!");
@@ -511,7 +493,7 @@
 
         function toggleSystemUpdateWarning() {
             sistemUpdateModunda = !sistemUpdateModunda;
-            const btn = document.getElementById("toggleUpdateWarnBtn");
+            var btn = document.getElementById("toggleUpdateWarnBtn");
             if(sistemUpdateModunda) {
                 document.getElementById("systemUpdateScreen").style.display = "flex";
                 btn.innerText = "UYARIYI KALDIR";
@@ -528,14 +510,12 @@
         }
 
         function askCordexAI() {
-            const inp = document.getElementById("aiInputBox");
-            const out = document.getElementById("aiOutputBox");
-            const txt = inp.value.trim().toLowerCase();
-            
+            var inp = document.getElementById("aiInputBox");
+            var out = document.getElementById("aiOutputBox");
+            var txt = inp.value.trim().toLowerCase();
             if(txt === "") return;
-            out.innerText = "🧠 Düşünüyor...";
-
-            let cevap = "🤖 [AI Core]: Durum stabil, fonksiyonlar hatasız.";
+            
+            var cevap = "🤖 [AI Core]: Durum stabil, fonksiyonlar hatasız.";
             if(txt.includes("openharmony")) cevap = "🤖 [AI Core]: OpenHarmony derleme kodları Allwinner SoC ile uyumlu.";
             else if(txt.includes("kernel") || txt.includes("çekirdek")) cevap = "🤖 [AI Core]: Cordex Kernel Linux v6.1 LTS tabanlıdır.";
             else if(txt.includes("hızlandır") || txt.includes("optimize")) cevap = "🤖 [AI Core]: RAM yükü hafifletildi, sistem oyun modunda!";
@@ -545,16 +525,16 @@
         }
 
         function yorumListesiniGuncelle() {
-            let htmlYorum = "";
+            var htmlYorum = "";
             guncelYorumlar.forEach(function(y) {
-                htmlYorum += `<div class="single-comment"><b>[${y.kimden}]:</b> ${y.metin}</div>`;
+                htmlYorum += '<div class="single-comment"><b>[' + y.kimden + ']:</b> ' + y.metin + '</div>';
             });
             document.getElementById("userCommentsContainer").innerHTML = htmlYorum;
             document.getElementById("adminCommentsContainer").innerHTML = htmlYorum;
         }
 
         function yorumGonder() {
-            const inp = document.getElementById("userCommentInput");
+            var inp = document.getElementById("userCommentInput");
             if(inp.value.trim() !== "") {
                 guncelYorumlar.push({ kimden: "StandartUser", metin: inp.value });
                 inp.value = "";
@@ -563,9 +543,9 @@
         }
 
         function sifreGuncelle(tur) {
-            if(tur === 'user') { const val = document.getElementById("newSUserPass").value; if(val.trim() !== "") aktifKullaniciSifresi = val; }
-            else if(tur === 'admin') { const val = document.getElementById("newAdminPass").value; if(val.trim() !== "") aktifAdminSifresi = val; }
-            else if(tur === 'root') { const val = document.getElementById("newRootPass").value; if(val.trim() !== "") aktifOhosSifresi = val; }
+            if(tur === 'user') { var val = document.getElementById("newSUserPass").value; if(val.trim() !== "") aktifKullaniciSifresi = val; }
+            else if(tur === 'admin') { var val = document.getElementById("newAdminPass").value; if(val.trim() !== "") aktifAdminSifresi = val; }
+            else if(tur === 'root') { var val = document.getElementById("newRootPass").value; if(val.trim() !== "") aktifOhosSifresi = val; }
             alert("Şifre güncellendi!");
         }
 
@@ -581,18 +561,15 @@
             } else { alert("Hatalı Şifre!"); }
         }
 
-        function sistemiRestartEt() {
-            location.reload();
-        }
+        function sistemiRestartEt() { location.reload(); }
 
         function executeCommand(role) {
-            const inputId = role + "CmdInput";
-            const outputId = role + "CmdOutput";
-            const cmd = document.getElementById(inputId).value.trim().toLowerCase();
-            const outBox = document.getElementById(outputId);
-
+            var inputId = role + "CmdInput";
+            var outputId = role + "CmdOutput";
+            var cmd = document.getElementById(inputId).value.trim().toLowerCase();
+            var outBox = document.getElementById(outputId);
             if(cmd === "") return;
-            outBox.innerText += `\n> ${cmd} çalıştırıldı.`;
+            outBox.innerText += "\n> " + cmd + " çalıştırıldı.";
             document.getElementById(inputId).value = "";
         }
 
@@ -600,21 +577,24 @@
         function isoDosyasiniIndir() { window.open(guncelIsoLink, '_blank'); }
 
         function kullaniciGirisYap() {
-            if (document.getElementById("sitePassword").value === aktifKullaniciSifresi) {
+            var girilen = document.getElementById("sitePassword").value.trim();
+            if (girilen === aktifKullaniciSifresi) {
                 document.getElementById("loginBox").style.display = "none";
                 document.getElementById("userPanel").style.display = "flex";
-            } else { alert("Hatalı Şifre!"); }
+            } else { alert("Hatalı Şifre! Girilen: " + girilen); }
         }
 
         function adminGirisiniKontrolEt() {
-            if (document.getElementById("adminPassword").value === aktifAdminSifresi) {
+            var girilen = document.getElementById("adminPassword").value.trim();
+            if (girilen === aktifAdminSifresi) {
                 document.getElementById("loginBox").style.display = "none";
                 document.getElementById("adminPanel").style.display = "flex";
             } else { alert("Hatalı Şifre!"); }
         }
 
         function ohosGirisiniKontrolEt() {
-            if (document.getElementById("ohosPassword").value === aktifOhosSifresi) {
+            var girilen = document.getElementById("ohosPassword").value.trim();
+            if (girilen === aktifOhosSifresi) {
                 document.getElementById("loginBox").style.display = "none";
                 document.getElementById("ohosPanel").style.display = "flex";
             } else { alert("Hatalı Şifre!"); }
