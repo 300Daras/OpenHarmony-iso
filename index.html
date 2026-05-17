@@ -131,7 +131,6 @@
             color: #f0f6fc;
         }
 
-        /* Desteklenen Cihazlar Kutusu */
         .devices-box {
             background-color: rgba(0, 255, 204, 0.05);
             border: 1px dashed #00ffcc;
@@ -354,7 +353,7 @@
                     <input type="checkbox" id="copyrightCheck" onchange="telifKontrolEt(this.checked)">
                     <label for="copyrightCheck">Telif haklarını ve yasal şartları kabul ediyorum.</label>
                 </div>
-                <button id="downloadIsoBtn" onclick="isoDosyasiniIndir()" disabled style="background-color: #238636; color: #fff; box-shadow: 0 0 15px rgba(35,134,54,0.4);">💿 Cordex OpenHarmony ISO Dosyasını İndir</button>
+                <button id="downloadIsoBtn" onclick="isoDosyasiniIndir()" disabled style="background-color: #238636; color: #fff; box-shadow: 0 0 15px rgba(35,134,54,0.4);">💿 Cordex OpenHarmony ISO Dosyasını İndir (Live USB)</button>
             </div>
 
             <div class="input-group">
@@ -427,7 +426,7 @@
             <div class="dev-sub-section" style="border-color: #00ffcc;">
                 <div class="section-title" style="color: #00ffcc; margin-top: 0;">📝 Global Sürüm Dokümantasyonu (Admin Dahil)</div>
                 <div class="input-group">
-                    <textarea id="ohosVersionNotes" rows="4" style="font-size: 14px; font-family: monospace("></textarea>
+                    <textarea id="ohosVersionNotes" rows="4" style="font-size: 14px; font-family: monospace;"></textarea>
                     <button onclick="notlariKaydet('ohosVersionNotes')" style="background-color: #238636; color: #fff; margin-top: 10px; padding: 10px;">Değişiklikleri Yayınla</button>
                 </div>
             </div>
@@ -442,7 +441,7 @@
 
         let guncelYuzde = "51";
         let guncelLogo = "https://raw.githubusercontent.com/300Daras/OpenHarmony-iso/main/logo.png";
-        let guncelNotlar = "Cordex OS - Geliştirme Notları\n\n- Telif Hakkı sözleşmeli ISO indirme sistemi kuruldu.\n- Desteklenen cihaz listesi (Lenovo, Allwinner SoC vb.) panele eklendi.\n- İndirme linkini değiştirme yetkisi sadece OHOSDev paneline verildi.";
+        let guncelNotlar = "Cordex OS - Geliştirme Notları\n\n- Telif Hakkı sözleşmeli ISO indirme sistemi kuruldu.\n- Desteklenen cihaz listesi (Lenovo, Allwinner SoC vb.) panele eklendi.\n- İndirme butonuna Live USB ibaresi yerleştirildi.";
         let guncelIsoLink = "https://github.com/300Daras/OpenHarmony-iso/releases/latest";
 
         window.onload = function() {
@@ -476,7 +475,7 @@
         }
 
         function isoDosyasiniIndir() {
-            alert("🔒 Telif hakları kabul edildi. Cordex OS ISO indirme işlemi başlatılıyor...");
+            alert("🔒 Telif hakları kabul edildi. Cordex OS ISO (Live USB) indirme işlemi başlatılıyor...");
             window.open(guncelIsoLink, '_blank');
         }
 
