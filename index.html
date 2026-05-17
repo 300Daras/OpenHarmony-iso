@@ -32,7 +32,7 @@
             padding: 35px;
             border-radius: 16px;
             width: 720px; 
-            max-height: 80vh; 
+            max-height: 85vh; 
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
@@ -119,33 +119,51 @@
             transition: 0.3s;
         }
 
-        /* DOSYA INPUTU GİZLİ (Ekranda gözükmez, sadece butonlar tetikler) */
-        input[type="file"] {
-            display: none !important;
-        }
-
-        .file-upload-btn {
-            display: block;
-            text-align: center;
-            background-color: #0d1117;
-            border: 2px dashed #00ffcc;
-            color: #00ffcc;
-            padding: 12px;
+        .copyright-box {
+            background-color: rgba(218, 54, 55, 0.1);
+            border: 1px solid #da3637;
             border-radius: 8px;
+            padding: 12px;
+            font-size: 13px;
+            max-height: 90px;
+            overflow-y: auto;
+            margin-bottom: 12px;
+            color: #f0f6fc;
+        }
+
+        /* Desteklenen Cihazlar Kutusu */
+        .devices-box {
+            background-color: rgba(0, 255, 204, 0.05);
+            border: 1px dashed #00ffcc;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .devices-box ul {
+            margin: 5px 0 0 0;
+            padding-left: 20px;
+            color: #fff;
+        }
+
+        .devices-box li {
+            margin-bottom: 4px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #ff9900;
+        }
+
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
             cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .file-upload-btn:hover {
-            background-color: rgba(0, 255, 204, 0.1);
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
-        }
-
-        input:focus, textarea:focus {
-            border-color: #00ffcc;
-            outline: none;
-            box-shadow: 0 0 10px #00ffcc;
         }
 
         button {
@@ -162,10 +180,19 @@
             width: 100%;
         }
 
-        button:hover {
+        button:hover:not(:disabled) {
             background-color: #00cc99;
             box-shadow: 0 0 25px #00cc99;
             transform: translateY(-2px);
+        }
+
+        button:disabled {
+            background-color: #21262d;
+            color: #8b949e;
+            border: 1px solid #30363d;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
         }
 
         .dev-btn-style {
@@ -232,7 +259,7 @@
             border: 2px solid #30363d;
             border-radius: 8px;
             padding: 15px;
-            height: 140px; 
+            height: 120px; 
             overflow-y: auto !important; 
             white-space: pre-wrap;
             font-family: monospace;
@@ -308,12 +335,26 @@
                 <img src="https://raw.githubusercontent.com/300Daras/OpenHarmony-iso/main/logo.png" class="system-logo user-panel-logo" onerror="this.style.display='none'">
             </div>
 
-            <div class="dev-sub-section" style="border-color: #8b949e;">
-                <div class="section-title" style="color: #8b949e; margin-top: 0;">📁 Dağıtım Paketi Yükle (Ziyaretçi)</div>
-                <div class="input-group">
-                    <label for="userFileSelector" class="file-upload-btn" style="border-color: #8b949e; color: #8b949e;">📁 Sisteme Dosya Gönder</label>
-                    <input type="file" id="userFileSelector" onchange="sifreDosyasiniIsle(this, 'user')">
+            <div class="dev-sub-section" style="border-color: #da3637; margin-bottom: 15px;">
+                <div class="section-title" style="color: #da3637; margin-top: 0;">⚠️ CORDEX OS YASAL TELİF HAKKI SÖZLEŞMESİ</div>
+                <div class="copyright-box">
+                    Bu yazılım ve beraberindeki OpenHarmony ISO imaj dosyası Cordex OS geliştirici ekibine (OHOSDev) aittir. Kopyalanması, izinsiz dağıtılması ve ticari amaçlarla kullanılması kesinlikle yasaktır. İndirme işlemini başlatarak tüm telif haklarını ve kullanım şartlarını kabul etmiş sayılırsınız.
                 </div>
+                
+                <div class="devices-box">
+                    <strong style="color: #00ffcc;">🖥️ Desteklenen Cihaz Mimarileri:</strong>
+                    <ul>
+                        <li>Lenovo Bilgisayarlar (Oyun ve Günlük Kullanım Dual-Boot Optimizasyonu)</li>
+                        <li>Allwinner SoC Tabanlı Sistem Geliştirme Kartları</li>
+                        <li>Genel PC x86_64 Yapılandırmaları</li>
+                    </ul>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="copyrightCheck" onchange="telifKontrolEt(this.checked)">
+                    <label for="copyrightCheck">Telif haklarını ve yasal şartları kabul ediyorum.</label>
+                </div>
+                <button id="downloadIsoBtn" onclick="isoDosyasiniIndir()" disabled style="background-color: #238636; color: #fff; box-shadow: 0 0 15px rgba(35,134,54,0.4);">💿 Cordex OpenHarmony ISO Dosyasını İndir</button>
             </div>
 
             <div class="input-group">
@@ -333,13 +374,6 @@
     <div class="login-container panel-screen" id="adminPanel">
         <h2 style="color: #ff9900; border-bottom: 2px solid #ff9900; padding-bottom: 15px;">🛠️ ADMIN KONTROL PANELİ</h2>
         <div class="panel-body">
-            <div class="dev-sub-section" style="border-color: #ff9900;">
-                <div class="section-title" style="color: #ff9900; margin-top: 0;">📁 Sistem Konfigürasyon Dosyası Yükle</div>
-                <div class="input-group">
-                    <label for="adminFileSelector" class="file-upload-btn" style="border-color: #ff9900; color: #ff9900;">📁 Dosya Gönder (Salt Okunur)</label>
-                    <input type="file" id="adminFileSelector" onchange="sifreDosyasiniIsle(this, 'admin')">
-                </div>
-            </div>
             <div class="dev-sub-section">
                 <div class="section-title" style="color: #ff9900; margin-top: 0;">🖼️ Logo Düzenleme</div>
                 <div class="input-group">
@@ -364,11 +398,11 @@
         <h2 style="color: #00ffcc; border-bottom: 2px solid #00ffcc; padding-bottom: 15px;">⚡ OHOSDev ROOT PANEL</h2>
         <div class="panel-body">
             <div class="dev-sub-section" style="border-color: #ff3366; background-color: rgba(218,54,55,0.1);">
-                <div class="section-title" style="color: #ff3366; margin-top: 0;">🔐 CORE FILE CORE WRITER (Kritik Dosya Değiştirme)</div>
+                <div class="section-title" style="color: #ff3366; margin-top: 0;">💾 ISO DOSYA ADRESİ DEĞİŞTİRİCİ</div>
                 <div class="input-group">
-                    <label>Sistem Çekirdek Dosyasını Seçip Kalıcı Olarak Değiştirin:</label>
-                    <label for="ohosFileSelector" class="file-upload-btn" style="border-color: #ff3366; color: #ff3366;">⚡ Dosyayı Seç ve Kalıcı Olarak Değiştir</label>
-                    <input type="file" id="ohosFileSelector" onchange="sifreDosyasiniIsle(this, 'ohos')">
+                    <label>Kullanıcıların İndireceği ISO Linkini Güncelle:</label>
+                    <input type="text" id="ohosIsoLinkInput" placeholder="https://github.com/300Daras/.../openharmony.iso">
+                    <button onclick="isoLinkiniGuncelle()" style="background-color: #ff3366; color: #fff; margin-top: 10px; padding: 10px;">ISO İndirme Linkini Kalıcı Değiştir</button>
                 </div>
             </div>
 
@@ -393,7 +427,7 @@
             <div class="dev-sub-section" style="border-color: #00ffcc;">
                 <div class="section-title" style="color: #00ffcc; margin-top: 0;">📝 Global Sürüm Dokümantasyonu (Admin Dahil)</div>
                 <div class="input-group">
-                    <textarea id="ohosVersionNotes" rows="4" style="font-size: 14px; font-family: monospace;"></textarea>
+                    <textarea id="ohosVersionNotes" rows="4" style="font-size: 14px; font-family: monospace("></textarea>
                     <button onclick="notlariKaydet('ohosVersionNotes')" style="background-color: #238636; color: #fff; margin-top: 10px; padding: 10px;">Değişiklikleri Yayınla</button>
                 </div>
             </div>
@@ -408,7 +442,8 @@
 
         let guncelYuzde = "51";
         let guncelLogo = "https://raw.githubusercontent.com/300Daras/OpenHarmony-iso/main/logo.png";
-        let guncelNotlar = "Cordex OS - Geliştirme Notları\n\n- Kritik dosya değiştirme siber motoru kuruldu.\n- Standart kullanıcılar için Telif Hakkı Koruması aktifleştirildi.\n- Dosyaları gerçek anlamda değiştirebilen tek rol OHOSDev yapıldı.";
+        let guncelNotlar = "Cordex OS - Geliştirme Notları\n\n- Telif Hakkı sözleşmeli ISO indirme sistemi kuruldu.\n- Desteklenen cihaz listesi (Lenovo, Allwinner SoC vb.) panele eklendi.\n- İndirme linkini değiştirme yetkisi sadece OHOSDev paneline verildi.";
+        let guncelIsoLink = "https://github.com/300Daras/OpenHarmony-iso/releases/latest";
 
         window.onload = function() {
             SenkronizeEt();
@@ -427,6 +462,7 @@
             document.getElementById("mainLogo").src = guncelLogo;
             document.getElementById("adminLogoInput").value = guncelLogo;
             document.getElementById("ohosLogoInput").value = guncelLogo;
+            document.getElementById("ohosIsoLinkInput").value = guncelIsoLink;
             
             const uLogos = document.getElementsByClassName("user-panel-logo");
             for(let img of uLogos) {
@@ -434,29 +470,22 @@
             }
         }
 
-        // AKILLI DOSYA KONTROL MOTORU
-        function sifreDosyasiniIsle(input, rol) {
-            const dosya = input.files[0];
-            if (!dosya) return;
+        function telifKontrolEt(isChecked) {
+            const btn = document.getElementById("downloadIsoBtn");
+            btn.disabled = !isChecked;
+        }
 
-            if (rol === 'user') {
-                // Standart kullanıcı telif hakkı uyarısı tetikleniyor
-                alert("🔴 UYARI: Telif hakkı ihlali tespit edildi! Bu dosyayı yükleme veya değiştirme yetkiniz yoktur.");
-                input.value = ""; // İşlemi iptal et
-            } 
-            else if (rol === 'admin') {
-                // Admin simülasyonu
-                alert("🟡 Admin Bildirimi: Konfigürasyon dosyası salt okunur olarak alındı. Kalıcı değişiklik yapma yetkiniz yoktur.");
-                input.value = ""; 
-            } 
-            else if (rol === 'ohos') {
-                // Sadece OHOSDev gerçek sistemi ve şifreleri değiştirebiliyor
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const icerik = e.target.result;
-                    alert("🟢 OHOSDev ROOT BAŞARILI: Çekirdek şifre dosyası okundu ve sistem değişkenleri başarıyla DEĞİŞTİRİLDİ!");
-                };
-                reader.readAsText(dosya);
+        function isoDosyasiniIndir() {
+            alert("🔒 Telif hakları kabul edildi. Cordex OS ISO indirme işlemi başlatılıyor...");
+            window.open(guncelIsoLink, '_blank');
+        }
+
+        function isoLinkiniGuncelle() {
+            const yeniLink = document.getElementById("ohosIsoLinkInput").value;
+            if(yeniLink.trim() !== "") {
+                guncelIsoLink = yeniLink;
+                alert("🟢 OHOSDev BAŞARILI: ISO indirme linki başarıyla DEĞİŞTİRİLDİ!");
+                SenkronizeEt();
             }
         }
 
@@ -466,12 +495,14 @@
                 SenkronizeEt();
                 document.getElementById("loginBox").style.display = "none";
                 document.getElementById("userPanel").style.display = "flex";
+                document.getElementById("copyrightCheck").checked = false;
+                document.getElementById("downloadIsoBtn").disabled = true;
             } else { alert("Hatalı Kullanıcı Şifresi!"); }
         }
 
         function adminGirisiniKontrolEt() {
             if (document.getElementById("adminPassword").value === aktifAdminSifresi) {
-                alert("Admin Girişi Başarılı! Dosya Değiştirme Yetkiniz Bulunmamaktadır.");
+                alert("Admin Girişi Başarılı! Değişiklik yetkiniz sınırlandırılmıştır.");
                 SenkronizeEt();
                 document.getElementById("loginBox").style.display = "none";
                 document.getElementById("adminPanel").style.display = "flex";
@@ -480,7 +511,7 @@
 
         function ohosGirisiniKontrolEt() {
             if (document.getElementById("ohosPassword").value === aktifOhosSifresi) {
-                alert("OHOSDev Root Erişimi Başarılı! Kritik Dosya Değiştirme Alanı Aktif.");
+                alert("OHOSDev Root Erişimi Başarılı! ISO Link Değiştirme Paneli Aktif.");
                 SenkronizeEt();
                 document.getElementById("loginBox").style.display = "none";
                 document.getElementById("ohosPanel").style.display = "flex";
