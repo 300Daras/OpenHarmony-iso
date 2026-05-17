@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cordex OS Gelişmiş Dağıtım</title>
     <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Sayfanın aşağı kaymasını tamamen engeller */
+        }
+
         body {
             background: linear-gradient(rgba(13, 17, 23, 0.85), rgba(13, 17, 23, 0.85)), 
                         url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920') no-repeat center center fixed;
@@ -13,22 +21,22 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            align-items: center; /* Kutuyu dikeyde tam ekranın ortasına alır */
         }
 
+        /* İyice büyütülen devasa kare giriş alanı */
         .login-container {
             border: 3px solid #00ffcc;
             box-shadow: 0 0 30px rgba(0, 255, 204, 0.3);
             background-color: rgba(22, 27, 34, 0.95);
-            padding: 50px;
+            padding: 40px;
             border-radius: 16px;
             width: 680px; 
-            min-height: 480px;
+            min-height: 460px;
             text-align: center;
             box-sizing: border-box;
             backdrop-filter: blur(8px);
+            position: relative; /* Pozisyonunu sabitledik */
         }
 
         h1 {
@@ -99,6 +107,7 @@
             border: 2px solid #ff9900;
             margin-top: 20px;
             box-shadow: 0 0 10px rgba(255, 153, 0, 0.2);
+            width: 100%;
         }
 
         .dev-btn-style:hover {
@@ -153,4 +162,117 @@
         .range-slider {
             display: flex;
             align-items: center;
-            gap:
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .range-slider input {
+            flex: 1;
+            height: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container" id="loginBox">
+        <h1>CORDEX OS KERNEL</h1>
+        
+        <div id="standardLoginSection">
+            <p style="color: #8b949e; font-size: 18px; text-align: center;">Sisteme erişmek için şifrenizi giriniz:</p>
+            <div class="input-group">
+                <input type="password" id="sitePassword" placeholder="Kullanıcı Giriş Şifresi">
+            </div>
+            <button onclick="kullaniciGirisYap()">Sisteme Giriş Yap</button>
+            
+            <button onclick="devGirisiniAc()" class="dev-btn-style">signing by developer</button>
+        </div>
+
+        <div class="dev-login-box" id="devLoginBox">
+            <p style="color: #ff9900; font-weight: bold; font-size: 18px; text-align: center;">DEVELOPER KİMLİK DOĞRULAMA</p>
+            <div class="input-group">
+                <input type="password" id="devPassword" placeholder="Geliştirici Admin Şifresini Girin">
+            </div>
+            <button onclick="devGirisYap()" style="background-color: #ff9900; box-shadow: 0 0 15px #ff9900; color: #fff;">Doğrula ve Giriş Yap</button>
+            <button onclick="devGirisiniKapat()" style="background-color: #da3637; border: none; box-shadow: 0 0 10px #da3637; color: #fff; margin-top: 10px; padding: 10px; font-size: 14px; width: 100%;">İptal Et</button>
+        </div>
+    </div>
+
+    <div class="login-container panel-screen" id="userPanel">
+        <h2 style="color: #00ffcc; border-bottom: 2px solid #00ffcc; padding-bottom: 15px;">📊 CORDEX OS SİSTEM DURUMU</h2>
+        
+        <div class="input-group">
+            <label style="color: #c9d1d9;">Cordex OS Geliştirilme Yüzdesi:</label>
+            <div class="progress-container">
+                <div class="progress-bar" id="userProgressBar">%45</div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label style="color: #c9d1d9;">Aktif Sürüm Notları:</label>
+            <div class="readonly-notes" id="userVersionNotesView">Yükleniyor...</div>
+        </div>
+
+        <button onclick="panellerdenCikisYap()" style="background-color: #da3637; box-shadow: 0 0 15px #da3637; color: #fff; margin-top: 20px;">Sistemden Çıkış Yap</button>
+    </div>
+
+    <div class="login-container panel-screen" id="devPanel">
+        <h2 style="color: #ff9900; border-bottom: 2px solid #ff9900; padding-bottom: 15px;">🛠️ DEVELOPER MODE PANEL</h2>
+        
+        <div class="input-group">
+            <label style="color: #ff9900;">Geliştirilme Yüzdesini Ayarla:</label>
+            <div class="range-slider">
+                <input type="range" id="devPercent" min="0" max="100" value="45" oninput="yuzdeGuncelle(this.value)">
+                <span id="percentText" style="font-weight: bold; color: #00ffcc; font-size: 20px;">%45</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label style="color: #ff9900;">Sistem Şifresini Değiştir:</label>
+            <input type="text" id="newPasswordInput" placeholder="Yeni Giriş Şifresi Yazın">
+            <button onclick="sifreDegistir()" style="background-color: #ff9900; box-shadow: 0 0 10px #ff9900; color: #fff; margin-top: 10px; padding: 10px; font-size: 16px;">Şifreyi Güncelle</button>
+        </div>
+
+        <div class="input-group">
+            <label style="color: #ff9900;">Sürüm Notlarını Düzenle ve Yayınla:</label>
+            <textarea id="versionNotes" rows="4" style="font-size: 15px;"></textarea>
+            <button onclick="notlariKaydet()" style="background-color: #238636; box-shadow: 0 0 10px #238636; color: #fff; margin-top: 10px; padding: 10px; font-size: 16px;">Sürüm Notlarını Güncelle</button>
+        </div>
+
+        <button onclick="panellerdenCikisYap()" style="background-color: #da3637; box-shadow: 0 0 15px #da3637; color: #fff; margin-top: 20px;">Paneli Kapat / Çıkış Yap</button>
+    </div>
+
+    <script>
+        let aktifKullaniciSifresi = "CordexxElo/StandartUser";
+        let aktifAdminSifresi = "DaghanCordexxElo2024";
+
+        let guncelYuzde = "45";
+        let guncelNotlar = "v5.0.1 - OHOS Tabanlı Çekirdek Sürücüleri Eklendi.\nv5.0.0 - Giriş Arayüzü Tasarlandı.";
+
+        window.onload = function() {
+            document.getElementById("versionNotes").value = guncelNotlar;
+            document.getElementById("userVersionNotesView").innerText = guncelNotlar;
+        };
+
+        function kullaniciGirisYap() {
+            const girilenSifre = document.getElementById("sitePassword").value;
+            if (girilenSifre === aktifKullaniciSifresi) {
+                alert("Kullanıcı Girişi Başarılı! Sistem Bilgileri Getiriliyor...");
+                
+                document.getElementById("userProgressBar").style.width = guncelYuzde + "%";
+                document.getElementById("userProgressBar").innerText = "%" + guncelYuzde;
+                document.getElementById("userVersionNotesView").innerText = guncelNotlar;
+
+                document.getElementById("loginBox").style.display = "none";
+                document.getElementById("userPanel").style.display = "block";
+            } else {
+                alert("Hatalı Kullanıcı Şifresi!");
+            }
+        }
+
+        function devGirisiniAc() {
+            document.getElementById("standardLoginSection").style.display = "none";
+            document.getElementById("devLoginBox").style.display = "block";
+        }
+
+        function
