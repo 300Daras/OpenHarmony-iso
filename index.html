@@ -24,35 +24,72 @@
             align-items: center;
         }
 
+        /* Giriş ve Panel Kutusu */
         .login-container {
             border: 3px solid #00ffcc;
             box-shadow: 0 0 30px rgba(0, 255, 204, 0.3);
             background-color: rgba(22, 27, 34, 0.95);
-            padding: 40px;
+            padding: 35px;
             border-radius: 16px;
-            width: 680px; 
-            min-height: 460px;
-            text-align: center;
+            width: 720px; 
+            max-height: 90vh; /* Ekran boyutuna göre kendini sınırlar */
+            display: flex;
+            flex-direction: column;
             box-sizing: border-box;
             backdrop-filter: blur(8px);
             position: relative;
         }
 
+        /* İçeriğin kutu içinde taşmasını önleyen ve gerekirse kaydıran gövde */
+        .panel-body {
+            overflow-y: auto;
+            padding-right: 10px;
+            flex-grow: 1;
+        }
+
+        /* İnce ve şık kaydırma çubuğu tasarımı */
+        .panel-body::-webkit-scrollbar, .readonly-notes::-webkit-scrollbar, textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        .panel-body::-webkit-scrollbar-track, .readonly-notes::-webkit-scrollbar-track, textarea::-webkit-scrollbar-track {
+            background: #0d1117;
+            border-radius: 4px;
+        }
+        .panel-body::-webkit-scrollbar-thumb, .readonly-notes::-webkit-scrollbar-thumb, textarea::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 4px;
+        }
+        .panel-body::-webkit-scrollbar-thumb:hover, .readonly-notes::-webkit-scrollbar-thumb:hover, textarea::-webkit-scrollbar-thumb:hover {
+            background: #00ffcc;
+        }
+
         h1 {
             color: #00ffcc;
-            font-size: 32px;
-            margin-bottom: 30px;
+            font-size: 30px;
+            margin-top: 0;
+            margin-bottom: 25px;
             letter-spacing: 3px;
             text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+            text-align: center;
         }
 
         h2 {
             font-size: 24px;
+            margin-top: 0;
             margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
         }
 
         .input-group {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             text-align: left;
         }
 
@@ -64,12 +101,12 @@
 
         input[type="password"], input[type="text"], textarea {
             width: 100%;
-            padding: 15px;
+            padding: 12px;
             background-color: #0d1117;
             border: 2px solid #30363d;
             border-radius: 8px;
             color: #fff;
-            font-size: 17px;
+            font-size: 16px;
             box-sizing: border-box;
             transition: 0.3s;
         }
@@ -84,8 +121,8 @@
             background-color: #00ffcc;
             color: #0d1117;
             border: none;
-            padding: 15px 30px;
-            font-size: 18px;
+            padding: 14px 24px;
+            font-size: 16px;
             font-weight: bold;
             border-radius: 8px;
             cursor: pointer;
@@ -104,9 +141,8 @@
             background-color: transparent;
             color: #ff9900;
             border: 2px solid #ff9900;
-            margin-top: 20px;
+            margin-top: 15px;
             box-shadow: 0 0 10px rgba(255, 153, 0, 0.2);
-            width: 100%;
         }
 
         .dev-btn-style:hover {
@@ -119,7 +155,7 @@
             display: none;
             margin-top: 15px;
             border-top: 2px dashed #ff9900;
-            padding-top: 25px;
+            padding-top: 20px;
         }
 
         .panel-screen {
@@ -138,7 +174,7 @@
         .progress-bar {
             background-color: #00ffcc;
             height: 25px;
-            width: 45%; 
+            width: 51%; 
             text-align: center;
             line-height: 25px;
             color: #0d1117;
@@ -147,15 +183,19 @@
             box-shadow: 0 0 10px #00ffcc;
         }
 
+        /* Kaydırılabilir Salt Okunur Not Alanı (Hata Çözümü) */
         .readonly-notes {
             background-color: #0d1117;
             border: 2px solid #30363d;
             border-radius: 8px;
             padding: 15px;
-            min-height: 100px;
+            height: 220px; /* Sabit yükseklik */
+            overflow-y: auto; /* Dikey kaydırma aktif */
             white-space: pre-wrap;
             font-family: monospace;
             color: #fff;
+            font-size: 14px;
+            line-height: 1.5;
         }
 
         .range-slider {
@@ -169,6 +209,15 @@
             flex: 1;
             height: 10px;
             cursor: pointer;
+        }
+
+        /* Ayrılmış Özel Yönetim Bölümleri İçin Çerçeve */
+        .dev-sub-section {
+            border: 1px dashed #30363d;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background-color: rgba(13, 17, 23, 0.4);
         }
     </style>
 </head>
@@ -200,53 +249,74 @@
     <div class="login-container panel-screen" id="userPanel">
         <h2 style="color: #00ffcc; border-bottom: 2px solid #00ffcc; padding-bottom: 15px;">📊 CORDEX OS SİSTEM DURUMU</h2>
         
-        <div class="input-group">
-            <label style="color: #c9d1d9;">Cordex OS Geliştirilme Yüzdesi:</label>
-            <div class="progress-container">
-                <div class="progress-bar" id="userProgressBar">%45</div>
+        <div class="panel-body">
+            <div class="input-group">
+                <label style="color: #c9d1d9;">Cordex OS Geliştirilme Yüzdesi:</label>
+                <div class="progress-container">
+                    <div class="progress-bar" id="userProgressBar">%51</div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label style="color: #c9d1d9;">Aktif Sürüm Notları:</label>
+                <div class="readonly-notes" id="userVersionNotesView">Yükleniyor...</div>
             </div>
         </div>
 
-        <div class="input-group">
-            <label style="color: #c9d1d9;">Aktif Sürüm Notları:</label>
-            <div class="readonly-notes" id="userVersionNotesView">Yükleniyor...</div>
-        </div>
-
-        <button onclick="panellerdenCikisYap()" style="background-color: #da3637; box-shadow: 0 0 15px #da3637; color: #fff; margin-top: 20px;">Sistemden Çıkış Yap</button>
+        <button onclick="panellerdenCikisYap()" style="background-color: #da3637; box-shadow: 0 0 15px #da3637; color: #fff; margin-top: 15px;">Sistemden Çıkış Yap</button>
     </div>
 
     <div class="login-container panel-screen" id="devPanel">
         <h2 style="color: #ff9900; border-bottom: 2px solid #ff9900; padding-bottom: 15px;">🛠️ DEVELOPER MODE PANEL</h2>
         
-        <div class="input-group">
-            <label style="color: #ff9900;">Geliştirilme Yüzdesini Ayarla:</label>
-            <div class="range-slider">
-                <input type="range" id="devPercent" min="0" max="100" value="45" oninput="yuzdeGuncelle(this.value)">
-                <span id="percentText" style="font-weight: bold; color: #00ffcc; font-size: 20px;">%45</span>
+        <div class="panel-body">
+            <div class="dev-sub-section">
+                <div class="section-title" style="color: #ff9900; margin-top: 0;">📈 Gelişim Durumu</div>
+                <div class="input-group">
+                    <label>Geliştirilme Yüzdesini Ayarla:</label>
+                    <div class="range-slider">
+                        <input type="range" id="devPercent" min="0" max="100" value="51" oninput="yuzdeGuncelle(this.value)">
+                        <span id="percentText" style="font-weight: bold; color: #00ffcc; font-size: 20px;">%51</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dev-sub-section">
+                <div class="section-title" style="color: #ff9900; margin-top: 0;">📝 Dokümantasyon</div>
+                <div class="input-group">
+                    <label>Sürüm Notlarını Düzenle ve Yayınla:</label>
+                    <textarea id="versionNotes" rows="6" style="font-size: 14px; font-family: monospace;"></textarea>
+                    <button onclick="notlariKaydet()" style="background-color: #238636; box-shadow: 0 0 10px #238636; color: #fff; margin-top: 10px; padding: 10px; font-size: 15px;">Sürüm Notlarını Güncelle</button>
+                </div>
+            </div>
+
+            <div class="dev-sub-section" style="border-color: #ff9900;">
+                <div class="section-title" style="color: #ff9900; margin-top: 0;">🔐 DEVELOPER ŞİFRE YÖNETİM MERKEZİ</div>
+                
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label style="font-size: 14px; color: #8b949e;">Standart Kullanıcı Şifresini Sıfırla:</label>
+                    <input type="text" id="resetUserPasswordInput" placeholder="Yeni Standart Kullanıcı Şifresi">
+                    <button onclick="userSifresiniResetle()" style="background-color: #ff9900; color: #0d1117; margin-top: 8px; padding: 8px; font-size: 14px;">Kullanıcı Şifresini Resetle</button>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 5px;">
+                    <label style="font-size: 14px; color: #8b949e;">Admin / Developer Şifresini Sıfırla:</label>
+                    <input type="text" id="resetAdminPasswordInput" placeholder="Yeni Admin/Developer Şifresi">
+                    <button onclick="adminSifresiniResetle()" style="background-color: #da3637; color: #fff; margin-top: 8px; padding: 8px; font-size: 14px; box-shadow: 0 0 10px rgba(218,54,55,0.3);">Admin Şifresini Resetle</button>
+                </div>
             </div>
         </div>
 
-        <div class="input-group">
-            <label style="color: #ff9900;">Sistem Şifresini Değiştir:</label>
-            <input type="text" id="newPasswordInput" placeholder="Yeni Giriş Şifresi Yazın">
-            <button onclick="sifreDegistir()" style="background-color: #ff9900; box-shadow: 0 0 10px #ff9900; color: #fff; margin-top: 10px; padding: 10px; font-size: 16px;">Şifreyi Güncelle</button>
-        </div>
-
-        <div class="input-group">
-            <label style="color: #ff9900;">Sürüm Notlarını Düzenle ve Yayınla:</label>
-            <textarea id="versionNotes" rows="4" style="font-size: 15px;"></textarea>
-            <button onclick="notlariKaydet()" style="background-color: #238636; box-shadow: 0 0 10px #238636; color: #fff; margin-top: 10px; padding: 10px; font-size: 16px;">Sürüm Notlarını Güncelle</button>
-        </div>
-
-        <button onclick="panellerdenCikisYap()" style="background-color: #da3637; box-shadow: 0 0 15px #da3637; color: #fff; margin-top: 20px;">Paneli Kapat / Çıkış Yap</button>
+        <button onclick="panellerdenCikisYap()" style="background-color: #da3637; box-shadow: 0 0 15px #da3637; color: #fff; margin-top: 15px;">Paneli Kapat / Çıkış Yap</button>
     </div>
 
     <script>
+        // Başlangıç Sistem Şifreleri
         let aktifKullaniciSifresi = "CordexxElo/StandartUser";
         let aktifAdminSifresi = "DaghanCordexxElo2024";
 
-        let guncelYuzde = "45";
-        let guncelNotlar = "v5.0.1 - OHOS Tabanlı Çekirdek Sürücüleri Eklendi.\nv5.0.0 - Giriş Arayüzü Tasarlandı.";
+        let guncelYuzde = "51";
+        let guncelNotlar = "Cordex OS - Geliştirme Notları\n\nŞu ana kadar web sitesi projesinde yapılan tüm güncellemeler ve eklenen özellikler:\n\n- Büyük ve Geniş Arayüz Tasarımı: Giriş paneli kutusu 680 piksele genişletilerek daha ferah ve siber temaya uygun, parlayan neon çerçeveli bir yapıya kavuşturuldu.\n- Teknolojik Arka Plan: Sitenin arka planına karanlık, şık ve siber temalı bir teknoloji görseli eklendi; üzerine çekilen şeffaf katmanla yazıların okunabilirliği artırıldı.\n- Gelişmiş CSS Yerleşimi: Giriş panelinin ekranın tam ortasında (dikey ve yatay olarak) sabit durması sağlandı, sayfanın aşağı kayması engellendi.\n- \"signing by developer\" Butonu: Geliştirici girişi alanı gizli olmaktan çıkarılıp ana ekranda parlayan neon turuncu renkli bir buton haline getirildi.\n- Çok Katmanlı Rol/Şifre Sistemi:\n  * Standart Kullanıcı Girişi: CordexxElo/StandartUser şifresiyle sisteme sadece izleyici (Salt Okunur) olarak giriş imkanı.\n  * Admin / Geliştirici Girişi: DaghanCordexxElo2024 şifresiyle sistemi yönetebilen tam yetkili tek hesap.\n- Sistem Durumu İzleme Ekranı (Herkese Açık / Salt Okunur): Standart kullanıcıların ve ziyaretçilerin projenin tamamlanma yüzdesini (neon ilerleme çubuğu ile) ve sürüm notlarını anlık görebileceği ama üzerinde hiçbir değişiklik yapamayacağı kilitli ekran yapıldı.\n- Canlı Developer Paneli (Sadece Sana Özel): Geliştirici girişi yapıldığında açılan; tamamlanma yüzdesini fareyle kaydırarak değiştirebileceğin, sürüm notlarını yazıp güncelleyebileceğin ve admin şifresini değiştirebileceğin dinamik yönetim ekranı entegre edildi.\n- JavaScript Çakışma ve Donma Çözümü: Geliştirici girişi butonundaki fonksiyon ismi çakışması (developerGirisiniKontrolEt) düzeltilerek tarayıcının kilitlenmesi/donması tamamen engellendi.";
 
         window.onload = function() {
             document.getElementById("versionNotes").value = guncelNotlar;
@@ -263,7 +333,7 @@
                 document.getElementById("userVersionNotesView").innerText = guncelNotlar;
 
                 document.getElementById("loginBox").style.display = "none";
-                document.getElementById("userPanel").style.display = "block";
+                document.getElementById("userPanel").style.display = "flex";
             } else {
                 alert("Hatalı Kullanıcı Şifresi!");
             }
@@ -280,13 +350,12 @@
             document.getElementById("devPassword").value = "";
         }
 
-        // İsmini değiştirdiğimiz donmayan yeni fonksiyon
         function developerGirisiniKontrolEt() {
             const girilenDevSifre = document.getElementById("devPassword").value;
             if (girilenDevSifre === aktifAdminSifresi) {
                 alert("Yönetici Kimliği Doğrulandı! Geliştirici Değişiklik Paneli Açılıyor...");
                 document.getElementById("loginBox").style.display = "none";
-                document.getElementById("devPanel").style.display = "block";
+                document.getElementById("devPanel").style.display = "flex";
             } else {
                 alert("Yetkisiz Geliştirici Şifresi! Erişim Reddedildi.");
             }
@@ -297,13 +366,26 @@
             guncelYuzde = val; 
         }
 
-        function sifreDegistir() {
-            const yeniSifre = document.getElementById("newPasswordInput").value;
+        function userSifresiniResetle() {
+            const yeniSifre = document.getElementById("resetUserPasswordInput").value;
+            if(yeniSifre.trim() !== "") {
+                aktifKullaniciSifresi = yeniSifre;
+                alert("Başarılı! Standart Kullanıcı Giriş Şifresi Sıfırlandı: " + yeniSifre);
+                document.getElementById("resetUserPasswordInput").value = "";
+            } else {
+                alert("Lütfen geçerli bir kullanıcı şifresi yazın!");
+            }
+        }
+
+        // Admin Kendi Şifresini Sıfırlama Fonksiyonu
+        function adminSifresiniResetle() {
+            const yeniSifre = document.getElementById("resetAdminPasswordInput").value;
             if(yeniSifre.trim() !== "") {
                 aktifAdminSifresi = yeniSifre;
-                alert("Admin Geliştirici Şifresi Güncellendi: " + yeniSifre);
+                alert("Başarılı! Admin/Developer Giriş Şifresi Sıfırlandı: " + yeniSifre);
+                document.getElementById("resetAdminPasswordInput").value = "";
             } else {
-                alert("Lütfen geçerli bir şifre yazın!");
+                alert("Lütfen geçerli bir admin şifresi yazın!");
             }
         }
 
