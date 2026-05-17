@@ -24,7 +24,7 @@
             align-items: center;
         }
 
-        /* Giriş ve Panel Kutusu */
+        /* Ana Panel Kutusu */
         .login-container {
             border: 3px solid #00ffcc;
             box-shadow: 0 0 30px rgba(0, 255, 204, 0.3);
@@ -32,22 +32,21 @@
             padding: 35px;
             border-radius: 16px;
             width: 720px; 
-            max-height: 90vh; /* Ekran boyutuna göre kendini sınırlar */
+            max-height: 80vh; 
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
             backdrop-filter: blur(8px);
-            position: relative;
         }
 
-        /* İçeriğin kutu içinde taşmasını önleyen ve gerekirse kaydıran gövde */
+        /* Kaydırılabilir İç Gövde (Kesin Çözüm) */
         .panel-body {
-            overflow-y: auto;
+            overflow-y: auto !important;
             padding-right: 10px;
             flex-grow: 1;
         }
 
-        /* İnce ve şık kaydırma çubuğu tasarımı */
+        /* Kaydırma Çubuğu Tasarımı */
         .panel-body::-webkit-scrollbar, .readonly-notes::-webkit-scrollbar, textarea::-webkit-scrollbar {
             width: 8px;
         }
@@ -63,14 +62,25 @@
             background: #00ffcc;
         }
 
+        /* Logo ve Başlık Alanı */
+        .header-area {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .system-logo {
+            max-height: 70px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+        }
+
         h1 {
             color: #00ffcc;
-            font-size: 30px;
-            margin-top: 0;
-            margin-bottom: 25px;
+            font-size: 28px;
+            margin: 0;
             letter-spacing: 3px;
             text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
-            text-align: center;
         }
 
         h2 {
@@ -81,11 +91,11 @@
         }
 
         .section-title {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: bold;
-            margin-top: 25px;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
+            margin-top: 5px;
+            margin-bottom: 12px;
+            padding-bottom: 5px;
         }
 
         .input-group {
@@ -106,7 +116,7 @@
             border: 2px solid #30363d;
             border-radius: 8px;
             color: #fff;
-            font-size: 16px;
+            font-size: 15px;
             box-sizing: border-box;
             transition: 0.3s;
         }
@@ -141,7 +151,7 @@
             background-color: transparent;
             color: #ff9900;
             border: 2px solid #ff9900;
-            margin-top: 15px;
+            margin-top: 12px;
             box-shadow: 0 0 10px rgba(255, 153, 0, 0.2);
         }
 
@@ -151,10 +161,23 @@
             box-shadow: 0 0 20px #ff9900;
         }
 
-        .dev-login-box {
+        .ohos-btn-style {
+            background-color: transparent;
+            color: #00ffcc;
+            border: 2px solid #00ffcc;
+            margin-top: 12px;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
+        }
+
+        .ohos-btn-style:hover {
+            background-color: #00ffcc;
+            color: #0d1117;
+            box-shadow: 0 0 20px #00ffcc;
+        }
+
+        .login-sub-box {
             display: none;
             margin-top: 15px;
-            border-top: 2px dashed #ff9900;
             padding-top: 20px;
         }
 
@@ -183,14 +206,13 @@
             box-shadow: 0 0 10px #00ffcc;
         }
 
-        /* Kaydırılabilir Salt Okunur Not Alanı (Hata Çözümü) */
         .readonly-notes {
             background-color: #0d1117;
             border: 2px solid #30363d;
             border-radius: 8px;
             padding: 15px;
-            height: 220px; /* Sabit yükseklik */
-            overflow-y: auto; /* Dikey kaydırma aktif */
+            height: 160px; 
+            overflow-y: auto !important; 
             white-space: pre-wrap;
             font-family: monospace;
             color: #fff;
@@ -202,7 +224,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
         }
 
         .range-slider input {
@@ -211,7 +233,6 @@
             cursor: pointer;
         }
 
-        /* Ayrılmış Özel Yönetim Bölümleri İçin Çerçeve */
         .dev-sub-section {
             border: 1px dashed #30363d;
             padding: 15px;
@@ -224,7 +245,10 @@
 <body>
 
     <div class="login-container" id="loginBox">
-        <h1>CORDEX OS KERNEL</h1>
+        <div class="header-area">
+            <img src="https://raw.githubusercontent.com/300Daras/OpenHarmony-iso/main/logo.png" id="mainLogo" class="system-logo" onerror="this.style.display='none'">
+            <h1>CORDEX OS KERNEL</h1>
+        </div>
         
         <div id="standardLoginSection">
             <p style="color: #8b949e; font-size: 18px; text-align: center;">Sisteme erişmek için şifrenizi giriniz:</p>
@@ -233,173 +257,239 @@
             </div>
             <button onclick="kullaniciGirisYap()">Sisteme Giriş Yap</button>
             
-            <button onclick="devGirisiniAc()" class="dev-btn-style">signing by developer</button>
+            <button onclick="altGirisAc('adminLoginBox')" class="dev-btn-style">signing by Admin</button>
+            <button onclick="altGirisAc('ohosLoginBox')" class="ohos-btn-style">signing by OHOSDev</button>
         </div>
 
-        <div class="dev-login-box" id="devLoginBox">
-            <p style="color: #ff9900; font-weight: bold; font-size: 18px; text-align: center;">DEVELOPER KİMLİK DOĞRULAMA</p>
+        <div class="login-sub-box" id="adminLoginBox" style="border-top: 2px dashed #ff9900;">
+            <p style="color: #ff9900; font-weight: bold; font-size: 18px; text-align: center;">ADMIN KİMLİK DOĞRULAMA</p>
             <div class="input-group">
-                <input type="password" id="devPassword" placeholder="Geliştirici Admin Şifresini Girin">
+                <input type="password" id="adminPassword" placeholder="Admin Şifresini Girin">
             </div>
-            <button onclick="developerGirisiniKontrolEt()" style="background-color: #ff9900; box-shadow: 0 0 15px #ff9900; color: #fff;">Doğrula ve Giriş Yap</button>
-            <button onclick="devGirisiniKapat()" style="background-color: #da3637; border: none; box-shadow: 0 0 10px #da3637; color: #fff; margin-top: 10px; padding: 10px; font-size: 14px; width: 100%;">İptal Et</button>
+            <button onclick="adminGirisiniKontrolEt()" style="background-color: #ff9900; box-shadow: 0 0 15px #ff9900; color: #fff;">Doğrula ve Giriş Yap</button>
+            <button onclick="altGirisKapat()" style="background-color: #da3637; border: none; color: #fff; margin-top: 10px; padding: 10px; font-size: 14px; width: 100%;">İptal Et</button>
+        </div>
+
+        <div class="login-sub-box" id="ohosLoginBox" style="border-top: 2px dashed #00ffcc;">
+            <p style="color: #00ffcc; font-weight: bold; font-size: 18px; text-align: center;">OHOSDev KÖK DOĞRULAMA (ROOT)</p>
+            <div class="input-group">
+                <input type="password" id="ohosPassword" placeholder="OHOSDev Özel Root Şifresini Girin">
+            </div>
+            <button onclick="ohosGirisiniKontrolEt()" style="background-color: #00ffcc; box-shadow: 0 0 15px #00ffcc; color: #0d1117;">Root Girişi Yap</button>
+            <button onclick="altGirisKapat()" style="background-color: #da3637; border: none; color: #fff; margin-top: 10px; padding: 10px; font-size: 14px; width: 100%;">İptal Et</button>
         </div>
     </div>
 
     <div class="login-container panel-screen" id="userPanel">
         <h2 style="color: #00ffcc; border-bottom: 2px solid #00ffcc; padding-bottom: 15px;">📊 CORDEX OS SİSTEM DURUMU</h2>
-        
         <div class="panel-body">
+            <div style="text-align: center; margin-bottom: 15px;">
+                <img src="https://raw.githubusercontent.com/300Daras/OpenHarmony-iso/main/logo.png" class="system-logo user-panel-logo" onerror="this.style.display='none'">
+            </div>
             <div class="input-group">
                 <label style="color: #c9d1d9;">Cordex OS Geliştirilme Yüzdesi:</label>
                 <div class="progress-container">
                     <div class="progress-bar" id="userProgressBar">%51</div>
                 </div>
             </div>
-
             <div class="input-group">
                 <label style="color: #c9d1d9;">Aktif Sürüm Notları:</label>
                 <div class="readonly-notes" id="userVersionNotesView">Yükleniyor...</div>
             </div>
         </div>
-
         <button onclick="panellerdenCikisYap()" style="background-color: #da3637; box-shadow: 0 0 15px #da3637; color: #fff; margin-top: 15px;">Sistemden Çıkış Yap</button>
     </div>
 
-    <div class="login-container panel-screen" id="devPanel">
-        <h2 style="color: #ff9900; border-bottom: 2px solid #ff9900; padding-bottom: 15px;">🛠️ DEVELOPER MODE PANEL</h2>
-        
+    <div class="login-container panel-screen" id="adminPanel">
+        <h2 style="color: #ff9900; border-bottom: 2px solid #ff9900; padding-bottom: 15px;">🛠️ ADMIN KONTROL PANELİ</h2>
         <div class="panel-body">
             <div class="dev-sub-section">
-                <div class="section-title" style="color: #ff9900; margin-top: 0;">📈 Gelişim Durumu</div>
+                <div class="section-title" style="color: #ff9900; margin-top: 0;">🖼️ Logo Düzenleme</div>
                 <div class="input-group">
-                    <label>Geliştirilme Yüzdesini Ayarla:</label>
-                    <div class="range-slider">
-                        <input type="range" id="devPercent" min="0" max="100" value="51" oninput="yuzdeGuncelle(this.value)">
-                        <span id="percentText" style="font-weight: bold; color: #00ffcc; font-size: 20px;">%51</span>
-                    </div>
+                    <label>Sistem Logo URL Değiştir:</label>
+                    <input type="text" id="adminLogoInput" placeholder="https://resim-linki.com/logo.png">
+                    <button onclick="logoGuncelle('adminLogoInput')" style="background-color: #ff9900; color: #0d1117; margin-top: 10px; padding: 8px; font-size: 14px;">Logoyu Güncelle</button>
                 </div>
             </div>
-
             <div class="dev-sub-section">
-                <div class="section-title" style="color: #ff9900; margin-top: 0;">📝 Dokümantasyon</div>
+                <div class="section-title" style="color: #ff9900; margin-top: 0;">📝 Dokümantasyon Sürüm Notları</div>
                 <div class="input-group">
-                    <label>Sürüm Notlarını Düzenle ve Yayınla:</label>
-                    <textarea id="versionNotes" rows="6" style="font-size: 14px; font-family: monospace;"></textarea>
-                    <button onclick="notlariKaydet()" style="background-color: #238636; box-shadow: 0 0 10px #238636; color: #fff; margin-top: 10px; padding: 10px; font-size: 15px;">Sürüm Notlarını Güncelle</button>
-                </div>
-            </div>
-
-            <div class="dev-sub-section" style="border-color: #ff9900;">
-                <div class="section-title" style="color: #ff9900; margin-top: 0;">🔐 DEVELOPER ŞİFRE YÖNETİM MERKEZİ</div>
-                
-                <div class="input-group" style="margin-bottom: 15px;">
-                    <label style="font-size: 14px; color: #8b949e;">Standart Kullanıcı Şifresini Sıfırla:</label>
-                    <input type="text" id="resetUserPasswordInput" placeholder="Yeni Standart Kullanıcı Şifresi">
-                    <button onclick="userSifresiniResetle()" style="background-color: #ff9900; color: #0d1117; margin-top: 8px; padding: 8px; font-size: 14px;">Kullanıcı Şifresini Resetle</button>
-                </div>
-
-                <div class="input-group" style="margin-bottom: 5px;">
-                    <label style="font-size: 14px; color: #8b949e;">Admin / Developer Şifresini Sıfırla:</label>
-                    <input type="text" id="resetAdminPasswordInput" placeholder="Yeni Admin/Developer Şifresi">
-                    <button onclick="adminSifresiniResetle()" style="background-color: #da3637; color: #fff; margin-top: 8px; padding: 8px; font-size: 14px; box-shadow: 0 0 10px rgba(218,54,55,0.3);">Admin Şifresini Resetle</button>
+                    <label>Sürüm Notlarını Düzenle:</label>
+                    <textarea id="adminVersionNotes" rows="5" style="font-size: 14px; font-family: monospace;"></textarea>
+                    <button onclick="notlariKaydet('adminVersionNotes')" style="background-color: #238636; color: #fff; margin-top: 10px; padding: 10px;">Sürüm Notlarını Güncelle</button>
                 </div>
             </div>
         </div>
+        <button onclick="panellerdenCikisYap()" style="background-color: #da3637; color: #fff; margin-top: 15px;">Güvenli Çıkış</button>
+    </div>
 
-        <button onclick="panellerdenCikisYap()" style="background-color: #da3637; box-shadow: 0 0 15px #da3637; color: #fff; margin-top: 15px;">Paneli Kapat / Çıkış Yap</button>
+    <div class="login-container panel-screen" id="ohosPanel">
+        <h2 style="color: #00ffcc; border-bottom: 2px solid #00ffcc; padding-bottom: 15px;">⚡ OHOSDev ROOT PANEL</h2>
+        <div class="panel-body">
+            <div class="dev-sub-section" style="border-color: #00ffcc;">
+                <div class="section-title" style="color: #00ffcc; margin-top: 0;">📈 Çekirdek Gelişim Durumu (Özel Yetki)</div>
+                <div class="input-group">
+                    <label>Geliştirilme Yüzdesini Ayarla:</label>
+                    <div class="range-slider">
+                        <input type="range" id="ohosPercent" min="0" max="100" value="51" oninput="yuzdeGuncelle(this.value)">
+                        <span id="ohosPercentText" style="font-weight: bold; color: #00ffcc; font-size: 20px;">%51</span>
+                    </div>
+                </div>
+            </div>
+            <div class="dev-sub-section" style="border-color: #00ffcc;">
+                <div class="section-title" style="color: #00ffcc; margin-top: 0;">🖼️ Logo Düzenleme (Admin Yetkisi Dahil)</div>
+                <div class="input-group">
+                    <label>Sistem Logo URL Değiştir:</label>
+                    <input type="text" id="ohosLogoInput" placeholder="https://resim-linki.com/logo.png">
+                    <button onclick="logoGuncelle('ohosLogoInput')" style="background-color: #00ffcc; color: #0d1117; margin-top: 10px; padding: 8px; font-size: 14px;">Logoyu Güncelle</button>
+                </div>
+            </div>
+            <div class="dev-sub-section" style="border-color: #00ffcc;">
+                <div class="section-title" style="color: #00ffcc; margin-top: 0;">📝 Global Sürüm Dokümantasyonu (Admin Yetkisi Dahil)</div>
+                <div class="input-group">
+                    <textarea id="ohosVersionNotes" rows="4" style="font-size: 14px; font-family: monospace;"></textarea>
+                    <button onclick="notlariKaydet('ohosVersionNotes')" style="background-color: #238636; color: #fff; margin-top: 10px; padding: 10px;">Değişiklikleri Yayınla</button>
+                </div>
+            </div>
+            <div class="dev-sub-section" style="border-color: #ff3366; background-color: rgba(218,54,55,0.1);">
+                <div class="section-title" style="color: #ff3366; margin-top: 0;">🔒 DOSYA VE KİMLİK SIFIRLAMA MERKEZİ</div>
+                
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label style="font-size: 14px; color: #c9d1d9;">Standart Kullanıcı Şifre Dosyasını Resetle:</label>
+                    <input type="text" id="resetUserPass" placeholder="Yeni Standart Kullanıcı Şifresi">
+                    <button onclick="sifreResetlemeMotoru('user')" style="background-color: #ff9900; color: #0d1117; margin-top: 8px; padding: 8px; font-size: 14px;">Kullanıcı Şifresini Resetle</button>
+                </div>
+
+                <div class="input-group" style="margin-bottom: 5px;">
+                    <label style="font-size: 14px; color: #c9d1d9;">Admin Giriş Şifre Dosyasını Resetle:</label>
+                    <input type="text" id="resetAdminPass" placeholder="Yeni Admin Giriş Şifresi">
+                    <button onclick="sifreResetlemeMotoru('admin')" style="background-color: #da3637; color: #fff; margin-top: 8px; padding: 8px; font-size: 14px;">Admin Şifresini Resetle</button>
+                </div>
+            </div>
+        </div>
+        <button onclick="panellerdenCikisYap()" style="background-color: #da3637; color: #fff; margin-top: 15px;">Root Oturumunu Kapat</button>
     </div>
 
     <script>
-        // Başlangıç Sistem Şifreleri
+        // Şifre Veritabanı Dosyaları
         let aktifKullaniciSifresi = "CordexxElo/StandartUser";
         let aktifAdminSifresi = "DaghanCordexxElo2024";
+        let aktifOhosSifresi = "OHOSDev/Root"; 
 
         let guncelYuzde = "51";
-        let guncelNotlar = "Cordex OS - Geliştirme Notları\n\nŞu ana kadar web sitesi projesinde yapılan tüm güncellemeler ve eklenen özellikler:\n\n- Büyük ve Geniş Arayüz Tasarımı: Giriş paneli kutusu 680 piksele genişletilerek daha ferah ve siber temaya uygun, parlayan neon çerçeveli bir yapıya kavuşturuldu.\n- Teknolojik Arka Plan: Sitenin arka planına karanlık, şık ve siber temalı bir teknoloji görseli eklendi; üzerine çekilen şeffaf katmanla yazıların okunabilirliği artırıldı.\n- Gelişmiş CSS Yerleşimi: Giriş panelinin ekranın tam ortasında (dikey ve yatay olarak) sabit durması sağlandı, sayfanın aşağı kayması engellendi.\n- \"signing by developer\" Butonu: Geliştirici girişi alanı gizli olmaktan çıkarılıp ana ekranda parlayan neon turuncu renkli bir buton haline getirildi.\n- Çok Katmanlı Rol/Şifre Sistemi:\n  * Standart Kullanıcı Girişi: CordexxElo/StandartUser şifresiyle sisteme sadece izleyici (Salt Okunur) olarak giriş imkanı.\n  * Admin / Geliştirici Girişi: DaghanCordexxElo2024 şifresiyle sistemi yönetebilen tam yetkili tek hesap.\n- Sistem Durumu İzleme Ekranı (Herkese Açık / Salt Okunur): Standart kullanıcıların ve ziyaretçilerin projenin tamamlanma yüzdesini (neon ilerleme çubuğu ile) ve sürüm notlarını anlık görebileceği ama üzerinde hiçbir değişiklik yapamayacağı kilitli ekran yapıldı.\n- Canlı Developer Paneli (Sadece Sana Özel): Geliştirici girişi yapıldığında açılan; tamamlanma yüzdesini fareyle kaydırarak değiştirebileceğin, sürüm notlarını yazıp güncelleyebileceğin ve admin şifresini değiştirebileceğin dinamik yönetim ekranı entegre edildi.\n- JavaScript Çakışma ve Donma Çözümü: Geliştirici girişi butonundaki fonksiyon ismi çakışması (developerGirisiniKontrolEt) düzeltilerek tarayıcının kilitlenmesi/donması tamamen engellendi.";
+        let guncelLogo = "https://raw.githubusercontent.com/300Daras/OpenHarmony-iso/main/logo.png";
+        let guncelNotlar = "Cordex OS - Geliştirme Notları\n\n- Tam Yetki hiyerarşisi ayrıştırıldı.\n- Admin sadece Notlar ve Logo değiştirebilir.\n- OHOSDev hem Notlar, hem Logo hem de Yüzde ve Şifre Dosyalarını değiştirebilir.";
 
         window.onload = function() {
-            document.getElementById("versionNotes").value = guncelNotlar;
-            document.getElementById("userVersionNotesView").innerText = guncelNotlar;
+            SenkronizeEt();
         };
 
-        function kullaniciGirisYap() {
-            const girilenSifre = document.getElementById("sitePassword").value;
-            if (girilenSifre === aktifKullaniciSifresi) {
-                alert("Kullanıcı Girişi Başarılı! Sistem Bilgileri Getiriliyor...");
-                
-                document.getElementById("userProgressBar").style.width = guncelYuzde + "%";
-                document.getElementById("userProgressBar").innerText = "%" + guncelYuzde;
-                document.getElementById("userVersionNotesView").innerText = guncelNotlar;
+        function SenkronizeEt() {
+            document.getElementById("adminVersionNotes").value = guncelNotlar;
+            document.getElementById("ohosVersionNotes").value = guncelNotlar;
+            document.getElementById("userVersionNotesView").innerText = guncelNotlar;
+            
+            document.getElementById("ohosPercent").value = guncelYuzde;
+            document.getElementById("ohosPercentText").innerText = "%" + guncelYuzde;
+            document.getElementById("userProgressBar").style.width = guncelYuzde + "%";
+            document.getElementById("userProgressBar").innerText = "%" + guncelYuzde;
 
+            document.getElementById("mainLogo").src = guncelLogo;
+            document.getElementById("adminLogoInput").value = guncelLogo;
+            document.getElementById("ohosLogoInput").value = guncelLogo;
+            
+            const uLogos = document.getElementsByClassName("user-panel-logo");
+            for(let img of uLogos) {
+                img.src = guncelLogo;
+            }
+        }
+
+        function kullaniciGirisYap() {
+            if (document.getElementById("sitePassword").value === aktifKullaniciSifresi) {
+                alert("Kullanıcı Girişi Başarılı!");
+                SenkronizeEt();
                 document.getElementById("loginBox").style.display = "none";
                 document.getElementById("userPanel").style.display = "flex";
-            } else {
-                alert("Hatalı Kullanıcı Şifresi!");
-            }
+            } else { alert("Hatalı Kullanıcı Şifresi!"); }
         }
 
-        function devGirisiniAc() {
-            document.getElementById("standardLoginSection").style.display = "none";
-            document.getElementById("devLoginBox").style.display = "block";
-        }
-
-        function devGirisiniKapat() {
-            document.getElementById("devLoginBox").style.display = "none";
-            document.getElementById("standardLoginSection").style.display = "block";
-            document.getElementById("devPassword").value = "";
-        }
-
-        function developerGirisiniKontrolEt() {
-            const girilenDevSifre = document.getElementById("devPassword").value;
-            if (girilenDevSifre === aktifAdminSifresi) {
-                alert("Yönetici Kimliği Doğrulandı! Geliştirici Değişiklik Paneli Açılıyor...");
+        function adminGirisiniKontrolEt() {
+            if (document.getElementById("adminPassword").value === aktifAdminSifresi) {
+                alert("Admin Girişi Başarılı! Sadece Notlar ve Logo Değiştirme Yetkiniz Vardır.");
+                SenkronizeEt();
                 document.getElementById("loginBox").style.display = "none";
-                document.getElementById("devPanel").style.display = "flex";
-            } else {
-                alert("Yetkisiz Geliştirici Şifresi! Erişim Reddedildi.");
-            }
+                document.getElementById("adminPanel").style.display = "flex";
+            } else { alert("Hatalı Admin Şifresi!"); }
+        }
+
+        function ohosGirisiniKontrolEt() {
+            if (document.getElementById("ohosPassword").value === aktifOhosSifresi) {
+                alert("OHOSDev Root Erişimi Başarılı! Tüm Sistem ve Dosya Değiştirme Yetkileri Aktif.");
+                SenkronizeEt();
+                document.getElementById("loginBox").style.display = "none";
+                document.getElementById("ohosPanel").style.display = "flex";
+            } else { alert("Yetkisiz Kök Şifresi!"); }
         }
 
         function yuzdeGuncelle(val) {
-            document.getElementById("percentText").innerText = "%" + val;
-            guncelYuzde = val; 
+            guncelYuzde = val;
+            document.getElementById("ohosPercentText").innerText = "%" + val;
+            document.getElementById("userProgressBar").style.width = val + "%";
+            document.getElementById("userProgressBar").innerText = "%" + val;
         }
 
-        function userSifresiniResetle() {
-            const yeniSifre = document.getElementById("resetUserPasswordInput").value;
-            if(yeniSifre.trim() !== "") {
-                aktifKullaniciSifresi = yeniSifre;
-                alert("Başarılı! Standart Kullanıcı Giriş Şifresi Sıfırlandı: " + yeniSifre);
-                document.getElementById("resetUserPasswordInput").value = "";
-            } else {
-                alert("Lütfen geçerli bir kullanıcı şifresi yazın!");
+        function logoGuncelle(inputId) {
+            const yeniLogo = document.getElementById(inputId).value;
+            if(yeniLogo.trim() !== "") {
+                guncelLogo = yeniLogo;
+                SenkronizeEt();
+                alert("Sistem Logosu Başarıyla Güncellendi!");
             }
         }
 
-        // Admin Kendi Şifresini Sıfırlama Fonksiyonu
-        function adminSifresiniResetle() {
-            const yeniSifre = document.getElementById("resetAdminPasswordInput").value;
-            if(yeniSifre.trim() !== "") {
-                aktifAdminSifresi = yeniSifre;
-                alert("Başarılı! Admin/Developer Giriş Şifresi Sıfırlandı: " + yeniSifre);
-                document.getElementById("resetAdminPasswordInput").value = "";
-            } else {
-                alert("Lütfen geçerli bir admin şifresi yazın!");
+        function notlariKaydet(id) {
+            guncelNotlar = document.getElementById(id).value;
+            SenkronizeEt();
+            alert("Sürüm Notları Dosyası Güncellendi!");
+        }
+
+        function sifreResetlemeMotoru(tur) {
+            if(tur === 'user') {
+                let yeni = document.getElementById("resetUserPass").value;
+                if(yeni.trim() !== "") {
+                    aktifKullaniciSifresi = yeni;
+                    alert("OHOSDev Root Yetkisiyle Kullanıcı Şifre Dosyası Sıfırlandı: " + yeni);
+                    document.getElementById("resetUserPass").value = "";
+                }
+            } else if(tur === 'admin') {
+                let yeni = document.getElementById("resetAdminPass").value;
+                if(yeni.trim() !== "") {
+                    aktifAdminSifresi = yeni;
+                    alert("OHOSDev Root Yetkisiyle Admin Şifre Dosyası Sıfırlandı: " + yeni);
+                    document.getElementById("resetAdminPass").value = "";
+                }
             }
         }
 
-        function notlariKaydet() {
-            const yeniNotlar = document.getElementById("versionNotes").value;
-            guncelNotlar = yeniNotlar; 
-            alert("Sürüm Notları Sistem Belleğinde Başarıyla Güncellendi!");
+        function altGirisAc(boxId) {
+            document.getElementById("standardLoginSection").style.display = "none";
+            document.getElementById(boxId).style.display = "block";
+        }
+
+        function altGirisKapat() {
+            document.getElementById("adminLoginBox").style.display = "none";
+            document.getElementById("ohosLoginBox").style.display = "none";
+            document.getElementById("standardLoginSection").style.display = "block";
+            document.getElementById("adminPassword").value = "";
+            document.getElementById("ohosPassword").value = "";
         }
 
         function panellerdenCikisYap() {
-            document.getElementById("devPanel").style.display = "none";
+            document.getElementById("adminPanel").style.display = "none";
+            document.getElementById("ohosPanel").style.display = "none";
             document.getElementById("userPanel").style.display = "none";
-            document.getElementById("loginBox").style.display = "block";
-            devGirisiniKapat();
+            document.getElementById("loginBox").style.display = "flex";
+            altGirisKapat();
             document.getElementById("sitePassword").value = "";
         }
     </script>
