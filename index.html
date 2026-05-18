@@ -3,214 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cordex OS / NET OpenHarmony Dağıtım Merkezi</title>
+    <title>Cordex OS / NET OpenHarmony</title>
     <style>
-        *, *::before, *::after { box-sizing: border-box; }
+        :root {
+            --bg-color: #090d16;
+            --card-bg: #111827;
+            --text-color: #e2e8f0;
+            --accent-color: #ef4444; 
+            --accent-root: #f59e0b;
+            --border-color: #1f2937;
+        }
+
         body {
-            margin: 0; padding: 0;
-            background: linear-gradient(135deg, #0f111a, #161925);
-            font-family: 'Segoe UI', Arial, sans-serif; color: #e1e4ea;
-            overflow-y: scroll; min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
-        header { text-align: center; padding: 20px 0; border-bottom: 2px solid #ff9900; margin-bottom: 30px; }
-        header h1 { color: #ffffff; margin: 0; letter-spacing: 2px; font-size: 22pt; }
-        .panel { background: #1f2335; border: 1px solid #2e3440; border-radius: 6px; padding: 20px; margin-bottom: 25px; }
-        h2 { color: #ff9900; margin-top: 0; border-left: 4px solid #ff9900; padding-left: 10px; font-size: 13pt; }
-        button {
-            background-color: #ff9900; color: #0f111a; border: none; padding: 10px 20px;
-            font-weight: bold; border-radius: 4px; cursor: pointer; transition: background 0.2s;
-        }
-        button:hover { background-color: #e68a00; }
-        select { background: #0f111a; color: #fff; border: 1px solid #2e3440; padding: 10px; border-radius: 4px; width: 100%; margin-bottom: 15px; }
-        
-        /* Root Özel Alanı */
-        #root-upload-zone { border: 2px dashed #ff0032; background: rgba(255, 0, 50, 0.02); }
-        
-        /* CMD Kod Alanı */
-        .cmd-box {
-            background: #05070b; border: 1px solid #ff9900; padding: 15px;
-            font-family: 'Courier New', Courier, monospace; color: #00e5ff;
-            border-radius: 4px; position: relative; margin-top: 15px; display: none;
-        }
-        .cmd-instructions { color: #888; font-size: 9.5pt; margin-top: 5px; font-style: italic; }
 
-        /* Telif Modalı */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; }
-        .modal-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #161925; border: 2px solid #ff9900; padding: 30px; width: 90%; max-width: 500px; border-radius: 8px; text-align: center;}
-        .license-text { background: #0f111a; padding: 15px; height: 120px; overflow-y: scroll; border: 1px solid #2e3440; font-size: 9.5pt; margin-bottom: 20px; text-align: left; }
+        /* --- GİRİŞ EKRANI --- */
+        #login-screen {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            text-align: center;
+            box-sizing: border-box;
+        }
 
-        /* Yükleme Ekranı */
-        #loading-screen-mode { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: #05070b; z-index: 100000; text-align: center; padding-top: 15%; }
-        .spinner { width: 60px; height: 60px; border: 6px solid #2e3440; border-top: 6px solid #00e5ff; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #login-screen h2 {
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.2rem;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            background-color: #030712;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: white;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .input-group input:focus {
+            border-color: var(--accent-color);
+            outline: none;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .login-btn:hover {
+            background-color: #dc2626;
+        }
+
+        #login-error {
+            color: #f87171;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        /* --- ASIL SİSTEM PANELİ --- */
+        #dashboard {
+            display: none;
+            width: 100%;
+            max-width: 1000px;
+            padding: 2rem;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .main-title {
+            font-size: 2.2rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .active-role {
+            color: #38bdf8;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .active-role span {
+            color: var(--accent-root);
+            font-weight: bold;
+        }
+
+        .release-box {
+            border: 2px dashed #dc2626;
+            background-color: rgba(17, 24, 39, 0.8);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+            position: relative;
+        }
+
+        .badge {
+            background-color: #e11d48;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            position: absolute;
+            top: -12px;
+            left: 20px;
+        }
+
+        .release-box h3 {
+            color: var(--accent-root);
+            margin-top: 0;
+            font-size: 1.3rem;
+        }
+
+        .release-btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background 0.2s;
+        }
+
+        .release-btn:hover {
+            background-color: #dc2626;
+        }
+
+        .status-text {
+            color: #22c55e;
+            font-weight: bold;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        /* KONFİGÜRASYON BÖLÜMÜ */
+        .config-panel {
+            background-color: #1f2937;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: left;
+        }
+
+        .config-panel h3 {
+            color: var(--accent-root);
+            margin-top: 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .select-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .select-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .select-group select {
+            width: 100%;
+            padding: 12px;
+            background-color: #090d16;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: white;
+            font-size: 1rem;
+        }
     </style>
 </head>
 <body>
 
-    <div id="loading-screen-mode">
-        <div class="spinner"></div>
-        <div id="loading-dynamic-text" style="font-size: 16pt; font-weight: bold;">ISO HAZIRLANIYOR...</div>
-        <p style="color: #666; margin-top: 10px;">Lütfen bekleyin, yapılandırma terminale veya indirmeye aktarılıyor.</p>
+    <div id="login-screen">
+        <h2>Cordex OS Dağıtım</h2>
+        <p style="color: #6b7280; font-size: 0.9rem; margin-bottom: 1.5rem;">Merkezi Giriş Kapısı</p>
+        
+        <div class="input-group">
+            <label>Kullanıcı Adı</label>
+            <input type="text" id="username" placeholder="Kullanıcı adınız..." autocomplete="off">
+        </div>
+        <div class="input-group">
+            <label>Erişim Kodu</label>
+            <input type="password" id="access-code" placeholder="••••">
+        </div>
+        
+        <button class="login-btn" onclick="checkLogin()">Giriş Yap</button>
+        <div id="login-error">Hatalı Kullanıcı Adı veya Kod!</div>
     </div>
 
-    <div class="container" id="main-site-content">
-        <header>
-            <h1>CORDEX OS DAĞITIM SİSTEMİ</h1>
-            <p id="role-status" style="color: #00e5ff; margin: 5px 0 0 0; font-weight: bold;"></p>
-        </header>
+    <div id="dashboard">
+        <div class="main-title">Cordex OS Dağıtım Sistemi</div>
+        <div class="active-role">Aktif Rol: 👑 <span>HUAWEI ROOT (Geliştirici)</span></div>
 
-        <div id="root-upload-zone" class="panel" style="display: none;">
-            <span style="background:#ff0032; color:white; padding:2px 6px; font-size:8pt; font-weight:bold; border-radius:3px;">SADECE SENİN YETKİN</span>
-            <h2>Asıl Kaynak Dosyayı Tüm Sisteme Ver</h2>
-            <p style="font-size: 9.5pt; color: #aaa;">Kullanıcıların kendi isteklerine göre ISO üretebilmesi için ana çekirdek imajını sisteme yüklemelisin:</p>
-            <button onclick="rootReleaseFile()" style="background-color:#ff0032; color:white;">+ Ana ISO İmajını Sisteme Dağıt (Release)</button>
-            <p id="release-status" style="margin-top:10px; font-size:9.5pt; color:#ff0032; font-weight:bold;">Durum: Sistemde aktif dosya yok! Kullanıcılar işlem yapamaz.</p>
+        <div class="release-box">
+            <div class="badge">SADECE SENİN YETKİN</div>
+            <h3>Asıl Kaynak Dosyayı Tüm Sisteme Ver</h3>
+            <p style="color: #9ca3af; margin: 0 0 1rem 0; font-size: 0.9rem;">Kullanıcıların kendi isteklerine göre ISO üretebilmesi için ana çekirdek imajını sisteme yüklemelisin:</p>
+            <button class="release-btn">+ Ana ISO İmajını Sisteme Dağıt (Release)</button>
+            <div class="status-text">Durum: AKTİF! Ana kaynak dosya sisteme verildi. Kullanıcılar indirme yapabilir.</div>
         </div>
 
-        <div class="panel">
-            <h2>İşletim Sistemi Konfigürasyonu</h2>
-            <p style="font-size: 9.5pt; color: #aaa;">Yüklemek istediğiniz sistemin dilini ve ne yapacağını (kullanım amacını) seçin:</p>
+        <div class="config-panel">
+            <h3>İşletim Sistemi Konfigürasyonu</h3>
+            <p style="color: #9ca3af; font-size: 0.9rem; margin-bottom: 1.5rem;">Yüklemek istediğiniz sistemin dilini ve ne yapacağını (kullanım amacını) seçin:</p>
             
-            <label><strong>Sistem Dili Seçin:</strong></label>
-            <select id="user-lang">
-                <option value="tr">Türkçe (TR)</option>
-                <option value="en">İngilizce (EN)</option>
-            </select>
-
-            <label><strong>Ne Yapılacağını Seçin (Sistem Amacı):</strong></label>
-            <select id="user-purpose" onchange="generateCmdCode()">
-                <option value="gaming">Gaming & Performans Optimizasyonlu Yapı</option>
-                <option value="developer">Developer & Kernel Hata Ayıklama Yapısı</option>
-                <option value="standard">Standart Ev/Ofis Kullanım Yapısı</option>
-            </select>
-
-            <div style="margin-top: 20px; display: flex; gap: 15px;">
-                <button onclick="handleDownloadTrigger('browser')" style="flex: 1; background-color: #4CAF50; color: white;">Seçimlere Göre ISO İndir</button>
-                <button onclick="handleDownloadTrigger('cmd')" style="flex: 1; background-color: #00e5ff; color: #000;">CMD Kodu Üret</button>
+            <div class="select-group">
+                <label>Sistem Dili Seçin:</label>
+                <select>
+                    <option>İngilizce (EN)</option>
+                    <option>Türkçe (TR)</option>
+                </select>
             </div>
 
-            <div id="cmd-output-zone" class="cmd-box">
-                <div style="color: #ff9900; font-size: 8.5pt; margin-bottom: 5px;">KOD ÜRETİLDİ!</div>
-                <span id="cmd-string">curl -O http://cordexsite.local/get-iso?lang=tr&mode=gaming</span>
-                <div class="cmd-instructions">Yukarıdaki kodu kopyalayın, Windows CMD (Komut İstemi) uygulamasını açıp sağ tıklayarak yapıştırın ve Enter'a basın.</div>
-            </div>
-        </div>
-
-        <div id="download-section" style="background:#0a0c14; padding:20px; text-align:center; border-top:2px solid #ff9900;">
-            <div style="width: 100%; background-color: #2e3440; border-radius: 10px; overflow: hidden;">
-                <div style="width: 75%; height: 20px; background: #4CAF50; line-height: 20px; color: #0f111a; font-weight: bold; font-size:9pt;">Sistem Yapılma Yüzdesi: %75</div>
-            </div>
-        </div>
-    </div>
-
-    <div id="licenseModal" class="modal-overlay">
-        <div class="modal-content">
-            <h2>Telif Protokolü Onayı</h2>
-            <div class="license-text">
-                Bu sistemi indirmeden veya CMD kodunu çalıştırmadan önce Cordex OS telif haklarını, kullanım şartlarını onaylamanız gerekmektedir. Bu protokol herkes için zorunludur.
-            </div>
-            <button onclick="confirmLicense()" style="background-color:#4CAF50; color:white;">Kabul Ediyorum</button>
-            <button onclick="closeLicenseModal()" style="background-color:#555; color:white; margin-left:10px;">İptal</button>
-            
-            <div id="root-bypass" style="display:none; margin-top:15px; border-top:1px dashed #ff0032; padding-top:10px;">
-                <button onclick="forceRootBypass()" style="background-color:#ff0032; color:white; width:100%; font-size:9pt;">Telif Zorla Atla (Bypass)</button>
+            <div class="select-group">
+                <label>Ne Yapılacağını Seçin (Sistem Amacı):</label>
+                <select>
+                    <option>Standart Ev/Ofis Kullanım Yapısı</option>
+                    <option>Geliştirici ve Kernel Derleme Modu</option>
+                </select>
             </div>
         </div>
     </div>
 
     <script>
-        // TEST ETMEK İÇİN ROLÜ DEĞİŞTİREBİLİRSİNİZ: "huawei_root" veya "standart_user"
-        const mevcut_rol = "huawei_root"; 
-        
-        let root_dosyayi_verdi_mi = false; // Root dosyayı tamamen sisteme verdi mi?
-        let secilen_indirme_turu = ""; // browser veya cmd
-
-        window.onload = function() {
-            const statusText = document.getElementById("role-status");
-            if(mevcut_rol === "huawei_root") {
-                statusText.innerHTML = "Aktif Rol: <span style='color:#ff0032;'>👑 HUAWEI ROOT (Geliştirici)</span>";
-                document.getElementById("root-upload-zone").style.display = "block";
-                document.getElementById("root-bypass").style.display = "block";
+        // O İLK VE GERÇEK ŞİFRELER
+        function checkLogin() {
+            const user = document.getElementById('username').value.trim();
+            const code = document.getElementById('access-code').value.trim();
+            
+            // Sadece senin belirlediğin o ilk hesap kombinasyonu
+            if (user === "OHOSDev" && code === "1905") {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                document.body.style.display = 'block';
             } else {
-                statusText.innerHTML = "Aktif Rol: <span style='color:#4CAF50;'>👤 KULLANICI PANELİ</span>";
+                document.getElementById('login-error').style.display = 'block';
             }
-            generateCmdCode();
-        };
-
-        // 1. ADIM: Sadece Root'un Dosyayı Sisteme Tamamen Vermesi
-        function rootReleaseFile() {
-            root_dosyayi_verdi_mi = true;
-            const statusEl = document.getElementById("release-status");
-            statusEl.innerText = "Durum: AKTİF! Ana kaynak dosya sisteme verildi. Kullanıcılar indirme yapabilir.";
-            statusEl.style.color = "#4CAF50";
-            alert("Ana kaynak dosya başarıyla sisteme enjekte edildi! Artık kullanıcılar ISO yapılandırabilir.");
-        }
-
-        // 2. ADIM: Dinamik CMD Kodu Oluşturucu
-        function generateCmdCode() {
-            const lang = document.getElementById("user-lang").value;
-            const purpose = document.getElementById("user-purpose").value;
-            const cmdStr = `curl -L -o CordexOS_${lang.toUpperCase()}.iso "http://cordexsite.local/api/build?lang=${lang}&mode=${purpose}"`;
-            document.getElementById("cmd-string").innerText = cmdStr;
-        }
-
-        // 3. ADIM: İndirme veya CMD İstendiğinde Tetiklenen Kontrol Hattı
-        function handleDownloadTrigger(type) {
-            if (!root_dosyayi_verdi_mi) {
-                alert("HATA: Henüz Huawei Root ana kaynak dosyayı sisteme vermedi! İndirme yapılamaz.");
-                return;
-            }
-            secilen_indirme_turu = type;
-            // 4. Madde: Herkes için telif pop-up penceresini açar
-            document.getElementById("licenseModal").style.display = "block";
-        }
-
-        function closeLicenseModal() {
-            document.getElementById("licenseModal").style.display = "none";
-        }
-
-        // 4. ADIM: Telif Kabul Edildiğinde Çalışacak Ayrım
-        function confirmLicense() {
-            closeLicenseModal();
-            executeFinalFlow();
-        }
-
-        // Root'un Zorla Açma (Bypass) Kodu
-        function forceRootBypass() {
-            closeLicenseModal();
-            alert("Root bypass algılandı. Telif atlanıyor...");
-            executeFinalFlow();
-        }
-
-        // Nihai Yükleme/Teslimat Ekranı Akışı
-        function executeFinalFlow() {
-            document.getElementById("main-site-content").style.display = "none";
-            document.body.style.overflow = "hidden";
-            document.getElementById("loading-screen-mode").style.display = "block";
-
-            if (secilen_indirme_turu === "browser") {
-                document.getElementById("loading-dynamic-text").innerText = "ISO DERLENİYOR VE İNDİRİLİYOR...";
-                setTimeout(() => {
-                    alert("Tarayıcı İndirmesi Başladı! Dosya: CordexOS_Custom.iso");
-                    resetToMainSite();
-                }, 3000);
-            } else if (secilen_indirme_turu === "cmd") {
-                document.getElementById("loading-dynamic-text").innerText = "CMD KODU ENJEKTE EDİLİYOR...";
-                setTimeout(() => {
-                    resetToMainSite();
-                    document.getElementById("cmd-output-zone").style.display = "block";
-                    // Seçimleri güncellemek için kodu tekrar üret
-                    generateCmdCode(); 
-                    window.scrollTo(0, document.body.scrollHeight);
-                }, 2000);
-            }
-        }
-
-        function resetToMainSite() {
-            document.getElementById("loading-screen-mode").style.display = "none";
-            document.getElementById("main-site-content").style.display = "block";
-            document.body.style.overflow = "scroll";
         }
     </script>
 </body>
