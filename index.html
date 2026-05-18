@@ -26,7 +26,7 @@
             align-items: center;
         }
 
-        /* --- GİRİŞ EKRANI SEYİR DÜZENİ --- */
+        /* --- GİRİŞ EKRANI --- */
         #login-screen {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -97,7 +97,7 @@
             display: none;
         }
 
-        /* --- ASIL SİSTEM PANELİ STİLLERİ --- */
+        /* --- SİSTEM PANELİ STİLLERİ --- */
         #dashboard {
             width: 100%;
             max-width: 1000px;
@@ -121,7 +121,6 @@
         }
 
         .active-role span {
-            color: var(--accent-root);
             font-weight: bold;
         }
 
@@ -222,7 +221,7 @@
         
         <div class="input-group">
             <label>Kullanıcı Adı</label>
-            <input type="text" id="username" placeholder="OHOSDev" autocomplete="off">
+            <input type="text" id="username" placeholder="Kullanıcı adınız..." autocomplete="off">
         </div>
         <div class="input-group">
             <label>Erişim Kodu</label>
@@ -236,14 +235,14 @@
     <template id="dashboard-template">
         <div id="dashboard">
             <div class="main-title">Cordex OS Dağıtım Sistemi</div>
-            <div class="active-role">Aktif Rol: 👑 <span>HUAWEI ROOT (Geliştirici)</span></div>
+            <div class="active-role">Aktif Rol: <span id="display-role-text"></span></div>
 
-            <div class="release-box">
-                <div class="badge">SADECE SENİN YETKİN</div>
+            <div class="release-box" id="restricted-release-section">
+                <div class="badge">SADECE YETKİLİ ERİŞİM</div>
                 <h3>Asıl Kaynak Dosyayı Tüm Sisteme Ver</h3>
                 <p style="color: #9ca3af; margin: 0 0 1rem 0; font-size: 0.9rem;">Kullanıcıların kendi isteklerine göre ISO üretebilmesi için ana çekirdek imajını sisteme yüklemelisin:</p>
-                <button class="release-btn">+ Ana ISO İmajını Sisteme Dağıt (Release)</button>
-                <div class="status-text">Durum: AKTİF! Ana kaynak dosya sisteme verildi. Kullanıcılar indirme yapabilir.</div>
+                <button class="release-btn" id="main-release-btn">+ Ana ISO İmajını Sisteme Dağıt (Release)</button>
+                <div class="status-text" id="release-status-text">Durum: AKTİF! Ana kaynak dosya sisteme verildi. Kullanıcılar indirme yapabilir.</div>
             </div>
 
             <div class="config-panel">
@@ -270,19 +269,47 @@
     </template>
 
     <script>
+        // İSTEDİĞİN TÜM KULLANICILAR VE ŞİFRELER GERİ GELDİ
+        const VALID_USERS = {
+            "daras": { code: "1905", label: "👑 HUAWEI ROOT (Geliştirici)", color: "#f59e0b", fullAccess: true },
+            "OHOSDev": { code: "admin123", label: "🛡️ ADMIN", color: "#ef4444", fullAccess: true },
+            "StandartUser": { code: "user123", label: "👤 STANDARD USER", color: "#3b82f6", fullAccess: false }
+        };
+
         function checkLogin() {
             const user = document.getElementById('username').value.trim();
             const code = document.getElementById('access-code').value.trim();
             
-            // Orijinal hesap kontrolü
-            if (user === "OHOSDev" && code === "1905") {
-                // 1. Giriş ekranını tamamen kaldır
+            if (VALID_USERS[user] && VALID_USERS[user].code === code) {
+                const userData = VALID_USERS[user];
+                
+                // 1. Giriş ekranını uçur
                 document.getElementById('login-screen').remove();
                 
-                // 2. Şablondaki gizli Cordex panelini çek ve sayfaya enjekte et
+                // 2. Şablonu yükle
                 const template = document.getElementById('dashboard-template');
                 const clone = template.content.cloneNode(true);
                 document.body.appendChild(clone);
+                
+                // 3. Giriş yapan kullanıcıya göre ekranı özelleştir
+                const roleSpan = document.getElementById('display-role-text');
+                roleSpan.textContent = userData.label;
+                roleSpan.style.color = userData.color;
+                
+                // Eğer StandartUser girdiyse indirme/dağıtım kutusunu kapat veya kısıtla
+                if (!userData.fullAccess) {
+                    const releaseBtn = document.getElementById('main-release-btn');
+                    if (releaseBtn) {
+                        releaseBtn.disabled = true;
+                        releaseBtn.style.backgroundColor = "#374151";
+                        releaseBtn.textContent = "Yetkiniz Yok";
+                    }
+                    const statusText = document.getElementById('release-status-text');
+                    if (statusText) {
+                        statusText.textContent = "Durum: Kısıtlı Hesap. Ana kaynak üzerinde işlem yapamazsınız.";
+                        statusText.style.color = "#ef4444";
+                    }
+                }
             } else {
                 document.getElementById('login-error').style.display = 'block';
             }
