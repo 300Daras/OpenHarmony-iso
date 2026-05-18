@@ -26,7 +26,7 @@
             align-items: center;
         }
 
-        /* --- GİRİŞ EKRANI (AÇILIŞTA SADECE BU GÖZÜKECEK) --- */
+        /* --- GİRİŞ EKRANI SEYİR DÜZENİ --- */
         #login-screen {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -37,7 +37,6 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.7);
             text-align: center;
             box-sizing: border-box;
-            display: block; /* İlk başta görünür */
         }
 
         #login-screen h2 {
@@ -98,9 +97,8 @@
             display: none;
         }
 
-        /* --- ASIL SİSTEM PANELİ (GİRİŞ YAPILANA KADAR GİZLİ) --- */
+        /* --- ASIL SİSTEM PANELİ STİLLERİ --- */
         #dashboard {
-            display: none; /* Gizli başladığından emin oluyoruz */
             width: 100%;
             max-width: 1000px;
             padding: 2rem;
@@ -179,7 +177,6 @@
             font-size: 0.95rem;
         }
 
-        /* KONFİGÜRASYON BÖLÜMÜ */
         .config-panel {
             background-color: #1f2937;
             border-radius: 8px;
@@ -196,6 +193,7 @@
 
         .select-group {
             margin-bottom: 1.5rem;
+            text-align: left;
         }
 
         .select-group label {
@@ -235,52 +233,58 @@
         <div id="login-error">Hatalı Kullanıcı Adı veya Kod!</div>
     </div>
 
-    <div id="dashboard">
-        <div class="main-title">Cordex OS Dağıtım Sistemi</div>
-        <div class="active-role">Aktif Rol: 👑 <span>HUAWEI ROOT (Geliştirici)</span></div>
+    <template id="dashboard-template">
+        <div id="dashboard">
+            <div class="main-title">Cordex OS Dağıtım Sistemi</div>
+            <div class="active-role">Aktif Rol: 👑 <span>HUAWEI ROOT (Geliştirici)</span></div>
 
-        <div class="release-box">
-            <div class="badge">SADECE SENİN YETKİN</div>
-            <h3>Asıl Kaynak Dosyayı Tüm Sisteme Ver</h3>
-            <p style="color: #9ca3af; margin: 0 0 1rem 0; font-size: 0.9rem;">Kullanıcıların kendi isteklerine göre ISO üretebilmesi için ana çekirdek imajını sisteme yüklemelisin:</p>
-            <button class="release-btn">+ Ana ISO İmajını Sisteme Dağıt (Release)</button>
-            <div class="status-text">Durum: AKTİF! Ana kaynak dosya sisteme verildi. Kullanıcılar indirme yapabilir.</div>
-        </div>
-
-        <div class="config-panel">
-            <h3>İşletim Sistemi Konfigürasyonu</h3>
-            <p style="color: #9ca3af; font-size: 0.9rem; margin-bottom: 1.5rem;">Yüklemek istediğiniz sistemin dilini ve ne yapacağını (kullanım amacını) seçin:</p>
-            
-            <div class="select-group">
-                <label>Sistem Dili Seçin:</label>
-                <select>
-                    <option>İngilizce (EN)</option>
-                    <option>Türkçe (TR)</option>
-                </select>
+            <div class="release-box">
+                <div class="badge">SADECE SENİN YETKİN</div>
+                <h3>Asıl Kaynak Dosyayı Tüm Sisteme Ver</h3>
+                <p style="color: #9ca3af; margin: 0 0 1rem 0; font-size: 0.9rem;">Kullanıcıların kendi isteklerine göre ISO üretebilmesi için ana çekirdek imajını sisteme yüklemelisin:</p>
+                <button class="release-btn">+ Ana ISO İmajını Sisteme Dağıt (Release)</button>
+                <div class="status-text">Durum: AKTİF! Ana kaynak dosya sisteme verildi. Kullanıcılar indirme yapabilir.</div>
             </div>
 
-            <div class="select-group">
-                <label>Ne Yapılacağını Seçin (Sistem Amacı):</label>
-                <select>
-                    <option>Standart Ev/Ofis Kullanım Yapısı</option>
-                    <option>Geliştirici ve Kernel Derleme Modu</option>
-                </select>
+            <div class="config-panel">
+                <h3>İşletim Sistemi Konfigürasyonu</h3>
+                <p style="color: #9ca3af; font-size: 0.9rem; margin-bottom: 1.5rem;">Yüklemek istediğiniz sistemin dilini ve ne yapacağını (kullanım amacını) seçin:</p>
+                
+                <div class="select-group">
+                    <label>Sistem Dili Seçin:</label>
+                    <select>
+                        <option>İngilizce (EN)</option>
+                        <option>Türkçe (TR)</option>
+                    </select>
+                </div>
+
+                <div class="select-group">
+                    <label>Ne Yapılacağını Seçin (Sistem Amacı):</label>
+                    <select>
+                        <option>Standart Ev/Ofis Kullanım Yapısı</option>
+                        <option>Geliştirici ve Kernel Derleme Modu</option>
+                    </select>
+                </div>
             </div>
         </div>
-    </div>
+    </template>
 
     <script>
-        // Giriş Kontrol Fonksiyonu
         function checkLogin() {
             const user = document.getElementById('username').value.trim();
             const code = document.getElementById('access-code').value.trim();
             
-            // Senin o ilk baştaki orijinal hesap bilgilerin
+            // Orijinal hesap kontrolü
             if (user === "OHOSDev" && code === "1905") {
-                document.getElementById('login-screen').style.display = 'none'; // Giriş ekranını kapat
-                document.getElementById('dashboard').style.display = 'block';   // Paneli aç
+                // 1. Giriş ekranını tamamen kaldır
+                document.getElementById('login-screen').remove();
+                
+                // 2. Şablondaki gizli Cordex panelini çek ve sayfaya enjekte et
+                const template = document.getElementById('dashboard-template');
+                const clone = template.content.cloneNode(true);
+                document.body.appendChild(clone);
             } else {
-                document.getElementById('login-error').style.display = 'block'; // Hata mesajını göster
+                document.getElementById('login-error').style.display = 'block';
             }
         }
     </script>
