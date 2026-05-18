@@ -26,7 +26,7 @@
             align-items: center;
         }
 
-        /* --- GİRİŞ EKRANI --- */
+        /* --- GİRİŞ EKRANI (AÇILIŞTA SADECE BU GÖZÜKECEK) --- */
         #login-screen {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -37,6 +37,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.7);
             text-align: center;
             box-sizing: border-box;
+            display: block; /* İlk başta görünür */
         }
 
         #login-screen h2 {
@@ -97,9 +98,9 @@
             display: none;
         }
 
-        /* --- ASIL SİSTEM PANELİ --- */
+        /* --- ASIL SİSTEM PANELİ (GİRİŞ YAPILANA KADAR GİZLİ) --- */
         #dashboard {
-            display: none;
+            display: none; /* Gizli başladığından emin oluyoruz */
             width: 100%;
             max-width: 1000px;
             padding: 2rem;
@@ -223,7 +224,7 @@
         
         <div class="input-group">
             <label>Kullanıcı Adı</label>
-            <input type="text" id="username" placeholder="Kullanıcı adınız..." autocomplete="off">
+            <input type="text" id="username" placeholder="OHOSDev" autocomplete="off">
         </div>
         <div class="input-group">
             <label>Erişim Kodu</label>
@@ -269,18 +270,17 @@
     </div>
 
     <script>
-        // O İLK VE GERÇEK ŞİFRELER
+        // Giriş Kontrol Fonksiyonu
         function checkLogin() {
             const user = document.getElementById('username').value.trim();
             const code = document.getElementById('access-code').value.trim();
             
-            // Sadece senin belirlediğin o ilk hesap kombinasyonu
+            // Senin o ilk baştaki orijinal hesap bilgilerin
             if (user === "OHOSDev" && code === "1905") {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('dashboard').style.display = 'block';
-                document.body.style.display = 'block';
+                document.getElementById('login-screen').style.display = 'none'; // Giriş ekranını kapat
+                document.getElementById('dashboard').style.display = 'block';   // Paneli aç
             } else {
-                document.getElementById('login-error').style.display = 'block';
+                document.getElementById('login-error').style.display = 'block'; // Hata mesajını göster
             }
         }
     </script>
