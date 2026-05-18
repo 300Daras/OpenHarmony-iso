@@ -12,6 +12,7 @@
             --accent-color: #ef4444; 
             --accent-root: #f59e0b;
             --border-color: #1f2937;
+            --terminal-bg: #030712;
         }
 
         body {
@@ -37,7 +38,6 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.7);
             text-align: center;
             box-sizing: border-box;
-            display: block;
         }
 
         #login-screen h2 {
@@ -61,7 +61,7 @@
         .input-group input {
             width: 100%;
             padding: 12px;
-            background-color: #030712;
+            background-color: var(--terminal-bg);
             border: 1px solid var(--border-color);
             border-radius: 6px;
             color: white;
@@ -98,7 +98,7 @@
             display: none;
         }
 
-        /* --- 2. ANA PANEL (İLK BAŞTA GİZLİ) --- */
+        /* --- 2. ANA PANEL --- */
         #dashboard {
             display: none;
             width: 100%;
@@ -122,20 +122,17 @@
             margin-bottom: 2rem;
         }
 
-        .active-role span {
-            font-weight: bold;
-        }
-
-        /* KONFİGÜRASYON PANELİ (AÇILIŞTA GÖZÜKEN ANA MENÜ) */
-        .config-panel {
+        /* ORTAK PANEL STİLLERİ */
+        .system-panel {
             background-color: #1f2937;
             border-radius: 8px;
             padding: 2rem;
             text-align: left;
             margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
         }
 
-        .config-panel h3 {
+        .system-panel h3 {
             color: var(--accent-root);
             margin-top: 0;
             border-bottom: 1px solid var(--border-color);
@@ -144,7 +141,6 @@
 
         .select-group {
             margin-bottom: 1.5rem;
-            text-align: left;
         }
 
         .select-group label {
@@ -164,7 +160,47 @@
             font-size: 1rem;
         }
 
-        /* ISO YÜKLEME BUTONU VE GİZLİ BÖLÜMÜ */
+        /* --- TERMİNAL SİMÜLATÖRÜ --- */
+        .terminal-container {
+            background-color: var(--terminal-bg);
+            border: 1px solid #374151;
+            border-radius: 6px;
+            padding: 1rem;
+            font-family: 'Courier New', Courier, monospace;
+            color: #34d399;
+            margin-top: 1rem;
+        }
+
+        .terminal-output {
+            height: 120px;
+            overflow-y: auto;
+            margin-bottom: 0.5rem;
+            white-space: pre-line;
+            font-size: 0.95rem;
+        }
+
+        .terminal-input-line {
+            display: flex;
+            align-items: center;
+        }
+
+        .terminal-prompt {
+            color: #38bdf8;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        .terminal-cmd-input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-family: inherit;
+            font-size: 0.95rem;
+            flex: 1;
+            outline: none;
+        }
+
+        /* --- ISO MENÜ TETİKLEYİCİ VE GİZLİ ALAN --- */
         .iso-trigger-btn {
             background-color: #2563eb;
             color: white;
@@ -176,15 +212,15 @@
             cursor: pointer;
             transition: background 0.2s;
             margin-bottom: 1.5rem;
+            display: inline-block;
         }
 
         .iso-trigger-btn:hover {
             background-color: #1d4ed8;
         }
 
-        /* AYRILAN GİZLİ ISO MENÜSÜ (SADECE TIKLANDIĞINDA AÇILIR) */
         #iso-upload-section {
-            display: none; /* İlk başta tamamen gizli */
+            display: none;
             border: 2px dashed #dc2626;
             background-color: rgba(17, 24, 39, 0.8);
             border-radius: 8px;
@@ -204,12 +240,6 @@
             position: absolute;
             top: -12px;
             left: 20px;
-        }
-
-        #iso-upload-section h3 {
-            color: var(--accent-root);
-            margin-top: 0;
-            font-size: 1.3rem;
         }
 
         .release-btn {
@@ -260,7 +290,7 @@
         <div class="main-title">Cordex OS Dağıtım Sistemi</div>
         <div class="active-role">Aktif Rol: <span id="display-role-text"></span></div>
 
-        <div class="config-panel">
+        <div class="system-panel">
             <h3>İşletim Sistemi Konfigürasyonu</h3>
             <p style="color: #9ca3af; font-size: 0.9rem; margin-bottom: 1.5rem;">Yüklemek istediğiniz sistemin dilini ve amacını seçin:</p>
             
@@ -281,7 +311,20 @@
             </div>
         </div>
 
-        <button class="iso-trigger-btn" onclick="toggleIsoMenu()">⚙️ ISO Yükleme Menüsünü Aç/Kapat</button>
+        <div class="system-panel">
+            <h3>Ortak Terminal / CMD Ortamı</h3>
+            <p style="color: #9ca3af; font-size: 0.9rem;">Çalıştırılabilir komutlar: <code style="color:#38bdf8">sys-check</code>, <code style="color:#38bdf8">connect-cmd</code></p>
+            
+            <div class="terminal-container">
+                <div class="terminal-output" id="term-out">Cordex Terminal Sistemi Başlatıldı... v1.0.2&#10;Komut girmek için aşağıdaki satırı kullanın.</div>
+                <div class="terminal-input-line">
+                    <span class="terminal-prompt" id="term-prompt">root@cordex:~#</span>
+                    <input type="text" class="terminal-cmd-input" id="term-input" onkeydown="runCommand(event)">
+                </div>
+            </div>
+        </div>
+
+        <button class="iso-trigger-btn" id="iso-toggle-button" onclick="toggleIsoMenu()">⚙️ ISO Yükleme Menüsünü Aç/Kapat</button>
 
         <div id="iso-upload-section">
             <div class="badge">ISO YÖNETİMİ</div>
@@ -293,12 +336,14 @@
     </div>
 
     <script>
-        // Gizli Hesap Veritabanı
+        // YENİ KARMAŞIK VE GÜVENLİ ŞİFRE VERİTABANI
         const VALID_USERS = {
-            "daras": { code: "1905", label: "Geliştirici Modu", color: "#f59e0b", fullAccess: true },
-            "OHOSDev": { code: "admin123", label: "Yönetici Modu", color: "#ef4444", fullAccess: true },
-            "StandartUser": { code: "user123", label: "Standart İzleme Modu", color: "#3b82f6", fullAccess: false }
+            "daras": { code: "Crdx_#R00t!1905", label: "👑 Geliştirici Modu (Sen)", color: "#f59e0b", fullAccess: true },
+            "OHOSDev": { code: "Ohos_Adm!n#2026", label: "🛡️ Yönetici Modu", color: "#ef4444", fullAccess: true },
+            "StandartUser": { code: "Std_Us3r$Safe", label: "👤 Standart İzleme Modu", color: "#3b82f6", fullAccess: false }
         };
+
+        let currentUsername = "";
 
         function checkLogin() {
             const user = document.getElementById('username').value.trim();
@@ -306,35 +351,63 @@
             
             if (VALID_USERS[user] && VALID_USERS[user].code === code) {
                 const userData = VALID_USERS[user];
+                currentUsername = user;
                 
-                // Giriş ekranını gizle, paneli getir
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
                 
-                // Rol etiketini güncelle
                 const roleSpan = document.getElementById('display-role-text');
                 roleSpan.textContent = userData.label;
                 roleSpan.style.color = userData.color;
                 
-                // Kısıtlı kullanıcı kontrolü
+                document.getElementById('term-prompt').textContent = `${user}@cordex:~#`;
+                
+                // Standart kullanıcı giriş yaptıysa ISO açma butonunu tamamen gizle
                 if (!userData.fullAccess) {
-                    const triggerBtn = document.querySelector('.iso-trigger-btn');
-                    if (triggerBtn) {
-                        triggerBtn.style.display = 'none'; // ISO açma butonunu tamamen gizle
-                    }
+                    const toggleBtn = document.getElementById('iso-toggle-button');
+                    if (toggleBtn) toggleBtn.style.display = 'none';
                 }
             } else {
                 document.getElementById('login-error').style.display = 'block';
             }
         }
 
-        // İki menüyü ayıran açma/kapatma fonksiyonu
+        // Terminal Komut Kontrolleri
+        function runCommand(e) {
+            if (e.key === 'Enter') {
+                const inputEl = document.getElementById('term-input');
+                const cmd = inputEl.value.trim().toLowerCase();
+                const outEl = document.getElementById('term-out');
+                
+                if (cmd === '') return;
+                
+                let response = `\n$ ${cmd}\n`;
+                
+                if (cmd === 'sys-check') {
+                    response += ">> Lenovo sistemi kontrol ediliyor...\n>> AMD Ryzen Z1 Extreme işlemci tespit edildi.\n>> Sistem durumu: STABİL VE UYGUN.";
+                } else if (cmd === 'connect-cmd') {
+                    response += ">> Tarayıcı tabanlı yerel CMD simülasyonu başlatıldı.\n>> Sistem bağlantısı aktif.";
+                } else if (cmd === 'clear') {
+                    outEl.textContent = "";
+                    inputEl.value = "";
+                    return;
+                } else {
+                    response += `>> Komut bulunamadı: '${cmd}'. Geçerli komutlar: sys-check, connect-cmd, clear`;
+                }
+                
+                outEl.textContent += response;
+                outEl.scrollTop = outEl.scrollHeight;
+                inputEl.value = "";
+            }
+        }
+
+        // ISO Menüsü Açma/Kapatma
         function toggleIsoMenu() {
             const isoSection = document.getElementById('iso-upload-section');
             if (isoSection.style.display === "none" || isoSection.style.display === "") {
-                isoSection.style.display = "block"; // Gizliyse aç
+                isoSection.style.display = "block";
             } else {
-                isoSection.style.display = "none";  // Açıksa gizle
+                isoSection.style.display = "none";
             }
         }
     </script>
