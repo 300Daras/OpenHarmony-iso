@@ -26,7 +26,7 @@
             align-items: center;
         }
 
-        /* --- TEMİZ GİRİŞ EKRANI --- */
+        /* --- 1. GİRİŞ EKRANI --- */
         #login-screen {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -37,6 +37,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.7);
             text-align: center;
             box-sizing: border-box;
+            display: block;
         }
 
         #login-screen h2 {
@@ -97,7 +98,7 @@
             display: none;
         }
 
-        /* --- NORMAL SİSTEM PANELİ --- */
+        /* --- 2. ANA PANEL (İLK BAŞTA GİZLİ) --- */
         #dashboard {
             display: none;
             width: 100%;
@@ -125,63 +126,13 @@
             font-weight: bold;
         }
 
-        .release-box {
-            border: 2px dashed #dc2626;
-            background-color: rgba(17, 24, 39, 0.8);
-            border-radius: 8px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            text-align: left;
-            position: relative;
-        }
-
-        .badge {
-            background-color: #e11d48;
-            color: white;
-            font-size: 0.75rem;
-            font-weight: bold;
-            padding: 4px 8px;
-            border-radius: 4px;
-            position: absolute;
-            top: -12px;
-            left: 20px;
-        }
-
-        .release-box h3 {
-            color: var(--accent-root);
-            margin-top: 0;
-            font-size: 1.3rem;
-        }
-
-        .release-btn {
-            background-color: #ef4444;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-top: 1rem;
-            transition: background 0.2s;
-        }
-
-        .release-btn:hover {
-            background-color: #dc2626;
-        }
-
-        .status-text {
-            color: #22c55e;
-            font-weight: bold;
-            margin-top: 1rem;
-            font-size: 0.95rem;
-        }
-
+        /* KONFİGÜRASYON PANELİ (AÇILIŞTA GÖZÜKEN ANA MENÜ) */
         .config-panel {
             background-color: #1f2937;
             border-radius: 8px;
             padding: 2rem;
             text-align: left;
+            margin-bottom: 2rem;
         }
 
         .config-panel h3 {
@@ -212,6 +163,78 @@
             color: white;
             font-size: 1rem;
         }
+
+        /* ISO YÜKLEME BUTONU VE GİZLİ BÖLÜMÜ */
+        .iso-trigger-btn {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 1.5rem;
+        }
+
+        .iso-trigger-btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* AYRILAN GİZLİ ISO MENÜSÜ (SADECE TIKLANDIĞINDA AÇILIR) */
+        #iso-upload-section {
+            display: none; /* İlk başta tamamen gizli */
+            border: 2px dashed #dc2626;
+            background-color: rgba(17, 24, 39, 0.8);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: left;
+            position: relative;
+            margin-top: 1.5rem;
+        }
+
+        .badge {
+            background-color: #e11d48;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            position: absolute;
+            top: -12px;
+            left: 20px;
+        }
+
+        #iso-upload-section h3 {
+            color: var(--accent-root);
+            margin-top: 0;
+            font-size: 1.3rem;
+        }
+
+        .release-btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background 0.2s;
+        }
+
+        .release-btn:hover {
+            background-color: #dc2626;
+        }
+
+        .status-text {
+            color: #22c55e;
+            font-weight: bold;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
     </style>
 </head>
 <body>
@@ -222,11 +245,11 @@
         
         <div class="input-group">
             <label>Kullanıcı Adı</label>
-            <input type="text" id="username" placeholder="Kullanıcı adı..." autocomplete="off">
+            <input type="text" id="username" placeholder="" autocomplete="off">
         </div>
         <div class="input-group">
             <label>Erişim Kodu</label>
-            <input type="password" id="access-code" placeholder="••••">
+            <input type="password" id="access-code" placeholder="">
         </div>
         
         <button class="login-btn" onclick="checkLogin()">Giriş Yap</button>
@@ -237,17 +260,9 @@
         <div class="main-title">Cordex OS Dağıtım Sistemi</div>
         <div class="active-role">Aktif Rol: <span id="display-role-text"></span></div>
 
-        <div class="release-box">
-            <div class="badge">SISTEM DURUMU</div>
-            <h3>Asıl Kaynak Dosyayı Tüm Sisteme Ver</h3>
-            <p style="color: #9ca3af; margin: 0 0 1rem 0; font-size: 0.9rem;">Kullanıcıların kendi isteklerine göre ISO üretebilmesi için ana çekirdek imajını sisteme yüklemelisin:</p>
-            <button class="release-btn" id="main-release-btn">+ Ana ISO İmajını Sisteme Dağıt (Release)</button>
-            <div class="status-text" id="release-status-text">Durum: AKTİF! Ana kaynak dosya sisteme verildi. Kullanıcılar indirme yapabilir.</div>
-        </div>
-
         <div class="config-panel">
             <h3>İşletim Sistemi Konfigürasyonu</h3>
-            <p style="color: #9ca3af; font-size: 0.9rem; margin-bottom: 1.5rem;">Yüklemek istediğiniz sistemin dilini ve ne yapacağını (kullanım amacını) seçin:</p>
+            <p style="color: #9ca3af; font-size: 0.9rem; margin-bottom: 1.5rem;">Yüklemek istediğiniz sistemin dilini ve amacını seçin:</p>
             
             <div class="select-group">
                 <label>Sistem Dili Seçin:</label>
@@ -258,21 +273,31 @@
             </div>
 
             <div class="select-group">
-                <label>Ne Yapılacağını Seçin (Sistem Amacı):</label>
+                <label>Sistem Amacı:</label>
                 <select>
                     <option>Standart Ev/Ofis Kullanım Yapısı</option>
                     <option>Geliştirici ve Kernel Derleme Modu</option>
                 </select>
             </div>
         </div>
+
+        <button class="iso-trigger-btn" onclick="toggleIsoMenu()">⚙️ ISO Yükleme Menüsünü Aç/Kapat</button>
+
+        <div id="iso-upload-section">
+            <div class="badge">ISO YÖNETİMİ</div>
+            <h3>Çekirdek Dosya Dağıtımı</h3>
+            <p style="color: #9ca3af; margin: 0 0 1rem 0; font-size: 0.9rem;">Sisteme yeni bir ISO imajı dağıtmak ve dosyaları senkronize etmek için aşağıdaki butonu kullanın:</p>
+            <button class="release-btn" id="main-release-btn">+ Ana ISO İmajını Sisteme Dağıt (Release)</button>
+            <div class="status-text" id="release-status-text">Durum: Hazır. Dağıtılacak dosyayı seçebilirsiniz.</div>
+        </div>
     </div>
 
     <script>
-        // Giriş yapabilecek tüm gizli hesaplar
+        // Gizli Hesap Veritabanı
         const VALID_USERS = {
-            "daras": { code: "1905", label: "👑 HUAWEI ROOT (Geliştirici)", color: "#f59e0b", fullAccess: true },
-            "OHOSDev": { code: "admin123", label: "🛡️ ADMIN", color: "#ef4444", fullAccess: true },
-            "StandartUser": { code: "user123", label: "👤 STANDARD USER", color: "#3b82f6", fullAccess: false }
+            "daras": { code: "1905", label: "Geliştirici Modu", color: "#f59e0b", fullAccess: true },
+            "OHOSDev": { code: "admin123", label: "Yönetici Modu", color: "#ef4444", fullAccess: true },
+            "StandartUser": { code: "user123", label: "Standart İzleme Modu", color: "#3b82f6", fullAccess: false }
         };
 
         function checkLogin() {
@@ -282,31 +307,34 @@
             if (VALID_USERS[user] && VALID_USERS[user].code === code) {
                 const userData = VALID_USERS[user];
                 
-                // Giriş ekranını kapat, ana paneli aç
+                // Giriş ekranını gizle, paneli getir
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
                 
-                // Rolü ekrana bas
+                // Rol etiketini güncelle
                 const roleSpan = document.getElementById('display-role-text');
                 roleSpan.textContent = userData.label;
                 roleSpan.style.color = userData.color;
                 
-                // Standart kullanıcı kısıtlaması
+                // Kısıtlı kullanıcı kontrolü
                 if (!userData.fullAccess) {
-                    const releaseBtn = document.getElementById('main-release-btn');
-                    if (releaseBtn) {
-                        releaseBtn.disabled = true;
-                        releaseBtn.style.backgroundColor = "#374151";
-                        releaseBtn.textContent = "Yetkiniz Yok";
-                    }
-                    const statusText = document.getElementById('release-status-text');
-                    if (statusText) {
-                        statusText.textContent = "Durum: Kısıtlı Hesap. Ana kaynak üzerinde işlem yapamazsınız.";
-                        statusText.style.color = "#ef4444";
+                    const triggerBtn = document.querySelector('.iso-trigger-btn');
+                    if (triggerBtn) {
+                        triggerBtn.style.display = 'none'; // ISO açma butonunu tamamen gizle
                     }
                 }
             } else {
                 document.getElementById('login-error').style.display = 'block';
+            }
+        }
+
+        // İki menüyü ayıran açma/kapatma fonksiyonu
+        function toggleIsoMenu() {
+            const isoSection = document.getElementById('iso-upload-section');
+            if (isoSection.style.display === "none" || isoSection.style.display === "") {
+                isoSection.style.display = "block"; // Gizliyse aç
+            } else {
+                isoSection.style.display = "none";  // Açıksa gizle
             }
         }
     </script>
