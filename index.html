@@ -9,11 +9,14 @@
         
         body {
             margin: 0; padding: 0;
-            /* Gönderdiğin OpenHarmony Masaüstü Görseli Arka Plan Yapıldı */
-            background: url('https://300daras.github.io/OpenHarmony-iso/image_81b4e8.jpg') no-repeat center center fixed;
-            background-size: cover;
+            /* Gönderdiğin Temiz Arka Plan Resmi */
+            background-image: url('https://300daras.github.io/OpenHarmony-iso/image_81b4e8.jpg') !important;
+            background-repeat: no-repeat !important;
+            background-position: center center !important;
+            background-size: cover !important;
+            background-attachment: fixed !important;
             font-family: 'Courier New', Courier, monospace;
-            color: #00ff66; /* Klasik Terminal Yeşili */
+            color: #00ff66;
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -21,24 +24,24 @@
             overflow: hidden;
         }
 
-        /* Yarı Saydam Terminal (CMD) Penceresi */
+        /* Yarı Saydam CMD Penceresi */
         .terminal-window {
             width: 90%;
             max-width: 850px;
             height: 80vh;
-            background: rgba(10, 15, 28, 0.85);
+            background: rgba(10, 15, 28, 0.88);
             border: 2px solid #00e5ff;
             box-shadow: 0 0 30px rgba(0, 229, 255, 0.3);
             border-radius: 8px;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             display: flex;
             flex-direction: column;
         }
 
-        /* Üst Bar */
         .terminal-header {
-            background: rgba(0, 229, 255, 0.1);
-            padding: 10px;
+            background: rgba(0, 229, 255, 0.15);
+            padding: 12px;
             border-bottom: 1px solid #00e5ff;
             display: flex;
             justify-content: space-between;
@@ -54,7 +57,6 @@
             border-radius: 50%; margin-left: 5px;
         }
 
-        /* Terminal Satırları Alanı */
         .terminal-body {
             padding: 20px;
             flex: 1;
@@ -70,11 +72,10 @@
         .root-msg { color: #ff0055; }
         .admin-msg { color: #ff9900; }
 
-        /* Komut Giriş Alanı */
         .input-line {
             display: flex;
             padding: 15px 20px;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
             border-top: 1px solid rgba(0, 229, 255, 0.2);
             align-items: center;
         }
@@ -124,7 +125,6 @@
     </div>
 
     <script>
-        // Giriş ve Sistem Değişkenleri
         const R_USER = "daras"; const R_PASS = "HuaweiRoot!2026*Cordex";
         const A_USER = "admin"; const A_PASS = "AdminCordex_2026#Secure";
         let U_PASS = "User_CordexOS$2026!";
@@ -132,13 +132,12 @@
         let loggedInRole = "";
         let globalProgress = 75;
         let downloadCounter = 10;
-        let activeProfile = ""; // gaming veya general
+        let activeProfile = ""; 
 
         const history = document.getElementById("terminal-history");
         const cmdInput = document.getElementById("cmd-input");
         const promptSpan = document.getElementById("terminal-prompt");
 
-        // Giriş Dinleyicisi
         cmdInput.addEventListener("keydown", function(e) {
             if (e.key === "Enter") {
                 const commandText = cmdInput.value.trim();
@@ -157,22 +156,19 @@
             history.scrollTop = history.scrollHeight;
         }
 
-        // Komut Yönetim Motoru
         function handleCommand(rawCmd) {
-            // Komutu ekrana bas
             const currentPrompt = promptSpan.innerHTML;
             printLine(currentPrompt + rawCmd, "system-msg");
 
             const parts = rawCmd.split(" ");
             const baseCmd = parts[0].toLowerCase();
 
-            // 1. HERKESE AÇIK TEMEL KOMUTLAR
             if (baseCmd === "help") {
                 printLine("--- KULLANILABİLİR KOMUT LİSTESİ ---");
                 printLine("clear                          - Ekranı temizler");
                 printLine("login [user] [pass]            - Sisteme kimlik doğrulaması yapar");
                 printLine("status                         - Yapılma yüzdesi ve indirme sınırını gösterir");
-                printLine("profile [gaming/general]       - Sistem kullanım amacını seçer");
+                printLine("profile [gaming/general]       - Sistem kullanım amacını (Profil) seçer");
                 printLine("build --compile                - Seçili profile göre ISO derleme kodu üretir");
                 
                 if (loggedInRole === "root") {
@@ -273,7 +269,7 @@
                 return;
             }
 
-            // 2. SADECE ROOT KOMUTLARI
+            // ROOT KOMUTLARI
             if (loggedInRole === "root") {
                 if (baseCmd === "restart") {
                     printLine("⚠️ UYARI: Cordex OpenHarmony derleme sunucuları yeniden başlatılıyor...", "error-msg");
@@ -315,7 +311,7 @@
                 }
             }
 
-            // 3. SADECE ADMIN KOMUTLARI
+            // ADMIN KOMUTLARI
             if (loggedInRole === "admin") {
                 if (baseCmd === "setuserpass") {
                     const newP = parts[1];
@@ -335,7 +331,7 @@
                 }
             }
 
-            // Yetkisiz veya Bilinmeyen Komut Durumu
+            // YETKİ KONTROLÜ
             if (["restart", "lock", "release", "setprogress", "setcounter", "announce"].includes(baseCmd) && loggedInRole !== "root") {
                 printLine("KBR KRİTİK HATA: Bu komutu çalıştırmak için Huawei Root (daras) yetkisine sahip olmalısınız!", "error-msg");
             } else if (["setuserpass", "addnotes"].includes(baseCmd) && loggedInRole !== "admin") {
