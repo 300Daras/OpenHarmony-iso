@@ -14,13 +14,13 @@
         }
 
         body {
-            /* GitHub Pages üzerindeki gerçek resim yolu tam olarak entegre edildi */
+            /* Hem yerel bilgisayarda hem GitHub'da resmi kesin açacak güvenli bağlantı */
             background-image: url('image_81b4e8.jpg') !important;
             background-repeat: no-repeat !important;
             background-position: center center !important;
             background-size: cover !important;
             background-attachment: fixed !important;
-            background-color: #02040a; /* Resim yüklenene kadar koyu arka plan */
+            background-color: #02040a; 
             font-family: 'Courier New', Courier, monospace;
             color: #00ff66;
             display: flex;
@@ -336,7 +336,7 @@
                 }
             }
 
-            // YETKİ DENETİMİ
+            // HATA KONTROLLERİ
             if (["restart", "lock", "release", "setprogress", "setcounter", "announce"].includes(baseCmd) && loggedInRole !== "root") {
                 printLine("KBR KRİTİK HATA: Bu komutu çalıştırmak için Huawei Root (daras) yetkisine sahip olmalısınız!", "error-msg");
             } else if (["setuserpass", "addnotes"].includes(baseCmd) && loggedInRole !== "admin") {
