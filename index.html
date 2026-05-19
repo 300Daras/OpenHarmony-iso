@@ -3,279 +3,345 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cordex OS / NET OpenHarmony Ekosistemi</title>
+    <title>Cordex OS / NET OpenHarmony Terminal</title>
     <style>
         *, *::before, *::after { box-sizing: border-box; }
         
         body {
             margin: 0; padding: 0;
-            /* OpenHarmony Masaüstü Duvar Kağıdı Estetiği (Derin Uzay Mavisi ve Neon Parlamalar) */
-            background: radial-gradient(circle at 80% 20%, #1e295d 0%, #0a0d22 60%, #02040a 100%);
-            font-family: 'Segoe UI', Arial, sans-serif; color: #e1e4ea;
-            min-height: 100vh; overflow-y: scroll;
+            /* Gönderdiğin OpenHarmony Masaüstü Görseli Arka Plan Yapıldı */
+            background: url('https://300daras.github.io/OpenHarmony-iso/image_81b4e8.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Courier New', Courier, monospace;
+            color: #00ff66; /* Klasik Terminal Yeşili */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
         }
 
-        /* GİRİŞ EKRANI */
-        #login-page { display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .login-box {
-            background: rgba(16, 20, 40, 0.85); border: 2px solid #00e5ff;
-            box-shadow: 0 0 25px rgba(0, 229, 255, 0.2); backdrop-filter: blur(10px);
-            padding: 35px; border-radius: 12px; width: 100%; max-width: 400px; text-align: center;
+        /* Yarı Saydam Terminal (CMD) Penceresi */
+        .terminal-window {
+            width: 90%;
+            max-width: 850px;
+            height: 80vh;
+            background: rgba(10, 15, 28, 0.85);
+            border: 2px solid #00e5ff;
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.3);
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
         }
 
-        /* ANA PANEL */
-        #main-dashboard { display: none; }
-        .container { max-width: 950px; margin: 0 auto; padding: 30px 20px; }
-        
-        header { 
-            text-align: center; padding-bottom: 20px; 
-            border-bottom: 2px solid rgba(0, 229, 255, 0.3); margin-bottom: 30px; 
-        }
-        header h1 { color: #ffffff; margin: 0; letter-spacing: 2px; font-size: 22pt; text-shadow: 0 0 10px #00e5ff; }
-
-        .panel { 
-            background: rgba(22, 28, 54, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); 
-            backdrop-filter: blur(8px); border-radius: 8px; padding: 25px; margin-bottom: 25px; 
-        }
-        h2 { color: #00e5ff; margin-top: 0; border-left: 4px solid #00e5ff; padding-left: 10px; font-size: 13pt; }
-        
-        label { display: block; margin: 10px 0 5px 0; font-weight: bold; font-size: 10pt; color: #aaa; }
-        input[type="text"], input[type="password"], input[type="number"], select, textarea { 
-            background: #090c15; color: #fff; border: 1px solid #252d4a; 
-            padding: 12px; border-radius: 6px; width: 100%; margin-bottom: 15px; font-family: inherit;
-        }
-        
-        button {
-            background: linear-gradient(90deg, #00e5ff, #0088ff); color: #000; border: none; 
-            padding: 11px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: all 0.3s;
-            margin-right: 5px; margin-bottom: 5px;
-        }
-        button:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 229, 255, 0.3); }
-        
-        .btn-danger { background: linear-gradient(90deg, #ff0055, #ff0000); color: #fff; }
-        .btn-warning { background: linear-gradient(90deg, #ff9900, #ff5500); color: #fff; }
-
-        /* Terminal Kapsayıcısı */
-        .cmd-box {
-            background: #04060e; border: 1px solid #ff9900; padding: 18px;
-            font-family: 'Courier New', Courier, monospace; color: #ff9900; border-radius: 6px;
+        /* Üst Bar */
+        .terminal-header {
+            background: rgba(0, 229, 255, 0.1);
+            padding: 10px;
+            border-bottom: 1px solid #00e5ff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #00e5ff;
+            font-size: 11pt;
+            font-weight: bold;
         }
 
-        /* Bilgi Akış Kutuları */
-        .info-display { background: rgba(0, 0, 0, 0.4); padding: 15px; border-radius: 6px; border: 1px solid #252d4a; margin-bottom: 15px; }
+        .window-dots span {
+            display: inline-block;
+            width: 12px; height: 12px;
+            border-radius: 50%; margin-left: 5px;
+        }
+
+        /* Terminal Satırları Alanı */
+        .terminal-body {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+            font-size: 11pt;
+            line-height: 1.6;
+        }
+
+        .output-line { margin-bottom: 8px; white-space: pre-wrap; }
+        .system-msg { color: #00e5ff; }
+        .error-msg { color: #ff0055; font-weight: bold; }
+        .success-msg { color: #00ff66; }
+        .root-msg { color: #ff0055; }
+        .admin-msg { color: #ff9900; }
+
+        /* Komut Giriş Alanı */
+        .input-line {
+            display: flex;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-top: 1px solid rgba(0, 229, 255, 0.2);
+            align-items: center;
+        }
+
+        .prompt {
+            color: #00e5ff;
+            margin-right: 10px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        #cmd-input {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 12pt;
+            width: 100%;
+            outline: none;
+        }
     </style>
 </head>
 <body>
 
-    <div id="login-page">
-        <div class="login-box">
-            <h2 style="border:none; padding:0; margin-bottom:5px; color:#fff;">CORDEX CORE LOGIN</h2>
-            <p style="color:#00e5ff; font-size:9pt; margin-bottom:25px; font-weight:bold;">Sistem ve CMD Dağıtım Hattı</p>
-            
-            <label style="text-align:left;">Kullanıcı Adı:</label>
-            <input type="text" id="username" placeholder="daras, admin veya user">
-
-            <label style="text-align:left;">Güçlü Şifre:</label>
-            <input type="password" id="password" placeholder="••••••••••••">
-
-            <button onclick="checkCredentials()" style="width:100%;">Giriş Yap</button>
+    <div class="terminal-window">
+        <div class="terminal-header">
+            <span>💻 Cordex OS v3.1 - Kernel Dağıtım Terminali</span>
+            <div class="window-dots">
+                <span style="background: #ff5f56;"></span>
+                <span style="background: #ffbd2e;"></span>
+                <span style="background: #27c93f;"></span>
+            </div>
         </div>
-    </div>
+        
+        <div class="terminal-body" id="terminal-history">
+            <div class="output-line system-msg">*** CORDEX KERNEL ENJEKSİYON MERKEZİNE HOŞ GELDİNİZ ***</div>
+            <div class="output-line">Sistem Durumu: Çevrimiçi (Online)</div>
+            <div class="output-line">Lütfen devam etmek için giriş yapın.</div>
+            <div class="output-line" style="color: #888;">Komut yardımı için 'help' yazın.</div>
+            <div class="output-line" style="color: #ff9900;">Giriş Formatı: login [kullanıcı_adı] [şifre]</div>
+        </div>
 
-    <div id="main-dashboard">
-        <div class="container">
-            <header>
-                <h1>CORDEX OS PANELS</h1>
-                <p id="role-status" style="margin:5px 0 0 0; font-weight:bold;"></p>
-            </header>
-
-            <div class="panel">
-                <h2>📢 Sistem Duyuruları & Sürüm Notları</h2>
-                <div class="info-display">
-                    <strong>🔴 Canlı Duyuru:</strong> <span id="live-announcement" style="color: #ff0055;">Henüz duyuru yapılmadı.</span>
-                </div>
-                <div class="info-display">
-                    <strong>📝 Sürüm Notları:</strong> <span id="release-notes" style="color: #00e5ff;">v1.0.0 - Taban OpenHarmony entegrasyonu tamamlandı.</span>
-                </div>
-            </div>
-
-            <div id="root-zone" class="panel" style="display:none; border: 2px solid #ff0055;">
-                <span style="background:#ff0055; color:#fff; padding:2px 6px; font-size:8pt; font-weight:bold; border-radius:3px;">ROOT KONSOLU</span>
-                <h2 style="color:#ff0055; border-left-color:#ff0055; margin-top:10px;">Çekirdek Güç Komutları & Sistem Ayarları</h2>
-                
-                <div style="margin-bottom: 20px;">
-                    <button onclick="rootPower('restart')" class="btn-danger">Sistemi Yeniden Başlat</button>
-                    <button onclick="rootPower('lock')" class="btn-warning">Sistemi Kilitle (Lock System)</button>
-                    <button onclick="rootPower('release')" style="background: #4CAF50; color:#fff;">ISO'yu Resmi Olarak Yayınla (Release)</button>
-                </div>
-
-                <div style="display: flex; gap:15px; margin-bottom: 15px;">
-                    <div style="flex:1;">
-                        <label>İndirme Sayacı Sınırı (Adet):</label>
-                        <input type="number" id="root-counter-input" value="10">
-                    </div>
-                    <div style="flex:1;">
-                        <label>Sistem Yapılma Yüzdesi (%):</label>
-                        <input type="number" id="root-progress-input" value="75" min="0" max="100">
-                    </div>
-                </div>
-                <button onclick="updateRootMetrics()">Sayaç ve Yüzdeyi Sisteme İşle</button>
-
-                <label style="margin-top:15px;">Yeni Sistem Duyurusu Yayınla:</label>
-                <textarea id="root-announcement-input" rows="2" placeholder="Tüm sistem kullanıcılarına duyuru mesajı yazın..."></textarea>
-                <button onclick="publishAnnouncement()" style="background:#00e5ff; color:#000;">Duyuruyu Canlıya Al</button>
-            </div>
-
-            <div id="admin-zone" class="panel" style="display:none; border: 2px solid #ff9900;">
-                <span style="background:#ff9900; color:#fff; padding:2px 6px; font-size:8pt; font-weight:bold; border-radius:3px;">ADMIN KONSOLU</span>
-                <h2 style="color:#ff9900; border-left-color:#ff9900; margin-top:10px;">Kullanıcı Şifre Yönetimi & Sürüm Girişi</h2>
-                
-                <label>Standart Kullanıcı (User) Yeni Şifresi:</label>
-                <input type="password" id="admin-sub-password" placeholder="Yeni güçlü şifre girin">
-                <button onclick="changeUserPasswordByAdmin()" class="btn-warning">Standart Şifreyi Güncelle</button>
-
-                <label style="margin-top:20px;">Sürüm Notlarını Güncelle:</label>
-                <textarea id="admin-notes-input" rows="3" placeholder="Sistemde yapılan değişiklikleri buraya girin..."></textarea>
-                <button onclick="publishReleaseNotes()" style="background:#ff9900; color:#fff;">Sürüm Notlarını Ekle</button>
-            </div>
-
-            <div class="panel">
-                <h2>💻 Terminal ISO Derleme Kod Merkezi</h2>
-                <p style="color:#aaa; font-size:9.5pt;">Aşağıdan dil seçerek terminal derleme kodunuzu alın. İşlemler sadece CMD üzerinden yürütülür:</p>
-                
-                <label>Sistem Dili:</label>
-                <select id="iso-lang" onchange="buildCmdCode()">
-                    <option value="tr">Türkçe (TR-OHOS)</option>
-                    <option value="en">İngilizce (EN-OHOS)</option>
-                </select>
-
-                <div class="cmd-box">
-                    <strong>CMD KODUNUZ:</strong><br><br>
-                    <span id="cmd-command-text" style="color:#00e5ff;"></span>
-                </div>
-            </div>
-
-            <div class="panel" style="background: rgba(5, 7, 14, 0.6); text-align: center;">
-                <p id="active-counter-text" style="font-size:10pt; color:#aaa; margin-top:0;">Kalan İndirme Sayaç Sınırı: 10</p>
-                <div style="width: 100%; background-color: #1e2538; border-radius: 10px; overflow: hidden;">
-                    <div id="progress-bar-fill" style="width: 75%; height: 22px; background: linear-gradient(90deg, #00e5ff, #0088ff); line-height: 22px; color: #000; font-weight: bold; font-size:9pt; transition: width 0.4s;">
-                        Sistem Yapılma Yüzdesi: %75
-                    </div>
-                </div>
-            </div>
-
+        <div class="input-line">
+            <span class="prompt" id="terminal-prompt">guest@cordex:~$&nbsp;</span>
+            <input type="text" id="cmd-input" autofocus autocomplete="off" placeholder="Komut yazın...">
         </div>
     </div>
 
     <script>
-        // Giriş Veritabanı Değişkenleri
+        // Giriş ve Sistem Değişkenleri
         const R_USER = "daras"; const R_PASS = "HuaweiRoot!2026*Cordex";
         const A_USER = "admin"; const A_PASS = "AdminCordex_2026#Secure";
         let U_PASS = "User_CordexOS$2026!";
 
-        let giris_yapan_rol = "";
+        let loggedInRole = "";
+        let globalProgress = 75;
+        let downloadCounter = 10;
+        let activeProfile = ""; // gaming veya general
 
-        // GİRİŞ KONTROL SİSTEMİ
-        function checkCredentials() {
-            const u = document.getElementById("username").value.trim();
-            const p = document.getElementById("password").value;
+        const history = document.getElementById("terminal-history");
+        const cmdInput = document.getElementById("cmd-input");
+        const promptSpan = document.getElementById("terminal-prompt");
 
-            if (u === R_USER && p === R_PASS) {
-                giris_yapan_rol = "root";
-                alert("Hoş geldin daras! Tam Root ve OP yetkileri yüklendi.");
-                activateDashboard("👑 HUAWEI ROOT (daras)");
-                document.getElementById("root-zone").style.display = "block";
-            } 
-            else if (u === A_USER && p === A_PASS) {
-                giris_yapan_rol = "admin";
-                alert("Yönetici girişi başarılı.");
-                activateDashboard("🛠️ SYSTEM ADMIN");
-                document.getElementById("admin-zone").style.display = "block";
-            } 
-            else if (u === "user" && p === U_PASS) {
-                giris_yapan_rol = "user";
-                alert("Standart kullanıcı paneli açılıyor.");
-                activateDashboard("👤 STANDART USER");
-            } 
-            else {
-                alert("HATA: Bilgiler uyuşmuyor!");
+        // Giriş Dinleyicisi
+        cmdInput.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                const commandText = cmdInput.value.trim();
+                if (commandText !== "") {
+                    handleCommand(commandText);
+                }
+                cmdInput.value = "";
             }
+        });
+
+        function printLine(text, typeClass = "") {
+            const line = document.createElement("div");
+            line.className = "output-line " + typeClass;
+            line.innerHTML = text;
+            history.appendChild(line);
+            history.scrollTop = history.scrollHeight;
         }
 
-        function activateDashboard(roleTitle) {
-            document.getElementById("login-page").style.display = "none";
-            document.getElementById("main-dashboard").style.display = "block";
-            document.getElementById("role-status").innerHTML = `Mevcut Yetki Seviyesi: <span style="color:#00e5ff;">${roleTitle}</span>`;
-            buildCmdCode();
-        }
+        // Komut Yönetim Motoru
+        function handleCommand(rawCmd) {
+            // Komutu ekrana bas
+            const currentPrompt = promptSpan.innerHTML;
+            printLine(currentPrompt + rawCmd, "system-msg");
 
-        // ROOT: GÜÇ KOMUTLARI
-        function rootPower(action) {
-            if(action === 'restart') {
-                alert("⚠️ SİSTEM UYARISI: Cordex derleme sunucuları yeniden başlatılıyor...");
-            } else if(action === 'lock') {
-                alert("🔒 SİSTEM KİLİTLENDİ: İkinci bir emre kadar tüm terminal giriş tokenları donduruldu.");
-            } else if(action === 'release') {
-                alert("🚀 ISO RELEASE: Hazırlanan OpenHarmony ISO imajı ana sunucuda genel yayına açıldı!");
-            }
-        }
+            const parts = rawCmd.split(" ");
+            const baseCmd = parts[0].toLowerCase();
 
-        // ROOT: YÜZDE VE SAYAÇ AYARLAMA
-        function updateRootMetrics() {
-            const pct = document.getElementById("root-progress-input").value;
-            const cnt = document.getElementById("root-counter-input").value;
-
-            if(pct >= 0 && pct <= 100) {
-                const fill = document.getElementById("progress-bar-fill");
-                fill.style.width = pct + "%";
-                fill.innerText = "Sistem Yapılma Yüzdesi: %" + pct;
-            }
-            document.getElementById("active-counter-text").innerText = "Kalan İndirme Sayaç Sınırı: " + cnt;
-            alert("Sayaç ve yüzdelik veriler sisteme kilitlendi.");
-        }
-
-        // ROOT: DUYURU YAPMA
-        function publishAnnouncement() {
-            const msg = document.getElementById("root-announcement-input").value;
-            if(msg.trim() === "") return alert("Mesaj boş olamaz.");
-            document.getElementById("live-announcement").innerText = msg;
-            alert("Duyuru tüm kullanıcı ekranlarına gönderildi.");
-            document.getElementById("root-announcement-input").value = "";
-        }
-
-        // ADMIN: KULLANICI ŞİFRESİ DEĞİŞTİRME
-        function changeUserPasswordByAdmin() {
-            const newP = document.getElementById("admin-sub-password").value;
-            if(newP.length < 12) {
-                alert("HATA: Güvenlik politikası gereği şifre en az 12 karakter olmalıdır!");
+            // 1. HERKESE AÇIK TEMEL KOMUTLAR
+            if (baseCmd === "help") {
+                printLine("--- KULLANILABİLİR KOMUT LİSTESİ ---");
+                printLine("clear                          - Ekranı temizler");
+                printLine("login [user] [pass]            - Sisteme kimlik doğrulaması yapar");
+                printLine("status                         - Yapılma yüzdesi ve indirme sınırını gösterir");
+                printLine("profile [gaming/general]       - Sistem kullanım amacını seçer");
+                printLine("build --compile                - Seçili profile göre ISO derleme kodu üretir");
+                
+                if (loggedInRole === "root") {
+                    printLine("\n--- 👑 ROOT YETKİLERİ ---", "root-msg");
+                    printLine("restart                        - Sunucuları yeniden başlatır");
+                    printLine("lock                           - Tüm sistemi güvenli moda kilitler");
+                    printLine("release                        - ISO'yu resmi olarak yayınlar");
+                    printLine("setprogress [0-100]            - Sistem yapılma yüzdesini günceller");
+                    printLine("setcounter [sayı]              - Kalan indirme sınırını ayarlar");
+                    printLine("announce [mesaj]               - Canlı sistem duyurusu yayınlar");
+                }
+                if (loggedInRole === "admin") {
+                    printLine("\n--- 🛠️ ADMIN YETKİLERİ ---", "admin-msg");
+                    printLine("setuserpass [yeni_şifre]       - Standart kullanıcı şifresini değiştirir");
+                    printLine("addnotes [notlar]              - Sürüm notları ekler");
+                }
                 return;
             }
-            U_PASS = newP;
-            alert("BAŞARILI: Standart kullanıcı giriş şifresi güncellendi.");
-            document.getElementById("admin-sub-password").value = "";
-        }
 
-        // ADMIN: SÜRÜM NOTLARI GİRME
-        function publishReleaseNotes() {
-            const notes = document.getElementById("admin-notes-input").value;
-            if(notes.trim() === "") return alert("Not alanı boş bırakılamaz.");
-            document.getElementById("release-notes").innerText = notes;
-            alert("Sürüm notları sisteme başarıyla eklendi.");
-            document.getElementById("admin-notes-input").value = "";
-        }
+            if (baseCmd === "clear") {
+                history.innerHTML = "";
+                return;
+            }
 
-        // KULLANICI SEVİYESİNE GÖRE CMD KODU ÜRETİMİ
-        function buildCmdCode() {
-            const lang = document.getElementById("iso-lang").value;
-            const token = "CTX_" + Math.random().toString(36).substring(2, 8).toUpperCase();
-            const txt = document.getElementById("cmd-command-text");
+            if (baseCmd === "login") {
+                if (parts.length < 3) {
+                    printLine("HATA: Eksik parametre! Kullanım: login [kullanıcı] [şifre]", "error-msg");
+                    return;
+                }
+                const user = parts[1];
+                const pass = parts[2];
 
-            if(giris_yapan_rol === "root") {
-                txt.innerText = `ohos-compiler.exe --mode=full-op --lang=${lang} --auth=${token} --bypass-license`;
-            } else if(giris_yapan_rol === "admin") {
-                txt.innerText = `ohos-compiler.exe --mode=gaming-perf --lang=${lang} --auth=${token}`;
+                if (user === R_USER && pass === R_PASS) {
+                    loggedInRole = "root";
+                    promptSpan.innerHTML = "root@daras_op:~#&nbsp;";
+                    printLine("Hoş geldin daras! Sınırsız Huawei Root yetkileri enjekte edildi.", "success-msg");
+                } else if (user === A_USER && pass === A_PASS) {
+                    loggedInRole = "admin";
+                    promptSpan.innerHTML = "admin@cordex_core:~$&nbsp;";
+                    printLine("Yönetici girişi başarılı. Sistem Admin yetkileri aktif.", "success-msg");
+                } else if (user === "user" && pass === U_PASS) {
+                    loggedInRole = "user";
+                    promptSpan.innerHTML = "user@cordex_net:~$&nbsp;";
+                    printLine("Standart kullanıcı girişi başarılı.", "success-msg");
+                } else {
+                    printLine("HATA: Kullanıcı adı veya şifre uyuşmuyor!", "error-msg");
+                }
+                return;
+            }
+
+            if (baseCmd === "status") {
+                printLine(`📊 ANLIK CORDEX VERİLERİ:`);
+                printLine(`-> Çekirdek Yapılma Yüzdesi: %${globalProgress}`);
+                printLine(`-> Kalan İndirme Sayaç Sınırı: ${downloadCounter} adet`);
+                if(activeProfile) printLine(`-> Aktif Derleme Profili: [${activeProfile.toUpperCase()}]`);
+                return;
+            }
+
+            if (baseCmd === "profile") {
+                if (parts.length < 2) {
+                    printLine("HATA: Lütfen bir profil seçin! (gaming / general)", "error-msg");
+                    return;
+                }
+                const choice = parts[1].toLowerCase();
+                if (choice === "gaming" || choice === "general") {
+                    activeProfile = choice;
+                    printLine(`Başarılı: Çekirdek kullanım profili [${choice.toUpperCase()}] olarak belirlendi.`, "success-msg");
+                } else {
+                    printLine("HATA: Geçersiz profil tipi! Sadece 'gaming' veya 'general' yazabilirsiniz.", "error-msg");
+                }
+                return;
+            }
+
+            if (baseCmd === "build") {
+                if (!activeProfile) {
+                    printLine("HATA: Önce 'profile [gaming/general]' komutu ile kullanım amacını seçmelisiniz!", "error-msg");
+                    return;
+                }
+                if (parts[1] !== "--compile") {
+                    printLine("İpucu: ISO derleme kodunu üretmek için 'build --compile' yazın.", "error-msg");
+                    return;
+                }
+
+                const token = "CTX_" + Math.random().toString(36).substring(2, 8).toUpperCase();
+                printLine("⚙️ BİLGİSAYARINIZDA ÇALIŞTIRMANIZ GEREKEN CMD KODU ÜRETİLDİ:", "success-msg");
+                
+                if (loggedInRole === "root") {
+                    printLine(`>> ohos-compiler.exe --mode=full-op --profile=${activeProfile} --auth=${token} --bypass-license`);
+                } else if (loggedInRole === "admin") {
+                    printLine(`>> ohos-compiler.exe --mode=gaming-perf --profile=${activeProfile} --auth=${token}`);
+                } else {
+                    if (activeProfile === "gaming") {
+                        printLine("KBR ENGELLİ: Standart kullanıcılar Gaming Kernel profili kodu alamaz!", "error-msg");
+                    } else {
+                        printLine(`>> ohos-compiler.exe --mode=standard --profile=general --auth=${token}`);
+                    }
+                }
+                return;
+            }
+
+            // 2. SADECE ROOT KOMUTLARI
+            if (loggedInRole === "root") {
+                if (baseCmd === "restart") {
+                    printLine("⚠️ UYARI: Cordex OpenHarmony derleme sunucuları yeniden başlatılıyor...", "error-msg");
+                    return;
+                }
+                if (baseCmd === "lock") {
+                    printLine("🔒 SİSTEM KİLİTLENDİ: Tüm dış terminal giriş bağlantıları donduruldu.", "error-msg");
+                    return;
+                }
+                if (baseCmd === "release") {
+                    printLine("🚀 ISO RELEASE: Hazırlanan OpenHarmony derlemesi ana sunucuda genel yayına açıldı!", "success-msg");
+                    return;
+                }
+                if (baseCmd === "setprogress") {
+                    const val = parseInt(parts[1]);
+                    if (val >= 0 && val <= 100) {
+                        globalProgress = val;
+                        printLine(`Asıl yapılma yüzdesi %${val} olarak güncellendi.`, "success-msg");
+                    } else {
+                        printLine("HATA: Değer 0 ile 100 arasında olmalıdır!", "error-msg");
+                    }
+                    return;
+                }
+                if (baseCmd === "setcounter") {
+                    const val = parseInt(parts[1]);
+                    if (!isNaN(val)) {
+                        downloadCounter = val;
+                        printLine(`İndirme sınır sayacı ${val} olarak güncellendi.`, "success-msg");
+                    } else {
+                        printLine("HATA: Geçerli bir sayı girin!", "error-msg");
+                    }
+                    return;
+                }
+                if (baseCmd === "announce") {
+                    const msg = parts.slice(1).join(" ");
+                    if (!msg) return printLine("HATA: Duyuru içeriği boş olamaz!", "error-msg");
+                    printLine(`📢 CANLI DUYURU YAYINLANDI: ${msg}`, "success-msg");
+                    return;
+                }
+            }
+
+            // 3. SADECE ADMIN KOMUTLARI
+            if (loggedInRole === "admin") {
+                if (baseCmd === "setuserpass") {
+                    const newP = parts[1];
+                    if (!newP || newP.length < 12) {
+                        printLine("HATA: Güvenlik politikası gereği şifre en az 12 karakter olmalıdır!", "error-msg");
+                        return;
+                    }
+                    U_PASS = newP;
+                    printLine("BAŞARILI: Standart kullanıcı giriş şifresi değiştirildi.", "success-msg");
+                    return;
+                }
+                if (baseCmd === "addnotes") {
+                    const notes = parts.slice(1).join(" ");
+                    if (!notes) return printLine("HATA: Not içeriği girin!", "error-msg");
+                    printLine(`📝 SÜRÜM NOTLARI GÜNCELLENDİ: ${notes}`, "success-msg");
+                    return;
+                }
+            }
+
+            // Yetkisiz veya Bilinmeyen Komut Durumu
+            if (["restart", "lock", "release", "setprogress", "setcounter", "announce"].includes(baseCmd) && loggedInRole !== "root") {
+                printLine("KBR KRİTİK HATA: Bu komutu çalıştırmak için Huawei Root (daras) yetkisine sahip olmalısınız!", "error-msg");
+            } else if (["setuserpass", "addnotes"].includes(baseCmd) && loggedInRole !== "admin") {
+                printLine("HATA: Bu komut yalnızca Sistem Admin yetkilerine açıktır!", "error-msg");
             } else {
-                txt.innerText = `ohos-compiler.exe --mode=standard --lang=${lang} --auth=${token}`;
+                printLine(`HATA: '${baseCmd}' geçerli bir sistem komutu olarak tanınmadı. Yardım için 'help' yazın.`, "error-msg");
             }
         }
     </script>
