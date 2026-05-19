@@ -9,6 +9,7 @@
         
         body {
             margin: 0; padding: 0;
+            /* OpenHarmony Masaüstü Duvar Kağıdı Estetiği (Derin Uzay Mavisi ve Neon Parlamalar) */
             background: radial-gradient(circle at 80% 20%, #1e295d 0%, #0a0d22 60%, #02040a 100%);
             font-family: 'Segoe UI', Arial, sans-serif; color: #e1e4ea;
             min-height: 100vh; overflow-y: scroll;
@@ -167,10 +168,10 @@
     </div>
 
     <script>
-        // Giriş Veritabanı Değişkenleri (Dokunulmadı)
+        // Giriş Veritabanı Değişkenleri
         const R_USER = "daras"; const R_PASS = "HuaweiRoot!2026*Cordex";
         const A_USER = "admin"; const A_PASS = "AdminCordex_2026#Secure";
-        let U_PASS = "User_CordexOS$2026!"; // Admin tarafından değiştirilebilir
+        let U_PASS = "User_CordexOS$2026!";
 
         let giris_yapan_rol = "";
 
@@ -219,7 +220,7 @@
             }
         }
 
-        // ROOT: YÜZDE VE SAYAÇ AYARLAMA (SADECE ROOT)
+        // ROOT: YÜZDE VE SAYAÇ AYARLAMA
         function updateRootMetrics() {
             const pct = document.getElementById("root-progress-input").value;
             const cnt = document.getElementById("root-counter-input").value;
@@ -233,7 +234,7 @@
             alert("Sayaç ve yüzdelik veriler sisteme kilitlendi.");
         }
 
-        // ROOT: DUYURU YAPMA (SADECE ROOT)
+        // ROOT: DUYURU YAPMA
         function publishAnnouncement() {
             const msg = document.getElementById("root-announcement-input").value;
             if(msg.trim() === "") return alert("Mesaj boş olamaz.");
