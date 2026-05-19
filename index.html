@@ -11,14 +11,16 @@
             margin: 0; padding: 0;
             width: 100%;
             height: 100%;
+            overflow: hidden; /* Sayfa kaydırmayı engelle */
         }
 
         body {
-            /* Arka plan görsel yolu ve hata giderici tam ekran ayarları */
+            /* Arka plan görsel yolu ve tam ekran ayarları */
             background-image: url('ArkaPlan/arkaplan.jpg.png') !important;
             background-repeat: no-repeat !important;
             background-position: center center !important;
-            background-size: cover !important;
+            /* Fotonun ekrana tam oturmasını ve küçülmesini sağlayan kilit ayar */
+            background-size: cover !important; 
             background-attachment: fixed !important;
             background-color: #02040a; 
             font-family: 'Courier New', Courier, monospace;
@@ -26,51 +28,55 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
         }
 
-        /* Yarı Saydam CMD Penceresi */
+        /* Küçültülmüş ve Yarı Saydam CMD Penceresi */
         .terminal-window {
-            width: 90%;
-            max-width: 850px;
-            height: 80vh;
+            /* Terminal boyutlarını isteğin üzerine küçülttük */
+            width: 80%; /* Genişlik %90'dan %80'e düştü */
+            max-width: 650px; /* Maksimum genişlik 850px'den 650px'e düştü */
+            height: 60vh; /* Yükseklik %80'den %60'a düştü */
+            
             background: rgba(10, 15, 28, 0.88);
             border: 2px solid #00e5ff;
-            box-shadow: 0 0 30px rgba(0, 229, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.25);
             border-radius: 8px;
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             display: flex;
             flex-direction: column;
+            
+            /* Terminal penceresini hafifçe yukarı aldık */
+            transform: translateY(-5%); 
         }
 
         .terminal-header {
             background: rgba(0, 229, 255, 0.15);
-            padding: 12px;
+            padding: 10px; /* Padding biraz azaldı */
             border-bottom: 1px solid #00e5ff;
             display: flex;
             justify-content: space-between;
             align-items: center;
             color: #00e5ff;
-            font-size: 11pt;
+            font-size: 10pt; /* Font boyutu biraz küçüldü */
             font-weight: bold;
         }
 
         .window-dots span {
             display: inline-block;
-            width: 12px; height: 12px;
+            width: 10px; height: 10px; /* Noktalar küçüldü */
             border-radius: 50%; margin-left: 5px;
         }
 
         .terminal-body {
-            padding: 20px;
+            padding: 15px; /* Padding azaldı */
             flex: 1;
             overflow-y: auto;
-            font-size: 11pt;
-            line-height: 1.6;
+            font-size: 10pt; /* Yazılar biraz küçüldü */
+            line-height: 1.5;
         }
 
-        .output-line { margin-bottom: 8px; white-space: pre-wrap; }
+        .output-line { margin-bottom: 6px; white-space: pre-wrap; }
         .system-msg { color: #00e5ff; }
         .error-msg { color: #ff0055; font-weight: bold; }
         .success-msg { color: #00ff66; }
@@ -79,7 +85,7 @@
 
         .input-line {
             display: flex;
-            padding: 15px 20px;
+            padding: 10px 15px; /* Padding azaldı */
             background: rgba(0, 0, 0, 0.5);
             border-top: 1px solid rgba(0, 229, 255, 0.2);
             align-items: center;
@@ -87,7 +93,7 @@
 
         .prompt {
             color: #00e5ff;
-            margin-right: 10px;
+            margin-right: 8px;
             font-weight: bold;
             white-space: nowrap;
         }
@@ -97,7 +103,7 @@
             border: none;
             color: #ffffff;
             font-family: inherit;
-            font-size: 12pt;
+            font-size: 11pt; /* Giriş yazısı biraz küçüldü */
             width: 100%;
             outline: none;
         }
@@ -106,245 +112,4 @@
 <body>
 
     <div class="terminal-window">
-        <div class="terminal-header">
-            <span>💻 Cordex OS v3.1 - Kernel Dağıtım Terminali</span>
-            <div class="window-dots">
-                <span style="background: #ff5f56;"></span>
-                <span style="background: #ffbd2e;"></span>
-                <span style="background: #27c93f;"></span>
-            </div>
-        </div>
-        
-        <div class="terminal-body" id="terminal-history">
-            <div class="output-line system-msg">*** CORDEX KERNEL ENJEKSİYON MERKEZİNE HOŞ GELDİNİZ ***</div>
-            <div class="output-line">Sistem Durumu: Çevrimiçi (Online)</div>
-            <div class="output-line">Lütfen devam etmek için giriş yapın.</div>
-            <div class="output-line" style="color: #888;">Komut yardımı için 'help' yazın.</div>
-            <div class="output-line" style="color: #ff9900;">Giriş Formatı: login [kullanıcı_adı] [şifre]</div>
-        </div>
-
-        <div class="input-line">
-            <span class="prompt" id="terminal-prompt">guest@cordex:~$&nbsp;</span>
-            <input type="text" id="cmd-input" autofocus autocomplete="off" placeholder="Komut yazın...">
-        </div>
-    </div>
-
-    <script>
-        const R_USER = "daras"; const R_PASS = "HuaweiRoot!2026*Cordex";
-        const A_USER = "admin"; const A_PASS = "AdminCordex_2026#Secure";
-        let U_PASS = "User_CordexOS$2026!";
-
-        let loggedInRole = "";
-        let globalProgress = 75;
-        let downloadCounter = 10;
-        let activeProfile = ""; 
-
-        const history = document.getElementById("terminal-history");
-        const cmdInput = document.getElementById("cmd-input");
-        const promptSpan = document.getElementById("terminal-prompt");
-
-        cmdInput.addEventListener("keydown", function(e) {
-            if (e.key === "Enter") {
-                const commandText = cmdInput.value.trim();
-                if (commandText !== "") {
-                    handleCommand(commandText);
-                }
-                cmdInput.value = "";
-            }
-        });
-
-        function printLine(text, typeClass = "") {
-            const line = document.createElement("div");
-            line.className = "output-line " + typeClass;
-            line.innerHTML = text;
-            history.appendChild(line);
-            history.scrollTop = history.scrollHeight;
-        }
-
-        function handleCommand(rawCmd) {
-            const currentPrompt = promptSpan.innerHTML;
-            printLine(currentPrompt + rawCmd, "system-msg");
-
-            const parts = rawCmd.split(" ");
-            const baseCmd = parts[0].toLowerCase();
-
-            if (baseCmd === "help") {
-                printLine("--- KULLANILABİLİR KOMUT LİSTESİ ---");
-                printLine("clear                          - Ekranı temizler");
-                printLine("login [user] [pass]            - Sisteme kimlik doğrulaması yapar");
-                printLine("status                         - Yapılma yüzdesi ve indirme sınırını gösterir");
-                printLine("profile [gaming/general]       - Sistem kullanım amacını (Profil) seçer");
-                printLine("build --compile                - Seçili profile göre ISO derleme kodu üretir");
-                
-                if (loggedInRole === "root") {
-                    printLine("\n--- 👑 ROOT YETKİLERİ ---", "root-msg");
-                    printLine("restart                        - Sunucuları yeniden başlatır");
-                    printLine("lock                           - Tüm sistemi güvenli moda kilitler");
-                    printLine("release                        - ISO'yu resmi olarak yayınlar");
-                    printLine("setprogress [0-100]            - Sistem yapılma yüzdesini günceller");
-                    printLine("setcounter [sayı]              - Kalan indirme sınırını ayarlar");
-                    printLine("announce [mesaj]               - Canlı sistem duyurusu yayınlar");
-                }
-                if (loggedInRole === "admin") {
-                    printLine("\n--- 🛠️ ADMIN YETKİLERİ ---", "admin-msg");
-                    printLine("setuserpass [yeni_şifre]       - Standart kullanıcı şifresini değiştirir");
-                    printLine("addnotes [notlar]              - Sürüm notları ekler");
-                }
-                return;
-            }
-
-            if (baseCmd === "clear") {
-                history.innerHTML = "";
-                return;
-            }
-
-            if (baseCmd === "login") {
-                if (parts.length < 3) {
-                    printLine("HATA: Eksik parametre! Kullanım: login [kullanıcı] [şifre]", "error-msg");
-                    return;
-                }
-                const user = parts[1];
-                const pass = parts[2];
-
-                if (user === R_USER && pass === R_PASS) {
-                    loggedInRole = "root";
-                    promptSpan.innerHTML = "root@daras_op:~#&nbsp;";
-                    printLine("Hoş geldin daras! Sınırsız Huawei Root yetkileri enjekte edildi.", "success-msg");
-                } else if (user === A_USER && pass === A_PASS) {
-                    loggedInRole = "admin";
-                    promptSpan.innerHTML = "admin@cordex_core:~$&nbsp;";
-                    printLine("Yönetici girişi başarılı. Sistem Admin yetkileri aktif.", "success-msg");
-                } else if (user === "user" && pass === U_PASS) {
-                    loggedInRole = "user";
-                    promptSpan.innerHTML = "user@cordex_net:~$&nbsp;";
-                    printLine("Standart kullanıcı girişi başarılı.", "success-msg");
-                } else {
-                    printLine("HATA: Kullanıcı adı veya şifre uyuşmuyor!", "error-msg");
-                }
-                return;
-            }
-
-            if (baseCmd === "status") {
-                printLine(`📊 ANLIK CORDEX VERİLERİ:`);
-                printLine(`-> Çekirdek Yapılma Yüzdesi: %${globalProgress}`);
-                printLine(`-> Kalan İndirme Sayaç Sınırı: ${downloadCounter} adet`);
-                if(activeProfile) printLine(`-> Aktif Derleme Profili: [${activeProfile.toUpperCase()}]`);
-                return;
-            }
-
-            if (baseCmd === "profile") {
-                if (parts.length < 2) {
-                    printLine("HATA: Lütfen bir profil seçin! (gaming / general)", "error-msg");
-                    return;
-                }
-                const choice = parts[1].toLowerCase();
-                if (choice === "gaming" || choice === "general") {
-                    activeProfile = choice;
-                    printLine(`Başarılı: Çekirdek kullanım profili [${choice.toUpperCase()}] olarak belirlendi.`, "success-msg");
-                } else {
-                    printLine("HATA: Geçersiz profil tipi! Sadece 'gaming' veya 'general' yazabilirsiniz.", "error-msg");
-                }
-                return;
-            }
-
-            if (baseCmd === "build") {
-                if (!activeProfile) {
-                    printLine("HATA: Önce 'profile [gaming/general]' komutu ile kullanım amacını seçmelisiniz!", "error-msg");
-                    return;
-                }
-                if (parts[1] !== "--compile") {
-                    printLine("İpucu: ISO derleme kodunu üretmek için 'build --compile' yazın.", "error-msg");
-                    return;
-                }
-
-                const token = "CTX_" + Math.random().toString(36).substring(2, 8).toUpperCase();
-                printLine("⚙️ BİLGİSAYARINIZDA ÇALIŞTIRMANIZ GEREKEN CMD KODU ÜRETİLDİ:", "success-msg");
-                
-                if (loggedInRole === "root") {
-                    printLine(`>> ohos-compiler.exe --mode=full-op --profile=${activeProfile} --auth=${token} --bypass-license`);
-                } else if (loggedInRole === "admin") {
-                    printLine(`>> ohos-compiler.exe --mode=gaming-perf --profile=${activeProfile} --auth=${token}`);
-                } else {
-                    if (activeProfile === "gaming") {
-                        printLine("KBR ENGELLİ: Standart kullanıcılar Gaming Kernel profili kodu alamaz!", "error-msg");
-                    } else {
-                        printLine(`>> ohos-compiler.exe --mode=standard --profile=general --auth=${token}`);
-                    }
-                }
-                return;
-            }
-
-            // ROOT KOMUTLARI
-            if (loggedInRole === "root") {
-                if (baseCmd === "restart") {
-                    printLine("⚠️ UYARI: Cordex OpenHarmony derleme sunucuları yeniden başlatılıyor...", "error-msg");
-                    return;
-                }
-                if (baseCmd === "lock") {
-                    printLine("🔒 SİSTEM KİLİTLENDİ: Tüm dış terminal giriş bağlantıları donduruldu.", "error-msg");
-                    return;
-                }
-                if (baseCmd === "release") {
-                    printLine("🚀 ISO RELEASE: Hazırlanan OpenHarmony derlemesi ana sunucuda genel yayına açıldı!", "success-msg");
-                    return;
-                }
-                if (baseCmd === "setprogress") {
-                    const val = parseInt(parts[1]);
-                    if (val >= 0 && val <= 100) {
-                        globalProgress = val;
-                        printLine(`Asıl yapılma yüzdesi %${val} olarak güncellendi.`, "success-msg");
-                    } else {
-                        printLine("HATA: Değer 0 ile 100 arasında olmalıdır!", "error-msg");
-                    }
-                    return;
-                }
-                if (baseCmd === "setcounter") {
-                    const val = parseInt(parts[1]);
-                    if (!isNaN(val)) {
-                        downloadCounter = val;
-                        printLine(`İndirme sınır sayacı ${val} olarak güncellendi.`, "success-msg");
-                    } else {
-                        printLine("HATA: Geçerli bir sayı girin!", "error-msg");
-                    }
-                    return;
-                }
-                if (baseCmd === "announce") {
-                    const msg = parts.slice(1).join(" ");
-                    if (!msg) return printLine("HATA: Duyuru içeriği boş olamaz!", "error-msg");
-                    printLine(`📢 CANLI DUYURU YAYINLANDI: ${msg}`, "success-msg");
-                    return;
-                }
-            }
-
-            // ADMIN KOMUTLARI
-            if (loggedInRole === "admin") {
-                if (baseCmd === "setuserpass") {
-                    const newP = parts[1];
-                    if (!newP || newP.length < 12) {
-                        printLine("HATA: Güvenlik politikası gereği şifre en az 12 karakter olmalıdır!", "error-msg");
-                        return;
-                    }
-                    U_PASS = newP;
-                    printLine("BAŞARILI: Standart kullanıcı giriş şifresi değiştirildi.", "success-msg");
-                    return;
-                }
-                if (baseCmd === "addnotes") {
-                    const notes = parts.slice(1).join(" ");
-                    if (!notes) return printLine("HATA: Not içeriği girin!", "error-msg");
-                    printLine(`📝 SÜRÜM NOTLARI GÜNCELLENDİ: ${notes}`, "success-msg");
-                    return;
-                }
-            }
-
-            // HATA KONTROLLERİ
-            if (["restart", "lock", "release", "setprogress", "setcounter", "announce"].includes(baseCmd) && loggedInRole !== "root") {
-                printLine("KBR KRİTİK HATA: Bu komutu çalıştırmak için Huawei Root (daras) yetkisine sahip olmalısınız!", "error-msg");
-            } else if (["setuserpass", "addnotes"].includes(baseCmd) && loggedInRole !== "admin") {
-                printLine("HATA: Bu komut yalnızca Sistem Admin yetkilerine açıktır!", "error-msg");
-            } else {
-                printLine(`HATA: '${baseCmd}' geçerli bir sistem komutu olarak tanınmadı. Yardım için 'help' yazın.`, "error-msg");
-            }
-        }
-    </script>
-</body>
-</html>
+        <div class="terminal-
