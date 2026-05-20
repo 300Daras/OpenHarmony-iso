@@ -5,28 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cordex OS / NET OpenHarmony Terminal</title>
     <style>
-      html, body {
-        margin: 0; padding: 0;
-        width: 100vw;
-        height: 100vh;
-        overflow: hidden;
-    }
+        /* CSS RESET VE TAM EKRAN AYARLARI */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Taşmaları engeller */
+        }
 
-    body {
-        margin: 0;
-        padding: 0;
-        background-image: url('ArkaPlan/arkaplan.jpg.png') !important;
-        background-size: cover !important;
-        background-position: center center !important;
-        background-repeat: no-repeat !important;
-        background-attachment: fixed !important;
-        background-color: #02040a; 
-        font-family: 'Courier New', Courier, monospace;
-        color: #00ff66;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+        body {
+            /* Arka plan görseli - 'ArkaPlan' klasöründe olduğunu varsaydım */
+            background-image: url('ArkaPlan/arkaplan.jpg.png') !important;
+            background-size: cover !important;        /* Resmi ekrana yayar */
+            background-position: center center !important; /* Resmi ortalar */
+            background-repeat: no-repeat !important;   /* Resmi tekrarlamaz */
+            background-attachment: fixed !important;  /* Resmi sabitler */
+            
+            font-family: 'Courier New', Courier, monospace;
+            color: #00ff66;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* TERMİNAL PENCERESİ */
         .terminal-window {
             width: 60%;
             max-width: 600px;
@@ -118,7 +121,6 @@
     <script>
         const R_USER = "daras", R_PASS = "HuaweiRoot!2026*Cordex";
         const A_USER = "admin", A_PASS = "AdminCordex_2026#Secure";
-        
         const history = document.getElementById("terminal-history");
         const cmdInput = document.getElementById("cmd-input");
         const promptSpan = document.getElementById("terminal-prompt");
@@ -127,40 +129,3 @@
             if (e.key === "Enter") {
                 const cmd = cmdInput.value.trim();
                 if (cmd) handleCommand(cmd);
-                cmdInput.value = "";
-            }
-        });
-
-        function printLine(text, typeClass = "") {
-            const line = document.createElement("div");
-            line.className = "output-line " + typeClass;
-            line.innerHTML = text;
-            history.appendChild(line);
-            history.scrollTop = history.scrollHeight;
-        }
-
-        function handleCommand(rawCmd) {
-            printLine(promptSpan.innerHTML + rawCmd, "system-msg");
-            const parts = rawCmd.split(" "), baseCmd = parts[0].toLowerCase();
-
-            if (baseCmd === "help") {
-                printLine("Komutlar: clear, login [user] [pass], status");
-            } else if (baseCmd === "clear") {
-                history.innerHTML = "";
-            } else if (baseCmd === "login") {
-                if (parts[1] === R_USER && parts[2] === R_PASS) {
-                    promptSpan.innerHTML = "root@daras:~# ";
-                    printLine("Hoş geldin daras!", "success-msg");
-                } else if (parts[1] === A_USER && parts[2] === A_PASS) {
-                    promptSpan.innerHTML = "admin@cordex:~# ";
-                    printLine("Admin girişi başarılı.", "success-msg");
-                } else {
-                    printLine("HATA: Yetkisiz erişim!", "error-msg");
-                }
-            } else {
-                printLine(`HATA: '${baseCmd}' tanınmadı.`, "error-msg");
-            }
-        }
-    </script>
-</body>
-</html>
