@@ -11,16 +11,15 @@
             margin: 0; padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden; /* Sayfa kaydırmayı engelle */
+            overflow: hidden;
         }
 
         body {
-            /* Arka plan görsel yolu ve tam ekran ayarları */
+            /* Tam ekran arka plan ayarları */
             background-image: url('ArkaPlan/arkaplan.jpg.png') !important;
-            background-repeat: no-repeat !important;
+            background-size: cover !important;
             background-position: center center !important;
-            /* Fotonun ekrana tam oturmasını ve küçülmesini sağlayan kilit ayar */
-            background-size: cover !important; 
+            background-repeat: no-repeat !important;
             background-attachment: fixed !important;
             background-color: #02040a; 
             font-family: 'Courier New', Courier, monospace;
@@ -30,53 +29,46 @@
             align-items: center;
         }
 
-        /* Küçültülmüş ve Yarı Saydam CMD Penceresi */
         .terminal-window {
-            /* Terminal boyutlarını isteğin üzerine küçülttük */
-            width: 80%; /* Genişlik %90'dan %80'e düştü */
-            max-width: 650px; /* Maksimum genişlik 850px'den 650px'e düştü */
-            height: 60vh; /* Yükseklik %80'den %60'a düştü */
-            
+            width: 60%;
+            max-width: 600px;
+            height: 50vh;
             background: rgba(10, 15, 28, 0.88);
             border: 2px solid #00e5ff;
             box-shadow: 0 0 20px rgba(0, 229, 255, 0.25);
             border-radius: 8px;
             backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
             display: flex;
             flex-direction: column;
-            
-            /* Terminal penceresini hafifçe yukarı aldık */
-            transform: translateY(-5%); 
         }
 
         .terminal-header {
             background: rgba(0, 229, 255, 0.15);
-            padding: 10px; /* Padding biraz azaldı */
+            padding: 8px 12px;
             border-bottom: 1px solid #00e5ff;
             display: flex;
             justify-content: space-between;
             align-items: center;
             color: #00e5ff;
-            font-size: 10pt; /* Font boyutu biraz küçüldü */
+            font-size: 9pt;
             font-weight: bold;
         }
 
         .window-dots span {
             display: inline-block;
-            width: 10px; height: 10px; /* Noktalar küçüldü */
+            width: 10px; height: 10px;
             border-radius: 50%; margin-left: 5px;
         }
 
         .terminal-body {
-            padding: 15px; /* Padding azaldı */
+            padding: 15px;
             flex: 1;
             overflow-y: auto;
-            font-size: 10pt; /* Yazılar biraz küçüldü */
-            line-height: 1.5;
+            font-size: 10pt;
+            line-height: 1.4;
         }
 
-        .output-line { margin-bottom: 6px; white-space: pre-wrap; }
+        .output-line { margin-bottom: 5px; white-space: pre-wrap; }
         .system-msg { color: #00e5ff; }
         .error-msg { color: #ff0055; font-weight: bold; }
         .success-msg { color: #00ff66; }
@@ -85,25 +77,20 @@
 
         .input-line {
             display: flex;
-            padding: 10px 15px; /* Padding azaldı */
+            padding: 10px 15px;
             background: rgba(0, 0, 0, 0.5);
             border-top: 1px solid rgba(0, 229, 255, 0.2);
             align-items: center;
         }
 
-        .prompt {
-            color: #00e5ff;
-            margin-right: 8px;
-            font-weight: bold;
-            white-space: nowrap;
-        }
+        .prompt { color: #00e5ff; margin-right: 8px; font-weight: bold; }
 
         #cmd-input {
             background: transparent;
             border: none;
             color: #ffffff;
             font-family: inherit;
-            font-size: 11pt; /* Giriş yazısı biraz küçüldü */
+            font-size: 10pt;
             width: 100%;
             outline: none;
         }
@@ -112,4 +99,73 @@
 <body>
 
     <div class="terminal-window">
-        <div class="terminal-
+        <div class="terminal-header">
+            <span>💻 Cordex OS v3.1</span>
+            <div class="window-dots">
+                <span style="background: #ff5f56;"></span>
+                <span style="background: #ffbd2e;"></span>
+                <span style="background: #27c93f;"></span>
+            </div>
+        </div>
+        
+        <div class="terminal-body" id="terminal-history">
+            <div class="output-line system-msg">*** CORDEX KERNEL ENJEKSİYON MERKEZİ ***</div>
+            <div class="output-line">Sistem Durumu: Online. Komut için 'help' yazın.</div>
+        </div>
+
+        <div class="input-line">
+            <span class="prompt" id="terminal-prompt">guest@cordex:~$&nbsp;</span>
+            <input type="text" id="cmd-input" autofocus autocomplete="off">
+        </div>
+    </div>
+
+    <script>
+        const R_USER = "daras", R_PASS = "HuaweiRoot!2026*Cordex";
+        const A_USER = "admin", A_PASS = "AdminCordex_2026#Secure";
+        let U_PASS = "User_CordexOS$2026!", loggedInRole = "";
+
+        const history = document.getElementById("terminal-history");
+        const cmdInput = document.getElementById("cmd-input");
+        const promptSpan = document.getElementById("terminal-prompt");
+
+        cmdInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                const cmd = cmdInput.value.trim();
+                if (cmd) handleCommand(cmd);
+                cmdInput.value = "";
+            }
+        });
+
+        function printLine(text, typeClass = "") {
+            const line = document.createElement("div");
+            line.className = "output-line " + typeClass;
+            line.innerHTML = text;
+            history.appendChild(line);
+            history.scrollTop = history.scrollHeight;
+        }
+
+        function handleCommand(rawCmd) {
+            printLine(promptSpan.innerHTML + rawCmd, "system-msg");
+            const parts = rawCmd.split(" "), baseCmd = parts[0].toLowerCase();
+
+            if (baseCmd === "help") {
+                printLine("Komutlar: clear, login [user] [pass], status, profile [gaming/general], build --compile");
+            } else if (baseCmd === "clear") {
+                history.innerHTML = "";
+            } else if (baseCmd === "login") {
+                if (parts[1] === R_USER && parts[2] === R_PASS) {
+                    loggedInRole = "root"; promptSpan.innerHTML = "root@daras:~# ";
+                    printLine("Hoş geldin daras!", "success-msg");
+                } else if (parts[1] === A_USER && parts[2] === A_PASS) {
+                    loggedInRole = "admin"; promptSpan.innerHTML = "admin@cordex:~# ";
+                    printLine("Admin girişi başarılı.", "success-msg");
+                } else {
+                    printLine("HATA: Yetkisiz erişim!", "error-msg");
+                }
+            } else {
+                printLine(`HATA: '${baseCmd}' tanınmadı.`, "error-msg");
+            }
+        }
+    </script>
+</body>
+</html>
