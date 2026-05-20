@@ -15,8 +15,8 @@
         }
 
         body {
-            /* Tam ekran arka plan ayarları */
-            background-image: url('ArkaPlan/arkaplan.jpg.png') !important;
+            /* Tam ekran arka plan ayarları - Görsel adı buraya tanımlandı */
+            background-image: url('image_f36078.jpg') !important;
             background-size: cover !important;
             background-position: center center !important;
             background-repeat: no-repeat !important;
@@ -72,8 +72,6 @@
         .system-msg { color: #00e5ff; }
         .error-msg { color: #ff0055; font-weight: bold; }
         .success-msg { color: #00ff66; }
-        .root-msg { color: #ff0055; }
-        .admin-msg { color: #ff9900; }
 
         .input-line {
             display: flex;
@@ -122,8 +120,7 @@
     <script>
         const R_USER = "daras", R_PASS = "HuaweiRoot!2026*Cordex";
         const A_USER = "admin", A_PASS = "AdminCordex_2026#Secure";
-        let U_PASS = "User_CordexOS$2026!", loggedInRole = "";
-
+        
         const history = document.getElementById("terminal-history");
         const cmdInput = document.getElementById("cmd-input");
         const promptSpan = document.getElementById("terminal-prompt");
@@ -149,15 +146,15 @@
             const parts = rawCmd.split(" "), baseCmd = parts[0].toLowerCase();
 
             if (baseCmd === "help") {
-                printLine("Komutlar: clear, login [user] [pass], status, profile [gaming/general], build --compile");
+                printLine("Komutlar: clear, login [user] [pass], status");
             } else if (baseCmd === "clear") {
                 history.innerHTML = "";
             } else if (baseCmd === "login") {
                 if (parts[1] === R_USER && parts[2] === R_PASS) {
-                    loggedInRole = "root"; promptSpan.innerHTML = "root@daras:~# ";
+                    promptSpan.innerHTML = "root@daras:~# ";
                     printLine("Hoş geldin daras!", "success-msg");
                 } else if (parts[1] === A_USER && parts[2] === A_PASS) {
-                    loggedInRole = "admin"; promptSpan.innerHTML = "admin@cordex:~# ";
+                    promptSpan.innerHTML = "admin@cordex:~# ";
                     printLine("Admin girişi başarılı.", "success-msg");
                 } else {
                     printLine("HATA: Yetkisiz erişim!", "error-msg");
