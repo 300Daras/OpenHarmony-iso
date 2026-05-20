@@ -8,25 +8,30 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         html, body {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Taşmaları engeller */
         }
 
         body {
+            /* Arka planı ekranın tamamını kaplayacak şekilde zorla */
             background-image: url('ArkaPlan/arkaplan.jpg.png') !important;
-            background-size: cover !important;
-            background-position: center center !important;
+            background-size: 100% 100% !important; /* Görseli esneterek tam ekran yapar */
+            background-position: center !important;
             background-repeat: no-repeat !important;
             background-attachment: fixed !important;
-            background-color: #02040a; 
+            
             font-family: 'Courier New', Courier, monospace;
             color: #00ff66;
             display: flex;
             justify-content: center;
             align-items: center;
+            /* Ekranı doldurmayı garantile */
+            min-height: 100vh;
+            width: 100vw;
         }
 
+        /* TERMİNAL PENCERESİ */
         .terminal-window {
             width: 60%;
             max-width: 600px;
