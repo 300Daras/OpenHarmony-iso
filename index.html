@@ -2,169 +2,201 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cordex OS / NET OpenHarmony Terminal</title>
+    <title>Cordex OS / NET Terminal</title>
     <style>
+        /* CSS RESET VE GENEL AYARLAR */
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: url('ArkaPlan/arkaplan.jpg.png') fixed no-repeat center/cover; 
+            background-color: #02040a; /* Resim yüklenmezse yedek renk */
+            font-family: 'Courier New', monospace; 
+            color: #00ff66; 
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; overflow: hidden;
+        }
         
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden; /* Taşmaları engeller */
-        }
-
-        body {
-            /* Arka planı ekranın tamamını kaplayacak şekilde zorla */
-            background-image: url('ArkaPlan/arkaplan.jpg.png') !important;
-            background-size: 100% 100% !important; /* Görseli esneterek tam ekran yapar */
-            background-position: center !important;
-            background-repeat: no-repeat !important;
-            background-attachment: fixed !important;
-            
-            font-family: 'Courier New', Courier, monospace;
-            color: #00ff66;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            /* Ekranı doldurmayı garantile */
-            min-height: 100vh;
-            width: 100vw;
-        }
-
         /* TERMİNAL PENCERESİ */
-        .terminal-window {
-            width: 60%;
-            max-width: 600px;
-            height: 50vh;
-            background: rgba(10, 15, 28, 0.88);
-            border: 2px solid #00e5ff;
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.25);
-            border-radius: 8px;
-            backdrop-filter: blur(8px);
-            display: flex;
-            flex-direction: column;
+        .terminal-window { 
+            width: 60%; max-width: 650px; height: 60vh; 
+            background: rgba(10, 15, 28, 0.9); 
+            border: 2px solid #00e5ff; border-radius: 8px; 
+            display: flex; flex-direction: column; 
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
         }
-
-        .terminal-header {
-            background: rgba(0, 229, 255, 0.15);
-            padding: 8px 12px;
-            border-bottom: 1px solid #00e5ff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #00e5ff;
-            font-size: 9pt;
-            font-weight: bold;
+        
+        /* MAVİ EKRAN (WIZARD) STİLİ */
+        .blue-mode { 
+            background: #0078d7 !important; 
+            color: white !important; 
+            border-color: white !important;
+            animation: pulse 2s infinite; 
         }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.95; } }
+        
+        /* İÇERİK ALANLARI */
+        .terminal-body { padding: 15px; flex: 1; overflow-y: auto; line-height: 1.4; }
+        .input-line { display: flex; padding: 10px; background: rgba(0,0,0,0.5); border-top: 1px solid rgba(0,229,255,0.3); }
+        #cmd-input { background: none; border: none; color: white; width: 100%; outline: none; font-family: inherit; font-size: 10pt; }
+        #prompt { margin-right: 8px; font-weight: bold; white-space: nowrap; }
 
-        .window-dots span {
-            display: inline-block;
-            width: 10px; height: 10px;
-            border-radius: 50%; margin-left: 5px;
-        }
-
-        .terminal-body {
-            padding: 15px;
-            flex: 1;
-            overflow-y: auto;
-            font-size: 10pt;
-            line-height: 1.4;
-        }
-
+        /* MESAJ RENKLENDİRMELERİ */
         .output-line { margin-bottom: 5px; white-space: pre-wrap; }
+        .error-msg { color: #ff3333; font-weight: bold; }
+        .success-msg { color: #00ff66; font-weight: bold; }
         .system-msg { color: #00e5ff; }
-        .error-msg { color: #ff0055; font-weight: bold; }
-        .success-msg { color: #00ff66; }
-
-        .input-line {
-            display: flex;
-            padding: 10px 15px;
-            background: rgba(0, 0, 0, 0.5);
-            border-top: 1px solid rgba(0, 229, 255, 0.2);
-            align-items: center;
-        }
-
-        .prompt { color: #00e5ff; margin-right: 8px; font-weight: bold; }
-
-        #cmd-input {
-            background: transparent;
-            border: none;
-            color: #ffffff;
-            font-family: inherit;
-            font-size: 10pt;
-            width: 100%;
-            outline: none;
-        }
+        .warning-msg { color: #ffcc00; }
     </style>
 </head>
 <body>
-
-    <div class="terminal-window">
-        <div class="terminal-header">
-            <span>💻 Cordex OS v3.1</span>
-            <div class="window-dots">
-                <span style="background: #ff5f56;"></span>
-                <span style="background: #ffbd2e;"></span>
-                <span style="background: #27c93f;"></span>
-            </div>
-        </div>
-        
+    <div class="terminal-window" id="terminal-window">
         <div class="terminal-body" id="terminal-history">
-            <div class="output-line system-msg">*** CORDEX KERNEL ENJEKSİYON MERKEZİ ***</div>
-            <div class="output-line">Sistem Durumu: Online. Komut için 'help' yazın.</div>
+            <div class="system-msg">*** CORDEX KERNEL ENJEKSİYON MERKEZİ ***</div>
+            <div class="system-msg">Sistem hazır. Komutlar: config, lock, publish, clear, help</div>
         </div>
-
         <div class="input-line">
-            <span class="prompt" id="terminal-prompt">guest@cordex:~$&nbsp;</span>
+            <span id="prompt">guest@cordex:~$ </span>
             <input type="text" id="cmd-input" autofocus autocomplete="off">
         </div>
     </div>
 
     <script>
-        const R_USER = "daras", R_PASS = "HuaweiRoot!2026*Cordex";
-        const A_USER = "admin", A_PASS = "AdminCordex_2026#Secure";
+        // SİSTEM DURUMU (STATE)
+        let state = { 
+            isLocked: false, 
+            isPublishing: false, // Spam koruması için
+            step: 0, 
+            config: { lang: "", country: "", purpose: "", touch: "", isoName: "", fs: "", isSaved: false }
+        };
+
         const history = document.getElementById("terminal-history");
         const cmdInput = document.getElementById("cmd-input");
-        const promptSpan = document.getElementById("terminal-prompt");
+        const promptSpan = document.getElementById("prompt");
+        const windowEl = document.getElementById("terminal-window");
 
-        cmdInput.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-                const cmd = cmdInput.value.trim();
-                if (cmd) handleCommand(cmd);
-                cmdInput.value = "";
-            }
-        });
-
-        function printLine(text, typeClass = "") {
-            const line = document.createElement("div");
-            line.className = "output-line " + typeClass;
-            line.innerHTML = text;
-            history.appendChild(line);
+        // EKRANA YAZDIRMA FONKSİYONU
+        function print(msg, typeClass = "output-line") {
+            const div = document.createElement("div");
+            div.className = "output-line " + typeClass;
+            div.textContent = msg;
+            history.appendChild(div);
             history.scrollTop = history.scrollHeight;
         }
 
-        function handleCommand(rawCmd) {
-            printLine(promptSpan.innerHTML + rawCmd, "system-msg");
-            const parts = rawCmd.split(" "), baseCmd = parts[0].toLowerCase();
-
-            if (baseCmd === "help") {
-                printLine("Komutlar: clear, login [user] [pass], status");
-            } else if (baseCmd === "clear") {
-                history.innerHTML = "";
-            } else if (baseCmd === "login") {
-                if (parts[1] === R_USER && parts[2] === R_PASS) {
-                    promptSpan.innerHTML = "root@daras:~# ";
-                    printLine("Hoş geldin daras!", "success-msg");
-                } else if (parts[1] === A_USER && parts[2] === A_PASS) {
-                    promptSpan.innerHTML = "admin@cordex:~# ";
-                    printLine("Admin girişi başarılı.", "success-msg");
-                } else {
-                    printLine("HATA: Yetkisiz erişim!", "error-msg");
-                }
-            } else {
-                printLine(`HATA: '${baseCmd}' tanınmadı.`, "error-msg");
-            }
+        // KURULUM MENÜSÜ GÖSTERİCİ
+        function showMenu() {
+            if (state.step === 1) print("\n1) Dil / Language: TR / EN", "system-msg");
+            else if (state.step === 2) print("\n2) Ülke / Country: Turkey / USA", "system-msg");
+            else if (state.step === 3) print("\n3) Kullanım Amacı / Purpose: Work / Gaming", "system-msg");
+            else if (state.step === 4) print("\n4) Dokunmatik mi / Touchscreen: Yes / No", "system-msg");
+            else if (state.step === 5) print("\n5) İsonun Adı / ISO Name: (Yazınız)", "system-msg");
+            else if (state.step === 6) print("\n6) Dosya Sistemi / File System: EXT4 / BTRFS", "system-msg");
         }
+
+        // KOMUT DİNLEYİCİ
+        cmdInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                const rawCmd = cmdInput.value.trim();
+                cmdInput.value = "";
+                
+                // 1. BOŞ KOMUT KORUMASI
+                if (!rawCmd) return; 
+
+                // Kullanıcının yazdığını ekrana bas
+                print(promptSpan.textContent + rawCmd);
+
+                const cmdLower = rawCmd.toLowerCase();
+
+                // 2. KİLİT KORUMASI
+                if (state.isLocked && cmdLower !== "unlock") {
+                    print("HATA: SİSTEM KİLİTLİ! İşlem yapmak için 'unlock' yazın.", "error-msg");
+                    return;
+                }
+
+                // 3. KOMUT İŞLEYİCİ
+                if (cmdLower === "lock") {
+                    state.isLocked = true;
+                    state.step = 0; // Eğer menüdeyken kilitlendiyse menüyü sıfırla
+                    windowEl.classList.remove('blue-mode');
+                    promptSpan.style.color = "#ff3333"; // Kilitliyken imleç kırmızı olur
+                    print("SİSTEM KİLİTLENDİ. Tüm yetkiler askıya alındı.", "error-msg");
+                } 
+                else if (cmdLower === "unlock") {
+                    if (!state.isLocked) {
+                        print("Sistem zaten açık.", "warning-msg");
+                        return;
+                    }
+                    state.isLocked = false;
+                    promptSpan.style.color = ""; // İmleç rengi normale döner
+                    print("Sistem kilidi açıldı. Yetkiler geri yüklendi.", "success-msg");
+                } 
+                else if (cmdLower === "clear") {
+                    history.innerHTML = "";
+                }
+                else if (cmdLower === "help") {
+                    print("Kullanılabilir Komutlar: config, lock, unlock, publish, clear, help", "system-msg");
+                }
+                else if (cmdLower === "publish") {
+                    // 4. SPAM KORUMASI
+                    if (state.isPublishing) {
+                        print("HATA: Şu anda zaten bir yayınlama işlemi devam ediyor!", "error-msg");
+                        return;
+                    }
+                    
+                    state.isPublishing = true;
+                    let count = 5;
+                    print("ISO yayınlama protokolü başlatıldı... Geri sayım:", "warning-msg");
+                    
+                    let timer = setInterval(() => {
+                        if (count > 0) {
+                            print(count + "...");
+                        } else {
+                            clearInterval(timer);
+                            print("BAŞARILI: CordexOS.iso global ağda yayında!", "success-msg");
+                            state.isPublishing = false; // İşlem bitince kilidi aç
+                        }
+                        count--;
+                    }, 1000);
+                } 
+                // 5. CONFIG WIZARD ENTEGRASYONU
+                else if (cmdLower === "config") {
+                    windowEl.classList.add('blue-mode');
+                    state.step = 1;
+                    print("=== CORDEX OS ARCH-INSTALLER ===", "system-msg");
+                    showMenu();
+                } 
+                else if (state.step > 0) {
+                    // Mavi ekran (Wizard) aktifken girilen yanıtlar
+                    if (state.step === 1) { state.config.lang = rawCmd; state.step++; showMenu(); }
+                    else if (state.step === 2) { state.config.country = rawCmd; state.step++; showMenu(); }
+                    else if (state.step === 3) { state.config.purpose = rawCmd; state.step++; showMenu(); }
+                    else if (state.step === 4) { state.config.touch = rawCmd; state.step++; showMenu(); }
+                    else if (state.step === 5) { state.config.isoName = rawCmd; state.step++; showMenu(); }
+                    else if (state.step === 6) { 
+                        state.config.fs = rawCmd; 
+                        state.step = 0; 
+                        print("\nVeriler alındı. Seçenekler: 'save and install', 'save and exit', 'don't save and exit'", "warning-msg");
+                    }
+                } 
+                else if (cmdLower === "save and install") {
+                    state.config.isSaved = true;
+                    windowEl.classList.remove('blue-mode');
+                    print("Sistem Yapılandırılıyor...", "system-msg");
+                    print(`ISO (${state.config.isoName || "CordexDefault"}) oluşturuldu. Kurulum tamamlandı!`, "success-msg");
+                } 
+                else if (cmdLower === "save and exit") {
+                    state.config.isSaved = true;
+                    windowEl.classList.remove('blue-mode');
+                    print("Ayarlar diske yazıldı ve menüden çıkıldı.", "success-msg");
+                } 
+                else if (cmdLower === "don't save and exit") {
+                    windowEl.classList.remove('blue-mode');
+                    print("İşlem iptal edildi. Değişiklikler silindi.", "error-msg");
+                } 
+                else {
+                    print(`HATA: '${rawCmd}' komutu bulunamadı. Destek için 'help' yazın.`, "error-msg");
+                }
+            }
+        });
     </script>
 </body>
 </html>
