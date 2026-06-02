@@ -2,302 +2,179 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Cordex OS / NET Terminal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code:Racoon</title>
     <style>
-        /* CSS RESET VE TAM EKRAN AYARLARI */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        html, body {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            margin: 0;
-            padding: 0;
-        }
-
+        /* Code:Racoon Karanlık Tema Tasarımı */
         body {
-            background-image: url('ArkaPlan/arkaplan.jpg.png') !important;
-            background-size: 100% 100% !important;
-            background-position: center center !important;
-            background-repeat: no-repeat !important;
-            background-attachment: fixed !important;
-            background-color: #02040a; 
+            background-color: #1e1e1e;
+            color: #f8f8f2;
             font-family: 'Courier New', Courier, monospace;
-            color: #00ff66;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            margin: 0;
+            padding: 20px;
         }
 
-        .terminal-window {
-            width: 70%;
-            max-width: 800px;
-            height: 65vh;
-            background: rgba(10, 15, 28, 0.88);
-            border: 2px solid #00e5ff;
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.25);
-            border-radius: 8px;
-            backdrop-filter: blur(8px);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .blue-mode {
-            background: #0078d7 !important;
-            border: 2px solid #ffffff !important;
-            color: #ffffff !important;
-            animation: blink-effect 2s infinite;
-        }
-        @keyframes blink-effect { 0%, 100% { opacity: 1; } 50% { opacity: 0.95; } }
-
-        .terminal-header {
-            background: rgba(0, 229, 255, 0.15);
-            padding: 8px 12px;
-            border-bottom: 1px solid #00e5ff;
+        header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: #00e5ff;
-            font-size: 9pt;
+            border-bottom: 2px solid #333;
+            padding-bottom: 15px;
+        }
+
+        .brand {
+            font-size: 26px;
             font-weight: bold;
+            color: #50fa7b; /* Canlı yeşil tonu */
         }
 
-        .window-controls { display: flex; gap: 6px; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; }
-        .dot-red { background-color: #ff5f56; }
-        .dot-yellow { background-color: #ffbd2e; }
-        .dot-green { background-color: #27c93f; }
+        .status-indicator {
+            padding: 5px 10px;
+            background: #44475a;
+            border-radius: 4px;
+            font-size: 14px;
+        }
 
-        .terminal-body {
+        /* Durduruldu Bildirimi */
+        .alert-banner {
+            background-color: #ff5555;
+            color: #ffffff;
             padding: 15px;
-            flex: 1;
-            overflow-y: auto;
-            font-size: 10pt;
-            line-height: 1.4;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            border-radius: 5px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
-        .output-line { margin-bottom: 5px; white-space: pre-wrap; }
-        .system-msg { color: #00e5ff; font-weight: bold; }
-        .error-msg { color: #ff0055; font-weight: bold; }
-        .success-msg { color: #00ff66; font-weight: bold; }
-        .warning-msg { color: #ffcc00; font-weight: bold; }
-        .menu-item { color: #ffffff; }
-
-        .input-line {
-            display: flex;
-            padding: 10px 15px;
-            background: rgba(0, 0, 0, 0.5);
-            border-top: 1px solid rgba(0, 229, 255, 0.2);
-            align-items: center;
+        /* Kod Yazma Alanı (Her zaman aktif) */
+        .editor-section {
+            margin-top: 20px;
         }
 
-        .prompt { color: #00e5ff; margin-right: 8px; font-weight: bold; white-space: nowrap; }
-        #cmd-input { background: transparent; border: none; color: #ffffff; font-family: inherit; font-size: 10pt; width: 100%; outline: none; }
+        .editor-section h3 {
+            color: #8be9fd;
+        }
+
+        textarea {
+            width: 100%;
+            height: 250px;
+            background-color: #282a36;
+            color: #f8f8f2;
+            border: 1px solid #6272a4;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            border-radius: 6px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
+        /* Eski Ekranda Açılacak Olan Tam Yetkili Guest Paneli */
+        .old-guest-panel {
+            display: none; /* Başlangıçta gizli */
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #2b2b36;
+            border-left: 5px solid #50fa7b;
+            border-radius: 4px;
+        }
+
+        .old-guest-panel h2 {
+            color: #50fa7b;
+            margin-top: 0;
+        }
+
+        /* Root Kontrol Alanı */
+        .root-control {
+            margin-top: 30px;
+            padding: 15px;
+            background: #21222c;
+            border-radius: 6px;
+            border: 1px dashed #6272a4;
+        }
+
+        input[type="password"] {
+            background: #282a36;
+            color: #fff;
+            border: 1px solid #444;
+            padding: 8px;
+            font-family: monospace;
+            border-radius: 4px;
+        }
+
+        button {
+            background: #50fa7b;
+            color: #282a36;
+            border: none;
+            padding: 8px 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        button:hover {
+            background: #8be9fd;
+        }
     </style>
 </head>
 <body>
 
-    <div class="terminal-window" id="terminal-window">
-        <div class="terminal-header">
-            <span>💻 Cordex OS v3.1</span>
-            <div class="window-controls">
-                <div class="dot dot-red"></div>
-                <div class="dot dot-yellow"></div>
-                <div class="dot dot-green"></div>
-            </div>
-        </div>
-        
-        <div class="terminal-body" id="terminal-history">
-            <div class="output-line system-msg">*** CORDEX KERNEL ENJEKSİYON MERKEZİ ***</div>
-            <div class="output-line">Sistem Durumu: Online. Komut için 'help' yazın.</div>
-        </div>
+    <header>
+        <div class="brand">Code:Racoon</div>
+        <div id="system-status" class="status-indicator">Sistem: Kısıtlı Mod</div>
+    </header>
 
-        <div class="input-line">
-            <span class="prompt" id="terminal-prompt">guest@cordex:~$&nbsp;</span>
-            <input type="text" id="cmd-input" autofocus autocomplete="off">
-        </div>
+    <div id="maintenance-notice" class="alert-banner">
+        ⚠️ PROJE GEÇİCİ OLARAK DURDURULDU
+    </div>
+
+    <div class="editor-section">
+        <h3>[SandBox] Kodlama Ekranı</h3>
+        <textarea placeholder="// Proje durdurulsa bile buraya geçici kodlarını yazıp test edebilirsin..."></textarea>
+    </div>
+
+    <div id="legacy-guest-ui" class="old-guest-panel">
+        <h2>🚀 Eski Guest Modu (Tam Yetki)</h2>
+        <p>Sistem uyandırıldı. Şu an guest kullanıcısı her türlü kernel tetiklemesini ve dosya modifikasyonunu yapabilir.</p>
+        <hr style="border-color: #444;">
+        <button onclick="alert('Çekirdek derleniyor...')">Kernel Tetikle</button>
+        <button onclick="alert('Tüm dosya izinleri açıldı!')">Guest Bypass Modunu Aç</button>
+    </div>
+
+    <div class="root-control">
+        <label for="root-pass">Geri Döndürme Komutu (Root): </label>
+        <input type="password" id="root-pass" placeholder="root anahtarını girin">
+        <button onclick="authRoot()">Sistemi Geri Döndür</button>
     </div>
 
     <script>
-        const R_USER = "daras", R_PASS = "HuaweiRoot!2026*Cordex";
-        const A_USER = "admin", A_PASS = "AdminCordex_2026#Secure";
+        // Root kontrol mekanizması
+        function authRoot() {
+            const inputVal = document.getElementById('root-pass').value;
 
-        // Sistem Durumu ve archinstall varsayılan değerleri
-        let state = { 
-            isLocked: false, 
-            isPublishing: false, 
-            mode: "normal", // 'normal' veya 'archinstall'
-            editStep: 0,    // Hangi menü numarası düzenleniyor
-            config: { 
-                lang: "TR", 
-                country: "Turkey", 
-                purpose: "Work", 
-                touch: "No", 
-                isoName: "CordexOS", 
-                fs: "EXT4" 
+            // Anahtar kelime 'root' olarak belirlendi
+            if (inputVal.trim() === "root") {
+                // 1. Durduruldu bildirimini gizle
+                document.getElementById('maintenance-notice').style.display = 'none';
+                
+                // 2. Eski tam yetkili guest ekranını görünür yap
+                document.getElementById('legacy-guest-ui').style.display = 'block';
+                
+                // 3. Sistem durumunu güncelle
+                const status = document.getElementById('system-status');
+                status.innerText = "Sistem: Root (Geri Döndürüldü)";
+                status.style.backgroundColor = "#50fa7b";
+                status.style.color = "#282a36";
+                
+                alert("Root erişimi onaylandı! Eski guest sistemi başarıyla geri yüklendi.");
+            } else {
+                alert("Hatalı Root Yetkilendirmesi! Erişim engellendi.");
             }
-        };
-
-        const history = document.getElementById("terminal-history");
-        const cmdInput = document.getElementById("cmd-input");
-        const promptSpan = document.getElementById("terminal-prompt");
-        const windowEl = document.getElementById("terminal-window");
-
-        function printLine(text, typeClass = "") {
-            const line = document.createElement("div");
-            line.className = "output-line " + typeClass;
-            line.textContent = text;
-            history.appendChild(line);
-            history.scrollTop = history.scrollHeight;
         }
-
-        // ARCHINSTALL GÖRÜNÜMÜ
-        function drawArchMenu() {
-            history.innerHTML = ""; // Ekranı temizle (Gerçek TUI mantığı)
-            printLine("=== CORDEX OS ISO-INSTALLER ===", "system-msg");
-            printLine(` 1) Dil                     : ${state.config.lang}`, "menu-item");
-            printLine(` 2) Ülke                    : ${state.config.country}`, "menu-item");
-            printLine(` 3) Ne için Kullanıcaksınız : ${state.config.purpose}`, "menu-item");
-            printLine(` 4) Cihazınız dokunmatik mi : ${state.config.touch}`, "menu-item");
-            printLine(` 5) İsonuzun adı            : ${state.config.isoName}`, "menu-item");
-            printLine(` 6) Dosya Sistemi           : ${state.config.fs}`, "menu-item");
-            printLine("--------------------------------------------------------------------------------------------------------------------", "system-msg");
-            printLine(" 7) Kaydet ve yükle", "success-msg");
-            printLine(" 8) kaydetme ve çık", "error-msg");
-            printLine(" 9) kaydet ve çık", "warning-msg");
-            printLine("\nSeçiminizi yapın (Değiştirmek için 1-6, İşlem için 7-9):", "warning-msg");
-        }
-
-        function startIsoInstall() {
-            if (state.isPublishing) return;
-            state.isPublishing = true;
-            history.innerHTML = "";
-            let count = 5;
-            let isoFile = state.config.isoName + ".iso";
-            
-            printLine("ISO Hazırlanıyor: " + isoFile, "warning-msg");
-            printLine("Dosya sistemine yazılıyor... Geri sayım:", "system-msg");
-            
-            let timer = setInterval(() => {
-                if (count > 0) {
-                    printLine(count + "...");
-                } else {
-                    clearInterval(timer);
-                    printLine("BAŞARILI: " + isoFile + " (" + state.config.fs + ") oluşturuldu ve ağa yüklendi!", "success-msg");
-                    state.isPublishing = false;
-                }
-                count--;
-            }, 1000);
-        }
-
-        cmdInput.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-                const rawCmd = cmdInput.value.trim();
-                cmdInput.value = "";
-                if (!rawCmd) return;
-
-                const fullCmdLower = rawCmd.toLowerCase();
-                const parts = rawCmd.split(" ");
-                const baseCmd = parts[0].toLowerCase();
-
-                // ---------------- NORMAL MOD ----------------
-                if (state.mode === "normal") {
-                    printLine(promptSpan.textContent + rawCmd, "system-msg");
-
-                    if (state.isLocked && baseCmd !== "unlock") {
-                        printLine("HATA: SİSTEM KİLİTLİ! İşlem yapmak için 'unlock' yazın.", "error-msg");
-                        return;
-                    }
-
-                    if (baseCmd === "isoinstall") {
-                        state.mode = "archinstall";
-                        state.editStep = 0;
-                        windowEl.classList.add('blue-mode');
-                        promptSpan.textContent = "iso-config:~# ";
-                        drawArchMenu();
-                    }
-                    else if (baseCmd === "login") {
-                        if (parts[1] === R_USER && parts[2] === R_PASS) {
-                            promptSpan.textContent = "root@daras:~# ";
-                            printLine("Hoş geldin daras! Root yetkileri aktif.", "success-msg");
-                        } else if (parts[1] === A_USER && parts[2] === A_PASS) {
-                            promptSpan.textContent = "admin@cordex:~# ";
-                            printLine("Admin girişi başarılı.", "success-msg");
-                        } else {
-                            printLine("HATA: Yetkisiz erişim veya hatalı şifre!", "error-msg");
-                        }
-                    } 
-                    else if (baseCmd === "lock") {
-                        state.isLocked = true;
-                        printLine("SİSTEM KİLİTLENDİ.", "error-msg");
-                    } 
-                    else if (baseCmd === "unlock") {
-                        state.isLocked = false;
-                        printLine("Sistem kilidi açıldı.", "success-msg");
-                    } 
-                    else if (baseCmd === "clear") {
-                        history.innerHTML = "";
-                    }
-                    else if (baseCmd === "help") {
-                        printLine("Komutlar: login, isoinstall, lock, unlock, clear, help");
-                    }
-                    else {
-                        printLine(`HATA: '${rawCmd}' komutu bulunamadı.`, "error-msg");
-                    }
-                } 
-                // ---------------- ARCHINSTALL MODU ----------------
-                else if (state.mode === "archinstall") {
-                    
-                    // Alt menüye girilmişse (Örn: 1 seçilmiş ve Dil değeri bekleniyorsa)
-                    if (state.editStep > 0) {
-                        if (state.editStep === 1) state.config.lang = rawCmd;
-                        else if (state.editStep === 2) state.config.country = rawCmd;
-                        else if (state.editStep === 3) state.config.purpose = rawCmd;
-                        else if (state.editStep === 4) state.config.touch = rawCmd;
-                        else if (state.editStep === 5) state.config.isoName = rawCmd;
-                        else if (state.editStep === 6) state.config.fs = rawCmd;
-                        
-                        state.editStep = 0; // Menüye geri dön
-                        drawArchMenu();
-                    } 
-                    // Ana menüdeyken işlem veya seçim yapılıyorsa
-                    else {
-                        if (rawCmd === "1") { state.editStep = 1; printLine("\nYeni değer girin (Dil):", "warning-msg"); }
-                        else if (rawCmd === "2") { state.editStep = 2; printLine("\nYeni değer girin (Ülke):", "warning-msg"); }
-                        else if (rawCmd === "3") { state.editStep = 3; printLine("\nYeni değer girin (Kullanım Amacı):", "warning-msg"); }
-                        else if (rawCmd === "4") { state.editStep = 4; printLine("\nYeni değer girin (Dokunmatik - Yes/No):", "warning-msg"); }
-                        else if (rawCmd === "5") { state.editStep = 5; printLine("\nYeni değer girin (ISO Adı):", "warning-msg"); }
-                        else if (rawCmd === "6") { state.editStep = 6; printLine("\nYeni değer girin (Dosya Sistemi - EXT4/BTRFS):", "warning-msg"); }
-                        
-                        // Çıkış ve İşlem Komutları (Numara veya kelime ile)
-                        else if (rawCmd === "7" || fullCmdLower === "kaydet ve yükle") {
-                            state.mode = "normal";
-                            windowEl.classList.remove('blue-mode');
-                            promptSpan.textContent = "guest@cordex:~$ ";
-                            startIsoInstall();
-                        }
-                        else if (rawCmd === "8" || fullCmdLower === "kaydetme ve çık") {
-                            state.mode = "normal";
-                            windowEl.classList.remove('blue-mode');
-                            promptSpan.textContent = "guest@cordex:~$ ";
-                            history.innerHTML = "";
-                            printLine("Kurulum iptal edildi, değişiklikler kaydedilmedi.", "error-msg");
-                        }
-                        else if (rawCmd === "9" || fullCmdLower === "kaydet ve çık") {
-                            state.mode = "normal";
-                            windowEl.classList.remove('blue-mode');
-                            promptSpan.textContent = "guest@cordex:~$ ";
-                            history.innerHTML = "";
-                            printLine("Ayarlar diske yazıldı. Kurulum menüsünden çıkıldı.", "success-msg");
-                        }
-                        else {
-                            drawArchMenu();
-                            printLine("Lütfen 1 ile 9 arasında geçerli bir değer girin.", "error-msg");
-                        }
-                    }
-                }
-            }
-        });
     </script>
+
 </body>
 </html>
