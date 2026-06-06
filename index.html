@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code:Racoon OS - Turuncu Çekirdek Paneli</title>
+    <title>Code:Racoon OS - Turuncu Çekirdek Paneli v2.4</title>
     <style>
         /* ==========================================
            1. GLOBAL TEMELLER VE DEĞİŞKENLER
@@ -18,6 +18,7 @@
             --text-main: #e5e5e8;
             --text-muted: #888899;
             --success: #00ff66;
+            --error: #ff3333;
         }
 
         * {
@@ -52,7 +53,7 @@
         }
 
         /* ==========================================
-           3. ÜST BAR (TOP BAR)
+           3. ÜST BAR (TOP BAR) & YENİ LOGO STİLİ
            ========================================== */
         header {
             background-color: var(--panel-bg);
@@ -70,17 +71,24 @@
             gap: 12px;
         }
 
-        .brand .logo {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--primary-orange), var(--dark-orange));
-            border-radius: 8px;
+        /* Gelişmiş Neon Rakun Logo Rozeti */
+        .brand .logo-container {
+            width: 38px;
+            height: 38px;
+            background: #1a1a24;
+            border: 2px solid var(--primary-orange);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            color: #fff;
-            box-shadow: 0 0 10px var(--glow-orange);
+            box-shadow: 0 0 12px var(--glow-orange);
+        }
+
+        .brand svg {
+            width: 26px;
+            height: 26px;
+            fill: var(--primary-orange);
+            filter: drop-shadow(0 0 4px var(--primary-orange));
         }
 
         .brand h1 {
@@ -118,7 +126,7 @@
         main {
             flex: 1;
             display: grid;
-            grid-template-columns: 300px 1fr 350px;
+            grid-template-columns: 320px 1fr 350px;
             gap: 15px;
             padding: 15px;
             height: calc(100vh - 58px);
@@ -168,8 +176,37 @@
             gap: 8px;
         }
 
-        .card-title i {
-            color: var(--primary-orange);
+        /* Input ve Buton Arayüz Geliştirmeleri */
+        .panel-input {
+            background: #07070a;
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 6px;
+            color: var(--text-main);
+            outline: none;
+            font-size: 0.85rem;
+            transition: border-color 0.3s;
+        }
+        .panel-input:focus {
+            border-color: var(--primary-orange);
+        }
+
+        .panel-btn {
+            background: #1a1a24;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        .panel-btn:hover {
+            background: var(--primary-orange);
+            color: #fff;
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 10px var(--glow-orange);
         }
 
         /* ==========================================
@@ -244,7 +281,7 @@
         }
 
         /* ==========================================
-           6. DONANIM MONİTÖRÜ (HARDWARE METRICS)
+           6. DONANIM MONİTÖRÜ VE METRİKLER
            ========================================== */
         .metric-group {
             display: flex;
@@ -283,6 +320,16 @@
             box-shadow: 0 0 8px var(--glow-orange);
         }
 
+        /* Ziyaretçi Donanım Ayrımı İçin İndikatör */
+        .user-hardware-badge {
+            font-size: 0.75rem;
+            color: var(--success);
+            background: rgba(0, 255, 102, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 255, 102, 0.2);
+        }
+
         /* ==========================================
            7. TERMİNAL EMÜLATÖRÜ (TERMINAL SYSTEM)
            ========================================== */
@@ -297,23 +344,24 @@
             border-radius: 6px;
             padding: 12px;
             font-family: 'Courier New', Courier, monospace;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             flex: 1;
             display: flex;
             flex-direction: column;
             overflow-y: auto;
-            gap: 6px;
+            gap: 4px;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
         }
 
         .terminal-line {
             line-height: 1.4;
             word-break: break-all;
+            white-space: pre-wrap;
         }
 
         .line-system { color: var(--primary-orange); }
         .line-success { color: var(--success); }
-        .line-error { color: #ff3333; }
+        .line-error { color: var(--error); }
         .line-info { color: #33ccff; }
 
         .terminal-input-row {
@@ -341,7 +389,7 @@
         }
 
         /* ==========================================
-           8. SİSTEM LOGLARI VE AYARLAR
+           8. SİSTEM LOGLARI VE DIZIN YAPISI
            ========================================== */
         .log-list {
             list-style: none;
@@ -365,6 +413,52 @@
             background: rgba(255, 102, 0, 0.03);
         }
 
+        /* ==========================================
+           9. EKSTRA YENİ MODÜL: SİSTEM KİLİT EKRANI OVERLAY
+           ========================================== */
+        #lockscreen-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(6, 6, 8, 0.96);
+            backdrop-filter: blur(15px);
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .lock-container {
+            text-align: center;
+            background: #121216;
+            border: 2px solid var(--error);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 0 30px rgba(255, 51, 51, 0.2);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .lock-title {
+            color: var(--error);
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .lock-timer {
+            font-size: 3.5rem;
+            font-family: monospace;
+            color: var(--text-main);
+            margin: 15px 0;
+            text-shadow: 0 0 10px rgba(255,255,255,0.1);
+        }
+
         /* Animasyon Tanımlamaları */
         @keyframes pulse {
             0% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(0, 255, 102, 0.7); }
@@ -372,36 +466,43 @@
             100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(0, 255, 102, 0); }
         }
 
-        /* Özel Kaydırma Çubukları (Scrollbar) */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: rgba(0,0,0,0.1);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-orange);
-        }
+        /* Scrollbar dizaynı */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-orange); }
     </style>
 </head>
 <body>
+
+    <div id="lockscreen-overlay">
+        <div class="lock-container">
+            <div class="lock-title">🚨 Kilit Modu Aktif</div>
+            <p id="lock-desc" style="color: var(--text-muted); font-size: 0.85rem;">Güvenlik protokolü nedeniyle sistem mühürlendi.</p>
+            <div class="lock-timer" id="countdown-display">00:00</div>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                <input type="password" id="lock-password-input" class="panel-input" placeholder="Çekirdek Şifresini Girin..." style="text-align: center;">
+                <button class="panel-btn" onclick="unlockSystem()" style="background: var(--error); border-color: var(--error); color: white;">Erişimi Onayla</button>
+            </div>
+            <p id="lock-error-msg" style="color: var(--error); font-size: 0.8rem; margin-top: 10px; display: none;">Hatalı Şifre! Erişim Reddedildi.</p>
+        </div>
+    </div>
 
     <canvas id="matrix-bg"></canvas>
 
     <header>
         <div class="brand">
-            <div class="logo">CR</div>
-            <h1>Code:Racoon <span>OS</span></h1>
+            <div class="logo-container">
+                <svg viewBox="0 0 24 24">
+                    <path d="M4,13C4,14.63 4.43,16.15 5.17,17.47L3,19.64L4.36,21L6.72,18.64C8.21,19.5 10,20 12,20C14,20 15.79,19.5 17.28,18.64L19.64,21L21,19.64L18.83,17.47C19.57,16.15 20,14.63 20,13C20,12.22 19.88,11.47 19.67,10.77L21.78,7.34L19.5,4L16.43,7.59C15.13,6.59 13.5,6 12,6C10.5,6 8.87,6.59 7.57,7.59L4.5,4L2.22,7.34L4.33,10.77C4.12,11.47 4,12.22 4,13M12,8C15.31,8 18,10.24 18,13C18,13.4 17.6,15 15.5,15C13.4,15 12,14.2 12,13C12,11.8 10.6,11 8.5,11C6.4,11 6,12.6 6,13C6,10.24 8.69,8 12,8M8.5,13C9.33,13 10,13.67 10,14.5C10,15.33 9.33,16 8.5,16C7.67,16 7,15.33 7,14.5C7,13.67 7.67,13 8.5,13M15.5,13C16.33,13 17,13.67 17,14.5C17,15.33 16.33,16 15.5,16C14.67,16 14,15.33 14,14.5C14,13.67 14.67,13 15.5,13Z"/>
+                </svg>
+            </div>
+            <h1>Code:Racoon <span>OS v2.4</span></h1>
         </div>
         <div style="display: flex; gap: 20px; align-items: center;">
             <div id="clock" style="font-family: monospace; color: var(--text-muted);">00:00:00</div>
             <div class="system-status-badge">
-                <div class="pulse-dot"></div>
+                <div class="pulse-dot" id="status-dot"></div>
                 <span id="global-status-text">Çekirdek Stabil</span>
             </div>
         </div>
@@ -409,14 +510,28 @@
 
     <main>
         <section class="panel-column">
-            <div class="card" style="flex: 1;">
+            <div class="card" style="flex: 1.2;">
                 <div class="card-header">
                     <div class="card-title">⚙️ Donanım Monitörü</div>
                 </div>
                 <div class="metric-group">
+                    <div class="metric-row" style="background: rgba(255,102,0,0.02); padding: 8px; border-radius: 6px; border: 1px dashed rgba(255,102,0,0.2);">
+                        <div class="metric-info">
+                            <span style="font-weight: bold; color: var(--primary-orange);">💻 Senin İşlemci Gücün</span>
+                            <span class="user-hardware-badge" id="user-cores-count">Algılanıyor...</span>
+                        </div>
+                        <div class="metric-info" style="margin-top: 4px;">
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">Anlık Tarayıcı İşleme Yükün:</span>
+                            <span id="user-calc-load" style="color: var(--success); font-weight: bold;">0%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-bar-fill" id="user-cpu-bar" style="width: 0%; background: linear-gradient(90deg, #00bb44, var(--success));"></div>
+                        </div>
+                    </div>
+
                     <div class="metric-row">
                         <div class="metric-info">
-                            <span>APU Yükü (Z1 Extreme)</span>
+                            <span>APU Yükü (Z1 Extreme Host)</span>
                             <span id="cpu-val">24%</span>
                         </div>
                         <div class="metric-bar-bg">
@@ -453,7 +568,7 @@
                 </div>
             </div>
 
-            <div class="card" style="flex: 1;">
+            <div class="card" style="flex: 0.8;">
                 <div class="card-header">
                     <div class="card-title">📁 Proje Dizin Yapısı</div>
                 </div>
@@ -469,18 +584,37 @@
         </section>
 
         <section class="panel-column">
-            <div class="card terminal-card">
+            <div class="card terminal-card" style="flex: 2;">
                 <div class="card-header">
                     <div class="card-title">💻 Çekirdek Terminal Konsolu</div>
                     <span style="font-size: 0.75rem; color: var(--text-muted);">Session: CodeRacoon@Core</span>
                 </div>
                 <div class="terminal-body" id="terminal-screen">
-                    <div class="terminal-line line-system">Code:Racoon OS [Versiyon 2026.06.6]</div>
-                    <div class="terminal-line line-info">Sistem başlatıldı. Terminal arayüzü aktif. Yardım için 'help' yazın.</div>
-                </div>
+                    </div>
                 <div class="terminal-input-row">
                     <span class="terminal-prompt">racoon@core:~$</span>
                     <input type="text" class="terminal-input" id="term-input" placeholder="Komut girin..." autocomplete="off">
+                </div>
+            </div>
+
+            <div class="card" style="flex: 1;">
+                <div class="card-header">
+                    <div class="card-title">🔒 Çekirdek Güvenlik & Kilit Yönetimi</div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; height: 100%; align-items: center;">
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Sistem Şifresini Güncelle</span>
+                        <input type="text" id="new-password-field" class="panel-input" placeholder="Yeni şifre yazın...">
+                        <button class="panel-btn" onclick="uiChangePassword()">Şifreyi Değiştir</button>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">Acil Durum Kilitleme Protokolü</span>
+                        <div style="display: flex; gap: 6px;">
+                            <input type="number" id="lock-time-field" class="panel-input" value="10" min="2" style="width: 70px; text-align: center;">
+                            <span style="font-size: 0.8rem; align-self: center; color: var(--text-muted);">Saniye</span>
+                        </div>
+                        <button class="panel-btn" onclick="uiTriggerLock()" style="border-color: var(--error); color: #ff5555;">Geri Sayımlı Kilitle</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -512,7 +646,7 @@
                 </div>
                 <div class="log-list" id="log-container">
                     <div class="log-item">[09:54:02] Çekirdek modülleri başarıyla doğrulandı.</div>
-                    <div class="log-item">[09:54:05] Turuncu UI paneli belleğe haritalandı.</div>
+                    <div class="log-item">[09:54:05] Turuncu UI paneli v2.4 belleğe haritalandı.</div>
                 </div>
             </div>
         </section>
@@ -528,12 +662,21 @@
         const startBtn = document.getElementById('start-inject-btn');
         const logContainer = document.getElementById('log-container');
         const globalStatus = document.getElementById('global-status-text');
+        const statusDot = document.getElementById('status-dot');
 
         let isInjecting = false;
         let injectionProgress = 0;
         const circleCircumference = 2 * Math.PI * 70; // Daire çevresi (439.8)
 
-        // --- 1. Audio Engine (Web Audio API ile Bip Sesleri) ---
+        // Güvenlik Hafıza Yönetimi (Default Şifre: racoon)
+        if(!localStorage.getItem('core_vault_pass')) {
+            localStorage.setItem('core_vault_pass', 'racoon');
+        }
+
+        let systemLocked = false;
+        let lockCountdownTimer = null;
+
+        // --- 1. Audio Engine ---
         function playBeep(freq, duration, type = 'sine') {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -551,11 +694,11 @@
                 oscillator.start();
                 oscillator.stop(audioCtx.currentTime + duration);
             } catch (e) {
-                console.log("Ses çalma tarayıcı engeline takıldı:", e);
+                console.log("Ses engellendi:", e);
             }
         }
 
-        // --- 2. Canlı Saat ve Zaman Güncelleyici ---
+        // --- 2. Canlı Saat ---
         function updateClock() {
             const now = new Date();
             document.getElementById('clock').innerText = now.toTimeString().split(' ')[0];
@@ -563,16 +706,39 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // --- 3. Donanım Monitörü Simülasyonu ---
+        // --- 3. GERÇEK İSTEMCİ İŞLEMCİ GÜCÜ ALGILAYICI & SİMÜLASYONLAR ---
+        function initUserHardwareDetector() {
+            // Gerçek çekirdek (thread) sayısını API'den okuyoruz
+            const logicalCores = navigator.hardwareConcurrency || 4;
+            document.getElementById('user-cores-count').innerText = logicalCores + " Çekirdek Saptandı";
+            
+            // Kullanıcının tarayıcı tepki hızından mikro-hesaplama yaparak dinamik bir "işleme yükü" simüle edelim
+            let lastTime = performance.now();
+            setInterval(() => {
+                const now = performance.now();
+                const delta = now - lastTime;
+                lastTime = now;
+                
+                // İdeal döngü süresi 200ms'dir. Sapma miktarına göre tarayıcı yükünü hesaplıyoruz
+                let browserLoad = Math.max(2, Math.min(98, Math.floor((delta - 200) * 1.5) + Math.floor(Math.random() * 15) + 10));
+                
+                if (systemLocked) browserLoad = 2; // Kilitliyken arka plan yükünü düşür
+                
+                document.getElementById('user-calc-load').innerText = browserLoad + "%";
+                document.getElementById('user-cpu-bar').style.width = browserLoad + "%";
+            }, 200);
+        }
+        initUserHardwareDetector();
+
+        // Host donanım simülasyonu döngüsü
         setInterval(() => {
+            if (systemLocked) return;
             if (isInjecting) {
-                // Enjeksiyon sırasında yüklenme oranları artar
                 updateMetric('cpu', Math.floor(Math.random() * 25) + 65, '%');
                 updateMetric('vram', Math.floor(Math.random() * 15) + 70, '%');
                 updateMetric('ram', Math.floor(Math.random() * 10) + 75, '%');
                 updateMetric('fan', Math.floor(Math.random() * 500) + 4800, ' RPM', 6000);
             } else {
-                // Normal kararlı çalışma dalgalanmaları
                 updateMetric('cpu', Math.floor(Math.random() * 15) + 15, '%');
                 updateMetric('vram', Math.floor(Math.random() * 8) + 35, '%');
                 updateMetric('ram', Math.floor(Math.random() * 5) + 55, '%');
@@ -581,12 +747,16 @@
         }, 2000);
 
         function updateMetric(id, val, unit, max = 100) {
-            document.getElementById(`${id}-val`).innerText = val + unit;
-            const fillPerc = (val / max) * 100;
-            document.getElementById(`${id}-bar`).style.width = `${id === 'fan' ? fillPerc : val}%`;
+            const elVal = document.getElementById(`${id}-val`);
+            const elBar = document.getElementById(`${id}-bar`);
+            if(elVal && elBar) {
+                elVal.innerText = val + unit;
+                const fillPerc = (val / max) * 100;
+                elBar.style.width = `${id === 'fan' ? fillPerc : val}%`;
+            }
         }
 
-        // --- 4. Log Ekleme Yardımcı Fonksiyonu ---
+        // --- 4. Log Sistemi ---
         function addSystemLog(text) {
             const now = new Date();
             const timeStr = now.toTimeString().split(' ')[0];
@@ -594,7 +764,6 @@
             logItem.className = 'log-item active-log';
             logItem.innerText = `[${timeStr}] ${text}`;
             
-            // Eski aktif logların stilini kaldır
             const activeLogs = logContainer.querySelectorAll('.active-log');
             activeLogs.forEach(el => el.classList.remove('active-log'));
 
@@ -602,7 +771,7 @@
             logContainer.scrollTop = logContainer.scrollHeight;
         }
 
-        // --- 5. Terminal İşlemleri ve Komut Motoru ---
+        // --- 5. Terminal ve ASCII Başlatıcı ---
         function appendTerminalLine(text, type = '') {
             const line = document.createElement('div');
             line.className = `terminal-line ${type}`;
@@ -611,11 +780,24 @@
             termScreen.scrollTop = termScreen.scrollHeight;
         }
 
+        function injectWelcomeScreen() {
+            // Muazzam ASCII Rakun Yüzü ve Logo Karşılaması
+            const asciiRacoon = 
+`   _\\/___\\/_   
+  (  o   o  )  [Code:Racoon OS v2.4 Loaded]
+   )   V   (   --------------------------
+  (   ---   )  Platform Status: Ready
+   \\_______/   Type 'help' for command map.`;
+            
+            appendTerminalLine(asciiRacoon, 'line-system');
+            appendTerminalLine('Sistem çekirdeği güvenli modda başlatıldı.', 'line-info');
+        }
+        injectWelcomeScreen();
+
         termInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
-                const cmd = termInput.value.trim().toLowerCase();
+                const cmd = termInput.value.trim();
                 termInput.value = '';
-                
                 if (cmd === '') return;
 
                 appendTerminalLine(`racoon@core:~$ ${cmd}`, 'line-system');
@@ -624,49 +806,66 @@
             }
         });
 
-        function executeCommand(cmd) {
-            const args = cmd.split(' ');
-            const primaryCmd = args[0];
+        // --- KOMUT MOTORU ---
+        function executeCommand(cmdLine) {
+            const args = cmdLine.split(' ');
+            const primaryCmd = args[0].toLowerCase();
 
             switch(primaryCmd) {
                 case 'help':
-                    appendTerminalLine('Mevcut Komut Listesi:', 'line-info');
-                    appendTerminalLine('  help          - Bu menüyü gösterir.');
-                    appendTerminalLine('  clear         - Konsol ekranını temizler.');
-                    appendTerminalLine('  inject-root   - Root enjeksiyon sürecini tetikler.');
-                    appendTerminalLine('  sysinfo       - Ayrıntılı sistem donanım raporu sunar.');
-                    appendTerminalLine('  matrix-boost  - Fan ve işlemciyi maksimum performansa alır.');
+                    appendTerminalLine('Mevcut Gelişmiş Komut Yapısı:', 'line-info');
+                    appendTerminalLine('  help                - Sistem yardım haritasını açar.');
+                    appendTerminalLine('  clear               - Terminali temizler.');
+                    appendTerminalLine('  inject-root         - Root enjeksiyon sürecini ateşler.');
+                    appendTerminalLine('  sysinfo             - İstemci ve ana donanım mimari raporu.');
+                    appendTerminalLine('  passwd [yeni_şifre] - Çekirdek koruma şifresini günceller.');
+                    appendTerminalLine('  lock [saniye]       - Belirtilen süre sonra sistemi mühürler.');
+                    appendTerminalLine('  matrix-boost        - Donanımı anlık tepe frekansına çeker.');
                     break;
                 case 'clear':
                     termScreen.innerHTML = '';
                     break;
                 case 'inject-root':
                     if (isInjecting) {
-                        appendTerminalLine('HATA: Enjeksiyon süreci zaten aktif!', 'line-error');
+                        appendTerminalLine('HATA: Süreç zaten yürütülüyor!', 'line-error');
                     } else {
-                        appendTerminalLine('Terminalden gelen emir ile enjeksiyon başlatılıyor...', 'line-info');
                         triggerRootInjection();
                     }
                     break;
                 case 'sysinfo':
+                    const userCores = navigator.hardwareConcurrency || 'Bilinmiyor';
                     appendTerminalLine('--- SYSTEM ARCHITECTURE REPORT ---', 'line-info');
-                    appendTerminalLine('OS Platform: Code:Racoon OS Core (Ubuntu/Kaihong base)');
-                    appendTerminalLine('Host CPU: AMD Ryzen Z1 Extreme Core');
-                    appendTerminalLine('UI Renderer: High-Glow Orange Custom Framework');
-                    appendTerminalLine('Kernel Status: Unlocked via User Space Hook');
+                    appendTerminalLine(`Ziyaretçi Lokal İşlemci Kapasitesi: ${userCores} Çekirdek (Maks Hız)`);
+                    appendTerminalLine('OS Taban Mimarisi: OpenHarmony / Kaihong Core Base Engine');
+                    appendTerminalLine('Host Cihaz Profili: Lenovo Legion Go (AMD Ryzen Z1 Extreme)');
+                    appendTerminalLine('UI Renderer Framework: Orange Neon Cyber-Glow Visual Engine v2.4');
+                    break;
+                case 'passwd':
+                    if(!args[1]) {
+                        appendTerminalLine('HATA: Kullanım şekli -> passwd [yeni_şifre]', 'line-error');
+                    } else {
+                        localStorage.setItem('core_vault_pass', args[1]);
+                        appendTerminalLine(`BAŞARILI: Sistem ana şifresi '${args[1]}' olarak güncellendi.`, 'line-success');
+                        addSystemLog("Çekirdek şifresi değiştirildi.");
+                    }
+                    break;
+                case 'lock':
+                    const duration = parseInt(args[1]) || 10;
+                    appendTerminalLine(`KRİTİK: Sistem ${duration} saniye içinde kilit moduna geçecek!`, 'line-error');
+                    startLockdownSequence(duration);
                     break;
                 case 'matrix-boost':
-                    appendTerminalLine('Matrix Boost aktif ediliyor! Fanlar tam devire alınıyor...', 'line-success');
+                    appendTerminalLine('Matrix Boost Aktif! Fan kanatları maksimum devire çekiliyor...', 'line-success');
                     playBeep(880, 0.3, 'sawtooth');
                     updateMetric('fan', 5800, ' RPM', 6000);
                     addSystemLog("Performans modu: MATRIX-BOOST tetiklendi.");
                     break;
                 default:
-                    appendTerminalLine(`Komut bulunamadı: '${primaryCmd}'. Listeyi görmek için 'help' yazın.`, 'line-error');
+                    appendTerminalLine(`Komut bulunamadı: '${primaryCmd}'. Yardım için 'help' yazın.`, 'line-error');
             }
         }
 
-        // --- 6. Root Enjeksiyon Algoritması (Orange UI Core) ---
+        // --- 6. Root Enjeksiyon Mekanizması ---
         function setProgress(percent) {
             const offset = circleCircumference - (percent / 100) * circleCircumference;
             progressCircle.style.strokeDashoffset = offset;
@@ -674,12 +873,12 @@
         }
 
         function triggerRootInjection() {
-            if (isInjecting) return;
+            if (isInjecting || systemLocked) return;
             
             isInjecting = true;
             startBtn.disabled = true;
             globalStatus.innerText = "Enjeksiyon Yapılıyor...";
-            globalStatus.parentElement.querySelector('.pulse-dot').style.backgroundColor = '#ff6600';
+            statusDot.style.backgroundColor = '#ff6600';
             rootStatusLabel.innerText = "Yükleniyor";
             appendTerminalLine(">> Root enjeksiyon modülleri yükleniyor...", "line-info");
             addSystemLog("Root enjeksiyon safhası başladı.");
@@ -687,6 +886,11 @@
             injectionProgress = 0;
             
             const interval = setInterval(() => {
+                if (systemLocked) {
+                    clearInterval(interval);
+                    return;
+                }
+                
                 injectionProgress += Math.floor(Math.random() * 4) + 1;
                 
                 if (injectionProgress >= 100) {
@@ -697,21 +901,20 @@
 
                 setProgress(injectionProgress);
 
-                // Belirli yüzdelerde terminale detay basarak satır ve log zenginliği sağlama
-                if (injectionProgress === 20 || (injectionProgress > 20 && injectionProgress < 24)) {
-                    appendTerminalLine("[OK] Bellek adresleri haritalandı, kernel açığı aranıyor...", "line-info");
+                if (injectionProgress === 24) {
+                    appendTerminalLine("[OK] v2.4 Bellek adresleri haritalandı, kernel açığı taranıyor...", "line-info");
                     playBeep(523.25, 0.05);
                 }
-                if (injectionProgress === 50 || (injectionProgress > 50 && injectionProgress < 54)) {
-                    appendTerminalLine("[UYARI] Güvenlik duvarı baypas ediliyor, root hakları enjekte ediliyor...", "line-system");
+                if (injectionProgress === 52) {
+                    appendTerminalLine("[UYARI] KaihongOS bypass protokolü devrede, root hakları zerk ediliyor...", "line-system");
                     playBeep(587.33, 0.05);
                 }
-                if (injectionProgress === 85 || (injectionProgress > 85 && injectionProgress < 89)) {
-                    appendTerminalLine("[OK] Sembiyotik bağlar kuruldu, yetki yükseltiliyor...", "line-info");
+                if (injectionProgress === 86) {
+                    appendTerminalLine("[OK] Code:Racoon kabuk yetkileri en üst düzeye yükseltildi.", "line-info");
                     playBeep(659.25, 0.05);
                 }
 
-            }, 150);
+            }, 120);
         }
 
         function completeRootInjection() {
@@ -720,19 +923,95 @@
             rootStatusLabel.innerText = "ENJEKTE EDİLDİ";
             rootStatusLabel.style.color = "var(--success)";
             globalStatus.innerText = "Sistem Rooted";
-            globalStatus.parentElement.querySelector('.pulse-dot').style.backgroundColor = 'var(--success)';
+            statusDot.style.backgroundColor = 'var(--success)';
             
-            appendTerminalLine(">> [BAŞARILI] Root enjeksiyon oranı %100'e ulaştı! Çekirdek kırıldı.", "line-success");
+            appendTerminalLine(">> [BAŞARILI] Root enjeksiyonu tamamlandı! Çekirdek kontrolü tamamen elimizde.", "line-success");
             addSystemLog("Çekirdek root erişimi başarıyla tamamlandı.");
             
-            // Başarı melodisi çalma (Web Audio API)
             playBeep(523.25, 0.1);
             setTimeout(() => playBeep(659.25, 0.1), 120);
             setTimeout(() => playBeep(783.99, 0.1), 240);
             setTimeout(() => playBeep(1046.50, 0.3), 360);
         }
 
-        // --- 7. Matrix Arkaplan Yağmuru (Görsel Zenginlik) ---
+        // --- 7. UI Arayüz Buton Fonksiyonları ---
+        function uiChangePassword() {
+            const inputVal = document.getElementById('new-password-field').value.trim();
+            if(inputVal === '') {
+                alert('Lütfen geçerli bir şifre yazın!');
+                return;
+            }
+            localStorage.setItem('core_vault_pass', inputVal);
+            document.getElementById('new-password-field').value = '';
+            appendTerminalLine(`[PANEL] Ana şifre başarıyla '${inputVal}' yapıldı.`, 'line-success');
+            addSystemLog("UI üzerinden şifre güncellendi.");
+        }
+
+        function uiTriggerLock() {
+            const sec = parseInt(document.getElementById('lock-time-field').value) || 10;
+            appendTerminalLine(`[PANEL] Geri sayım başlatıldı: ${sec} saniye.`, 'line-error');
+            startLockdownSequence(sec);
+        }
+
+        // --- 8. Gelişmiş Geri Sayım ve Kilitleme Algoritması ---
+        function startLockdownSequence(seconds) {
+            if(lockCountdownTimer) clearInterval(lockCountdownTimer);
+            
+            let currentSec = seconds;
+            globalStatus.innerText = "Kilitleniyor...";
+            statusDot.style.backgroundColor = 'var(--error)';
+
+            lockCountdownTimer = setInterval(() => {
+                currentSec--;
+                if(currentSec <= 0) {
+                    clearInterval(lockCountdownTimer);
+                    activateLockScreen();
+                } else {
+                    playBeep(440, 0.05, 'sine');
+                    appendTerminalLine(`Kilit Moduna Kalan Süre: ${currentSec} sn...`, 'line-error');
+                }
+            }, 1000);
+        }
+
+        function activateLockScreen() {
+            systemLocked = true;
+            if(isInjecting) {
+                isInjecting = false;
+                startBtn.disabled = false;
+                setProgress(0);
+            }
+            
+            document.getElementById('countdown-display').innerText = "LOCK";
+            document.getElementById('lock-error-msg').style.display = 'none';
+            document.getElementById('lock-password-input').value = '';
+            document.getElementById('lockscreen-overlay').style.display = 'flex';
+            
+            playBeep(220, 0.5, 'sawtooth');
+            addSystemLog("SİSTEM TAMAMEN KİLİTLENDİ.");
+        }
+
+        function unlockSystem() {
+            const enteredPass = document.getElementById('lock-password-input').value;
+            const correctPass = localStorage.getItem('core_vault_pass') || 'racoon';
+
+            if(enteredPass === correctPass) {
+                systemLocked = false;
+                document.getElementById('lockscreen-overlay').style.display = 'none';
+                globalStatus.innerText = "Çekirdek Stabil";
+                statusDot.style.backgroundColor = 'var(--success)';
+                
+                appendTerminalLine(">> [ERİŞİM ONAYLANDI] Sistem kilidi başarıyla kaldırıldı.", 'line-success');
+                addSystemLog("Sistem kilidi açıldı.");
+                playBeep(880, 0.1, 'sine');
+                setTimeout(() => playBeep(1200, 0.15, 'sine'), 100);
+            } else {
+                document.getElementById('lock-error-msg').style.display = 'block';
+                playBeep(150, 0.3, 'sawtooth');
+                appendTerminalLine(">> [RED] Kilit ekranında hatalı şifre denemesi!", 'line-error');
+            }
+        }
+
+        // --- 9. Matrix Arkaplan Yağmuru ---
         const canvas = document.getElementById('matrix-bg');
         const ctx = canvas.getContext('2d');
 
@@ -743,7 +1022,7 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        const letters = "0123456789ABCDEFCODERACOONKAIHONG";
+        const letters = "0123456789ABCDEFCODERACOONKAIHONGv24";
         const fontSize = 14;
         let columns = canvas.width / fontSize;
         const drops = Array(Math.floor(columns)).fill(1);
@@ -752,7 +1031,6 @@
             ctx.fillStyle = 'rgba(10, 10, 13, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Turuncu matrix yağmuru rengi
             ctx.fillStyle = '#ff6600';
             ctx.font = fontSize + 'px monospace';
 
@@ -768,7 +1046,6 @@
         }
         setInterval(drawMatrix, 33);
 
-        // Ekran yüklendiğinde ilk ayarı verelim
         setProgress(0);
     </script>
 </body>
