@@ -595,8 +595,10 @@
 </head>
 <body>
 
+    <!-- Arka plan Matrix Yağmuru -->
     <canvas id="matrix-bg"></canvas>
 
+    <!-- Geri Sayımlı Standart Güvenlik Kilidi Modalı -->
     <div id="lockscreen-overlay" class="overlay-layer">
         <div class="lock-container" style="border-color: var(--error); box-shadow: 0 0 30px rgba(255,51,51,0.3);">
             <div class="lock-title" style="color: var(--error);"> 🚨 Sistem Mühürlendi</div>
@@ -609,6 +611,7 @@
         </div>
     </div>
 
+    <!-- ROOT Yetkilendirme Modalı -->
     <div id="root-auth-overlay" class="overlay-layer">
         <div class="lock-container" style="border-color: var(--primary-orange);">
             <div class="lock-title">🔑 Root Doğrulaması</div>
@@ -622,6 +625,7 @@
         </div>
     </div>
 
+    <!-- RACOON İki Aşamalı (2FA) Yetkilendirme Modalleri -->
     <div id="racoon-stage1-overlay" class="overlay-layer">
         <div class="lock-container">
             <div class="lock-title">🦝 Racoon Doğrulaması - Aşama 1</div>
@@ -654,6 +658,7 @@
         </div>
     </div>
 
+    <!-- SİBER SALDIRI / ACİL DURUM SAVAŞ ALARMI OVERLAYI -->
     <div id="attack-overlay">
         <div class="attack-banner-box">
             <div style="font-size: 4rem; margin-bottom: 10px;">☣️</div>
@@ -680,7 +685,7 @@
         </div>
     </div>
 
-
+    <!-- ANA BAŞLIK BARBARI -->
     <header>
         <div class="brand">
             <div class="logo-container">
@@ -707,17 +712,15 @@
         </div>
     </header>
 
-
+    <!-- ANA PANEL -->
     <main>
-        
+        <!-- KOLON 1: YÖNETİM VE TEŞHİS -->
         <section class="panel-column" id="column-left">
-            
             <div class="card auth-restricted" id="card-admin-panel">
                 <div class="card-header">
                     <div class="card-title"> 🛡️ Sistem Yönetim Paneli</div>
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 12px;">
-                    
                     <div style="display: flex; flex-direction: column; gap: 4px;">
                         <label style="font-size: 0.75rem; color: var(--text-muted);">Sistem Adını Değiştir</label>
                         <div style="display: flex; gap: 6px;">
@@ -725,7 +728,6 @@
                             <button class="panel-btn" onclick="uiChangeSystemName()">Güncelle</button>
                         </div>
                     </div>
-
                     <div style="display: flex; flex-direction: column; gap: 4px;">
                         <label style="font-size: 0.75rem; color: var(--text-muted);">Çekirdek Şifresini Güncelle</label>
                         <div style="display: flex; gap: 6px;">
@@ -733,7 +735,6 @@
                             <button class="panel-btn" onclick="uiChangePassword()">Değiştir</button>
                         </div>
                     </div>
-
                     <div style="display: flex; flex-direction: column; gap: 4px;">
                         <label style="font-size: 0.75rem; color: var(--text-muted);">Arka Plan Görseli / Stil</label>
                         <div style="display: flex; gap: 6px;">
@@ -741,7 +742,6 @@
                             <button class="panel-btn" onclick="uiChangeBackground()">Uygula</button>
                         </div>
                     </div>
-
                     <div style="display: flex; flex-direction: column; gap: 4px;">
                         <label style="font-size: 0.75rem; color: var(--text-muted);">Geri Sayımlı Güvenlik Kilidi</label>
                         <div style="display: flex; gap: 6px;">
@@ -749,12 +749,10 @@
                             <button class="panel-btn btn-danger" onclick="uiTriggerLock()" style="flex: 1;">Sistemi Kilitle</button>
                         </div>
                     </div>
-
                     <div id="racoon-exclusive-controls" style="display: none; border-top: 1px dashed var(--border-color); padding-top: 10px; margin-top: 5px; flex-direction: column; gap: 8px;">
                         <label style="font-size: 0.75rem; color: var(--error); font-weight: bold;">🚨 SİBER ACİL DURUM YÖNETİMİ</label>
-                        <button class="panel-btn btn-war" onclick="activateAttackModeViaUI()">⚠️ SAVAŞ MODUNU TETİKLE (LOCK)</button>
+                        <button class="panel-btn btn-war" onclick="activateAttackModeViaUI()">⚠️ SAVAŞ MODUNU TETİKLE</button>
                     </div>
-
                     <button class="panel-btn" onclick="uiRestartSystem()" style="background: rgba(255,255,255,0.02); border-color: var(--primary-orange); color: var(--primary-orange); margin-top: 5px;"> 🔄 Sistemi Yeniden Başlat</button>
                 </div>
             </div>
@@ -772,12 +770,10 @@
                     <div class="test-row"><span>FileSystem Integrity Check</span><span class="test-status" style="color: var(--text-muted);">BEKLEMEDE</span></div>
                 </div>
             </div>
-
         </section>
 
-
+        <!-- KOLON 2: TERMİNAL -->
         <section class="panel-column" id="column-center">
-            
             <div class="card terminal-card">
                 <div class="card-header">
                     <div class="card-title"> 💻 Çekirdek Terminal Konsolu</div>
@@ -789,12 +785,10 @@
                     <input type="text" class="terminal-input" id="term-input" placeholder="Komut yazın (yardım için 'help')..." autocomplete="off">
                 </div>
             </div>
-
         </section>
 
-
+        <!-- KOLON 3: DONANIM VE LOGLAR -->
         <section class="panel-column" id="column-right">
-            
             <div class="card" id="card-hardware-monitor">
                 <div class="card-header">
                     <div class="card-title"> ⚙️ Donanım Monitörü</div>
@@ -855,7 +849,7 @@
                 <div class="card-header">
                     <div class="card-title"> 📢 Sistem Duyuruları</div>
                 </div>
-                <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                <div style="display: gap; gap: 8px; margin-bottom: 12px; display:flex;">
                     <input type="text" id="announcement-input" class="panel-input" placeholder="Sistem duyurusu yazın..." style="flex: 1;">
                     <button class="panel-btn" onclick="uiAddAnnouncement()">Yayınla</button>
                 </div>
@@ -880,13 +874,11 @@
                     <div class="log-item">[15:33:04] Neon Çekirdek Paneli belleğe haritalandı.</div>
                 </div>
             </div>
-
         </section>
-
     </main>
 
+    <!-- MOTOR -->
     <script>
-        // DOM Bağlantıları
         const termInput = document.getElementById('term-input');
         const termScreen = document.getElementById('terminal-screen');
         const rootPerc = document.getElementById('root-perc');
@@ -900,7 +892,6 @@
         const headerBrandText = document.getElementById('header-brand-text');
         const siteTitle = document.getElementById('site-title');
         
-        // Durum Hafıza Değişkenleri
         let currentLevel = "Guest";
         let previousLevel = "Guest";
         let isInjecting = false;
@@ -909,24 +900,19 @@
         let lockCountdownTimer = null;
         const circleCircumference = 2 * Math.PI * 70;
 
-        // Atanan ve Özelleştirilen Yeni Şifre Veritabanı
         if(!localStorage.getItem('core_vault_pass')) {
-            localStorage.setItem('core_vault_pass', 'racoon'); // Racoon Stage 1 şifresi
+            localStorage.setItem('core_vault_pass', 'racoon');
         }
         if(!localStorage.getItem('core_root_pass')) {
-            localStorage.setItem('core_root_pass', 'root123'); // Root Giriş şifresi
+            localStorage.setItem('core_root_pass', 'root123');
         }
 
-        // Siber Saldırı / Savaş Alarm Modu Değişkenleri
         let isAttackModeActive = false;
         let attackAlarmInterval = null;
         let attackCountdownTimer = null;
         let generated2FAToken = "";
         let audioContextInstance = null;
 
-        /* ==========================================================================
-           AUDIO ALTYAPISI: FREKANS JENERATÖRÜ VE SAVAŞ SİREN SENTEZLEYİCİSİ
-           ========================================================================== */
         function playBeep(freq, duration, type = 'sine', volume = 0.08) {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -944,11 +930,10 @@
                 oscillator.start();
                 oscillator.stop(audioCtx.currentTime + duration);
             } catch (e) {
-                console.log("Ses yürütme tarayıcı tarafından engellendi.");
+                console.log("Ses engellendi.");
             }
         }
 
-        // Profesyonel Dalgalı Mekanik Savaş Sireni (Siber Saldırı Altında Döngüsel Çalışır)
         function startWarSirenLoop() {
             try {
                 if (!audioContextInstance) {
@@ -958,7 +943,6 @@
                 let direction = 1;
                 let currentFreq = 300;
 
-                // Saniyede 30 kez frekansı manipüle ederek tiz bir savaş alarmı simüle eder
                 attackAlarmInterval = setInterval(() => {
                     if (direction === 1) {
                         currentFreq += 25;
@@ -968,7 +952,6 @@
                         if (currentFreq <= 300) direction = 1;
                     }
 
-                    // Kısa, keskin testere dişi (sawtooth) dalgalarıyla agresif askeri alarm tonu oluşturma
                     const osc = audioContextInstance.createOscillator();
                     const gain = audioContextInstance.createGain();
                     
@@ -986,7 +969,7 @@
                 }, 40);
 
             } catch (err) {
-                console.error("Savaş sireni başlatılamadı: ", err);
+                console.error("Siren başlatılamadı: ", err);
             }
         }
 
@@ -997,9 +980,6 @@
             }
         }
 
-        /* ==========================================================================
-           SAAT VE SİSTEM GÜNLÜKLEME SİSTEMLERİ
-           ========================================================================== */
         function updateClock() {
             const now = new Date();
             document.getElementById('clock').innerText = now.toTimeString().split(' ')[0];
@@ -1019,7 +999,6 @@
             logItem.innerText = `[${timeStr}] ${message}`;
             logContainer.appendChild(logItem);
             
-            // Fazla log birikimini temizle
             while (logContainer.children.length > 30) {
                 logContainer.removeChild(logContainer.firstChild);
             }
@@ -1030,26 +1009,15 @@
             }, 1000);
         }
 
-        /* ==========================================================================
-           YETKİLENDİRME SEVİYESİ VE GUEST KISITLAMA KONTROLLERİ (KRİTİK GÜNCELLEME)
-           ========================================================================== */
         function applyGuestRestrictions(level) {
             const restrictedCards = document.querySelectorAll('.auth-restricted');
-            
             if (level === "Guest") {
-                // İstek: "guestten paneli ve duyuruları kaldır"
-                restrictedCards.forEach(card => {
-                    card.classList.add('hidden-guest');
-                });
-                addSystemLog("Guest Modu: Yönetim panelleri ve duyurular arayüzden kaldırıldı.");
+                restrictedCards.forEach(card => { card.classList.add('hidden-guest'); });
+                addSystemLog("Guest Modu: Kısıtlı paneller gizlendi.");
             } else {
-                // Root veya Racoon ise geri getir
-                restrictedCards.forEach(card => {
-                    card.classList.remove('hidden-guest');
-                });
+                restrictedCards.forEach(card => { card.classList.remove('hidden-guest'); });
             }
 
-            // Racoon moduna özel eklentiler (Savaş Modu Buton Görünürlüğü)
             const racoonBox = document.getElementById('racoon-exclusive-controls');
             if (level === "Racoon") {
                 racoonBox.style.display = 'flex';
@@ -1058,21 +1026,17 @@
             }
         }
 
-        // Yetki Seviyesi Değişim Kontrol Mekanizması
         function handleLevelChange() {
             const selectedLevel = systemLevelSelect.value;
-            
             if (selectedLevel === currentLevel) return;
 
             if (selectedLevel === "Root") {
-                // İstek: "root girişini de panelle şifreli yap"
                 document.getElementById('root-password-input').value = "";
                 document.getElementById('root-error-msg').style.display = "none";
                 document.getElementById('root-auth-overlay').style.display = "flex";
                 document.getElementById('root-password-input').focus();
             } 
             else if (selectedLevel === "Racoon") {
-                // İstek: "Racoon modunda yalnızca iki aşamalı giriş doğrulama ile girilsin"
                 document.getElementById('racoon-pass-input').value = "";
                 document.getElementById('racoon-s1-error').style.display = "none";
                 document.getElementById('racoon-stage1-overlay').style.display = "flex";
@@ -1084,13 +1048,12 @@
         }
 
         function cancelAuthTransition() {
-            // İptal edilirse combobox'ı eski seviyeye çek ve pencereleri kapat
             systemLevelSelect.value = currentLevel;
             document.getElementById('root-auth-overlay').style.display = "none";
             document.getElementById('racoon-stage1-overlay').style.display = "none";
             document.getElementById('racoon-stage2-overlay').style.display = "none";
             playBeep(200, 0.2, 'sine');
-            addSystemLog("Yetki geçişi kullanıcı tarafından iptal edildi.");
+            addSystemLog("Geçiş iptal edildi.");
         }
 
         function executeAuthTransition(targetLevel) {
@@ -1098,15 +1061,12 @@
             currentLevel = targetLevel;
             systemLevelSelect.value = targetLevel;
             
-            // Arayüz kısıtlamalarını çalıştır
             applyGuestRestrictions(targetLevel);
             
-            // Tüm pencereleri kapat
             document.getElementById('root-auth-overlay').style.display = "none";
             document.getElementById('racoon-stage1-overlay').style.display = "none";
             document.getElementById('racoon-stage2-overlay').style.display = "none";
 
-            // Terminal etiketini ve logları güncelle
             document.getElementById('terminal-session-badge').innerText = `Session: ${targetLevel}@Core`;
             document.getElementById('term-prompt-label').innerText = `${targetLevel.toLowerCase()}@core:~$`;
             
@@ -1115,7 +1075,6 @@
             playBeep(600, 0.25, 'triangle');
         }
 
-        /* ROOT ŞİFRE DOĞRULAMA (AŞAMA FONKSİYONU) */
         function verifyRootPassword() {
             const inputPass = document.getElementById('root-password-input').value;
             const targetPass = localStorage.getItem('core_root_pass');
@@ -1126,20 +1085,15 @@
                 document.getElementById('root-error-msg').style.display = "block";
                 playBeep(120, 0.4, 'sawtooth');
                 addSystemLog("Hatalı Root Giriş Denemesi!", true);
-                appendTerminalLine(">> [HATA] Root yetkilendirmesi başarısız: Yanlış parola.", "line-error");
             }
         }
 
-        /* RACOON MODU 2FA DOĞRULAMA (AŞAMALI MOTORLAR) */
         function verifyRacoonStage1() {
             const inputPass = document.getElementById('racoon-pass-input').value;
             const targetPass = localStorage.getItem('core_vault_pass');
 
             if (inputPass === targetPass) {
-                // Aşama 1 Başarılı -> Aşama 2: 2FA Token Üret ve Geçiş Yap
                 document.getElementById('racoon-stage1-overlay').style.display = "none";
-                
-                // 6 haneli rastgele bir token türet
                 generated2FAToken = Math.floor(100000 + Math.random() * 900000).toString();
                 document.getElementById('dynamic-2fa-token').innerText = generated2FAToken;
                 
@@ -1149,71 +1103,44 @@
                 document.getElementById('racoon-2fa-input').focus();
                 
                 playBeep(450, 0.15, 'sine');
-                addSystemLog("Racoon Girişi: Aşama 1 (Şifre) geçildi. 2FA bekleniyor.");
             } else {
                 document.getElementById('racoon-s1-error').style.display = "block";
                 playBeep(120, 0.4, 'sawtooth');
-                addSystemLog("Hatalı Racoon Aşama 1 Giriş Denemesi!", true);
             }
         }
 
         function verifyRacoonStage2() {
             const inputToken = document.getElementById('racoon-2fa-input').value.trim();
-            
             if (inputToken === generated2FAToken && generated2FAToken !== "") {
-                // Aşama 2 de Başarılı -> Tam yetki ver
                 executeAuthTransition("Racoon");
-                generated2FAToken = ""; // Belleği temizle
+                generated2FAToken = "";
             } else {
                 document.getElementById('racoon-s2-error').style.display = "block";
                 playBeep(100, 0.5, 'sawtooth');
-                addSystemLog("Hatalı Racoon 2FA Token Denemesi!", true);
-                appendTerminalLine(">> [TEHLİKE] Racoon 2FA doğrulaması uyuşmadı.", "line-error");
             }
         }
 
-        /* ==========================================================================
-           SİBER SALDIRI / SAVAŞ ALARMI MODU YÖNETİMİ (ACİL DURUM KİLİDİ)
-           ========================================================================== */
         function activateAttackModeViaUI() {
-            if(currentLevel !== "Racoon") {
-                alert("Bu işlem yalnızca üst düzey Racoon yetkisinde çalıştırılabilir.");
-                return;
-            }
-            triggerCyberAttackMode(45); // Varsayılan 45 saniyelik savaş kilidi
+            if(currentLevel !== "Racoon") return;
+            triggerCyberAttackMode(45);
         }
 
         function triggerCyberAttackMode(durationSeconds = 30) {
             if (isAttackModeActive) return;
-            
             isAttackModeActive = true;
-            addSystemLog("!!! ACİL DURUM: SİBER SALDIRI MODU AKTİF EDİLDİ !!!", true);
-            appendTerminalLine(">> [KRİTİK ALARM] SİTE SALDIRI ALTINDA! SAVAŞ PROTOKOLÜ ÇALIŞTIRILIYOR.", "line-error");
-
-            // 1. İstenen Yazı ve Ekran Kilitleme Overlayini Açma
-            const attackOverlay = document.getElementById('attack-overlay');
-            attackOverlay.style.display = "flex";
-
-            // 2. İstenen Arka Plan Fotoğrafını Atama
-            // İstek: "arka plan fotosu github da arka planlar dosyama ekledim ve adıda: ArkaPlan/channels4_profile.jpg"
+            
+            document.getElementById('attack-overlay').style.display = "flex";
             document.body.style.backgroundImage = "url('ArkaPlan/channels4_profile.jpg')";
-            document.body.style.backgroundColor = "#200000"; // Güvenli kırmızı tonu harmanlama
+            document.body.style.backgroundColor = "#200000";
 
-            // 3. Web Audio Mekanik Savaş Sireni Döngüsünü Başlatma
             startWarSirenLoop();
 
-            // Geri sayım sayacını kurma
             let remainingTime = durationSeconds;
             document.getElementById('attack-countdown').innerText = `${remainingTime}s`;
 
             attackCountdownTimer = setInterval(() => {
                 remainingTime--;
                 document.getElementById('attack-countdown').innerText = `${remainingTime}s`;
-                
-                if(remainingTime % 5 === 0) {
-                    appendTerminalLine(`>> [SALDIRI RAPORU] DDoS paket akışı engelleniyor... Kalan Kilit: ${remainingTime}sn`, "line-warning");
-                }
-
                 if (remainingTime <= 0) {
                     deactivateAttackMode();
                 }
@@ -1222,23 +1149,20 @@
 
         function deactivateAttackMode() {
             if (!isAttackModeActive) return;
-
             stopWarSirenLoop();
             clearInterval(attackCountdownTimer);
             
             isAttackModeActive = false;
             document.getElementById('attack-overlay').style.display = "none";
             
-            // Arka planı sıfırla veya eski haline getir
             document.body.style.backgroundImage = "none";
-            document.body.style.backgroundColor = var(--bg-dark);
+            document.body.style.backgroundColor = "var(--bg-dark)"; /* HATA BURADAYDI, DÜZELTİLDİ */
             
-            addSystemLog("Siber saldırı savunma kilit periyodu tamamlandı. Normal moda dönüldü.");
-            appendTerminalLine(">> [BAŞARILI] Savaş alarmı kapatıldı. Çekirdek savunma hatları normale döndü.", "line-success");
+            addSystemLog("Siber saldırı savunma kilit periyodu tamamlandı.");
+            appendTerminalLine(">> [BAŞARILI] Savaş alarmı kapatıldı.", "line-success");
             playBeep(440, 0.5, 'sine');
         }
 
-        // Admin için acil el ile kilidi devre dışı bırakma override mekanizması
         function toggleOverrideInput() {
             const zone = document.getElementById('attack-admin-override');
             zone.style.display = zone.style.display === "none" ? "block" : "none";
@@ -1246,25 +1170,18 @@
 
         function deactivateAttackModeOverride() {
             const input = document.getElementById('attack-override-pass').value;
-            // Override şifresi olarak racoon ana kasası kabul edilir
             if(input === localStorage.getItem('core_vault_pass')) {
                 deactivateAttackMode();
             } else {
-                alert("Geçersiz override kodu! Siren devam ediyor.");
-                playBeep(90, 0.6, 'sawtooth');
+                alert("Geçersiz override kodu!");
             }
         }
 
-        /* ==========================================================================
-           AYARLAR VE UI DEĞİŞİM KOMUTLARI
-           ========================================================================== */
         function uiChangeSystemName() {
             const inputVal = document.getElementById('sys-name-input').value.trim();
             if (!inputVal) return;
             headerBrandText.innerHTML = `${escapeHTML(inputVal)} <span>OS Core</span>`;
             siteTitle.innerText = `${inputVal} - Turuncu Çekirdek Paneli v3.0`;
-            addSystemLog(`Sistem markalaması güncellendi: ${inputVal}`);
-            appendTerminalLine(`>> Sistem ana başlığı '${inputVal}' olarak değiştirildi.`, 'line-info');
             document.getElementById('sys-name-input').value = "";
         }
 
@@ -1272,8 +1189,6 @@
             const inputVal = document.getElementById('new-password-field').value.trim();
             if (!inputVal) return;
             localStorage.setItem('core_vault_pass', inputVal);
-            addSystemLog("Çekirdek erişim şifre veritabanı güncellendi.");
-            appendTerminalLine(">> [GÜVENLİK] Ana Racoon şifresi başarıyla değiştirildi.", 'line-warning');
             document.getElementById('new-password-field').value = "";
         }
 
@@ -1281,72 +1196,47 @@
             const inputVal = document.getElementById('bg-url-input').value.trim();
             if (!inputVal) return;
             document.body.style.backgroundImage = `url('${inputVal}')`;
-            addSystemLog(`Arka plan katmanı yeniden haritalandı: ${inputVal}`);
             document.getElementById('bg-url-input').value = "";
         }
 
         function uiTriggerLock() {
             const timeField = document.getElementById('lock-time-field').value;
             let countdown = parseInt(timeField) || 10;
-            
             if (countdown < 2) countdown = 2;
             
             systemLocked = true;
             document.getElementById('lockscreen-overlay').style.display = 'flex';
-            document.getElementById('lock-error-msg').style.display = 'none';
             document.getElementById('lock-password-input').value = "";
             document.getElementById('countdown-display').innerText = formatTime(countdown);
             document.getElementById('lock-password-input').focus();
-            
-            addSystemLog(`Sistem mühürleme sayacı tetiklendi: ${countdown} saniye.`);
-            appendTerminalLine(`>> [UYARI] Çekirdek arayüzü ${countdown} saniye kilitlendi.`, 'line-error');
 
             clearInterval(lockCountdownTimer);
             lockCountdownTimer = setInterval(() => {
                 countdown--;
                 document.getElementById('countdown-display').innerText = formatTime(countdown);
-                if (countdown <= 0) {
-                    clearInterval(lockCountdownTimer);
-                    // Süre bitince şifre girmeden çıkılamaz
-                }
+                if (countdown <= 0) { clearInterval(lockCountdownTimer); }
             }, 1000);
         }
 
         function unlockSystem() {
             const entered = document.getElementById('lock-password-input').value;
             const realPass = localStorage.getItem('core_vault_pass');
-            
             if (entered === realPass) {
                 clearInterval(lockCountdownTimer);
                 systemLocked = false;
                 document.getElementById('lockscreen-overlay').style.display = 'none';
-                addSystemLog("Sistem kilidi kaldırıldı. Erişim onaylandı.");
-                appendTerminalLine(">> [BAŞARILI] Güvenlik kilidi devre dışı bırakıldı.", 'line-success');
                 playBeep(523.25, 0.15, 'sine');
             } else {
                 document.getElementById('lock-error-msg').style.display = 'block';
-                playBeep(150, 0.3, 'sawtooth');
-                addSystemLog("Kilit ekranında hatalı şifre denemesi!", true);
-                appendTerminalLine(">> [TEHLİKE] Geçersiz kilit açma şifresi girdisi.", 'line-error');
             }
         }
 
         function uiRestartSystem() {
             termScreen.innerHTML = "";
             appendTerminalLine(">> [SİSTEM] Tüm OpenHarmony çekirdek katmanları durduruluyor...", 'line-warning');
-            addSystemLog("Sistem reboot döngüsüne sokuldu.");
-            
             setTimeout(() => {
-                appendTerminalLine(">> [SİSTEM] Bellek adresleri boşaltılıyor...", 'line-warning');
-            }, 300);
-
-            setTimeout(() => {
-                appendTerminalLine(">> [BAŞARILI] Code:Racoon OS Çekirdek katmanları yeniden yükleniyor.", 'line-success');
-                appendTerminalLine(">> Algılanan Donanım Standardı: Lenovo Legion Go (Ryzen Z1 Extreme)", 'line-info');
-                // İstek: "iso adın Racoon_liveiso olarak değiştirmeye karar verdim" -> Terminal çıktısında doğrula
+                appendTerminalLine(">> [BAŞARILI] Code:Racoon OS Çekirdek katmanları yeniden yüklendi.", 'line-success');
                 appendTerminalLine(">> Aktif Dağıtım Paketi: Racoon_liveiso.iso core_v3", 'line-system');
-                addSystemLog("Sistem başarıyla reboot edildi.");
-                playBeep(880, 0.4, 'sine');
             }, 1000);
         }
 
@@ -1358,57 +1248,37 @@
             const box = document.getElementById('announcement-box');
             const li = document.createElement('li');
             li.className = 'announcement-item';
-            
             const now = new Date();
             const timeStr = `${now.toLocaleDateString('tr-TR')} ${now.toTimeString().split(' ')[0]}`;
             
             li.innerHTML = `<div class="announcement-time">${timeStr}</div><div>${escapeHTML(text)}</div>`;
             box.insertBefore(li, box.firstChild);
-            
-            addSystemLog(`Yeni sistem duyurusu yayınlandı: ${text}`);
             input.value = "";
-            playBeep(700, 0.1, 'triangle');
         }
 
-        /* ==========================================================================
-           KAPSAMLI KERNEL TERMİNAL MOTORU VE EMÜLATÖRÜ (GENİŞLETİLMİŞ KOMUTLAR)
-           ========================================================================== */
         function appendTerminalLine(text, className = '') {
             const line = document.createElement('div');
             line.className = `terminal-line ${className}`;
             line.innerText = text;
             termScreen.appendChild(line);
-            
-            // Terminal satır taşmasını koru
-            while(termScreen.children.length > 150) {
-                termScreen.removeChild(termScreen.firstChild);
-            }
+            while(termScreen.children.length > 150) { termScreen.removeChild(termScreen.firstChild); }
             termScreen.scrollTop = termScreen.scrollHeight;
         }
 
-        // Terminal Karşılama İletisi ve ISO Güncelleme Onayı
         function initializeTerminal() {
             appendTerminalLine("=== Code:Racoon OS [Sürüm 3.0] ===", "line-system");
-            appendTerminalLine("Geliştirici Terminal Konsolu Katmanı Çevrimiçi.", "line-info");
-            appendTerminalLine("Sistem Mimarisi: WSL2 (Ubuntu Linux) Altında OpenHarmony Yapısı", "line-info");
             appendTerminalLine("Güncel Dağıtım ISO Kimliği: Racoon_liveiso", "line-system");
-            appendTerminalLine("Yardım için 'help' yazıp enter tuşuna basın.", "line-warning");
-            appendTerminalLine("--------------------------------------------------", "line-info");
+            appendTerminalLine("Yardım için 'help' yazın.", "line-warning");
         }
 
-        // Terminal Giriş Dinleyicisi
         termInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 const commandLine = termInput.value.trim();
                 termInput.value = "";
-                
                 if (!commandLine) return;
                 
-                // Kullanıcının yazdığı komutu ekrana bas
                 const promptSymbol = document.getElementById('term-prompt-label').innerText;
                 appendTerminalLine(`${promptSymbol} ${commandLine}`, "line-info");
-                
-                // Komutu ve argümanları ayrıştır
                 processTerminalCommand(commandLine);
             }
         });
@@ -1420,130 +1290,48 @@
 
             switch (cmd) {
                 case 'help':
-                    appendTerminalLine("Mevcut Çekirdek Komut Listesi:", "line-system");
-                    appendTerminalLine("  help               : Bu yardım kılavuzunu ekrana basar.");
-                    appendTerminalLine("  clear              : Terminal ekranı geçmişini temizler.");
-                    appendTerminalLine("  status             : Detaylı donanım ve dağıtım durumunu gösterir.");
-                    appendTerminalLine("  whoami             : Mevcut oturum yetki kademesini söyler.");
-                    appendTerminalLine("  iso-info           : Güncel derlenen ISO yapısı bilgilerini verir.");
-                    appendTerminalLine("  attack-on          : [Racoon] Acil siber saldırı modunu aktif eder.");
-                    appendTerminalLine("  attack-off         : [Racoon] Acil durum ve siren döngüsünü kapatır.");
-                    appendTerminalLine("  inject-root        : Çekirdeğe root bypass enjeksiyonu başlatır.");
-                    appendTerminalLine("  test-kernel        : Kernel teşhis test süreçlerini koşturur.");
-                    appendTerminalLine("  neofetch           : Sistem bileşenlerini siberpunk logosuyla basar.");
-                    appendTerminalLine("  sysname [ad]       : Sistem adını konsoldan günceller.");
+                    appendTerminalLine("Komutlar: help, clear, status, whoami, iso-info, attack-on, attack-off, inject-root, test-kernel, neofetch");
                     break;
-                    
                 case 'clear':
                     termScreen.innerHTML = "";
                     break;
-                    
                 case 'status':
-                    appendTerminalLine("--- SİSTEM ÇEKİRDEK DURUMU ---", "line-system");
-                    appendTerminalLine(`Host Donanımı      : Lenovo Legion Go (AMD Ryzen Z1 Extreme)`);
-                    appendTerminalLine(`Grafik Birimi      : AMD Radeon Graphics (RDNA 3)`);
-                    appendTerminalLine(`Çekirdek Tabanı    : OpenHarmony OS Kernel v3.0 Custom Build`);
-                    appendTerminalLine(`Derleme Hedefi     : Racoon_liveiso.iso`);
-                    appendTerminalLine(`Erişim Durumu      : ${currentLevel} Modu Aktif`);
-                    appendTerminalLine(`Güvenlik Koruması  : Stabil Sürüm Kontrolü`);
+                    appendTerminalLine(`Host Donanımı : Lenovo Legion Go (Z1 Extreme)\nISO Derlemesi : Racoon_liveiso`);
                     break;
-                    
                 case 'whoami':
-                    appendTerminalLine(`Mevcut Yetkili Kullanıcı: ${currentLevel}`, "line-info");
-                    if(currentLevel === "Guest") {
-                        appendTerminalLine("Püf Noktası: Paneli yönetmek için sağ üstten 'Root' veya 'Racoon' seçip şifre doğrulayın.", "line-warning");
-                    }
+                    appendTerminalLine(`Mevcut Kademe: ${currentLevel}`);
                     break;
-                    
                 case 'iso-info':
-                    // İstek: "iso adın Racoon_liveiso olarak değiştirmeye karar verdim"
-                    appendTerminalLine("--- ISO DAĞITIM MATRİSİ ---", "line-system");
-                    appendTerminalLine("Proje Yeni Adı    : Racoon_liveiso", "line-success");
-                    appendTerminalLine("Çıktı Formatı     : Hybrids ISO-9660 Bootable Live Image");
-                    appendTerminalLine("Dosya Dağıtımı    : GitHub Pages / Cordex Dağıtım Ağı");
-                    appendTerminalLine("Derleme Toolchain : Ninja Build & LLVM Clang OpenHarmony OS");
-                    addSystemLog("ISO bilgileri terminal üzerinden sorgulandı.");
+                    appendTerminalLine("Hedef: Racoon_liveiso.iso\nFormat: Hybrid Bootable Image");
                     break;
-                    
                 case 'attack-on':
-                    if (currentLevel !== "Racoon") {
-                        appendTerminalLine(">> [RED] Yetkisiz Erişim! 'attack-on' komutu sadece Racoon modunda çalışabilir.", "line-error");
-                    } else {
-                        triggerCyberAttackMode(60); // 60 saniyelik alarm başlat
-                    }
+                    if (currentLevel !== "Racoon") appendTerminalLine("Yetki yetersiz!", "line-error");
+                    else triggerCyberAttackMode(60);
                     break;
-                    
                 case 'attack-off':
-                    if (currentLevel !== "Racoon") {
-                        appendTerminalLine(">> [RED] Yetkisiz Erişim! Savaş modunu kapatmak için Racoon yetkisi şart.", "line-error");
-                    } else {
-                        deactivateAttackMode();
-                    }
+                    if (currentLevel !== "Racoon") appendTerminalLine("Yetki yetersiz!", "line-error");
+                    else deactivateAttackMode();
                     break;
-                    
                 case 'inject-root':
-                    if (currentLevel === "Guest") {
-                        appendTerminalLine(">> [HATA] Guest kullanıcısı enjeksiyon tetikleyemez.", "line-error");
-                    } else {
-                        triggerRootInjection();
-                    }
+                    triggerRootInjection();
                     break;
-                    
                 case 'test-kernel':
-                    if (currentLevel === "Guest") {
-                        appendTerminalLine(">> [HATA] Guest modunda kernel test havuzu koşturulamaz.", "line-error");
-                    } else {
-                        runKernelTests();
-                    }
+                    runKernelTests();
                     break;
-                    
-                case 'sysname':
-                    if (args.length === 0) {
-                        appendTerminalLine("Kullanım: sysname [yeni_ad]", "line-warning");
-                    } else {
-                        const yeniAd = args.join(" ");
-                        headerBrandText.innerHTML = `${escapeHTML(yeniAd)} <span>OS Core</span>`;
-                        siteTitle.innerText = `${yeniAd} - Turuncu Çekirdek Paneli`;
-                        appendTerminalLine(`>> Sistem adı '${yeniAd}' yapıldı.`, "line-success");
-                    }
-                    break;
-                    
                 case 'neofetch':
-                    appendTerminalLine("      /\\_/\\       daras@racoon_liveiso", "line-system");
-                    appendTerminalLine("     ( o.o )      --------------------", "line-system");
-                    appendTerminalLine("      > ^ <       OS: Code:Racoon OpenHarmony v3.0", "line-info");
-                    appendTerminalLine("     /     \\      Kernel: Custom R-Live 2026", "line-info");
-                    appendTerminalLine("    |       |     Uptime: " + Math.floor(performance.now()/1000) + "s", "line-info");
-                    appendTerminalLine("    \\_|_|_|_/     Shell: Bash simulated on core browser", "line-info");
-                    appendTerminalLine("                  Resolution: Legion Go Handheld Native", "line-info");
+                    appendTerminalLine("      /\\_/\\       daras@racoon_liveiso\n     ( o.o )      --------------------\n      > ^ <       OS: Code:Racoon OpenHarmony\n     /     \\      Kernel: Custom R-Live 2026", "line-system");
                     break;
-                    
                 default:
-                    appendTerminalLine(`>> Komut bulunamadı: '${cmd}'. Yardım listesi için 'help' yazın.`, "line-error");
-                    playBeep(180, 0.2, 'sine');
+                    appendTerminalLine(`Komut saptanamadı: '${cmd}'`, "line-error");
                     break;
             }
         }
 
-        /* ==========================================================================
-           KERNEL DIAGNOSTICS SÜREÇ SİMÜLASYONU
-           ========================================================================== */
         function runKernelTests() {
             if(currentLevel === "Guest") return;
-            
             const zone = document.getElementById('kernel-test-zone');
-            zone.innerHTML = ""; // Test alanını sıfırla
-            
-            const testSuites = [
-                "Memory Pages Allocation",
-                "AMD Ryzen Z1 Threads Optimization",
-                "OpenHarmony HAL Layer Probing",
-                "Core Thermal & Fan Volts",
-                "FileSystem Integrity Check"
-            ];
-
-            addSystemLog("Kernel teşhis test dizisi başlatıldı.");
-            appendTerminalLine(">> [BİLGİ] Çekirdek teşhis testleri yürütülüyor...", "line-info");
+            zone.innerHTML = "";
+            const testSuites = ["Memory Allocation", "Z1 Threads Optimization", "OpenHarmony HAL"];
 
             testSuites.forEach((testName, index) => {
                 const row = document.createElement('div');
@@ -1552,61 +1340,32 @@
                 zone.appendChild(row);
 
                 setTimeout(() => {
-                    const isSuccess = Math.random() > 0.08; // %92 başarı oranı
                     const statusSpan = row.querySelector('.test-status');
-                    
-                    if (isSuccess) {
-                        statusSpan.innerText = "BAŞARILI";
-                        statusSpan.style.color = "var(--success)";
-                        appendTerminalLine(`>> [OK] ${testName} testi hatasız tamamlandı.`, "line-success");
-                    } else {
-                        statusSpan.innerText = "BAŞARISIZ";
-                        statusSpan.style.color = "var(--error)";
-                        appendTerminalLine(`>> [HATA] ${testName} donanım aşamasında kilitlendi!`, "line-error");
-                        playBeep(130, 0.3, 'sawtooth');
-                    }
-                    
-                    if (index === testSuites.length - 1) {
-                        addSystemLog("Kernel teşhis dizisi tamamlandı.");
-                    }
-                }, (index + 1) * 600);
+                    statusSpan.innerText = "BAŞARILI";
+                    statusSpan.style.color = "var(--success)";
+                }, (index + 1) * 500);
             });
         }
 
-        /* ==========================================================================
-           ROOT ENJEKSİYON MOTORU (GRAFİKSEL SİMÜLASYON)
-           ========================================================================== */
         function triggerRootInjection() {
             if (isInjecting) return;
-            
             isInjecting = true;
             injectionProgress = 0;
             startBtn.disabled = true;
-            startBtn.innerText = "Enjekte Ediliyor...";
-            rootStatusLabel.innerText = "Bypass Zerk Ediliyor";
-            rootStatusLabel.style.color = "var(--warning)";
+            rootStatusLabel.innerText = "Zerk Ediliyor";
             
-            addSystemLog("Çekirdek katmanına Root istismar kodları gönderiliyor...");
-            appendTerminalLine(">> [GÜVENLİK] Kök kabuk enjeksiyon boru hattı açıldı.", "line-warning");
-
             const interval = setInterval(() => {
-                injectionProgress += Math.floor(Math.random() * 8) + 2;
+                injectionProgress += 5;
                 if (injectionProgress >= 100) {
                     injectionProgress = 100;
                     clearInterval(interval);
-                    
                     isInjecting = false;
                     startBtn.disabled = false;
-                    startBtn.innerText = "Enjeksiyonu Tetikle";
                     rootStatusLabel.innerText = "ROOT AKTİF";
                     rootStatusLabel.style.color = "var(--success)";
-                    
-                    addSystemLog("Root enjeksiyonu başarıyla tamamlandı. Tam kontrol.");
-                    appendTerminalLine(">> [BAŞARILI] Kök kabuk yetkileri çekirdek katmanına zerk edildi.", "line-success");
-                    playBeep(800, 0.3, 'triangle');
                 }
                 setProgress(injectionProgress);
-            }, 120);
+            }, 100);
         }
 
         function setProgress(percent) {
@@ -1615,50 +1374,16 @@
             progressCircle.style.strokeDashoffset = offset;
         }
 
-        /* ==========================================================================
-           DONANIM SİMÜLASYONU VE DONANIM SAPTAMA MOTORU (LEGION GO ALTYAPISI)
-           ========================================================================== */
         function initHardwareDetection() {
-            // Tarayıcı çekirdek sayısını saptama simülasyonu
             const cores = navigator.hardwareConcurrency || 8;
             document.getElementById('user-cores-count').innerText = `${cores} Çekirdek (AMD Z1X)`;
-            
-            // Periyodik yapay yük simülasyon döngüsü
             setInterval(() => {
-                // Tarayıcı sekme yükü
                 const calcLoad = Math.floor(Math.random() * 12) + 3;
                 document.getElementById('user-calc-load').innerText = `${calcLoad}%`;
                 document.getElementById('user-cpu-bar').style.width = `${calcLoad}%`;
-
-                // Ana APU, VRAM ve Sistem RAM değerlerini dalgalandırma
-                const cpuVal = Math.floor(Math.random() * 25) + (isInjecting ? 45 : 15);
-                const vramVal = Math.floor(Math.random() * 15) + 30;
-                const ramVal = Math.floor(Math.random() * 10) + 48;
-                const fanRPM = 2800 + (cpuVal * 25);
-
-                document.getElementById('cpu-val').innerText = `${cpuVal}%`;
-                document.getElementById('cpu-bar').style.width = `${cpuVal}%`;
-
-                document.getElementById('vram-val').innerText = `${vramVal}%`;
-                document.getElementById('vram-bar').style.width = `${vramVal}%`;
-
-                document.getElementById('ram-val').innerText = `${ramVal}%`;
-                document.getElementById('ram-bar').style.width = `${ramVal}%`;
-
-                document.getElementById('fan-val').innerText = `${fanRPM} RPM`;
-                document.getElementById('fan-bar').style.width = `${Math.min((fanRPM / 6000) * 100, 100)}%`;
-
-                // Kritik donanım ısı uyarısı logu
-                if(cpuVal > 65) {
-                    addSystemLog(`[DONANIM UYARISI] Yüksek APU yükü saptandı: ${cpuVal}%`, true);
-                }
-
             }, 2000);
         }
 
-        /* ==========================================================================
-           YARDIMCI EK BİLEŞENLER VE GÜVENLİK FONKSİYONLARI
-           ========================================================================== */
         function formatTime(seconds) {
             const m = Math.floor(seconds / 60).toString().padStart(2, '0');
             const s = (seconds % 60).toString().padStart(2, '0');
@@ -1666,58 +1391,38 @@
         }
 
         function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, 
-                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-            );
+            return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
         }
 
-        /* ==========================================================================
-           ARKAPLAN MATRIX YAĞMURU GÖRSEL EFEKT MOTORU
-           ========================================================================== */
         const canvas = document.getElementById('matrix-bg');
         const ctx = canvas.getContext('2d');
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        // Karakter kütüphanesine yeni dağıtım adını ve markayı işleme
-        const letters = "0123456789ABCDEFCODERACOONKAIHONGv30RACOONLIVEISO";
+        const letters = "0123456789ABCDEFCODERACOON";
         const fontSize = 14;
-        let columns = canvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
+        const drops = Array(Math.floor(canvas.width / fontSize)).fill(1);
 
         function drawMatrix() {
             ctx.fillStyle = 'rgba(5, 5, 8, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Savaş modu aktifse Matrix yağmuru kırmızıya döner, normalde turuncu kalır
             ctx.fillStyle = isAttackModeActive ? '#ff3333' : '#ff6600';
             ctx.font = fontSize + 'px monospace';
             
             for (let i = 0; i < drops.length; i++) {
                 const text = letters[Math.floor(Math.random() * letters.length)];
                 ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
             }
         }
         setInterval(drawMatrix, 33);
 
-        /* ==========================================================================
-           SİSTEM AÇILIŞ TETİKLEYİCİLERİ
-           ========================================================================== */
         window.onload = function() {
             initHardwareDetection();
             initializeTerminal();
-            applyGuestRestrictions("Guest"); // Başlangıçta Guest kısıtlamalarını işlet
-            addSystemLog("Çekirdek işletim paneli başarıyla başlatıldı.");
+            applyGuestRestrictions("Guest");
         };
     </script>
 </body>
