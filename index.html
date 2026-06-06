@@ -3,493 +3,773 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code:Racoon OS Terminal</title>
+    <title>Code:Racoon OS - Turuncu Çekirdek Paneli</title>
     <style>
+        /* ==========================================
+           1. GLOBAL TEMELLER VE DEĞİŞKENLER
+           ========================================== */
+        :root {
+            --primary-orange: #ff6600;
+            --dark-orange: #b34700;
+            --glow-orange: rgba(255, 102, 0, 0.4);
+            --bg-dark: #0a0a0d;
+            --panel-bg: #121216;
+            --border-color: #262630;
+            --text-main: #e5e5e8;
+            --text-muted: #888899;
+            --success: #00ff66;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
         }
 
         body {
-            background-color: #0a0a0a;
-            color: #00ff00;
-            padding: 20px;
-            overflow-x: hidden;
-        }
-
-        /* Üst Durum Çubuğu ve Seviye Sistemi */
-        .status-header {
-            background: #141414;
-            padding: 15px;
-            border-radius: 5px;
-            border: 1px solid #333;
-            margin-bottom: 20px;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow: hidden;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            gap: 10px;
         }
 
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Roblox Esintili Seviye Badge Tasarımı */
-        .level-badge {
-            background: #007bff; /* Mavi Alan */
-            color: white;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-        }
-
-        /* Siyah yuvarlak, beyaz tik */
-        .verified-tick {
-            background-color: black;
-            color: white;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            margin-left: 8px;
-            font-weight: bold;
-        }
-
-        /* Root Oranı Barı */
-        .root-container {
-            width: 100%;
-            max-width: 300px;
-        }
-
-        .root-bar-wrapper {
-            width: 100%;
-            height: 15px;
-            background: #222;
-            border-radius: 3px;
-            overflow: hidden;
-            border: 1px solid #444;
-            margin-top: 5px;
-        }
-
-        .root-bar-fill {
-            height: 100%;
-            background: #00ff00;
-            width: 78%; /* Başlangıç Root Oranı */
-            transition: width 0.5s ease;
-        }
-
-        /* Canlı Duyuru Alanı */
-        #site-announcement {
-            background: rgba(255, 0, 0, 0.2);
-            border-left: 5px solid #ff0000;
-            padding: 10px;
-            margin-bottom: 20px;
-            display: none;
-            color: #fff;
-        }
-
-        /* Aktif Geri Sayım Alanı */
-        #countdown-display {
-            background: #111;
-            border: 1px dashed #ffcc00;
-            color: #ffcc00;
-            padding: 10px;
-            margin-bottom: 20px;
-            display: none;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        /* Terminal Arayüzü */
-        .terminal-box {
-            background: #000;
-            border: 1px solid #00ff00;
-            padding: 20px;
-            height: 400px;
-            overflow-y: auto;
-            border-radius: 5px;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
-        }
-
-        .input-line {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-        }
-
-        .prompt {
-            color: #888;
-            margin-right: 10px;
-        }
-
-        .terminal-input {
-            background: transparent;
-            border: none;
-            color: #00ff00;
-            font-family: inherit;
-            font-size: 16px;
-            outline: none;
-            flex: 1;
-        }
-
-        /* GİZLİ CODE:RACOON PANELİ */
-        #racoon-panel {
-            display: none;
+        /* ==========================================
+           2. ARKAPLAN EFEKTLERİ (MATRIX CANVAS)
+           ========================================== */
+        #matrix-bg {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 9999;
-            /* Gönderdiğin referans görsel tam ekran arka plan yapıldı */
-            background: url('image_1bb28b.png') no-repeat center center fixed;
-            background-size: cover;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            opacity: 0.04;
+            pointer-events: none;
         }
 
-        /* Katman Yönetimi */
-        .panel-overlay {
-            width: 100%;
-            height: 100%;
+        /* ==========================================
+           3. ÜST BAR (TOP BAR)
+           ========================================== */
+        header {
+            background-color: var(--panel-bg);
+            border-bottom: 2px solid var(--border-color);
+            padding: 10px 20px;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            transition: background 0.4s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
 
-        /* İlk açılıştaki Turuncu Arka Plan */
-        .orange-mode {
-            background: rgba(255, 140, 0, 0.95); 
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        /* Giriş yapıldıktan sonra görseli gösteren şeffaf siyah mod */
-        .transparent-mode {
-            background: rgba(0, 0, 0, 0.65); 
-        }
-
-        .panel-content {
-            background: #141414;
-            border: 2px solid #fff;
-            padding: 30px;
-            width: 360px;
+        .brand .logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary-orange), var(--dark-orange));
             border-radius: 8px;
-            color: #fff;
-            box-shadow: 0 0 25px rgba(0,0,0,0.8);
-        }
-
-        .panel-content h2 {
-            margin-bottom: 20px;
-            text-align: center;
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
-            color: #ff8c00;
-        }
-
-        #panel-menu h2 {
-            color: #00ff00;
-        }
-
-        .panel-group {
-            margin-bottom: 15px;
-        }
-
-        .panel-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 12px;
-            color: #aaa;
-        }
-
-        .panel-input {
-            width: 100%;
-            padding: 10px;
-            background: #222;
-            border: 1px solid #444;
-            color: #fff;
-            border-radius: 4px;
-            outline: none;
-        }
-
-        .panel-btn {
-            width: 100%;
-            padding: 10px;
-            background: #ff8c00;
-            border: none;
-            color: #000;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 4px;
-            margin-top: 5px;
-        }
-
-        .panel-btn:hover {
-            background: #e07b00;
-        }
-
-        .panel-menu-btn {
-            background: #00ff00;
-            color: #000;
-        }
-
-        .panel-menu-btn:hover {
-            background: #00cc00;
-        }
-
-        .panel-btn.danger {
-            background: #ff3333;
-            color: #fff;
-        }
-
-        .panel-btn.danger:hover {
-            background: #cc2222;
-        }
-
-        /* Sistem Kilit Ekranı */
-        #lock-screen {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
-            color: red;
-            z-index: 100000;
-            justify-content: center;
+            display: flex;
             align-items: center;
-            flex-direction: column;
-            font-size: 30px;
+            justify-content: center;
             font-weight: bold;
+            color: #fff;
+            box-shadow: 0 0 10px var(--glow-orange);
+        }
+
+        .brand h1 {
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .brand span {
+            color: var(--primary-orange);
+        }
+
+        .system-status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 102, 0, 0.1);
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 102, 0, 0.3);
+            font-size: 0.85rem;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--success);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* ==========================================
+           4. ANA PANEL DÜZENİ (GRID SYSTEM)
+           ========================================== */
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            gap: 15px;
+            padding: 15px;
+            height: calc(100vh - 58px);
+        }
+
+        .panel-column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: 100%;
+        }
+
+        .card {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            border-color: rgba(255, 102, 0, 0.5);
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.05);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title i {
+            color: var(--primary-orange);
+        }
+
+        /* ==========================================
+           5. ROOT ENJEKSİYON MODÜLÜ (ORANGE PANEL)
+           ========================================== */
+        .root-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            gap: 20px;
+        }
+
+        .progress-ring-wrapper {
+            position: relative;
+            width: 160px;
+            height: 160px;
+        }
+
+        .progress-ring-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .progress-ring-text .percentage {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-orange);
+            text-shadow: 0 0 10px var(--glow-orange);
+        }
+
+        .progress-ring-text .label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .injection-btn {
+            background: linear-gradient(135deg, var(--primary-orange), var(--dark-orange));
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px var(--glow-orange);
+            width: 100%;
+        }
+
+        .injection-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 102, 0, 0.6);
+        }
+
+        .injection-btn:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        .injection-btn:disabled {
+            background: #222;
+            color: #555;
+            border: 1px solid #333;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        /* ==========================================
+           6. DONANIM MONİTÖRÜ (HARDWARE METRICS)
+           ========================================== */
+        .metric-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .metric-row {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .metric-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+        }
+
+        .metric-bar-bg {
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .metric-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--dark-orange), var(--primary-orange));
+            border-radius: 4px;
+            transition: width 0.4s ease-out;
+            box-shadow: 0 0 8px var(--glow-orange);
+        }
+
+        /* ==========================================
+           7. TERMİNAL EMÜLATÖRÜ (TERMINAL SYSTEM)
+           ========================================== */
+        .terminal-card {
+            flex: 1;
+            min-height: 250px;
+        }
+
+        .terminal-body {
+            background-color: #07070a;
+            border: 1px solid rgba(255, 102, 0, 0.15);
+            border-radius: 6px;
+            padding: 12px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            gap: 6px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+        }
+
+        .terminal-line {
+            line-height: 1.4;
+            word-break: break-all;
+        }
+
+        .line-system { color: var(--primary-orange); }
+        .line-success { color: var(--success); }
+        .line-error { color: #ff3333; }
+        .line-info { color: #33ccff; }
+
+        .terminal-input-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 8px;
+        }
+
+        .terminal-prompt {
+            color: var(--primary-orange);
+            font-weight: bold;
+        }
+
+        .terminal-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-main);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+        }
+
+        /* ==========================================
+           8. SİSTEM LOGLARI VE AYARLAR
+           ========================================== */
+        .log-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            overflow-y: auto;
+            max-height: 200px;
+            font-size: 0.8rem;
+        }
+
+        .log-item {
+            padding: 6px 10px;
+            background: rgba(255,255,255,0.02);
+            border-left: 3px solid var(--border-color);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .log-item.active-log {
+            border-left-color: var(--primary-orange);
+            background: rgba(255, 102, 0, 0.03);
+        }
+
+        /* Animasyon Tanımlamaları */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(0, 255, 102, 0.7); }
+            70% { transform: scale(1.1); opacity: 0.5; box-shadow: 0 0 0 8px rgba(0, 255, 102, 0); }
+            100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(0, 255, 102, 0); }
+        }
+
+        /* Özel Kaydırma Çubukları (Scrollbar) */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-orange);
         }
     </style>
 </head>
 <body>
 
-    <div class="status-header">
-        <div class="user-info">
-            <span class="level-badge">
-                Code Racoon Level: 60
-                <span class="verified-tick">✓</span>
-            </span>
+    <canvas id="matrix-bg"></canvas>
+
+    <header>
+        <div class="brand">
+            <div class="logo">CR</div>
+            <h1>Code:Racoon <span>OS</span></h1>
         </div>
-        <div class="root-container">
-            <div>Sistemin Root Edilme Oranı: <span id="root-text">78%</span></div>
-            <div class="root-bar-wrapper">
-                <div class="root-bar-fill" id="root-bar"></div>
+        <div style="display: flex; gap: 20px; align-items: center;">
+            <div id="clock" style="font-family: monospace; color: var(--text-muted);">00:00:00</div>
+            <div class="system-status-badge">
+                <div class="pulse-dot"></div>
+                <span id="global-status-text">Çekirdek Stabil</span>
             </div>
         </div>
-    </div>
+    </header>
 
-    <div id="site-announcement"></div>
-    <div id="countdown-display">Kalan Süre: --:--</div>
-
-    <div class="terminal-box" id="terminal-box">
-        <div>[Code:Racoon OS Bash v2.16 - GitHub Pages]</div>
-        <div>Yardım almak için <span style="color:#fff;">'help'</span> yazın. Repo adresi için <span style="color:#fff;">'repo'</span> yazın.</div>
-        <div id="terminal-output"></div>
-        
-        <div class="input-line">
-            <span class="prompt">racoon@system:~#</span>
-            <input type="text" class="terminal-input" id="terminal-input" autofocus autocomplete="off">
-        </div>
-    </div>
-
-    <div id="racoon-panel">
-        <div class="panel-overlay orange-mode" id="panel-overlay">
-            
-            <div class="panel-content" id="panel-login">
-                <h2>Code:Racoon Panel Girişi</h2>
-                <div class="panel-group">
-                    <input type="password" class="panel-input" id="panel-password-input" placeholder="Yönetici Şifresini Girin...">
+    <main>
+        <section class="panel-column">
+            <div class="card" style="flex: 1;">
+                <div class="card-header">
+                    <div class="card-title">⚙️ Donanım Monitörü</div>
                 </div>
-                <button class="panel-btn" onclick="verifyPanelPassword()">Sisteme Bağlan</button>
-                <button class="panel-btn danger" style="background:#444;" onclick="togglePanel(false)">İptal</button>
+                <div class="metric-group">
+                    <div class="metric-row">
+                        <div class="metric-info">
+                            <span>APU Yükü (Z1 Extreme)</span>
+                            <span id="cpu-val">24%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-bar-fill" id="cpu-bar" style="width: 24%;"></div>
+                        </div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-info">
+                            <span>Grafik Bellek (VRAM)</span>
+                            <span id="vram-val">42%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-bar-fill" id="vram-bar" style="width: 42%;"></div>
+                        </div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-info">
+                            <span>Sistem RAM Havuzu</span>
+                            <span id="ram-val">58%</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-bar-fill" id="ram-bar" style="width: 58%;"></div>
+                        </div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-info">
+                            <span>Akıllı Fan Hızı</span>
+                            <span id="fan-val">3200 RPM</span>
+                        </div>
+                        <div class="metric-bar-bg">
+                            <div class="metric-bar-fill" id="fan-bar" style="width: 45%;"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="panel-content" id="panel-menu" style="display: none;">
-                <h2>Code:Racoon Panel</h2>
-                
-                <div class="panel-group">
-                    <label>Site Üstüne Duyuru Yayınla</label>
-                    <input type="text" class="panel-input" id="announcement-input" placeholder="Duyuru metni yazın...">
-                    <button class="panel-btn panel-menu-btn" onclick="publishAnnouncement()">Duyuruyu Bas</button>
+            <div class="card" style="flex: 1;">
+                <div class="card-header">
+                    <div class="card-title">📁 Proje Dizin Yapısı</div>
                 </div>
+                <ul class="log-list" style="max-height: none; flex: 1;">
+                    <li class="log-item active-log">📁 root/kaihong_core/</li>
+                    <li class="log-item" style="margin-left: 15px;">📄 kernel_patch.sh</li>
+                    <li class="log-item" style="margin-left: 15px;">📄 orange_ui_def.json</li>
+                    <li class="log-item active-log">📁 src/code_racoon/</li>
+                    <li class="log-item" style="margin-left: 15px;">📄 auto_inject.py</li>
+                    <li class="log-item" style="margin-left: 15px;">📄 audio_alert_engine.js</li>
+                </ul>
+            </div>
+        </section>
 
-                <div class="panel-group">
-                    <label>Countdown Sürat Süresi (Dakika)</label>
-                    <input type="number" class="panel-input" id="countdown-input" placeholder="Örn: 5">
-                    <button class="panel-btn panel-menu-btn" onclick="startSystemCountdown()">Geri Sayımı Tetikle</button>
+        <section class="panel-column">
+            <div class="card terminal-card">
+                <div class="card-header">
+                    <div class="card-title">💻 Çekirdek Terminal Konsolu</div>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Session: CodeRacoon@Core</span>
                 </div>
-
-                <div class="panel-group">
-                    <label>Panel Giriş Şifresini Değiştir</label>
-                    <input type="password" class="panel-input" id="new-password-input" placeholder="Yeni şifre belirleyin">
-                    <button class="panel-btn panel-menu-btn" onclick="changePanelPassword()">Şifreyi Değiştir</button>
+                <div class="terminal-body" id="terminal-screen">
+                    <div class="terminal-line line-system">Code:Racoon OS [Versiyon 2026.06.6]</div>
+                    <div class="terminal-line line-info">Sistem başlatıldı. Terminal arayüzü aktif. Yardım için 'help' yazın.</div>
                 </div>
-
-                <div class="panel-group" style="margin-top: 20px;">
-                    <button class="panel-btn danger" onclick="triggerSystemLock()">SİSTEMİ KİLİTLE</button>
+                <div class="terminal-input-row">
+                    <span class="terminal-prompt">racoon@core:~$</span>
+                    <input type="text" class="terminal-input" id="term-input" placeholder="Komut girin..." autocomplete="off">
                 </div>
+            </div>
+        </section>
 
-                <button class="panel-btn" style="background:#555; color:#fff;" onclick="togglePanel(false)">Paneli Kapat</button>
+        <section class="panel-column">
+            <div class="card" style="flex: 1.2;">
+                <div class="card-header">
+                    <div class="card-title">⚡ Root Enjeksiyon Oranı</div>
+                </div>
+                <div class="root-container">
+                    <div class="progress-ring-wrapper">
+                        <svg width="160" height="160" viewBox="0 0 160 160">
+                            <circle cx="80" cy="80" r="70" stroke="rgba(255,255,255,0.03)" stroke-width="8" fill="transparent"/>
+                            <circle id="progress-circle" cx="80" cy="80" r="70" stroke="var(--primary-orange)" stroke-width="8" fill="transparent"
+                                    stroke-dasharray="439.8" stroke-dashoffset="439.8" stroke-linecap="round" style="transition: stroke-dashoffset 0.1s; transform: rotate(-90deg); transform-origin: 50% 50%;"/>
+                        </svg>
+                        <div class="progress-ring-text">
+                            <div class="percentage" id="root-perc">0%</div>
+                            <div class="label" id="root-status-label">Beklemede</div>
+                        </div>
+                    </div>
+                    <button class="injection-btn" id="start-inject-btn" onclick="triggerRootInjection()">Enjeksiyonu Başlat</button>
+                </div>
             </div>
 
-        </div>
-    </div>
-
-    <div id="lock-screen">
-        <div>⚠️ SİSTEM YÖNETİCİ TARAFINDAN KİLİTLENDİ ⚠️</div>
-        <div style="font-size: 14px; margin-top: 10px; color: #555;">Code:Racoon Core Protection Activated.</div>
-    </div>
+            <div class="card" style="flex: 0.8;">
+                <div class="card-header">
+                    <div class="card-title">📊 Anlık Sistem Logları</div>
+                </div>
+                <div class="log-list" id="log-container">
+                    <div class="log-item">[09:54:02] Çekirdek modülleri başarıyla doğrulandı.</div>
+                    <div class="log-item">[09:54:05] Turuncu UI paneli belleğe haritalandı.</div>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <script>
-        // Yönetim Değişkenleri
-        let adminPassword = "racoonadmin";
-        let countdownInterval;
+        // --- Global Değişken Tanımlamaları ---
+        const termInput = document.getElementById('term-input');
+        const termScreen = document.getElementById('terminal-screen');
+        const rootPerc = document.getElementById('root-perc');
+        const rootStatusLabel = document.getElementById('root-status-label');
+        const progressCircle = document.getElementById('progress-circle');
+        const startBtn = document.getElementById('start-inject-btn');
+        const logContainer = document.getElementById('log-container');
+        const globalStatus = document.getElementById('global-status-text');
 
-        const terminalInput = document.getElementById('terminal-input');
-        const terminalOutput = document.getElementById('terminal-output');
-        const terminalBox = document.getElementById('terminal-box');
+        let isInjecting = false;
+        let injectionProgress = 0;
+        const circleCircumference = 2 * Math.PI * 70; // Daire çevresi (439.8)
 
-        // Terminal Emir Kontrolleri
-        terminalInput.addEventListener('keydown', function(e) {
+        // --- 1. Audio Engine (Web Audio API ile Bip Sesleri) ---
+        function playBeep(freq, duration, type = 'sine') {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+
+                oscillator.type = type;
+                oscillator.frequency.value = freq;
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                console.log("Ses çalma tarayıcı engeline takıldı:", e);
+            }
+        }
+
+        // --- 2. Canlı Saat ve Zaman Güncelleyici ---
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toTimeString().split(' ')[0];
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // --- 3. Donanım Monitörü Simülasyonu ---
+        setInterval(() => {
+            if (isInjecting) {
+                // Enjeksiyon sırasında yüklenme oranları artar
+                updateMetric('cpu', Math.floor(Math.random() * 25) + 65, '%');
+                updateMetric('vram', Math.floor(Math.random() * 15) + 70, '%');
+                updateMetric('ram', Math.floor(Math.random() * 10) + 75, '%');
+                updateMetric('fan', Math.floor(Math.random() * 500) + 4800, ' RPM', 6000);
+            } else {
+                // Normal kararlı çalışma dalgalanmaları
+                updateMetric('cpu', Math.floor(Math.random() * 15) + 15, '%');
+                updateMetric('vram', Math.floor(Math.random() * 8) + 35, '%');
+                updateMetric('ram', Math.floor(Math.random() * 5) + 55, '%');
+                updateMetric('fan', Math.floor(Math.random() * 200) + 2900, ' RPM', 6000);
+            }
+        }, 2000);
+
+        function updateMetric(id, val, unit, max = 100) {
+            document.getElementById(`${id}-val`).innerText = val + unit;
+            const fillPerc = (val / max) * 100;
+            document.getElementById(`${id}-bar`).style.width = `${id === 'fan' ? fillPerc : val}%`;
+        }
+
+        // --- 4. Log Ekleme Yardımcı Fonksiyonu ---
+        function addSystemLog(text) {
+            const now = new Date();
+            const timeStr = now.toTimeString().split(' ')[0];
+            const logItem = document.createElement('div');
+            logItem.className = 'log-item active-log';
+            logItem.innerText = `[${timeStr}] ${text}`;
+            
+            // Eski aktif logların stilini kaldır
+            const activeLogs = logContainer.querySelectorAll('.active-log');
+            activeLogs.forEach(el => el.classList.remove('active-log'));
+
+            logContainer.appendChild(logItem);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        // --- 5. Terminal İşlemleri ve Komut Motoru ---
+        function appendTerminalLine(text, type = '') {
+            const line = document.createElement('div');
+            line.className = `terminal-line ${type}`;
+            line.innerText = text;
+            termScreen.appendChild(line);
+            termScreen.scrollTop = termScreen.scrollHeight;
+        }
+
+        termInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
-                const fullCmd = this.value.trim();
-                const cmd = fullCmd.toLowerCase();
-                this.value = '';
-
+                const cmd = termInput.value.trim().toLowerCase();
+                termInput.value = '';
+                
                 if (cmd === '') return;
 
-                terminalOutput.innerHTML += `<div><span class="prompt">racoon@system:~#</span> ${fullCmd}</div>`;
-
-                if (cmd === 'help') {
-                    terminalOutput.innerHTML += `<div><span style="color:#ffcc00;">Mevcut Komutlar:</span><br>
-                                                 - <span style="color:#fff;">help</span>: Komut rehber arayüzünü çağırır.<br>
-                                                 - <span style="color:#fff;">repo</span>: Projenin GitHub kaynak kod sayfasına aktarır.<br>
-                                                 - <span style="color:#fff;">clear</span>: Terminal girdilerini ekrandan temizler.</div>`;
-                } 
-                else if (cmd === 'repo') {
-                    terminalOutput.innerHTML += `<div><span style="color:#00ff00;">GitHub Reposuna aktarılıyorsunuz...</span></div>`;
-                    window.open('https://github.com/300daras', '_blank');
-                } 
-                else if (cmd === 'clear') {
-                    terminalOutput.innerHTML = '';
-                } 
-                else {
-                    terminalOutput.innerHTML += `<div><span style="color:#ff3333;">Hata: '${fullCmd}' komutu sistem tarafından tanımlanamadı.</span></div>`;
-                }
-
-                terminalBox.scrollTop = terminalBox.scrollHeight;
+                appendTerminalLine(`racoon@core:~$ ${cmd}`, 'line-system');
+                playBeep(600, 0.05, 'triangle');
+                executeCommand(cmd);
             }
         });
 
-        // CTRL KLAVYE KONTROLÜ
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Control') {
-                e.preventDefault();
-                togglePanel(true);
-            }
-        });
+        function executeCommand(cmd) {
+            const args = cmd.split(' ');
+            const primaryCmd = args[0];
 
-        function togglePanel(show) {
-            const panel = document.getElementById('racoon-panel');
-            if (show) {
-                panel.style.display = 'block';
-                document.getElementById('panel-login').style.display = 'block';
-                document.getElementById('panel-menu').style.display = 'none';
-                document.getElementById('panel-overlay').className = "panel-overlay orange-mode";
-                document.getElementById('panel-password-input').value = '';
-            } else {
-                panel.style.display = 'none';
-            }
-        }
-
-        // PANEL GİRİŞ DOĞRULAMASI
-        function verifyPanelPassword() {
-            const enteredPass = document.getElementById('panel-password-input').value;
-            if (enteredPass === adminPassword) {
-                // Şifre doğruysa turuncu arayüz kalkar, şeffaflaşır ve arkadaki Racoon resmi görünür
-                document.getElementById('panel-overlay').className = "panel-overlay transparent-mode";
-                document.getElementById('panel-login').style.display = 'none';
-                document.getElementById('panel-menu').style.display = 'block';
-            } else {
-                alert("Hatalı Giriş Sinyali! Panel Erişimi Engellendi.");
-            }
-        }
-
-        // CANLI DUYURU İŞLEYİCİSİ
-        function publishAnnouncement() {
-            const text = document.getElementById('announcement-input').value.trim();
-            const badge = document.getElementById('site-announcement');
-            if(text !== "") {
-                badge.innerHTML = `<strong>[SİSTEM DUYURUSU]:</strong> ${text}`;
-                badge.style.display = 'block';
-                alert("Duyuru yayına alındı.");
-            } else {
-                badge.style.display = 'none';
+            switch(primaryCmd) {
+                case 'help':
+                    appendTerminalLine('Mevcut Komut Listesi:', 'line-info');
+                    appendTerminalLine('  help          - Bu menüyü gösterir.');
+                    appendTerminalLine('  clear         - Konsol ekranını temizler.');
+                    appendTerminalLine('  inject-root   - Root enjeksiyon sürecini tetikler.');
+                    appendTerminalLine('  sysinfo       - Ayrıntılı sistem donanım raporu sunar.');
+                    appendTerminalLine('  matrix-boost  - Fan ve işlemciyi maksimum performansa alır.');
+                    break;
+                case 'clear':
+                    termScreen.innerHTML = '';
+                    break;
+                case 'inject-root':
+                    if (isInjecting) {
+                        appendTerminalLine('HATA: Enjeksiyon süreci zaten aktif!', 'line-error');
+                    } else {
+                        appendTerminalLine('Terminalden gelen emir ile enjeksiyon başlatılıyor...', 'line-info');
+                        triggerRootInjection();
+                    }
+                    break;
+                case 'sysinfo':
+                    appendTerminalLine('--- SYSTEM ARCHITECTURE REPORT ---', 'line-info');
+                    appendTerminalLine('OS Platform: Code:Racoon OS Core (Ubuntu/Kaihong base)');
+                    appendTerminalLine('Host CPU: AMD Ryzen Z1 Extreme Core');
+                    appendTerminalLine('UI Renderer: High-Glow Orange Custom Framework');
+                    appendTerminalLine('Kernel Status: Unlocked via User Space Hook');
+                    break;
+                case 'matrix-boost':
+                    appendTerminalLine('Matrix Boost aktif ediliyor! Fanlar tam devire alınıyor...', 'line-success');
+                    playBeep(880, 0.3, 'sawtooth');
+                    updateMetric('fan', 5800, ' RPM', 6000);
+                    addSystemLog("Performans modu: MATRIX-BOOST tetiklendi.");
+                    break;
+                default:
+                    appendTerminalLine(`Komut bulunamadı: '${primaryCmd}'. Listeyi görmek için 'help' yazın.`, 'line-error');
             }
         }
 
-        // LIVE COUNTDOWN SİSTEMİ
-        function startSystemCountdown() {
-            const minutes = parseInt(document.getElementById('countdown-input').value);
-            if (isNaN(minutes) || minutes <= 0) {
-                alert("Geçerli bir zaman aralığı tanımlayın.");
-                return;
-            }
+        // --- 6. Root Enjeksiyon Algoritması (Orange UI Core) ---
+        function setProgress(percent) {
+            const offset = circleCircumference - (percent / 100) * circleCircumference;
+            progressCircle.style.strokeDashoffset = offset;
+            rootPerc.innerText = `${percent}%`;
+        }
 
-            clearInterval(countdownInterval);
-            let totalSeconds = minutes * 60;
-            const display = document.getElementById('countdown-display');
-            display.style.display = 'block';
-            display.style.background = "#111";
-            display.style.color = "#ffcc00";
+        function triggerRootInjection() {
+            if (isInjecting) return;
+            
+            isInjecting = true;
+            startBtn.disabled = true;
+            globalStatus.innerText = "Enjeksiyon Yapılıyor...";
+            globalStatus.parentElement.querySelector('.pulse-dot').style.backgroundColor = '#ff6600';
+            rootStatusLabel.innerText = "Yükleniyor";
+            appendTerminalLine(">> Root enjeksiyon modülleri yükleniyor...", "line-info");
+            addSystemLog("Root enjeksiyon safhası başladı.");
 
-            countdownInterval = setInterval(() => {
-                let mins = Math.floor(totalSeconds / 60);
-                let secs = totalSeconds % 60;
-
-                secs = secs < 10 ? '0' + secs : secs;
-                mins = mins < 10 ? '0' + mins : mins;
-
-                display.innerText = `Kritik Geri Sayım İşlemi: ${mins}:${secs}`;
-
-                if (totalSeconds <= 0) {
-                    clearInterval(countdownInterval);
-                    display.innerText = "Süre Sınırı Aşıldı! Operasyon Tamamlandı.";
-                    display.style.background = "#ff3333";
-                    display.style.color = "#fff";
+            injectionProgress = 0;
+            
+            const interval = setInterval(() => {
+                injectionProgress += Math.floor(Math.random() * 4) + 1;
+                
+                if (injectionProgress >= 100) {
+                    injectionProgress = 100;
+                    clearInterval(interval);
+                    completeRootInjection();
                 }
-                totalSeconds--;
-            }, 1000);
 
-            alert(`${minutes} dakikalık operasyonel geri sayım başlatıldı.`);
+                setProgress(injectionProgress);
+
+                // Belirli yüzdelerde terminale detay basarak satır ve log zenginliği sağlama
+                if (injectionProgress === 20 || (injectionProgress > 20 && injectionProgress < 24)) {
+                    appendTerminalLine("[OK] Bellek adresleri haritalandı, kernel açığı aranıyor...", "line-info");
+                    playBeep(523.25, 0.05);
+                }
+                if (injectionProgress === 50 || (injectionProgress > 50 && injectionProgress < 54)) {
+                    appendTerminalLine("[UYARI] Güvenlik duvarı baypas ediliyor, root hakları enjekte ediliyor...", "line-system");
+                    playBeep(587.33, 0.05);
+                }
+                if (injectionProgress === 85 || (injectionProgress > 85 && injectionProgress < 89)) {
+                    appendTerminalLine("[OK] Sembiyotik bağlar kuruldu, yetki yükseltiliyor...", "line-info");
+                    playBeep(659.25, 0.05);
+                }
+
+            }, 150);
         }
 
-        // ŞİFRE DEĞİŞTİRME MEKANİZMASI
-        function changePanelPassword() {
-            const newPass = document.getElementById('new-password-input').value.trim();
-            if (newPass.length >= 4) {
-                adminPassword = newPass;
-                alert("Panel ana erişim şifresi güncellendi!");
-                document.getElementById('new-password-input').value = '';
-            } else {
-                alert("Güvenlik protokolü gereği şifre en az 4 karakter olmalıdır.");
+        function completeRootInjection() {
+            isInjecting = false;
+            startBtn.disabled = false;
+            rootStatusLabel.innerText = "ENJEKTE EDİLDİ";
+            rootStatusLabel.style.color = "var(--success)";
+            globalStatus.innerText = "Sistem Rooted";
+            globalStatus.parentElement.querySelector('.pulse-dot').style.backgroundColor = 'var(--success)';
+            
+            appendTerminalLine(">> [BAŞARILI] Root enjeksiyon oranı %100'e ulaştı! Çekirdek kırıldı.", "line-success");
+            addSystemLog("Çekirdek root erişimi başarıyla tamamlandı.");
+            
+            // Başarı melodisi çalma (Web Audio API)
+            playBeep(523.25, 0.1);
+            setTimeout(() => playBeep(659.25, 0.1), 120);
+            setTimeout(() => playBeep(783.99, 0.1), 240);
+            setTimeout(() => playBeep(1046.50, 0.3), 360);
+        }
+
+        // --- 7. Matrix Arkaplan Yağmuru (Görsel Zenginlik) ---
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const letters = "0123456789ABCDEFCODERACOONKAIHONG";
+        const fontSize = 14;
+        let columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(10, 10, 13, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Turuncu matrix yağmuru rengi
+            ctx.fillStyle = '#ff6600';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
             }
         }
+        setInterval(drawMatrix, 33);
 
-        // TAM KİLİTLEME FONKSİYONU
-        function triggerSystemLock() {
-            if (confirm("Sistemi acil durum moduna almak istediğinize emin misiniz?")) {
-                document.getElementById('lock-screen').style.display = 'flex';
-                togglePanel(false);
-            }
-        }
+        // Ekran yüklendiğinde ilk ayarı verelim
+        setProgress(0);
     </script>
 </body>
 </html>
