@@ -6,45 +6,44 @@
     <title id="site-title">Code:Racoon OS - Turuncu Çekirdek Paneli v3.0</title>
     <style>
         /* ==========================================================================
-           1. KÜRESEL SİBERPUNK DEĞİŞKENLERİ VE TASARIM TEMELLERİ [cite: 204, 205, 206]
+           1. KÜRESEL SİBERPUNK DEĞİŞKENLERİ VE TASARIM TEMELLERİ
            ========================================================================== */
         :root {
-            --primary-orange: #ff6600; /* [cite: 208] */
-            --dark-orange: #b34700; /* [cite: 209] */
-            --neon-white: #ffffff; /* [cite: 210] */
-            --glow-orange: rgba(255, 102, 0, 0.5); /* [cite: 211] */
-            --glow-white: rgba(255, 255, 255, 0.2); /* [cite: 212] */
-            --bg-dark: #050508; /* [cite: 213] */
-            --panel-bg: rgba(14, 14, 20, 0.90); /* [cite: 214] */
-            --border-color: #2a2a35; /* [cite: 215] */
-            --text-main: #f0f0f5; /* [cite: 216] */
-            --text-muted: #9999aa; /* [cite: 217] */
-            --success: #00ff66; /* [cite: 218] */
-            --error: #ff3333; /* [cite: 219] */
-            --warning: #ffcc00; /* [cite: 220] */
-            --war-red: #800000; /* [cite: 221] */
+            --primary-orange: #ff6600;
+            --dark-orange: #b34700;
+            --neon-white: #ffffff;
+            --glow-orange: rgba(255, 102, 0, 0.5);
+            --glow-white: rgba(255, 255, 255, 0.2);
+            --bg-dark: #050508;
+            --panel-bg: rgba(14, 14, 20, 0.90);
+            --border-color: #2a2a35;
+            --text-main: #f0f0f5;
+            --text-muted: #9999aa;
+            --success: #00ff66;
+            --error: #ff3333;
+            --warning: #ffcc00;
+            --war-red: #800000;
             --terminal-ghost: rgba(0, 255, 102, 0.45);
         }
         * {
-            box-sizing: border-box; /* [cite: 224] */
-            margin: 0; /* [cite: 225] */
-            padding: 0; /* [cite: 226] */
-            font-family: 'Courier New', Courier, monospace; /* [cite: 227] */
-            user-select: none; /* [cite: 228] */
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+            user-select: none;
         }
         body {
-            background-color: var(--bg-dark); /* [cite: 231] */
-            background-size: cover; /* [cite: 232] */
-            background-position: center; /* [cite: 233] */
-            background-attachment: fixed; /* [cite: 234] */
-            color: var(--text-main); /* [cite: 235] */
-            height: 100vh; /* [cite: 236] */
-            display: flex; /* [cite: 237] */
-            flex-direction: column; /* [cite: 238] */
-            overflow: hidden; /* [cite: 239] */
-            transition: background 0.5s ease, filter 0.5s ease; /* [cite: 240] */
+            background-color: var(--bg-dark);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: background 0.5s ease, filter 0.5s ease;
         }
-
         /* RETRO CRT EKRAN FİLTRESİ */
         .crt-scanlines {
             position: fixed;
@@ -55,283 +54,290 @@
             z-index: 9999999;
             opacity: 0.85;
         }
-
         /* ==========================================================================
-           2. DİNAMİK CANVASI VE ARKA PLAN EFEKTLERİ [cite: 242, 243, 244]
+           2. DİNAMİK CANVASI VE ARKA PLAN EFEKTLERİ
            ========================================================================== */
         #matrix-bg {
-            position: fixed; /* [cite: 245] */
-            top: 0; /* [cite: 246] */
-            left: 0; /* [cite: 247] */
-            width: 100vw; /* [cite: 248] */
-            height: 100vh; /* [cite: 249] */
-            z-index: -1; /* [cite: 251] */
-            opacity: 0.06; /* [cite: 252] */
-            pointer-events: none; /* [cite: 253] */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            opacity: 0.06;
+            pointer-events: none;
+        }
+
+        /* ESKİ TELEVİZYON KARINCALANMA EKRANI (TV STATIC) */
+        #tv-static-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 999998; /* Uyarı kutusunun hemen altında, her şeyin üstünde */
+            display: none;
+            opacity: 0.45; /* Arka planı hafif yırtık göstermek için ideal opaklık */
+            pointer-events: none;
         }
 
         /* ==========================================================================
-           3. ÜST GEZİNTİ BARBARI (HEADER DÜZENİ) [cite: 255, 256, 257]
+           3. ÜST GEZİNTİ BARBARI (HEADER DÜZENİ)
            ========================================================================== */
         header {
-            background-color: #0b0b10; /* [cite: 259] */
-            border-bottom: 2px solid var(--primary-orange); /* [cite: 260] */
-            padding: 12px 20px; /* [cite: 261] */
-            display: flex; /* [cite: 262] */
-            justify-content: space-between; /* [cite: 263] */
-            align-items: center; /* [cite: 264] */
-            box-shadow: 0 0 20px var(--glow-orange); /* [cite: 265] */
-            z-index: 100; /* [cite: 266] */
+            background-color: #0b0b10;
+            border-bottom: 2px solid var(--primary-orange);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0 20px var(--glow-orange);
+            z-index: 100;
         }
         .brand {
-            display: flex; /* [cite: 269] */
-            align-items: center; /* [cite: 270] */
-            gap: 12px; /* [cite: 271] */
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
         .brand .logo-container {
-            width: 40px; /* [cite: 274] */
-            height: 40px; /* [cite: 275] */
-            background: #12121a; /* [cite: 276] */
-            border: 2px solid var(--neon-white); /* [cite: 277] */
-            border-radius: 8px; /* [cite: 278] */
-            display: flex; /* [cite: 279] */
-            align-items: center; /* [cite: 280] */
-            justify-content: center; /* [cite: 281] */
-            box-shadow: 0 0 10px var(--glow-white); /* [cite: 282] */
+            width: 40px;
+            height: 40px;
+            background: #12121a;
+            border: 2px solid var(--neon-white);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px var(--glow-white);
         }
         .brand svg {
-            width: 28px; /* [cite: 285] */
-            height: 28px; /* [cite: 286] */
-            fill: var(--primary-orange); /* [cite: 287] */
-            filter: drop-shadow(0 0 5px var(--primary-orange)); /* [cite: 288] */
+            width: 28px;
+            height: 28px;
+            fill: var(--primary-orange);
+            filter: drop-shadow(0 0 5px var(--primary-orange));
         }
         .brand h1 {
-            font-size: 1.3rem; /* [cite: 291] */
-            letter-spacing: 1px; /* [cite: 292] */
-            text-transform: uppercase; /* [cite: 293] */
-            color: var(--neon-white); /* [cite: 294] */
-            text-shadow: 0 0 5px var(--glow-white); /* [cite: 295] */
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--neon-white);
+            text-shadow: 0 0 5px var(--glow-white);
         }
         .brand h1 span {
-            color: var(--primary-orange); /* [cite: 298] */
-            text-shadow: 0 0 8px var(--primary-orange); /* [cite: 299] */
+            color: var(--primary-orange);
+            text-shadow: 0 0 8px var(--primary-orange);
         }
         .header-controls {
-            display: flex; /* [cite: 302] */
-            gap: 15px; /* [cite: 303] */
-            align-items: center; /* [cite: 304] */
+            display: flex;
+            gap: 15px;
+            align-items: center;
         }
         .level-selector-wrapper {
-            display: flex; /* [cite: 307] */
-            align-items: center; /* [cite: 308] */
-            gap: 8px; /* [cite: 309] */
-            background: rgba(255, 255, 255, 0.03); /* [cite: 310] */
-            padding: 4px 10px; /* [cite: 311] */
-            border-radius: 6px; /* [cite: 312] */
-            border: 1px solid var(--border-color); /* [cite: 313] */
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
         }
         .level-select {
-            background: #0d0d13; /* [cite: 316] */
-            color: var(--primary-orange); /* [cite: 317] */
-            border: 1px solid var(--primary-orange); /* [cite: 318] */
-            padding: 4px 8px; /* [cite: 319] */
-            border-radius: 4px; /* [cite: 320] */
-            font-weight: bold; /* [cite: 321] */
-            outline: none; /* [cite: 322] */
-            cursor: pointer; /* [cite: 323] */
+            background: #0d0d13;
+            color: var(--primary-orange);
+            border: 1px solid var(--primary-orange);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            outline: none;
+            cursor: pointer;
         }
         .system-status-badge {
-            display: flex; /* [cite: 326] */
-            align-items: center; /* [cite: 327] */
-            gap: 8px; /* [cite: 328] */
-            background: rgba(255, 102, 0, 0.1); /* [cite: 329] */
-            padding: 6px 14px; /* [cite: 330] */
-            border-radius: 20px; /* [cite: 331] */
-            border: 1px solid var(--primary-orange); /* [cite: 332] */
-            font-size: 0.85rem; /* [cite: 333] */
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 102, 0, 0.1);
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--primary-orange);
+            font-size: 0.85rem;
         }
         .pulse-dot {
-            width: 8px; /* [cite: 336] */
-            height: 8px; /* [cite: 337] */
-            background-color: var(--success); /* [cite: 338] */
-            border-radius: 50%; /* [cite: 339] */
-            animation: pulse 1.5s infinite; /* [cite: 340] */
+            width: 8px;
+            height: 8px;
+            background-color: var(--success);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
         }
-
         /* ==========================================================================
-           4. PANEL DÜZENLERİ VE GRID SİSTEMLERİ [cite: 342, 343, 344]
+           4. PANEL DÜZENLERİ VE GRID SİSTEMLERİ
            ========================================================================== */
         main {
-            flex: 1; /* [cite: 346] */
-            display: grid; /* [cite: 347] */
-            grid-template-columns: 340px 1fr 360px; /* [cite: 348] */
-            gap: 20px; /* [cite: 349] */
-            padding: 20px; /* [cite: 350] */
-            min-height: 0; /* [cite: 351] */
+            flex: 1;
+            display: grid;
+            grid-template-columns: 340px 1fr 360px;
+            gap: 20px;
+            padding: 20px;
+            min-height: 0;
         }
         @media (max-width: 1150px) {
-            main { grid-template-columns: 1fr; overflow-y: auto; } /* [cite: 355, 356] */
+            main { grid-template-columns: 1fr; overflow-y: auto; }
         }
         .panel-column {
-            display: flex; /* [cite: 359] */
-            flex-direction: column; /* [cite: 360] */
-            gap: 20px; /* [cite: 362] */
-            overflow-y: auto; /* [cite: 363] */
-            padding-right: 4px; /* [cite: 364] */
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+            padding-right: 4px;
         }
         .card {
-            background-color: var(--panel-bg); /* [cite: 367] */
-            border: 1px solid var(--border-color); /* [cite: 368] */
-            border-radius: 14px; /* [cite: 369] */
-            padding: 18px; /* [cite: 370] */
-            display: flex; /* [cite: 371] */
-            flex-direction: column; /* [cite: 372] */
-            position: relative; /* [cite: 373] */
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.6), 0 4px 10px rgba(0,0,0,0.4); /* [cite: 374] */
-            transition: border-color 0.3s, box-shadow 0.3s, opacity 0.4s ease, transform 0.4s ease; /* [cite: 375] */
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.6), 0 4px 10px rgba(0,0,0,0.4);
+            transition: border-color 0.3s, box-shadow 0.3s, opacity 0.4s ease, transform 0.4s ease;
         }
-        .card.hidden-guest { display: none !important; } /* [cite: 378] */
+        .card.hidden-guest { display: none !important; }
         .card:hover {
-            border-color: var(--primary-orange); /* [cite: 381] */
-            box-shadow: 0 0 15px rgba(255, 102, 0, 0.15), inset 0 0 10px rgba(255,255,255,0.02); /* [cite: 382] */
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.15), inset 0 0 10px rgba(255,255,255,0.02);
         }
         .card-header {
-            display: flex; /* [cite: 385] */
-            justify-content: space-between; /* [cite: 386] */
-            align-items: center; /* [cite: 387] */
-            margin-bottom: 15px; /* [cite: 388] */
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08); /* [cite: 389] */
-            padding-bottom: 10px; /* [cite: 390] */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 10px;
         }
         .card-title {
-            font-size: 0.95rem; /* [cite: 393] */
-            font-weight: 700; /* [cite: 394] */
-            text-transform: uppercase; /* [cite: 395] */
-            letter-spacing: 0.5px; /* [cite: 396] */
-            color: var(--neon-white); /* [cite: 397] */
-            display: flex; /* [cite: 398] */
-            align-items: center; /* [cite: 399] */
-            gap: 8px; /* [cite: 400] */
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--neon-white);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-
         /* Girdiler ve Butonlar */
         .panel-input {
-            background: #0a0a0f; /* [cite: 404] */
-            border: 1px solid var(--border-color); /* [cite: 405] */
-            padding: 9px 12px; /* [cite: 406] */
-            border-radius: 6px; /* [cite: 407] */
-            color: var(--text-main); /* [cite: 408] */
-            outline: none; /* [cite: 409] */
-            font-size: 0.85rem; /* [cite: 410] */
-            transition: all 0.3s; /* [cite: 411] */
+            background: #0a0a0f;
+            border: 1px solid var(--border-color);
+            padding: 9px 12px;
+            border-radius: 6px;
+            color: var(--text-main);
+            outline: none;
+            font-size: 0.85rem;
+            transition: all 0.3s;
         }
-        .panel-input:focus { border-color: var(--primary-orange); box-shadow: 0 0 8px var(--glow-orange); } /* [cite: 414, 415] */
+        .panel-input:focus { border-color: var(--primary-orange); box-shadow: 0 0 8px var(--glow-orange); }
         .panel-btn {
-            background: #14141f; /* [cite: 418] */
-            border: 1px solid var(--border-color); /* [cite: 419] */
-            color: var(--text-main); /* [cite: 420] */
-            padding: 9px 14px; /* [cite: 421] */
-            border-radius: 6px; /* [cite: 422] */
-            cursor: pointer; /* [cite: 423] */
-            font-weight: 600; /* [cite: 424] */
-            font-size: 0.8rem; /* [cite: 425] */
-            text-transform: uppercase; /* [cite: 426] */
-            transition: all 0.3s; /* [cite: 427] */
+            background: #14141f;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 9px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            transition: all 0.3s;
         }
         .panel-btn:hover {
-            background: var(--primary-orange); /* [cite: 430] */
-            color: #000; /* [cite: 431] */
-            font-weight: bold; /* [cite: 432] */
-            border-color: var(--primary-orange); /* [cite: 433] */
-            box-shadow: 0 0 12px var(--glow-orange); /* [cite: 434] */
+            background: var(--primary-orange);
+            color: #000;
+            font-weight: bold;
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 12px var(--glow-orange);
         }
-        .panel-btn.btn-danger:hover { background: var(--error); border-color: var(--error); color: #fff; box-shadow: 0 0 12px rgba(255,51,51,0.5); } /* [cite: 437, 438, 440] */
-        .panel-btn.btn-war { background: #4a0000; border: 1px solid var(--error); color: var(--error); } /* [cite: 443, 444, 445] */
-        .panel-btn.btn-war:hover { background: var(--error); color: #fff; box-shadow: 0 0 15px var(--error); } /* [cite: 448, 450] */
-
-        /* Teşhis ve Monitör Stilleri [cite: 475] */
-        .kernel-test-container { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; } /* [cite: 476, 479] */
-        .test-row { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.02); } /* [cite: 483, 486, 487, 490] */
-        .test-status { font-weight: bold; font-family: monospace; } /* [cite: 493, 494] */
-
+        .panel-btn.btn-danger:hover { background: var(--error); border-color: var(--error); color: #fff; box-shadow: 0 0 12px rgba(255,51,51,0.5); }
+        .panel-btn.btn-war { background: #4a0000; border: 1px solid var(--error); color: var(--error); }
+        .panel-btn.btn-war:hover { background: var(--error); color: #fff; box-shadow: 0 0 15px var(--error); }
+        /* Teşhis ve Monitör Stilleri */
+        .kernel-test-container { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+        .test-row { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.02); }
+        .test-status { font-weight: bold; font-family: monospace; }
         /* ==========================================================================
-           5. CORES / TERMİNAL VE KONSOL SİSTEMİ [cite: 497, 498]
+           5. CORES / TERMİNAL VE KONSOL SİSTEMİ
            ========================================================================== */
-        .terminal-card { flex: 1; min-height: 320px; } /* [cite: 499, 501] */
+        .terminal-card { flex: 1; min-height: 320px; }
         .terminal-body {
-            background-color: #040406; /* [cite: 504] */
-            border: 1px solid rgba(255, 102, 0, 0.2); /* [cite: 505] */
-            border-radius: 8px; /* [cite: 506] */
-            padding: 14px; /* [cite: 507] */
-            font-family: 'Courier New', Courier, monospace; /* [cite: 508] */
-            font-size: 0.85rem; /* [cite: 509] */
-            flex: 1; /* [cite: 510] */
-            display: flex; /* [cite: 511] */
-            flex-direction: column; /* [cite: 512] */
-            overflow-y: auto; /* [cite: 513] */
-            gap: 6px; /* [cite: 514] */
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.95); /* [cite: 515] */
+            background-color: #040406;
+            border: 1px solid rgba(255, 102, 0, 0.2);
+            border-radius: 8px;
+            padding: 14px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            gap: 6px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.95);
         }
-        .terminal-line { line-height: 1.4; word-break: break-all; white-space: pre-wrap; } /* [cite: 517, 519, 520] */
-        .line-system { color: var(--primary-orange); } /* [cite: 522] */
-        .line-success { color: var(--success); } /* [cite: 523] */
-        .line-error { color: var(--error); } /* [cite: 524] */
-        .line-warning { color: var(--warning); } /* [cite: 525] */
+        .terminal-line { line-height: 1.4; word-break: break-all; white-space: pre-wrap; }
+        .line-system { color: var(--primary-orange); }
+        .line-success { color: var(--success); }
+        .line-error { color: var(--error); }
+        .line-warning { color: var(--warning); }
         .line-muted { color: var(--terminal-ghost); font-style: italic; }
-        .line-info { color: #ffffff; text-shadow: 0 0 4px rgba(255,255,255,0.4); } /* [cite: 526] */
+        .line-info { color: #ffffff; text-shadow: 0 0 4px rgba(255,255,255,0.4); }
         
-        .terminal-input-row { display: flex; align-items: center; gap: 10px; margin-top: auto; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 10px; } /* [cite: 527, 531, 532, 533] */
-        .terminal-prompt { color: var(--primary-orange); font-weight: bold; } /* [cite: 535, 537] */
-        .terminal-input { flex: 1; background: transparent; border: none; outline: none; color: var(--text-main); font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; } /* [cite: 539, 541, 544, 545, 546] */
-
-        /* Donanım Metrik Çubukları [cite: 597] */
-        .metric-group { display: flex; flex-direction: column; gap: 10px; } /* [cite: 598, 601] */
-        .metric-row { display: flex; flex-direction: column; gap: 4px; } /* [cite: 603, 606] */
-        .metric-info { display: flex; justify-content: space-between; font-size: 0.8rem; } /* [cite: 608, 611] */
-        .metric-bar-bg { height: 6px; background-color: rgba(255, 255, 255, 0.05); border-radius: 3px; overflow: hidden; } /* [cite: 613, 614, 616, 617] */
-        .metric-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--dark-orange), var(--primary-orange)); box-shadow: 0 0 8px var(--glow-orange); transition: width 0.4s ease-out; } /* [cite: 619, 621, 622, 623, 624] */
-
+        .terminal-input-row { display: flex; align-items: center; gap: 10px; margin-top: auto; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 10px; }
+        .terminal-prompt { color: var(--primary-orange); font-weight: bold; }
+        .terminal-input { flex: 1; background: transparent; border: none; outline: none; color: var(--text-main); font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; }
+        /* Donanım Metrik Çubukları */
+        .metric-group { display: flex; flex-direction: column; gap: 10px; }
+        .metric-row { display: flex; flex-direction: column; gap: 4px; }
+        .metric-info { display: flex; justify-content: space-between; font-size: 0.8rem; }
+        .metric-bar-bg { height: 6px; background-color: rgba(255, 255, 255, 0.05); border-radius: 3px; overflow: hidden; }
+        .metric-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--dark-orange), var(--primary-orange)); box-shadow: 0 0 8px var(--glow-orange); transition: width 0.4s ease-out; }
         /* ==========================================================================
-           6. GÜVENLİK OVERLAYLERİ VE DOĞRULAMA MODALLERİ [cite: 626, 627]
+           6. GÜVENLİK OVERLAYLERİ VE DOĞRULAMA MODALLERİ
            ========================================================================== */
-        .overlay-layer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(4, 4, 6, 0.98); backdrop-filter: blur(15px); z-index: 99999; display: none; align-items: center; justify-content: center; flex-direction: column; } /* [cite: 629, 633, 635, 636, 637, 638, 640, 641] */
-        .lock-container { text-align: center; background: #0f0f14; border: 2px solid var(--primary-orange); padding: 35px; border-radius: 16px; box-shadow: 0 0 35px var(--glow-orange); max-width: 440px; width: 90%; position: relative; } /* [cite: 643, 645, 646, 647, 648, 649, 650, 652] */
-        .lock-title { color: var(--primary-orange); font-size: 1.4rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; font-weight: bold; } /* [cite: 654, 656, 657, 658, 659, 660] */
-
+        .overlay-layer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(4, 4, 6, 0.98); backdrop-filter: blur(15px); z-index: 99999; display: none; align-items: center; justify-content: center; flex-direction: column; }
+        .lock-container { text-align: center; background: #0f0f14; border: 2px solid var(--primary-orange); padding: 35px; border-radius: 16px; box-shadow: 0 0 35px var(--glow-orange); max-width: 440px; width: 90%; position: relative; }
+        .lock-title { color: var(--primary-orange); font-size: 1.4rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; font-weight: bold; }
+        
         /* KRİTİK KÜRESEL ACİL DURUM EKRANI YAPISI */
         #attack-overlay {
-            background-color: rgba(12, 2, 2, 0.99);
-            border: 6px solid var(--error); /* [cite: 671] */
-            display: none; /* [cite: 672] */
-            flex-direction: column; /* [cite: 673] */
-            justify-content: center; /* [cite: 674] */
-            align-items: center; /* [cite: 675] */
-            position: fixed; /* [cite: 676] */
-            top: 0; left: 0; width: 100vw; height: 100vh; /* [cite: 677, 680] */
-            z-index: 999999;
-            transition: all 0.3s ease; /* [cite: 682] */
+            background-color: rgba(12, 2, 2, 0.95);
+            border: 6px solid var(--error);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 999999; /* Karıncalanmanın da üstünde durması için */
+            transition: all 0.3s ease;
+            opacity: 0; /* JS ile yumuşak geçiş yaptırmak için */
         }
         .attack-banner-box {
-            text-align: center; /* [cite: 685] */
-            padding: 45px; /* [cite: 686] */
-            background: rgba(0, 0, 0, 0.95); /* [cite: 687] */
-            border: 3px double var(--error); /* [cite: 688] */
-            box-shadow: 0 0 60px rgba(255, 0, 0, 0.8); /* [cite: 689] */
-            border-radius: 12px; /* [cite: 690] */
-            max-width: 700px; /* [cite: 691] */
+            text-align: center;
+            padding: 45px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px double var(--error);
+            box-shadow: 0 0 60px rgba(255, 0, 0, 0.8);
+            border-radius: 12px;
+            max-width: 700px;
             width: 90%;
-            animation: attackPulse 1s infinite alternate; /* [cite: 692] */
+            animation: attackPulse 1s infinite alternate;
         }
         .attack-message-text {
-            color: var(--error); /* [cite: 695] */
-            font-size: 2.2rem; /* [cite: 696] */
-            font-weight: bold; /* [cite: 697] */
-            letter-spacing: 2px; /* [cite: 698] */
-            text-transform: uppercase; /* [cite: 699] */
-            margin-bottom: 15px; /* [cite: 700] */
-            text-shadow: 0 0 20px rgba(255, 0, 0, 0.9); /* [cite: 701] */
+            color: var(--error);
+            font-size: 2.2rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.9);
         }
-        .attack-sub-text { color: #ffffff; font-size: 1.2rem; margin-bottom: 25px; font-family: 'Courier New', monospace; } /* [cite: 704, 705, 706, 707] */
+        .attack-sub-text { color: #ffffff; font-size: 1.2rem; margin-bottom: 25px; font-family: 'Courier New', monospace; }
         
         #fake-log-stream {
             background: #020204;
@@ -347,20 +353,21 @@
             overflow-y: auto;
             box-shadow: inset 0 0 10px rgba(0,255,0,0.2);
         }
-
-        .announcement-list { list-style: none; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; max-height: 180px; padding-right: 5px; } /* [cite: 453, 456, 458, 459, 460] */
-        .announcement-item { padding: 10px; background: rgba(255, 102, 0, 0.03); border-left: 3px solid var(--primary-orange); border-radius: 0 6px 6px 0; font-size: 0.85rem; } /* [cite: 463, 464, 465, 466, 467] */
-
+        .announcement-list { list-style: none; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; max-height: 180px; padding-right: 5px; }
+        .announcement-item { padding: 10px; background: rgba(255, 102, 0, 0.03); border-left: 3px solid var(--primary-orange); border-radius: 0 6px 6px 0; font-size: 0.85rem; }
         @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes attackPulse { 0% { border-color: #ff0000; box-shadow: 0 0 30px rgba(255, 0, 0, 0.5); } 100% { border-color: #ff6666; box-shadow: 0 0 60px rgba(255, 50, 50, 0.9); } }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
     </style>
 </head>
 <body>
-
     <div class="crt-scanlines"></div>
+    <canvas id="matrix-bg"></canvas>
+    
+    <!-- ESKİ TV SİYAH NOKTA EFEKTİ İÇİN CANVAS -->
+    <canvas id="tv-static-canvas"></canvas>
 
-    <canvas id="matrix-bg"></canvas> <div id="attack-overlay">
+    <div id="attack-overlay">
         <div class="attack-banner-box">
             <div style="font-size: 4.5rem; margin-bottom: 15px; animation: blink 1s infinite;">☣️</div>
             <div class="attack-message-text">ACİL DURUM UYARISI</div>
@@ -368,35 +375,28 @@
             <h2 style="color: #ffcc00; letter-spacing: 6px; font-size: 1.4rem; margin-top: 15px; text-shadow: 0 0 10px rgba(255,204,0,0.5);">SİTEDEN AYRILMAYIN</h2>
             
             <div id="fake-log-stream"></div>
-
             <button id="deactivate-btn" onclick="deactivateGlobalEmergency()" style="display:none; margin-top:35px; background:transparent; border:2px solid var(--error); color:var(--error); padding:14px 28px; font-family:monospace; font-weight:bold; cursor:pointer; text-transform:uppercase; transition: all 0.3s;">
                 [ PROTOKOLÜ SONLANDIR ]
             </button>
         </div>
     </div>
-
     <div id="lockscreen-overlay" class="overlay-layer"> <div class="lock-container" style="border-color: var(--error); box-shadow: 0 0 30px rgba(255,51,51,0.3);"> <div class="lock-title" style="color: var(--error);"> 🚨 Sistem Mühürlendi</div> <div style="font-size: 3rem; font-family: monospace; margin: 15px 0; color: #fff;" id="countdown-display">00:00</div> <div style="display: flex; flex-direction: column; gap: 10px;"> <input type="password" id="lock-password-input" class="panel-input" placeholder="Çekirdek Şifresini Girin..." style="text-align: center;"> <button class="panel-btn" onclick="unlockSystem()" style="background: var(--error); color: white; border-color: var(--error);">Erişimi Onayla</button> </div>
             <p id="lock-error-msg" style="color: var(--error); font-size: 0.8rem; margin-top: 10px; display: none;">Hatalı Şifre! Erişim Reddedildi.</p> </div>
     </div>
-
-    <div id="root-auth-overlay" class="overlay-layer"> <div class="lock-container" style="border-color: var(--primary-orange);"> <div class="lock-title"> 🔑 Root Doğrulaması</div> <p class="lock-subtitle">Root kabuk yetkilerini aktif etmek için korumalı Root erişim şifresini giriniz.</p> /* [cite: 745] */
+    <div id="root-auth-overlay" class="overlay-layer"> <div class="lock-container" style="border-color: var(--primary-orange);"> <div class="lock-title"> 🔑 Root Doğrulaması</div> <p class="lock-subtitle">Root kabuk yetkilerini aktif etmek için korumalı Root erişim şifresini giriniz.</p>
             <div style="display: flex; flex-direction: column; gap: 10px;"> <input type="password" id="root-password-input" class="panel-input" placeholder="Root Şifresi..." style="text-align: center;"> <button class="panel-btn" onclick="verifyRootPassword()">Giriş İznini Onayla</button> <button class="panel-btn btn-danger" onclick="cancelAuthTransition()">İptal Et</button> </div>
             <p id="root-error-msg" style="color: var(--error); font-size: 0.8rem; margin-top: 10px; display: none;">Hatalı Root Şifresi!</p> </div>
     </div>
-
-    <div id="racoon-stage1-overlay" class="overlay-layer"> <div class="lock-container"> <div class="lock-title"> 🦝 Racoon Doğrulaması - Aşama 1</div> <p class="lock-subtitle">Üst kademe yönetim konsoluna erişim için öncelikle ana Racoon şifresini girin.</p> /* [cite: 758] */
+    <div id="racoon-stage1-overlay" class="overlay-layer"> <div class="lock-container"> <div class="lock-title"> 🦝 Racoon Doğrulaması - Aşama 1</div> <p class="lock-subtitle">Üst kademe yönetim konsoluna erişim için öncelikle ana Racoon şifresini girin.</p>
             <div style="display: flex; flex-direction: column; gap: 10px;"> <input type="password" id="racoon-pass-input" class="panel-input" placeholder="Racoon Ana Şifresi..." style="text-align: center;"> <button class="panel-btn" onclick="verifyRacoonStage1()">Sonraki Aşamaya Geç</button> <button class="panel-btn btn-danger" onclick="cancelAuthTransition()">İptal Et</button> </div>
             <p id="racoon-s1-error" style="color: var(--error); font-size: 0.8rem; margin-top: 10px; display: none;">Hatalı Ana Şifre!</p> </div>
     </div>
-
-    <div id="racoon-stage2-overlay" class="overlay-layer"> <div class="lock-container" style="border-color: var(--warning); box-shadow: 0 0 35px rgba(255,204,0,0.3);"> <div class="lock-title" style="color: var(--warning);"> 🔐 İki Aşamalı Doğrulama (2FA)</div> <p class="lock-subtitle" style="margin-bottom: 10px;">Güvenli oturum açma katmanı aktif edildi.</p> /* [cite: 80] */
+    <div id="racoon-stage2-overlay" class="overlay-layer"> <div class="lock-container" style="border-color: var(--warning); box-shadow: 0 0 35px rgba(255,204,0,0.3);"> <div class="lock-title" style="color: var(--warning);"> 🔐 İki Aşamalı Doğrulama (2FA)</div> <p class="lock-subtitle" style="margin-bottom: 10px;">Güvenli oturum açma katmanı aktif edildi.</p>
             <div style="background: #1a1a26; padding: 12px; border: 1px dashed var(--warning); border-radius: 6px; margin-bottom: 15px;"> <span style="font-size: 0.75rem; color: var(--text-muted); display:block; margin-bottom:4px;">ANLIK DOĞRULAMA TOKENINIZ:</span> <span id="dynamic-2fa-token" style="font-size: 1.6rem; font-weight: bold; color: var(--warning); letter-spacing: 4px;">000000</span> </div>
             <div style="display: flex; flex-direction: column; gap: 10px;"> <input type="text" id="racoon-2fa-input" class="panel-input" placeholder="Yukarıdaki 6 Haneli Kodu Girin..." style="text-align: center; font-weight: bold; letter-spacing: 2px;" maxlength="6"> <button class="panel-btn" onclick="verifyRacoonStage2()" style="background: var(--warning); color: #000; font-weight: bold; border-color: var(--warning);">Oturumu Güvenli Başlat</button> <button class="panel-btn btn-danger" onclick="cancelAuthTransition()">İptal Et</button> </div>
             <p id="racoon-s2-error" style="color: var(--error); font-size: 0.8rem; margin-top: 10px; display: none;">Geçersiz Güvenlik Tokenı!</p> </div>
     </div>
-
     <audio id="global-siren" loop src="https://ia801908.us.archive.org/26/items/EAS_Tone/EAS_Tone.mp3"></audio>
-
     <header>
         <div class="brand"> <div class="logo-container"> <svg viewBox="0 0 24 24"> <path d="M4,13C4,14.63 4.43,16.15 5.17,17.47L3,19.64L4.36,21L6.72,18.64C8.21,19.5 10,20 12,20C14,20 15.79,19.5 17.28,18.64L19.64,21L21,19.64L18.83,17.47C19.57,16.15 20,14.63 20,13C20,12.22 19.88,11.47 19.67,10.77L21.78,7.34L19.5,4L16.43,7.59C15.13,6.59 13.5,6 12,6C10.5,6 8.87,6.59 7.57,7.59L4.5,4L2.22,7.34L4.33,10.77C4.12,11.47 4,12.22 4,13M12,8C15.31,8 18,10.24 18,13C18,13.4 17.6,15 15.5,15C13.4,15 12,14.2 12,13C12,11.8 10.6,11 8.5,11C6.4,11 6,12.6 6,13C6,10.24 8.69,8 12,8M8.5,13C9.33,13 10,13.67 10,14.5C10,15.33 9.33,16 8.5,16C7.67,16 7,15.33 7,14.5C7,13.67 7.67,13 8.5,13M15.5,13C16.33,13 17,13.67 17,14.5C17,15.33 16.33,16 15.5,16C14.67,16 14,15.33 14,14.5C14,13.67 14.67,13 15.5,13Z"/> </svg>
             </div>
@@ -406,7 +406,6 @@
             <div id="clock" style="font-family: monospace; color: var(--neon-white); font-weight: bold;">00:00:00</div> <div class="system-status-badge"> <div class="pulse-dot" id="status-dot"></div> <span id="global-status-text">Çekirdek Stabil</span> </div>
         </div>
     </header>
-
     <main> <section class="panel-column" id="column-left"> <div class="card auth-restricted" id="card-admin-panel"> <div class="card-header"> <div class="card-title"> 🛡️ Sistem Yönetim Paneli</div> </div>
                 <div style="display: flex; flex-direction: column; gap: 12px;"> <div style="display: flex; flex-direction: column; gap: 4px;"> <label style="font-size: 0.75rem; color: var(--text-muted);">Sistem Adını Değiştir</label> <div style="display: flex; gap: 6px;"> <input type="text" id="sys-name-input" class="panel-input" placeholder="Yeni sistem adı..." style="flex: 1;"> <button class="panel-btn" onclick="uiChangeSystemName()">Güncelle</button> </div>
                     </div>
@@ -426,12 +425,10 @@
                 <div class="kernel-test-container" id="kernel-test-zone"> <div class="test-row"><span>Memory Pages Allocation</span><span class="test-status" style="color: var(--text-muted);">BEKLEMEDE</span></div> <div class="test-row"><span>AMD Ryzen Z1 Threads Optimization</span><span class="test-status" style="color: var(--text-muted);">BEKLEMEDE</span></div> <div class="test-row"><span>OpenHarmony HAL Layer Probing</span><span class="test-status" style="color: var(--text-muted);">BEKLEMEDE</span></div> <div class="test-row"><span>Core Thermal & Fan Volts</span><span class="test-status" style="color: var(--text-muted);">BEKLEMEDE</span></div> <div class="test-row"><span>FileSystem Integrity Check</span><span class="test-status" style="color: var(--text-muted);">BEKLEMEDE</span></div> </div>
             </div>
         </section>
-
         <section class="panel-column" id="column-center"> <div class="card terminal-card"> <div class="card-header"> <div class="card-title"> 💻 Çekirdek Terminal Konsolu</div> <span id="terminal-session-badge" style="font-size: 0.75rem; color: var(--text-muted); font-family: monospace;">Session: Guest@Core</span> </div>
                 <div class="terminal-body" id="terminal-screen"></div> <div class="terminal-input-row"> <span class="terminal-prompt" id="term-prompt-label">guest@core:~$</span> <input type="text" class="terminal-input" id="term-input" placeholder="Komut yazın (yardım için 'help')..." autocomplete="off"> </div>
             </div>
         </section>
-
         <section class="panel-column" id="column-right"> <div class="card" id="card-hardware-monitor"> <div class="card-header"> <div class="card-title"> ⚙️ Donanım Monitörü</div> </div>
                 <div class="metric-group"> <div class="metric-row" style="background: rgba(255,255,255,0.01); padding: 8px; border-radius: 6px; border: 1px dashed rgba(255,102,0,0.2);"> <div class="metric-info"> <span style="font-weight: bold; color: var(--primary-orange);"> 💻 Saptanan İşlemci</span> <span style="font-size: 0.75rem; color: var(--success); font-weight: bold;" id="user-cores-count">Hesaplanıyor...</span> </div>
                         <div class="metric-info" style="margin-top: 4px;"> <span style="font-size: 0.75rem; color: var(--text-muted);">Tarayıcı Yük Tüketimi:</span> <span id="user-calc-load" style="color: var(--success); font-weight: bold;">0%</span> </div>
@@ -457,7 +454,6 @@
             </div>
         </section>
     </main>
-
     <script>
         // --- 1. GLOBAL DEĞİŞKENLER VE DURUM YÖNETİMİ ---
         let currentLevel = "Guest";
@@ -469,9 +465,39 @@
         let metricInterval = null;
         let ghostInterval = null;
         let isEmergencyActive = false;
+        let staticInterval = null; // TV karıncalanma döngüsü için
+        let emergencyDelayTimeout = null; // Zamanlayıcı kontrolü için
 
         // SEKMELER ARASI KÜRESEL İLETİŞİM KANALI
         const alertChannel = new BroadcastChannel('racoon_emergency_channel');
+
+        // --- TV KARINCALANMA MOTORU (TV STATIC MECHANICAL) ---
+        const staticCanvas = document.getElementById('tv-static-canvas');
+        const staticCtx = staticCanvas.getContext('2d');
+
+        function resizeStaticCanvas() {
+            staticCanvas.width = window.innerWidth;
+            staticCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeStaticCanvas);
+        resizeStaticCanvas();
+
+        function generateTVStatic() {
+            const width = staticCanvas.width;
+            const height = staticCanvas.height;
+            const imgData = staticCtx.createImageData(width, height);
+            const data = imgData.data;
+            
+            // Hızlı piksel manipülasyonu ile siyah-beyaz gürültü üretimi
+            for (let i = 0; i < data.length; i += 4) {
+                const noise = Math.floor(Math.random() * 255);
+                data[i] = noise;     // R
+                data[i+1] = noise;   // G
+                data[i+2] = noise;   // B
+                data[i+3] = 255;     // Alpha (Tam opak)
+            }
+            staticCtx.putImageData(imgData, 0, 0);
+        }
 
         // --- 2. GÜVENLİK VE ACİL DURUM SİSTEM MOTORU (SADECE RACOON KİLİTLİ) ---
         function activateEmergencyUIProtocol() {
@@ -491,15 +517,28 @@
             document.getElementById('global-status-text').innerText = "KRİTİK: SALDIRI KALKANI AKTİF";
             document.getElementById('status-dot').style.backgroundColor = "var(--error)";
             
+            // 1. ÖNCE TV KARINCALANMASI AKTİF EDİLİR (Ekran siyah beyaz noktalarla dolar)
+            staticCanvas.style.display = "block";
+            clearInterval(staticInterval);
+            staticInterval = setInterval(generateTVStatic, 40); // 25 FPS hızında karıncalanma akışı
+
             const overlay = document.getElementById('attack-overlay');
-            overlay.style.display = "flex";
+            
+            // 2. 1.5 SANİYE SONRA UYARI PANERLİ EKRANI KAPLAR
+            clearTimeout(emergencyDelayTimeout);
+            emergencyDelayTimeout = setTimeout(() => {
+                if(isEmergencyActive) {
+                    overlay.style.display = "flex";
+                    // Yumuşakça ekranda belirmesi için opaklık tetiklemesi
+                    setTimeout(() => { overlay.style.opacity = "1"; }, 10);
+                }
+            }, 1500);
             
             // Sireni tetikle
             const siren = document.getElementById('global-siren');
             if(siren) {
                 siren.play().catch(e => console.log("Ses çalma izni bekleniyor..."));
             }
-
             // Eğer şu anki kullanıcı Racoon ise protokolü bitirme yetkisi butonunu göster
             const deactivateBtn = document.getElementById('deactivate-btn');
             if (currentLevel === "Racoon") {
@@ -507,7 +546,6 @@
             } else {
                 deactivateBtn.style.display = "none";
             }
-
             startEmergencyLogSimulation();
         }
 
@@ -526,7 +564,16 @@
             document.getElementById('global-status-text').innerText = "Çekirdek Stabil";
             document.getElementById('status-dot').style.backgroundColor = "var(--success)";
             
-            document.getElementById('attack-overlay').style.display = "none";
+            // Geri sayımı ve görsel döngüleri temizle
+            clearTimeout(emergencyDelayTimeout);
+            clearInterval(staticInterval);
+            
+            // TV Karıncalanmasını ve uyarı ekranını gizle
+            staticCanvas.style.display = "none";
+            const overlay = document.getElementById('attack-overlay');
+            overlay.style.opacity = "0";
+            overlay.style.display = "none";
+
             const siren = document.getElementById('global-siren');
             if(siren) { siren.pause(); siren.currentTime = 0; }
             
@@ -548,7 +595,6 @@
                 "Buffer Overflow attempt neutralized in OpenHarmony subsystem.",
                 "Lenovo Legion Go hardware allocation optimized for defense."
             ];
-
             let counter = 0;
             const interval = setInterval(() => {
                 if (!isEmergencyActive) {
@@ -576,30 +622,22 @@
         function runLiveHardwareMetrics() {
             metricInterval = setInterval(() => {
                 if (isSystemLocked) return;
-
-                // Rastgele ama gerçekçi donanım dalgalanmaları
                 const cpu = Math.floor(Math.random() * 35) + 15;
                 const vram = Math.floor(Math.random() * 20) + 30;
                 const ram = Math.floor(Math.random() * 15) + 45;
                 const fan = Math.floor(Math.random() * 400) + 2900;
-
                 document.getElementById('cpu-val').innerText = cpu + "%";
                 document.getElementById('cpu-bar').style.width = cpu + "%";
-
                 document.getElementById('vram-val').innerText = vram + "%";
                 document.getElementById('vram-bar').style.width = vram + "%";
-
                 document.getElementById('ram-val').innerText = ram + "%";
                 document.getElementById('ram-bar').style.width = ram + "%";
-
                 document.getElementById('fan-val').innerText = fan + " RPM";
                 document.getElementById('fan-bar').style.width = (fan / 5000 * 100) + "%";
-
-                // Tarayıcı yükünü hesaplama simülasyonu
+                
                 const currentLoad = Math.floor(Math.random() * 8) + 2;
                 document.getElementById('user-calc-load').innerText = currentLoad + "%";
                 document.getElementById('user-cpu-bar').style.width = currentLoad + "%";
-
             }, 2500);
         }
 
@@ -611,25 +649,23 @@
                 "refreshing_dhcp_lease ... verified",
                 "analyzing_openharmony_hal_status ... OPTIMAL"
             ];
-
             ghostInterval = setInterval(() => {
                 if (isSystemLocked || isEmergencyActive) return;
                 const randomCmd = ghostCommands[Math.floor(Math.random() * ghostCommands.length)];
                 appendTerminalLine(`>> [GHOST] ${randomCmd}`, "line-muted");
-            }, 15000); // Her 15 saniyede bir sessiz arka plan sorgusu basar
+            }, 15000);
         }
 
         // --- 4. YETKİ KADEMESİ DEĞİŞİM VE DOĞRULAMA YAPISI ---
         function handleLevelChange() {
             const selector = document.getElementById('system-level');
             const targetLevel = selector.value;
-
             if (targetLevel === "Guest") {
                 currentLevel = "Guest";
                 updateSystemAuthorizationUI();
                 appendTerminalLine(">> [BİLGİ] Oturum seviyesi 'Guest' kademesine düşürüldü.", "line-system");
             } else if (targetLevel === "Root") {
-                selector.value = currentLevel; // Doğrulanana kadar eski değerde tut
+                selector.value = currentLevel;
                 document.getElementById('root-auth-overlay').style.display = "flex";
             } else if (targetLevel === "Racoon") {
                 selector.value = currentLevel;
@@ -659,9 +695,7 @@
                 input.value = "";
                 document.getElementById('racoon-s1-error').style.display = "none";
                 
-                // 2FA Adımına Geç
                 document.getElementById('racoon-stage2-overlay').style.display = "flex";
-                // 6 haneli rastgele kod üret
                 const generatedToken = Math.floor(100000 + Math.random() * 900000);
                 document.getElementById('dynamic-2fa-token').innerText = generatedToken;
             } else {
@@ -672,7 +706,6 @@
         function verifyRacoonStage2() {
             const input = document.getElementById('racoon-2fa-input');
             const currentToken = document.getElementById('dynamic-2fa-token').innerText;
-
             if (input.value === currentToken) {
                 currentLevel = "Racoon";
                 document.getElementById('racoon-stage2-overlay').style.display = "none";
@@ -703,8 +736,6 @@
             } else {
                 exclusiveArea.style.display = "none";
             }
-
-            // Eğer acil durum modu aktifse ve kullanıcı canlı olarak Racoon'a geçtiyse butonu aç
             const deactivateBtn = document.getElementById('deactivate-btn');
             if (isEmergencyActive && currentLevel === "Racoon") {
                 deactivateBtn.style.display = "block";
@@ -716,7 +747,6 @@
         // --- 5. TERMİNAL YÖNETİMİ VE KOMUT AYRIŞTIRICI ---
         const termScreen = document.getElementById('terminal-screen');
         const termInput = document.getElementById('term-input');
-
         function appendTerminalLine(text, className = "line-info") {
             const line = document.createElement('div');
             line.className = `terminal-line ${className}`;
@@ -730,7 +760,6 @@
                 const cmdText = this.value.trim();
                 this.value = "";
                 if(cmdText === "") return;
-
                 appendTerminalLine(`${document.getElementById('term-prompt-label').innerText} ${cmdText}`, "line-info");
                 processTerminalCommand(cmdText);
             }
@@ -739,7 +768,6 @@
         function processTerminalCommand(cmd) {
             const parts = cmd.split(" ");
             const baseCmd = parts[0].toLowerCase();
-
             switch (baseCmd) {
                 case 'help':
                     appendTerminalLine("Kullanılabilir Komutlar Ana Listesi:", "line-system");
@@ -789,21 +817,18 @@
             document.getElementById('header-brand-text').innerHTML = `${name} <span>OS Core</span>`;
             appendTerminalLine(`>> [BAŞARILI] Sistem ana başlık ismi '${name}' olarak güncellendi.`, "line-success");
         }
-
         function uiChangePassword() {
             const pass = document.getElementById('new-password-field').value.trim();
             if(!pass) return;
             systemPassword = pass;
             appendTerminalLine(">> [GÜVENLİK] Standart mühürleme şifresi güncellendi.", "line-warning");
         }
-
         function uiChangeBackground() {
             const url = document.getElementById('bg-url-input').value.trim();
             if(!url) return;
             document.body.style.backgroundImage = `url('${url}')`;
             appendTerminalLine(">> [GÖRSEL] Arka plan matrisi üzerine özel katman maskesi giydirildi.", "line-success");
         }
-
         function uiTriggerLock() {
             const seconds = parseInt(document.getElementById('lock-time-field').value) || 10;
             isSystemLocked = true;
@@ -812,17 +837,14 @@
             let timeLeft = seconds;
             const display = document.getElementById('countdown-display');
             display.innerText = formatTime(timeLeft);
-
             countdownTimer = setInterval(() => {
                 timeLeft--;
                 display.innerText = formatTime(timeLeft);
                 if(timeLeft <= 0) {
                     clearInterval(countdownTimer);
-                    // Süre bitince yapılacak özel eylemler buraya gelebilir
                 }
             }, 1000);
         }
-
         function unlockSystem() {
             const input = document.getElementById('lock-password-input');
             if (input.value === systemPassword) {
@@ -836,20 +858,17 @@
                 document.getElementById('lock-error-msg').style.display = "block";
             }
         }
-
         function uiRestartSystem() {
             appendTerminalLine(">> [KRİTİK] Çekirdek yeniden başlatma dizisi tetiklendi. Bellek temizleniyor...", "line-error");
             setTimeout(() => {
                 location.reload();
             }, 1500);
         }
-
         function formatTime(secs) {
             const m = Math.floor(secs / 60).toString().padStart(2, '0');
             const s = (secs % 60).toString().padStart(2, '0');
             return `${m}:${s}`;
         }
-
         function runKernelTests() {
             const zone = document.getElementById('kernel-test-zone');
             const rows = zone.getElementsByClassName('test-row');
@@ -870,7 +889,6 @@
                 }, (i + 1) * 700);
             }
         }
-
         function updateClock() {
             const now = new Date();
             document.getElementById('clock').innerText = now.toLocaleTimeString();
@@ -886,17 +904,14 @@
         }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
-
         const letters = "0123456789ABCDEFCODERACOONKAIHONGv30";
         const fontSize = 14;
         let columns = canvas.width / fontSize;
         const drops = Array(Math.floor(columns)).fill(1);
-
         function drawMatrix() {
             ctx.fillStyle = 'rgba(5, 5, 8, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Acil durum aktifse matrix yağmuru kırmızıya döner
             ctx.fillStyle = isEmergencyActive ? '#ff3333' : '#ff6600';
             ctx.font = fontSize + 'px monospace';
             
@@ -910,28 +925,23 @@
 
         // --- 8. SİSTEM BAŞLANGIÇ (BOOT) KANALI ---
         window.onload = () => {
-            // Saat döngüsü
             setInterval(updateClock, 1000);
             updateClock();
-
-            // Matrix döngüsü
             setInterval(drawMatrix, 33);
+            
+            // Ekran boyutları değiştikçe TV karıncalanma alanını da dinamik güncelle
+            resizeStaticCanvas();
 
-            // CPU çekirdek sayısını öğrenme simülasyonu
             const cores = navigator.hardwareConcurrency || 8;
             document.getElementById('user-cores-count').innerText = cores + " Çekirdekli APU";
-
-            // Canlı metrik izleyicilerini başlat
             runLiveHardwareMetrics();
             initGhostTerminal();
-
-            // İlk karşılama mesajları
+            
             appendTerminalLine("Code:Racoon OS Çekirdek Komuta Modülü v3.0 yükleniyor...", "line-system");
             appendTerminalLine(">> Donanım mimarisi LLG ana bilgisayarı ile doğrulandı.", "line-success");
             appendTerminalLine(">> Yardımcı ünite entegrasyonu sağlandı.", "line-success");
             appendTerminalLine(">> Sistem durum kontrolü tamamlandı: Kararlı. Giriş serbest.", "line-success");
-
-            // LocalStorage Kontrolü: Sayfa yenilense bile acil durum durumunu koru
+            
             if (localStorage.getItem('emergency_state_active') === 'true') {
                 executeLocalEmergencyUI();
             }
