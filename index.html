@@ -367,7 +367,7 @@
             overflow-y: auto;
         }
 
-        /* MÜHÜRLÜ BRUTE FORCE KİLİT EKRANI */
+        /* MÜHÜRLÜ BRUTE FORCE KİLİT EKRANI / BARKOD KİLİTLERİ */
         .overlay-layer {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -481,6 +481,16 @@
         </div>
     </div>
 
+    <div id="boot-login-screen" class="overlay-layer" style="z-index: 100000002; display: none;">
+        <div class="lock-container" style="border-color: var(--primary-orange); box-shadow: 0 0 40px var(--glow-orange);">
+            <div style="font-size: 3.5rem; margin-bottom: 10px;">🔐</div>
+            <h2 style="color: var(--primary-orange); margin-bottom: 10px; letter-spacing: 2px;">OS ÇEKİRDEK KİLİDİ</h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Sistem mühürlendi. Yenileme koruması aktif. Devam etmek için anahtarı girin.</p>
+            <input type="password" id="boot-pass-key" class="panel-input" placeholder="Erişim Anahtarını Girin..." style="border-color: var(--primary-orange);" onkeydown="if(event.key==='Enter') verifyBootPassword()">
+            <button class="panel-btn" onclick="verifyBootPassword()" style="width: 100%; margin-top: 15px; background: var(--primary-orange); color: #000;">Kilit Mekanizmasını Çöz</button>
+        </div>
+    </div>
+
     <div id="attack-overlay">
         <div class="attack-box">
             <div style="font-size: 4rem; margin-bottom: 10px; animation: blink 1s infinite;">☣️</div>
@@ -513,7 +523,7 @@
             <h1>Code:<span>Racoon OS</span> v5.0</h1>
         </div>
         <div class="header-controls">
-            <div style="font-size: 0.8rem; color: var(--text-muted);" id="sekme-düğüm-display">Aktif Sekme Ağı: 1 Düğüm</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);" id="sekme-düğüm-display">Aktif Siber Sekme Ağı: 1 Düğüm</div>
             <select class="level-select" id="user-level-selector" onchange="switchUserLevel(this.value)">
                 <option value="guest">GUEST LEVEL</option>
                 <option value="root">ROOT LEVEL</option>
@@ -630,6 +640,9 @@
         let commandHistory = [];
         let terminalLogs = [];
 
+        // Yenilenme esnasında şifre korumasını kalıcı kılmak için durumu sıfırla
+        localStorage.setItem('racoon_os_authorized', 'false');
+
         // Web Audio API Sentezleyici Bağlamı (Fail-Safe Mekanizması)
         let audioCtx = null;
 
@@ -659,7 +672,6 @@
                     stopFailSafeSiren();
                     return;
                 }
-                // Çift osilatörlü frekans modülasyonu (Sawtooth ve Sine dalgaları)
                 let freq1 = highToggle ? 850 : 600;
                 let freq2 = highToggle ? 900 : 650;
 
@@ -699,7 +711,7 @@
             let osc = audioCtx.createOscillator();
             let gain = audioCtx.createGain();
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(55, audioCtx.currentTime); // 55Hz Derin Sub-Bass dalgası
+            osc.frequency.setValueAtTime(55, audioCtx.currentTime);
             gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
             osc.connect(gain);
             gain.connect(audioCtx.destination);
@@ -735,7 +747,7 @@
                 if (matrixDrops[i] * matrixFontSize > matrixCanvas.height && Math.random() > 0.975) {
                     matrixDrops[i] = 0;
                 }
-                matrixDrops[i] += isOverclockActive ? 2 : 1; // Overclock esnasında çılgın hızlanma
+                matrixDrops[i] += isOverclockActive ? 2 : 1;
             }
         }
         setInterval(drawMatrixRain, 30);
@@ -785,17 +797,14 @@
         // ==========================================================================
         function runTelemetrySimulation() {
             setInterval(() => {
-                // Poyraz Rüzgârı dalgalanması
                 let basePoyraz = isEmergencyActive ? 68 : 25;
                 let currentPoyraz = (basePoyraz + (Math.random() * 12 - 6)).toFixed(1);
                 document.getElementById('telemetry-poyraz').innerText = currentPoyraz + " km/s";
 
-                // Reşitköy Barajı Doluluk Oranı kararlı simülasyonu
                 let baseBaraj = 42.82;
                 let currentBaraj = (baseBaraj + (Math.sin(Date.now() / 50000) * 0.15)).toFixed(3);
                 document.getElementById('telemetry-baraj').innerText = "%" + currentBaraj;
 
-                // Siber İyonizasyon Hızı dalgalanması
                 let baseIyon = isOverclockActive ? 32.5 : 14.2;
                 let currentIyon = (baseIyon + (Math.random() * 2 - 1)).toFixed(1);
                 document.getElementById('telemetry-iyonizasyon').innerText = currentIyon + " THz";
@@ -869,7 +878,7 @@
             "[NETWORK] Çevresel telemetri hatları (Reşitköy Barajı & Poyraz) haritalandı.",
             "[AUDIO] Fail-Safe Web Audio API programatik ses sentezleyicisi hazırlandı.",
             "[SUCCESS] Kendini Onaran Güvenlik Duvarı (Self-Healing Firewall) devreye alındı.",
-            "[BOOT] Çekirdek bütünlüğü tam kararlılık durumunda. Masaüstü yükleniyor..."
+            "[BOOT] Çekirdek bütünlüğü doğrulandı. Güvenlik katmanı sorgulanıyor..."
         ];
 
         function startBootSequence() {
@@ -897,28 +906,46 @@
                     clearInterval(logInterval);
                     setTimeout(() => {
                         document.getElementById('boot-screen').style.display = 'none';
-                        appendTerminalLine("Code:Racoon OS Çekirdek Paneli v5.0 başarıyla yüklendi.", "line-success");
-                        appendTerminalLine("Sistem durumu kontrol edildi: Kararlı. Giriş izni verildi.", "line-info");
+                        // Yenileme kilidini açığa çıkar
+                        document.getElementById('boot-login-screen').style.display = 'flex';
+                        document.getElementById('boot-pass-key').focus();
                     }, 400);
                 }
             }, 60);
+        }
+
+        // KESİNTİSİZ GİRİŞ ŞİFRE KONTROLÜ
+        function verifyBootPassword() {
+            let inputKey = document.getElementById('boot-pass-key').value;
+            if (inputKey === "racoon") {
+                localStorage.setItem('racoon_os_authorized', 'true');
+                document.getElementById('boot-login-screen').style.display = 'none';
+                appendTerminalLine("Code:Racoon OS Çekirdek Paneli v5.0 başarıyla yüklendi.", "line-success");
+                appendTerminalLine("Sistem durumu kontrol edildi: Kararlı. Giriş izni verildi.", "line-info");
+            } else {
+                alert("KRİTİK HATA: Yetkisiz Erişim Anahtarı!");
+                wrongAttemptsCount++;
+                if (wrongAttemptsCount >= 3) {
+                    document.getElementById('boot-login-screen').style.display = 'none';
+                    activateBruteForceLock();
+                }
+            }
+            document.getElementById('boot-pass-key').value = "";
         }
 
         // ==========================================================================
         // TERMİNAL LOG VE ÇIKTI MOTORU
         // ==========================================================================
         function appendTerminalLine(text, styleClass = "line-info") {
-            let cleanText = text;
-            // XSS (Kod Enjeksiyonu) Koruması: innerText emülasyonu için özel escape işlemi yapılıyor.
             let div = document.createElement('div');
             div.className = "terminal-line " + styleClass;
-            div.innerText = cleanText;
+            div.innerText = text;
 
             let body = document.getElementById('term-body');
             body.appendChild(div);
             body.scrollTop = body.scrollHeight;
 
-            terminalLogs.push(`[${new Date().toLocaleTimeString()}] ${cleanText}`);
+            terminalLogs.push(`[${new Date().toLocaleTimeString()}] ${text}`);
         }
 
         // ==========================================================================
@@ -981,18 +1008,13 @@
             document.getElementById('telemetry-firewall').innerText = "AĞ MANİPÜLASYONU HATASI";
             document.getElementById('telemetry-firewall').style.color = "var(--error)";
 
-            // 100vw/100vh Tam ekran kırmızı acil durum blokaj katmanı
             let overlay = document.getElementById('attack-overlay');
             overlay.style.display = 'flex';
             setTimeout(() => { overlay.style.opacity = "1"; }, 10);
 
-            // Eski televizyon karıncalanma katmanını aç
             document.getElementById('tv-static-canvas').style.display = 'block';
-
-            // Fail-Safe Siren Sentezleyicisini Çalıştır (Mekanik Çözüm)
             playFailSafeSiren();
 
-            // Siber Metin Glitch Efekti ("ACİL DURUM UYARISI" başlığı altındaki harfler saniyede birden çok kez rastgele siber karakterlere dönüşür)
             let origTitle = "ACİL DURUM UYARISI";
             let glitchChars = "@#$%&*☠️☣️ΩΔΞΨ";
             let titleEl = document.getElementById('glitch-title');
@@ -1003,7 +1025,6 @@
                 }).join('');
                 titleEl.innerText = glitched;
 
-                // Sahte log akışı üret
                 let streamBox = document.getElementById('fake-log-stream');
                 let p = document.createElement('p');
                 p.innerText = `[CRITICAL_ALARM] Sızıntı engelleniyor: Paket ID ${Math.floor(Math.random()*90000+10000)} bloklandı. THz Taşması sezildi!`;
@@ -1042,12 +1063,11 @@
                     unlockBruteForceSystem();
                 }
             }, 1000);
-            appendTerminalLine(">> GÜVENLİK DUVARI: 3 Kez üst üste yetkisiz hatalı işlem yapıldı! Sistem 30 saniye boyunca mühürlendi.", "line-error");
+            appendTerminalLine(">> GÜVENLİK DUVARI: Hatalı işlem sınırı aşıldı! Sistem 30 saniye boyunca mühürlendi.", "line-error");
         }
 
         function verifyBypassMaster() {
             let key = document.getElementById('bypass-key').value;
-            // Girdi temizleme koruması
             if (key === "racoon") {
                 clearInterval(lockCountdownInterval);
                 unlockBruteForceSystem();
@@ -1067,7 +1087,7 @@
         // KENDİNİ ONARAN GÜVENLİK DUVARI DÖNGÜSÜ
         function runSelfHealingFirewall() {
             setInterval(() => {
-                if (!isEmergencyActive && !document.getElementById('brute-lock-screen').style.display === 'flex') {
+                if (!isEmergencyActive && !document.getElementById('brute-lock-screen').style.display === 'flex' && localStorage.getItem('racoon_os_authorized') === 'true') {
                     appendTerminalLine("Kendi Kendini Onaran Güvenlik Duvarı Aktif: Paket enjeksiyonları, XSS sızmaları ve port taramaları denetleniyor... Durum: TEMİZ", "line-muted");
                 }
             }, 4000);
@@ -1081,7 +1101,6 @@
             let data = document.getElementById('vault-cell-data').value;
             if (!cell) { alert("Geçerli bir hücre adı girin!"); return; }
 
-            // Base64 Kriptolama Entegrasyonu
             let encryptedData = btoa(unescape(encodeURIComponent(data)));
             localStorage.setItem("racoon_vault_" + cell, encryptedData);
             appendTerminalLine(`[VAULT] '${cell}' isimli kripto hücreye siber veriler kilitlendi.`, "line-success");
@@ -1121,7 +1140,6 @@
             let cmdTrimmed = rawCommand.trim();
             if (!cmdTrimmed) return;
 
-            // Güvenlik Koruması: Girdileri tamamen düz metne çeviriyoruz (innerText/escape emülasyonu)
             commandHistory.push(cmdTrimmed);
             appendTerminalLine(`racoon@core:~$ ${cmdTrimmed}`, "line-info");
 
@@ -1156,7 +1174,6 @@
                     break;
 
                 case 'export':
-                    // Blob API terminal log dışa aktarıcı entegrasyonu
                     let logBlob = new Blob([terminalLogs.join('\r\n')], {type: 'text/plain'});
                     let a = document.createElement('a');
                     a.href = URL.createObjectURL(logBlob);
@@ -1203,7 +1220,6 @@
                             counter--;
                         } else {
                             clearInterval(destructInterval);
-                            // Ekranı televizyon karıncalanmasıyla kapla tam olarak 3 saniye boyunca
                             let staticCanvas = document.getElementById('tv-static-canvas');
                             staticCanvas.style.display = 'block';
                             appendTerminalLine("KERNEL PANIC / GRUB RESCUE ERROR: SYSTEM CRASHED", "line-error");
@@ -1211,18 +1227,16 @@
                             setTimeout(() => {
                                 staticCanvas.style.display = 'none';
                                 alert("Sistem çöktü! Çekirdeği Yeniden Canlandırmak için sayfayı tazeleyin ya da Root seviyesine geçin.");
-                            }, 3000); // Karıncalanma süresi tam olarak 3 saniye (3000ms)
+                            }, 3000);
                         }
                     }, 1000);
                     break;
 
                 case 'quantum-breach':
                     appendTerminalLine("[ULTIMATE ÖZELLİK] Kuantum Tekillik Çekirdek Sızıntısı Başlatılıyor...", "line-error");
-                    // CSS matris yapısını altüst ederek uzay-zaman kırılması gibi büker
                     document.body.style.transform = "skew(3deg, 2deg) rotate(1deg) scale(0.98)";
                     document.body.style.filter = "hue-rotate(90deg) contrast(1.5)";
                     
-                    // Web Audio API ile 55Hz derin sub-bass sentezlemesi
                     playSubBassGlitch();
 
                     setTimeout(() => {
@@ -1233,9 +1247,7 @@
                     break;
 
                 case 'z9':
-                    // PROTOCOL Z9 Çekirdek İmhası
                     appendTerminalLine("AŞAMA 1: PROTOCOL Z9 DOĞRULANDI.", "line-error");
-                    // Flashbang etkisi
                     let fb = document.getElementById('flashbang');
                     fb.style.display = 'block';
                     setTimeout(() => {
@@ -1243,7 +1255,6 @@
                         setTimeout(() => {
                             fb.style.display = 'none';
                             fb.style.backgroundColor = '#fff';
-                            // Retro CRT moduna düşürme ve kilitleme
                             document.getElementById('z9-screen').style.display = 'block';
                         }, 500);
                     }, 400);
@@ -1259,7 +1270,6 @@
             }
         }
 
-        // Küresel Tetikleyici Acil Durum İçin Kısayol veya Harici Çağrı Desteği
         window.triggerGlobalEmergency = triggerGlobalEmergency;
 
         // ==========================================================================
