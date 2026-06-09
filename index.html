@@ -640,7 +640,7 @@
         let commandHistory = [];
         let terminalLogs = [];
 
-        // Yenilenme esnasında şifre korumasını kalıcı kılmak için durumu sıfırla
+        // Yenilenme esnasında tüm yetki seviyelerini ve anahtarları sıfırla (GUEST_MODE olarak başlar)
         localStorage.setItem('racoon_os_authorized', 'false');
 
         // Web Audio API Sentezleyici Bağlamı (Fail-Safe Mekanizması)
@@ -906,7 +906,6 @@
                     clearInterval(logInterval);
                     setTimeout(() => {
                         document.getElementById('boot-screen').style.display = 'none';
-                        // Yenileme kilidini açığa çıkar
                         document.getElementById('boot-login-screen').style.display = 'flex';
                         document.getElementById('boot-pass-key').focus();
                     }, 400);
@@ -949,9 +948,29 @@
         }
 
         // ==========================================================================
-        // KULLANICI YETKİ SEVİYESİ SEÇİMİ
+        // KULLANICI YETKİ SEVİYESİ SEÇİMİ (ŞİFRE KORUMALI)
         // ==========================================================================
         function switchUserLevel(level) {
+            if (level === 'root') {
+                let rootPass = prompt("🔑 ROOT LEVEL ERİŞİM ANAHTARINI GİRİN:");
+                if (rootPass !== "racoon") {
+                    alert("❌ YETKİSİZ ERİŞİM: ROOT Anahtarı Geçersiz!");
+                    document.getElementById('user-level-selector').value = currentUserLevel;
+                    wrongAttemptsCount++;
+                    if (wrongAttemptsCount >= 3) activateBruteForceLock();
+                    return;
+                }
+            } else if (level === 'racoon') {
+                let racoonPass = prompt("🦝 RACOON LEVEL OPERATÖR ANAHTARINI GİRİN:");
+                if (racoonPass !== "racoon") {
+                    alert("❌ YETKİSİZ ERİŞİM: Racoon Anahtarı Geçersiz!");
+                    document.getElementById('user-level-selector').value = currentUserLevel;
+                    wrongAttemptsCount++;
+                    if (wrongAttemptsCount >= 3) activateBruteForceLock();
+                    return;
+                }
+            }
+
             currentUserLevel = level;
             document.getElementById('terminal-mode-badge').innerText = level.toUpperCase() + "_MODE";
             appendTerminalLine(`Sistem yetki seviyesi değiştirildi: ${level.toUpperCase()}`, "line-system");
@@ -1081,13 +1100,16 @@
         function unlockBruteForceSystem() {
             document.getElementById('brute-lock-screen').style.display = 'none';
             wrongAttemptsCount = 0;
+            document.getElementById('user-level-selector').value = "guest";
+            currentUserLevel = "guest";
+            document.getElementById('terminal-mode-badge').innerText = "GUEST_MODE";
             appendTerminalLine("Sistem güvenlik mührü kaldırıldı. Erişim tekrar serbest.", "line-info");
         }
 
-        // KENDİNİ ONARAN GÜVENLİK DUVARI DÖNGÜSÜ
+        // KENDİNİ ONARAN GÜVENLİK DUVARI DÖNGÜSZY
         function runSelfHealingFirewall() {
             setInterval(() => {
-                if (!isEmergencyActive && !document.getElementById('brute-lock-screen').style.display === 'flex' && localStorage.getItem('racoon_os_authorized') === 'true') {
+                if (!isEmergencyActive && document.getElementById('brute-lock-screen').style.display !== 'flex' && localStorage.getItem('racoon_os_authorized') === 'true') {
                     appendTerminalLine("Kendi Kendini Onaran Güvenlik Duvarı Aktif: Paket enjeksiyonları, XSS sızmaları ve port taramaları denetleniyor... Durum: TEMİZ", "line-muted");
                 }
             }, 4000);
