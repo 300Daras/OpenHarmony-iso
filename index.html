@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="site-title">Code:Racoon OS - Çekirdek Komuta Merkezi v5.0</title>
+    <title id="site-title">Code:Racoon OS - Çekirdek Komuta Merkezi v5.1</title>
     <style>
         /* ==========================================================================
            1. KÜRESEL SİBERPUNK DEĞİŞKENLERİ VE TASARIM TEMELLERİ
@@ -367,7 +367,7 @@
             overflow-y: auto;
         }
 
-        /* MÜHÜRLÜ BRUTE FORCE KİLİT EKRANI / BARKOD KİLİTLERİ */
+        /* MÜHÜRLÜ BRUTE FORCE KİLİT EKRANI */
         .overlay-layer {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -485,7 +485,7 @@
         <div class="lock-container" style="border-color: var(--primary-orange); box-shadow: 0 0 40px var(--glow-orange);">
             <div style="font-size: 3.5rem; margin-bottom: 10px;">🔐</div>
             <h2 style="color: var(--primary-orange); margin-bottom: 10px; letter-spacing: 2px;">OS ÇEKİRDEK KİLİDİ</h2>
-            <p style="color: var(--text-muted); font-size: 0.85rem;">Sistem mühürlendi. Yenileme koruması aktif. Devam etmek için anahtarı girin.</p>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Sistem mühürlendi. Devam etmek için ana bilgisayar şifresini girin.</p>
             <input type="password" id="boot-pass-key" class="panel-input" placeholder="Erişim Anahtarını Girin..." style="border-color: var(--primary-orange);" onkeydown="if(event.key==='Enter') verifyBootPassword()">
             <button class="panel-btn" onclick="verifyBootPassword()" style="width: 100%; margin-top: 15px; background: var(--primary-orange); color: #000;">Kilit Mekanizmasını Çöz</button>
         </div>
@@ -520,7 +520,7 @@
 
     <header>
         <div class="brand">
-            <h1>Code:<span>Racoon OS</span> v5.0</h1>
+            <h1>Code:<span>Racoon OS</span> v5.1</h1>
         </div>
         <div class="header-controls">
             <div style="font-size: 0.8rem; color: var(--text-muted);" id="sekme-düğüm-display">Aktif Siber Sekme Ağı: 1 Düğüm</div>
@@ -631,6 +631,16 @@
 
     <script>
         // ==========================================================================
+        // SİSTEM GÜVENLİK VE KRİPTO ANAHTARLARI (ŞİFRE MATRİSİ)
+        // ==========================================================================
+        const CORESYS_KEYS = {
+            BOOT_KEY: "core50",       // Açılış / Yenileme Koruma Şifresi
+            ROOT_KEY: "root123",      // Root Seviyesine Geçiş Şifresi
+            RACOON_KEY: "racoon99",   // Üst Düzey Racoon Operatör Şifresi
+            MASTER_KEY: "bypass99"    // Brute Force Kilidini Kesen Kurtarma Şifresi
+        };
+
+        // ==========================================================================
         // SİSTEM ARKA PLAN VE DURUM YÖNETİCİLERİ
         // ==========================================================================
         let currentUserLevel = 'guest';
@@ -640,10 +650,10 @@
         let commandHistory = [];
         let terminalLogs = [];
 
-        // Yenilenme esnasında tüm yetki seviyelerini ve anahtarları sıfırla (GUEST_MODE olarak başlar)
+        // Yenilenme esnasında tüm yetki seviyelerini sıfırla (Fail-Safe)
         localStorage.setItem('racoon_os_authorized', 'false');
 
-        // Web Audio API Sentezleyici Bağlamı (Fail-Safe Mekanizması)
+        // Web Audio API Sentezleyici Bağlamı
         let audioCtx = null;
 
         function initAudio() {
@@ -652,7 +662,6 @@
             }
         }
 
-        // Fail-Safe Siren Sentezleyicisi (Web Audio API)
         let sirenInterval = null;
         let primaryOsc = null;
         let secondaryOsc = null;
@@ -752,7 +761,7 @@
         }
         setInterval(drawMatrixRain, 30);
 
-        // DIJİTAL PARAZİT VE KARINCALANMA MOTORU (TV STATIC)
+        // DIJİTAL PARAZİT MOTORU
         const staticCanvas = document.getElementById('tv-static-canvas');
         const staticCtx = staticCanvas.getContext('2d');
         function resizeStaticCanvas() {
@@ -792,9 +801,7 @@
             document.getElementById('lbl-noise-freq').innerText = fVal + "Hz";
         }
 
-        // ==========================================================================
         // ÇEVRESEL TELEMETRİ SENSÖR VERİ SİMÜLASYONU
-        // ==========================================================================
         function runTelemetrySimulation() {
             setInterval(() => {
                 let basePoyraz = isEmergencyActive ? 68 : 25;
@@ -811,7 +818,7 @@
             }, 1000);
         }
 
-        // CANLI SİBER OSİLOSKOP (CANVAS DALGA GRAFİĞİ)
+        // CANLI SİBER OSİLOSKOP
         const oscCanvas = document.getElementById('oscilloscope-canvas');
         const oscCtx = oscCanvas.getContext('2d');
         let oscSlice = 0;
@@ -838,7 +845,7 @@
             requestAnimationFrame(drawOscilloscope);
         }
 
-        // KÜRESEL SEKME (DÜĞÜM) SAYACI
+        // KÜRESEL SEKME SAYACI
         function initGlobalTabCounter() {
             const channelKey = 'racoon_global_tabs';
             function updateTabCountDisplay() {
@@ -862,23 +869,21 @@
             updateTabCountDisplay();
         }
 
-        // ==========================================================================
-        // BAŞLANGIÇ LOG AKIŞI (BOOT SEQUENCE)
-        // ==========================================================================
+        // BAŞLANGIÇ LOG AKIŞI
         const bootLogs = [
-            "[INIT] Code:Racoon OS Çekirdek Önyükleyici v5.0 başlatılıyor...",
+            "[INIT] Code:Racoon OS Çekirdek Önyükleyici v5.1 başlatılıyor...",
             "[INFO] Ana mimari donanım altyapısı LLG doğrulandı.",
             "[INFO] AMD Ryzen Z1 Extreme mimarisi tespit edildi: 8 Çekirdek / 16 İş Parçacığı.",
-            "[INIT] İş parçacığı tahsis işlemi tamamlandı (Threads Allocated).",
+            "[INIT] İş parçacığı tahsis işlemi tamamlandı.",
             "[SYSTEM] Grafik Altyapısı: Retro CRT Scanline Filtresi yüklendi.",
             "[SYSTEM] Grafik Altyapısı: Matrix Dijital Yağmur Motoru entegre edildi.",
             "[SECURITY] Akıllı Kaba Kuvvet Saldırısı (Brute-Force) Duvarı kuruldu.",
-            "[SECURITY] Girdi Temizleme Motoru (XSS Kod Enjeksiyon Filtresi) aktif.",
+            "[SECURITY] Girdi Temizleme Motoru aktif.",
             "[NETWORK] Siber İyonizasyon ölçüm hattı Terahertz birimine bağlandı.",
             "[NETWORK] Çevresel telemetri hatları (Reşitköy Barajı & Poyraz) haritalandı.",
             "[AUDIO] Fail-Safe Web Audio API programatik ses sentezleyicisi hazırlandı.",
-            "[SUCCESS] Kendini Onaran Güvenlik Duvarı (Self-Healing Firewall) devreye alındı.",
-            "[BOOT] Çekirdek bütünlüğü doğrulandı. Güvenlik katmanı sorgulanıyor..."
+            "[SUCCESS] Kendini Onaran Güvenlik Duvarı devreye alındı.",
+            "[BOOT] Çekirdek bütünlüğü doğrulandı. Hiyerarşik şifre matrisi sorgulanıyor..."
         ];
 
         function startBootSequence() {
@@ -895,7 +900,7 @@
                     logBox.scrollTop = logBox.scrollHeight;
                     currentLine++;
                 }
-            }, 180);
+            }, 150);
 
             let progressInterval = setInterval(() => {
                 if (progressWidth < 100) {
@@ -910,19 +915,19 @@
                         document.getElementById('boot-pass-key').focus();
                     }, 400);
                 }
-            }, 60);
+            }, 400); // 60ms yerine 400ms olarak bar hızını dengeledik
         }
 
-        // KESİNTİSİZ GİRİŞ ŞİFRE KONTROLÜ
+        // BAŞLANGIÇ SİSTEM ŞİFRE KONTROLÜ
         function verifyBootPassword() {
             let inputKey = document.getElementById('boot-pass-key').value;
-            if (inputKey === "racoon") {
+            if (inputKey === CORESYS_KEYS.BOOT_KEY) {
                 localStorage.setItem('racoon_os_authorized', 'true');
                 document.getElementById('boot-login-screen').style.display = 'none';
-                appendTerminalLine("Code:Racoon OS Çekirdek Paneli v5.0 başarıyla yüklendi.", "line-success");
-                appendTerminalLine("Sistem durumu kontrol edildi: Kararlı. Giriş izni verildi.", "line-info");
+                appendTerminalLine("Code:Racoon OS v5.1 başarıyla yüklendi.", "line-success");
+                appendTerminalLine("Sistem hiyerarşisi doğrulandı. Misafir modu aktif.", "line-info");
             } else {
-                alert("KRİTİK HATA: Yetkisiz Erişim Anahtarı!");
+                alert("KRİTİK HATA: Geçersiz Ana Bilgisayar Şifresi!");
                 wrongAttemptsCount++;
                 if (wrongAttemptsCount >= 3) {
                     document.getElementById('boot-login-screen').style.display = 'none';
@@ -932,9 +937,7 @@
             document.getElementById('boot-pass-key').value = "";
         }
 
-        // ==========================================================================
-        // TERMİNAL LOG VE ÇIKTI MOTORU
-        // ==========================================================================
+        // TERMİNAL ÇIKTI LOGLAYICI
         function appendTerminalLine(text, styleClass = "line-info") {
             let div = document.createElement('div');
             div.className = "terminal-line " + styleClass;
@@ -947,13 +950,11 @@
             terminalLogs.push(`[${new Date().toLocaleTimeString()}] ${text}`);
         }
 
-        // ==========================================================================
-        // KULLANICI YETKİ SEVİYESİ SEÇİMİ (ŞİFRE KORUMALI)
-        // ==========================================================================
+        // KADEMELİ VE HİYERARŞİK ŞİFRE SORGUSU
         function switchUserLevel(level) {
             if (level === 'root') {
                 let rootPass = prompt("🔑 ROOT LEVEL ERİŞİM ANAHTARINI GİRİN:");
-                if (rootPass !== "racoon") {
+                if (rootPass !== CORESYS_KEYS.ROOT_KEY) {
                     alert("❌ YETKİSİZ ERİŞİM: ROOT Anahtarı Geçersiz!");
                     document.getElementById('user-level-selector').value = currentUserLevel;
                     wrongAttemptsCount++;
@@ -962,7 +963,7 @@
                 }
             } else if (level === 'racoon') {
                 let racoonPass = prompt("🦝 RACOON LEVEL OPERATÖR ANAHTARINI GİRİN:");
-                if (racoonPass !== "racoon") {
+                if (racoonPass !== CORESYS_KEYS.RACOON_KEY) {
                     alert("❌ YETKİSİZ ERİŞİM: Racoon Anahtarı Geçersiz!");
                     document.getElementById('user-level-selector').value = currentUserLevel;
                     wrongAttemptsCount++;
@@ -978,7 +979,7 @@
             let vaultCard = document.getElementById('quantum-vault-card');
             if (level === 'racoon') {
                 vaultCard.style.display = 'flex';
-                appendTerminalLine(">> Üst kademe Racoon Kuantum Kasası yetkileri açıldı.", "line-success");
+                appendTerminalLine(">> Üst kademe Kuantum Kasası (Vault) erişime açıldı.", "line-success");
             } else {
                 vaultCard.style.display = 'none';
             }
@@ -1003,23 +1004,23 @@
             let statusText = document.getElementById('oc-status-text');
 
             if (isOverclockActive) {
-                document.body.classList.add('overclocked');
+                document.body.style.setProperty('--primary-orange', 'var(--overclock-red)');
+                document.body.style.setProperty('--glow-orange', 'rgba(255, 0, 51, 0.6)');
                 statusText.innerText = "OVERCLOCK AKTİF (6800 RPM [MAX])";
                 statusText.style.color = "var(--error)";
                 btn.innerText = "Overclock Kapat [Normal Mod]";
-                appendTerminalLine(">> KRİTİK UYARI: AMD Ryzen Z1 Extreme hız aşırtma modu devrede! Fanlar maksimum devire (6800 RPM) ulaştı.", "line-warning");
+                appendTerminalLine(">> KRİTİK UYARI: AMD Ryzen Z1 Extreme hız aşırtma modu devrede! Fanlar: 6800 RPM.", "line-warning");
             } else {
-                document.body.classList.remove('overclocked');
+                document.body.style.setProperty('--primary-orange', '#ff6600');
+                document.body.style.setProperty('--glow-orange', 'rgba(255, 102, 0, 0.5)');
                 statusText.innerText = "NORMAL MOD (2400 RPM)";
                 statusText.style.color = "var(--success)";
                 btn.innerText = "Overclock [OC] Modunu Tetikle";
-                appendTerminalLine(">> İşlemci hızı normal mod değerlerine çekildi. Fanlar stabilize edildi (2400 RPM).", "line-info");
+                appendTerminalLine(">> İşlemci hızı normal mod değerlerine çekildi. Fanlar: 2400 RPM.", "line-info");
             }
         }
 
-        // ==========================================================================
-        // KRİTİK ACİL DURUM KİLİT PROSEDUERLERİ
-        // ==========================================================================
+        // ACİL DURUM KİLİT PROSEDÜRLERİ
         let emergencyGlitchInterval = null;
 
         function triggerGlobalEmergency() {
@@ -1029,7 +1030,6 @@
 
             let overlay = document.getElementById('attack-overlay');
             overlay.style.display = 'flex';
-            setTimeout(() => { overlay.style.opacity = "1"; }, 10);
 
             document.getElementById('tv-static-canvas').style.display = 'block';
             playFailSafeSiren();
@@ -1067,7 +1067,7 @@
             appendTerminalLine("Küresel acil durum protokolü sonlandırıldı. Sistem normale döndü.", "line-success");
         }
 
-        // BRUTE FORCE BRANŞI KİLİDİ
+        // BRUTE FORCE KİLİDİ VE MASTER BYPASS
         let lockCountdownInterval = null;
         function activateBruteForceLock() {
             document.getElementById('brute-lock-screen').style.display = 'flex';
@@ -1082,17 +1082,17 @@
                     unlockBruteForceSystem();
                 }
             }, 1000);
-            appendTerminalLine(">> GÜVENLİK DUVARI: Hatalı işlem sınırı aşıldı! Sistem 30 saniye boyunca mühürlendi.", "line-error");
+            appendTerminalLine(">> GÜVENLİK DUVARI: Hatalı işlem sınırı aşıldı! Sistem 30 saniye mühürlendi.", "line-error");
         }
 
         function verifyBypassMaster() {
             let key = document.getElementById('bypass-key').value;
-            if (key === "racoon") {
+            if (key === CORESYS_KEYS.MASTER_KEY) {
                 clearInterval(lockCountdownInterval);
                 unlockBruteForceSystem();
-                appendTerminalLine(">> Master Şifre ile güvenlik mührü anında kırıldı.", "line-success");
+                appendTerminalLine(">> Master Kripto Anahtarı ile güvenlik mührü anında kırıldı.", "line-success");
             } else {
-                alert("Master anahtar geçersiz!");
+                alert("Master Bypass anahtarı geçersiz!");
             }
             document.getElementById('bypass-key').value = "";
         }
@@ -1106,18 +1106,16 @@
             appendTerminalLine("Sistem güvenlik mührü kaldırıldı. Erişim tekrar serbest.", "line-info");
         }
 
-        // KENDİNİ ONARAN GÜVENLİK DUVARI DÖNGÜSZY
+        // GÜVENLİK DUVARI ARKAPLAN DÖNGÜSÜ
         function runSelfHealingFirewall() {
             setInterval(() => {
                 if (!isEmergencyActive && document.getElementById('brute-lock-screen').style.display !== 'flex' && localStorage.getItem('racoon_os_authorized') === 'true') {
-                    appendTerminalLine("Kendi Kendini Onaran Güvenlik Duvarı Aktif: Paket enjeksiyonları, XSS sızmaları ve port taramaları denetleniyor... Durum: TEMİZ", "line-muted");
+                    appendTerminalLine("Kendi Kendini Onaran Güvenlik Duvarı Aktif: Paket durumu temiz.", "line-muted");
                 }
-            }, 4000);
+            }, 5000);
         }
 
-        // ==========================================================================
-        // KUANTUM VERİ KASASI (LOCALSTORAGE)
-        // ==========================================================================
+        // KUANTUM VERİ KASASI OPERASYONLARI
         function saveToVault() {
             let cell = document.getElementById('vault-cell-name').value.trim();
             let data = document.getElementById('vault-cell-data').value;
@@ -1134,21 +1132,19 @@
 
             let localData = localStorage.getItem("racoon_vault_" + cell);
             if (!localData) {
-                appendTerminalLine(`[VAULT ERROR] '${cell}' adında bir hücre bulunamadı veya bütünlüğü bozulmuş.`, "line-error");
+                appendTerminalLine(`[VAULT ERROR] '${cell}' adında bir hücre bulunamadı.`, "line-error");
                 return;
             }
             try {
                 let decryptedData = decodeURIComponent(escape(atob(localData)));
                 document.getElementById('vault-cell-data').value = decryptedData;
-                appendTerminalLine(`[VAULT] '${cell}' hücresinin kripto mührü çözüldü. Veriler yüklendi.`, "line-success");
+                appendTerminalLine(`[VAULT] '${cell}' hücresinin kripto mührü çözüldü.`, "line-success");
             } catch(e) {
                 appendTerminalLine("[VAULT CRITICAL] Hücre şifresi çözülemedi, harici manipülasyon sezildi!", "line-error");
             }
         }
 
-        // ==========================================================================
         // TERMİNAL KOMUT KABUĞU ÇALIŞTIRICISI
-        // ==========================================================================
         const termInput = document.getElementById('term-input');
         termInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
@@ -1174,13 +1170,13 @@
                     appendTerminalLine("--- CODE:RACOON OS ÇEKİRDEK OPERASYONEL REHBERİ ---", "line-system");
                     appendTerminalLine("help                     - Bu yardım menüsünü listeler.");
                     appendTerminalLine("history                  - Oturum boyunca çalıştırılan komut geçmişini dökümler.");
-                    appendTerminalLine("export                   - Tüm terminal geçmişini log.txt olarak bilgisayara indirir.");
-                    appendTerminalLine("encrypt <mesaj>          - Mesajı Base64 siber algoritmasıyla şifreler.");
+                    appendTerminalLine("export                   - Tüm terminal geçmişini log.txt olarak indirir.");
+                    appendTerminalLine("encrypt <mesaj>          - Mesajı Base64 algoritmasıyla şifreler.");
                     appendTerminalLine("decrypt <kod>            - Şifrelenmiş siber kodu çözer.");
-                    appendTerminalLine("scan-ports               - Ağdaki sanal portları tarayıp güvenlik analizi yapar.");
+                    appendTerminalLine("scan-ports               - Ağdaki sanal portları tarayıp analiz yapar.");
                     appendTerminalLine("self-destruct            - 5 saniye içinde sistemi Kernel Panic hatasına düşürür.");
-                    appendTerminalLine("quantum-breach           - CSS matris yapısını bükerek kuantum sızıntısı simüle eder.");
-                    appendTerminalLine("z9                       - PROTOCOL Z9 imha sistemini doğrudan ateşler (Flashbang).");
+                    appendTerminalLine("quantum-breach           - Matris yapısını bükerek kuantum sızıntısı simüle eder.");
+                    appendTerminalLine("z9                       - PROTOCOL Z9 imha sistemini ateşler (Flashbang).");
                     appendTerminalLine("clear                    - Terminal ekranını temizler.");
                     break;
 
@@ -1203,27 +1199,27 @@
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
-                    appendTerminalLine(">> Blob API: Tüm sistem log geçmişi 'racoon_core_log.txt' olarak yerel diske dışa aktarıldı.", "line-success");
+                    appendTerminalLine(">> Log geçmişi 'racoon_core_log.txt' olarak diske aktarıldı.", "line-success");
                     break;
 
                 case 'encrypt':
-                    if (!args) { appendTerminalLine("Hata: Şifrelenecek mesaj girilmedi! Kullanım: encrypt mesaj", "line-error"); break; }
+                    if (!args) { appendTerminalLine("Hata: Şifrelenecek mesaj girilmedi!", "line-error"); break; }
                     let enc = btoa(unescape(encodeURIComponent(args)));
                     appendTerminalLine(`Kripto Kod Çıktısı: ${enc}`, "line-success");
                     break;
 
                 case 'decrypt':
-                    if (!args) { appendTerminalLine("Hata: Çözülecek şifreli kod girilmedi! Kullanım: decrypt kod", "line-error"); break; }
+                    if (!args) { appendTerminalLine("Hata: Çözülecek şifreli kod girilmedi!", "line-error"); break; }
                     try {
                         let dec = decodeURIComponent(escape(atob(args)));
-                        appendTerminalLine(`Çözülen Orijinal Metin: ${dec}`, "line-success");
+                        appendTerminalLine(`Çözülen Metin: ${dec}`, "line-success");
                     } catch(e) {
                         appendTerminalLine("Kripto Çözüm Hatası: Geçersiz Base64 dizilimi!", "line-error");
                     }
                     break;
 
                 case 'scan-ports':
-                    appendTerminalLine("Siber Ağ Tarayıcı & Sızma Simülatörü Başlatılıyor...", "line-system");
+                    appendTerminalLine("Siber Ağ Tarayıcı Başlatılıyor...", "line-system");
                     let ports = [21, 22, 80, 443, 3306, 8080];
                     ports.forEach((port, index) => {
                         setTimeout(() => {
@@ -1248,14 +1244,14 @@
 
                             setTimeout(() => {
                                 staticCanvas.style.display = 'none';
-                                alert("Sistem çöktü! Çekirdeği Yeniden Canlandırmak için sayfayı tazeleyin ya da Root seviyesine geçin.");
+                                alert("Sistem çöktü! Çekirdeği yeniden canlandırmak için sayfayı tazeleyin.");
                             }, 3000);
                         }
                     }, 1000);
                     break;
 
                 case 'quantum-breach':
-                    appendTerminalLine("[ULTIMATE ÖZELLİK] Kuantum Tekillik Çekirdek Sızıntısı Başlatılıyor...", "line-error");
+                    appendTerminalLine("[ULTIMATE] Kuantum Tekillik Sızıntısı Başlatılıyor...", "line-error");
                     document.body.style.transform = "skew(3deg, 2deg) rotate(1deg) scale(0.98)";
                     document.body.style.filter = "hue-rotate(90deg) contrast(1.5)";
                     
@@ -1294,9 +1290,7 @@
 
         window.triggerGlobalEmergency = triggerGlobalEmergency;
 
-        // ==========================================================================
-        // BAŞLANGIÇ ÇEKİRDEK ÇALIŞTIRICILARI
-        // ==========================================================================
+        // BAŞLANGIÇ ÇEKİRDEK TETİKLEYİCİLERİ
         window.onload = () => {
             startBootSequence();
             runTelemetrySimulation();
