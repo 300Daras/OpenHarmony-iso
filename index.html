@@ -1581,6 +1581,39 @@
                 }, 3000);
             }
         }
+        // --- FIREBASE BAĞLANTISI ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyAoLhpPYheO1cKK-rLYLXvfsExrKzzSVoY",
+        authDomain: "sitem-4567f.firebaseapp.com",
+        databaseURL: "https://sitem-4567f-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "sitem-4567f",
+        storageBucket: "sitem-4567f.firebasestorage.app",
+        messagingSenderId: "475840132240",
+        appId: "1:475840132240:web:2ca16fb65bdb060e4ad415",
+        measurementId: "G-VR3LYBHZ3R"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    firebase.auth().signInAnonymously();
+
+    function saveToVault() {
+        let cellName = document.getElementById('vault-cell-name').value.trim();
+        let cellData = document.getElementById('vault-cell-data').value;
+        if (!cellName) return;
+        db.ref('quantum_vault/' + cellName).set({ data: cellData, timestamp: Date.now() });
+    }
+
+    function loadFromVault() {
+        let cellName = document.getElementById('vault-cell-name').value.trim();
+        if (!cellName) return;
+        db.ref('quantum_vault/' + cellName).once('value').then((snapshot) => {
+            if (snapshot.exists()) {
+                document.getElementById('vault-cell-data').value = snapshot.val().data;
+            }
+        });
+    }
+    // --- BAĞLANTI SONU ---
 </script>
 </body>
 </html>
