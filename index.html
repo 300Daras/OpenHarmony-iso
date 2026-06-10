@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+    <!-- FIREBASE CORE KÜTÜPHANELERİ -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="site-title">Code:Racoon OS - Çekirdek Komuta Merkezi v5.1</title>
@@ -465,9 +468,49 @@
             display: none;
             pointer-events: none;
         }
-    </style>
+    
+        /* DAEMON SİBER LOG PANELİ */
+        #daemon-bar {
+            position: fixed;
+            bottom: 50px;
+            right: 20px;
+            width: 330px;
+            background: rgba(5, 5, 10, 0.96);
+            border: 1px solid #2a2a35;
+            border-top: 3px solid var(--primary-orange);
+            padding: 12px;
+            font-size: 11px;
+            color: var(--text-muted);
+            z-index: 9999;
+            display: none;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+        .daemon-log-line {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+            font-family: monospace;
+        }
+        #live-node-counter {
+            font-size: 12px;
+            color: var(--text-muted);
+            border: 1px solid #2a2a35;
+            padding: 4px 10px;
+            background: rgba(0,0,0,0.4);
+        }
+</style>
 </head>
 <body>
+    <!-- DAEMON CANLI AKIŞ PANELİ APARATI -->
+    <div id="daemon-bar">
+        <div style="color:var(--primary-orange); font-weight:bold; margin-bottom:6px; border-bottom:1px solid #333; display:flex; justify-content:space-between;">
+            <span>📡 NET-SPECTRE DAEMON FEED</span>
+            <span style="color:var(--success)">[LIVE]</span>
+        </div>
+        <div id="daemon-feed-container"></div>
+    </div>
+
 
     <div class="crt-scanlines"></div>
     <div id="flashbang"></div>
@@ -649,6 +692,75 @@
         let wrongAttemptsCount = 0;
         let commandHistory = [];
         let terminalLogs = [];
+        // ==========================================================================
+        // KÜRESEL DAEMON REJİSTRASYONU VE SİBER DEĞİŞKENLER
+        // ==========================================================================
+        const DAEMON_REGISTRY = {
+            grub: { name: "GRUB-Boot-Supervisor", active: true, status: "RUNNING", cpu: 0.1, ram: 4 },
+            core: { name: "Racoon-Core-Monitor", active: true, status: "RUNNING", cpu: 0.5, ram: 14 },
+            heal: { name: "Shadow-Heal-Daemon", active: false, status: "STOPPED", cpu: 0.0, ram: 0 },
+            spectre: { name: "Net-Spectre-Sniffer", active: false, status: "STOPPED", cpu: 0.0, ram: 0 },
+            sentinel: { name: "Sentinel-AI-Guard", active: true, status: "RUNNING", cpu: 0.9, ram: 32 },
+            watchdog: { name: "Thermal-Watchdog", active: false, status: "STOPPED", cpu: 0.0, ram: 0 },
+            audio: { name: "Pulse-Audio-Engine", active: true, status: "RUNNING", cpu: 0.2, ram: 8 },
+            chrono: { name: "Chrono-Sync-Scheduler", active: true, status: "RUNNING", cpu: 0.1, ram: 2 },
+            keeper: { name: "Crypt-Keeper-Vault", active: false, status: "STOPPED", cpu: 0.0, ram: 0 },
+            telemetry: { name: "Telemetry-Link-Daemon", active: true, status: "RUNNING", cpu: 0.3, ram: 6 }
+        };
+        let cpuTemperature = 45; 
+        let watchdogInterval = null;
+        let spectreInterval = null;
+        let keeperInterval = null;
+        let sentinelWarnings = 0;
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyFakeKey_CodeRacoon2026",
+            authDomain: "code-racoon.firebaseapp.com",
+            databaseURL: "https://code-racoon-default-rtdb.firebaseio.com",
+            projectId: "code-racoon",
+            storageBucket: "code-racoon.appspot.com"
+        };
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+            const database = firebase.database();
+            const presenceRef = database.ref('online_users_count');
+            const systemStatusRef = database.ref('system_status');
+            database.ref('.info/connected').on('value', (snapshot) => {
+                if (snapshot.val() === true) {
+                    presenceRef.transaction((currentCount) => {
+                        if (currentCount >= 100) {
+                            document.body.innerHTML = `
+                                <div style="background:#050000; color:#ff3333; font-family:monospace; padding:50px; text-align:center; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                                    <h1 style="text-shadow: 0 0 10px #ff3333;">[CRITICAL ERROR: RACOON-NET NODE LIMIT EXCEEDED]</h1>
+                                    <p style="color:#888; font-size:18px; margin:20px 0;">Güvenli bağlantı havuzu tamamen dolu (100/100). Giriş reddedildi.</p>
+                                </div>`;
+                            return;
+                        }
+                        return (currentCount || 0) + 1;
+                    });
+                    presenceRef.onDisconnect().transaction((currentCount) => {
+                        return currentCount > 0 ? currentCount - 1 : 0;
+                    });
+                }
+            });
+            presenceRef.on('value', (snapshot) => {
+                const count = snapshot.val() || 1;
+                const display = document.getElementById('user-count-display');
+                if(display) display.innerText = `${count}/100`;
+            });
+            systemStatusRef.on('value', (snapshot) => {
+                const status = snapshot.val();
+                if (status && status.emergency === true) {
+                    isEmergencyActive = true;
+                    document.body.style.backgroundColor = "var(--war-red)";
+                } else {
+                    isEmergencyActive = false;
+                    document.body.style.backgroundColor = "var(--bg-dark)";
+                }
+            });
+        } catch(e) { console.log("Firebase simüle modunda."); }
+
 
         // Yenilenme esnasında tüm yetki seviyelerini sıfırla (Fail-Safe)
         localStorage.setItem('racoon_os_authorized', 'false');
@@ -1163,9 +1275,81 @@
 
             let parts = cmdTrimmed.split(' ');
             let baseCmd = parts[0].toLowerCase();
+
+            // SENTINEL-AI GÜVENLİK DAEMON FILTRELEMESİ
+            let targetCheck = rawCommand.toLowerCase();
+            let forbiddenWords = ["hack", "sudo", "exploit", "malware", "virus"];
+            if (forbiddenWords.some(w => targetCheck.includes(w))) {
+                sentinelWarnings++;
+                appendTerminalLine(`[SENTINEL-AI UYARI]: Zararlı siber kelime algılandı! Tehdit: (${sentinelWarnings}/3)`, "line-error");
+                if (sentinelWarnings >= 3) {
+                    appendTerminalLine("🚨 [SENTINEL-AI]: KRİTİK GÜVENLİK TEHDİDİ! Giriş paneli 5 saniye kilitlendi.", "line-error");
+                    document.getElementById('term-input').disabled = true;
+                    setTimeout(() => {
+                        document.getElementById('term-input').disabled = false;
+                        document.getElementById('term-input').focus();
+                        sentinelWarnings = 0;
+                        appendTerminalLine("[SENTINEL-AI]: Kilit açıldı. İzleme sürüyor.", "line-success");
+                    }, 5000);
+                    return;
+                }
+            }
             let args = parts.slice(1).join(' ');
 
             switch(baseCmd) {
+
+                case 'grub':
+                    launchGrubMenu();
+                    break;
+                case 'systemctl':
+                case 'daemons':
+                    showDaemonStatus();
+                    break;
+                case 'shadow-heal':
+                    triggerShadowHeal();
+                    break;
+                case 'net-spectre':
+                    toggleNetSpectre();
+                    break;
+                case 'overclock':
+                    runThermalWatchdog();
+                    break;
+                case 'coolant':
+                    if (DAEMON_REGISTRY.watchdog.status === "RUNNING") {
+                        cpuTemperature = 42;
+                        appendTerminalLine("❄ [WATCHDOG]: Sıvı azot pompalandı! Sıcaklık stabilize: 42°C", "line-success");
+                    } else {
+                        appendTerminalLine("İşlemci zaten normal sıcaklıkta.", "line-system");
+                    }
+                    break;
+                case 'crypt-keeper':
+                    toggleCryptKeeper();
+                    break;
+                case 'telemetry':
+                    appendTerminalLine("🛰️ [TELEMETRY-LINK]: Poyraz uyduları ve Reşitköy Barajı veri istasyonuna bağlanılıyor...", "line-info");
+                    setTimeout(() => {
+                        appendTerminalLine(`[OK] Canlı Poyraz Rüzgarı Hızı: ${document.getElementById('telemetry-poyraz')?.innerText || '28 km/s'}`, "line-success");
+                        appendTerminalLine(`[OK] Reşitköy Barajı Canlı Doluluk Oranı: ${document.getElementById('telemetry-baraj')?.innerText || '%42.82'}`, "line-success");
+                    }, 800);
+                    break;
+                case 'cron':
+                    let cmdArgs = args.split(' ');
+                    let secs = parseInt(cmdArgs[0]);
+                    let targetAction = cmdArgs.slice(1).join(' ');
+                    if (!isNaN(secs) && targetAction) {
+                        appendTerminalLine(`[CHRONO-SYNC]: Görev kaydı yapıldı. ${secs} saniye sonra tetiklenecek: '${targetAction}'`, "line-success");
+                        setTimeout(() => {
+                            appendTerminalLine(`[CHRONO-SYNC ARKA PLAN EMİR ATEŞLEME] -> ${targetAction}`, "line-system");
+                            executeCommand(targetAction);
+                        }, secs * 1000);
+                    } else {
+                        appendTerminalLine("Hata! Format: 'cron 5 telemetry'", "line-error");
+                    }
+                    break;
+                case 'bypass99':
+                    try { firebase.database().ref('system_status').update({ emergency: false }); } catch(e){}
+                    appendTerminalLine(">> ACİL DURUM MODU VERİTABANINDAN SIFIRLANDI.", "line-success");
+                    break;
                 case 'help':
                     appendTerminalLine("--- CODE:RACOON OS ÇEKİRDEK OPERASYONEL REHBERİ ---", "line-system");
                     appendTerminalLine("help                     - Bu yardım menüsünü listeler.");
@@ -1298,6 +1482,104 @@
             initGlobalTabCounter();
             runSelfHealingFirewall();
         };
-    </script>
+    
+        // ==========================================================================
+        // DAEMON MOTOR ENJEKSİYON FONKSİYONLARI
+        // ==========================================================================
+        function launchGrubMenu() {
+            const grubOverlay = document.createElement('div');
+            grubOverlay.style = "position:fixed; top:0; left:0; width:100vw; height:100vh; background:#000; color:#fff; font-family:monospace; padding:40px; z-index:9999999;";
+            grubOverlay.innerHTML = `
+                <h3>GNU GRUB version 2.06-amd64</h3>
+                <p>Ok tuşları ile seçim yapıp ENTER'a basın.</p>
+                <div style="border:2px solid #fff; padding:20px; margin:20px 0; width:70%;">
+                    <div style="background:#fff; color:#000; padding:2px;">* Code:Racoon OS Core (Kernel 6.1.0-STABLE) - Safe Mode</div>
+                    <div style="padding:2px;">  Windows Boot Manager (/dev/nvme0n1p1)</div>
+                </div>
+                <p>Siber BIOS Tamir Simülasyonu Devrede...</p>
+            `;
+            document.body.appendChild(grubOverlay);
+            const closeGrub = (e) => {
+                if (e.key === "Enter") {
+                    grubOverlay.innerHTML = "<h3>[ÇEKİRDEK RESCUE TAMAMLANDI. SİSTEM YENİDEN BAŞLATILIYOR...]</h3>";
+                    setTimeout(() => { grubOverlay.remove(); window.removeEventListener('keydown', closeGrub); }, 1200);
+                }
+            };
+            window.addEventListener('keydown', closeGrub);
+        }
+
+        function showDaemonStatus() {
+            appendTerminalLine("======================================================", "line-system");
+            appendTerminalLine("| DAEMON SERVIS ADI       | DURUM    | CPU   | RAM   |", "line-info");
+            appendTerminalLine("------------------------------------------------------", "line-muted");
+            Object.keys(DAEMON_REGISTRY).forEach(k => {
+                let d = DAEMON_REGISTRY[k];
+                let c = d.status === "RUNNING" ? "line-success" : "line-error";
+                appendTerminalLine(`| ${d.name.padEnd(23, ' ')} | ${d.status.padEnd(8, ' ')} | ${d.cpu}% | ${d.ram}MB |`, c);
+            });
+        }
+
+        function triggerShadowHeal() {
+            DAEMON_REGISTRY.heal.status = "RUNNING"; DAEMON_REGISTRY.heal.cpu = 4.5; DAEMON_REGISTRY.heal.ram = 20;
+            document.body.style.filter = "blur(1px) contrast(1.8)";
+            appendTerminalLine("⚠️ [SHADOW-HEAL]: Kod matrisinde sapma algılandı! Siber lazer taraması başlatılıyor...", "line-warn");
+            setTimeout(() => {
+                document.body.style.filter = "none";
+                appendTerminalLine("✔ [SHADOW-HEAL]: Çekirdek dosyaları ve glitchler orijinal haline döndürüldü.", "line-success");
+                DAEMON_REGISTRY.heal.status = "STOPPED"; DAEMON_REGISTRY.heal.cpu = 0; DAEMON_REGISTRY.heal.ram = 0;
+            }, 1500);
+        }
+
+        function toggleNetSpectre() {
+            const dBar = document.getElementById('daemon-bar');
+            const container = document.getElementById('daemon-feed-container');
+            if (DAEMON_REGISTRY.spectre.status === "RUNNING") {
+                clearInterval(spectreInterval);
+                DAEMON_REGISTRY.spectre.status = "STOPPED"; dBar.style.display = 'none';
+                appendTerminalLine("[-] Net-Spectre arka plan paket dinlemesi kapatıldı.", "line-system");
+            } else {
+                DAEMON_REGISTRY.spectre.status = "RUNNING"; DAEMON_REGISTRY.spectre.cpu = 5.1; DAEMON_REGISTRY.spectre.ram = 18;
+                dBar.style.display = 'block';
+                appendTerminalLine("[+] Net-Spectre aktif! Siber veri paketleri sağ alt panele akıtılıyor...", "line-success");
+                spectreInterval = setInterval(() => {
+                    let fakeIP = `192.168.${Math.floor(Math.random()*254)}.${Math.floor(Math.random()*254)}`;
+                    let div = document.createElement('div');
+                    div.className = 'daemon-log-line'; div.style.color = '#00ff66';
+                    div.innerText = `[INBOUND] ${fakeIP} -> PORT ${[80, 443, 22][Math.floor(Math.random()*3)]} (OK)`;
+                    container.appendChild(div);
+                    if(container.children.length > 6) container.removeChild(container.firstChild);
+                }, 2000);
+            }
+        }
+
+        function runThermalWatchdog() {
+            DAEMON_REGISTRY.watchdog.status = "RUNNING"; DAEMON_REGISTRY.watchdog.cpu = 9.5; DAEMON_REGISTRY.watchdog.ram = 16;
+            appendTerminalLine("[⚠️ WATCHDOG]: Overclock modu aktif. AMD Ryzen Z1 Extreme sıcaklığı izleniyor...", "line-warn");
+            watchdogInterval = setInterval(() => {
+                cpuTemperature += Math.floor(Math.random() * 8) + 4;
+                appendTerminalLine(`[DONANIM SICAKLIĞI]: CPU -> ${cpuTemperature}°C`, cpuTemperature > 85 ? "line-error" : "line-warn");
+                if(cpuTemperature >= 100) {
+                    clearInterval(watchdogInterval);
+                    appendTerminalLine("🚨 [THERMAL CRITICAL PANIC]: SİSTEM ERİME NOKTASINDA! Kapatılıyor...", "line-error");
+                    cpuTemperature = 45; DAEMON_REGISTRY.watchdog.status = "STOPPED";
+                    setTimeout(() => { try{firebase.database().ref('system_status').update({ emergency: true });}catch(e){} }, 1000);
+                }
+            }, 1500);
+        }
+
+        function toggleCryptKeeper() {
+            if (DAEMON_REGISTRY.keeper.status === "RUNNING") {
+                clearInterval(keeperInterval); DAEMON_REGISTRY.keeper.status = "STOPPED";
+                appendTerminalLine("[-] Crypt-Keeper şifreli token akışı durduruldu.", "line-system");
+            } else {
+                DAEMON_REGISTRY.keeper.status = "RUNNING"; DAEMON_REGISTRY.keeper.cpu = 4.2; DAEMON_REGISTRY.keeper.ram = 40;
+                appendTerminalLine("[+] Crypt-Keeper Kuantum Kasa Devrede. Jeneratör başlatıldı...", "line-success");
+                keeperInterval = setInterval(() => {
+                    let token = btoa(Math.random().toString()).substring(5, 15);
+                    appendTerminalLine(`[CRYPT-KEEPER LIVE TOKEN]: [GEN_KEY: ${token}]`, "line-success");
+                }, 3000);
+            }
+        }
+</script>
 </body>
 </html>
