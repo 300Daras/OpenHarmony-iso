@@ -1581,39 +1581,107 @@
                 }, 3000);
             }
         }
-        // --- FIREBASE BAĞLANTISI ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyAoLhpPYheO1cKK-rLYLXvfsExrKzzSVoY",
-        authDomain: "sitem-4567f.firebaseapp.com",
-        databaseURL: "https://sitem-4567f-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "sitem-4567f",
-        storageBucket: "sitem-4567f.firebasestorage.app",
-        messagingSenderId: "475840132240",
-        appId: "1:475840132240:web:2ca16fb65bdb060e4ad415",
-        measurementId: "G-VR3LYBHZ3R"
-    };
+// ==========================================================================
+        // ÇEKİRDEK SİSTEM: FIREBASE MERKEZİ BAĞLANTI NOKTASI
+        // ==========================================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAoLhpPYheO1cKK-rLYLXvfsExrKzzSVoY",
+            authDomain: "sitem-4567f.firebaseapp.com",
+            databaseURL: "https://sitem-4567f-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "sitem-4567f",
+            storageBucket: "sitem-4567f.firebasestorage.app",
+            messagingSenderId: "475840132240",
+            appId: "1:475840132240:web:2ca16fb65bdb060e4ad415",
+            measurementId: "G-VR3LYBHZ3R"
+        };
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    firebase.auth().signInAnonymously();
+        // Çekirdek başlatılıyor
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-    function saveToVault() {
-        let cellName = document.getElementById('vault-cell-name').value.trim();
-        let cellData = document.getElementById('vault-cell-data').value;
-        if (!cellName) return;
-        db.ref('quantum_vault/' + cellName).set({ data: cellData, timestamp: Date.now() });
-    }
+        // Arka planda güvenli anonim giriş (Sitenin donmasını önler)
+        firebase.auth().signInAnonymously().then(() => {
+            console.log("[Code:Racoon OS]: Veritabanı bağlantısı stabil.");
 
-    function loadFromVault() {
-        let cellName = document.getElementById('vault-cell-name').value.trim();
-        if (!cellName) return;
-        db.ref('quantum_vault/' + cellName).once('value').then((snapshot) => {
-            if (snapshot.exists()) {
-                document.getElementById('vault-cell-data').value = snapshot.val().data;
-            }
+            // 1. AKTİF GRUP KULLANICI SAYICI (Presence)
+            const presenceRef = db.ref('online_users_count');
+            db.ref('.info/connected').on('value', (snap) => {
+                if (snap.val() === true) {
+                    presenceRef.transaction(c => (c || 0) + 1);
+                    presenceRef.onDisconnect().transaction(c => (c && c > 0 ? c - 1 : 0));
+                }
+            });
+
+            // 2. ACİL DURUM (EMERGENCY) CANLI DİNLEYİCİ
+            db.ref('system_status/emergency').on('value', (snapshot) => {
+                const isEmergency = snapshot.val();
+                if (typeof triggerLocalEmergency === "function") {
+                    triggerLocalEmergency(isEmergency);
+                }
+            });
+
+            // 3. ZONE 9 (Z9) PROTOKOLÜ DİNLEYİCİ
+            db.ref('system_status/z9_protocol').on('value', (snapshot) => {
+                const z9Status = snapshot.val();
+                let z9Display = document.getElementById('z9-status-display');
+                if (z9Display && z9Status) {
+                    z9Display.innerText = "Z9 DURUMU: " + z9Status;
+                }
+            });
+
+        }).catch((error) => {
+            console.error("[Sistem Hatası] Firebase anahtarı doğrulanamadı:", error);
         });
-    }
-    // --- BAĞLANTI SONU ---
-</script>
+
+        // ==========================================================================
+        // SİSTEM FONKSİYONLARI (KASA, EMER_SYS VE Z9 PROTOCOLS)
+        // ==========================================================================
+
+        // Kuantum Hücreyi Kilitle (Veri Yazma)
+        function saveToVault() {
+            let cellName = document.getElementById('vault-cell-name').value.trim();
+            let cellData = document.getElementById('vault-cell-data').value;
+            if (!cellName) return;
+            
+            if(db) {
+                db.ref('quantum_vault/' + cellName).set({ data: cellData, timestamp: Date.now() })
+                  .then(() => alert("[BAŞARILI] Kuantum hücre veritabanına kilitlendi."))
+                  .catch((err) => console.error("Kasa Yazma Hatası:", err));
+            }
+        }
+
+        // Kuantum Hücreyi Çöz (Veri Okuma)
+        function loadFromVault() {
+            let cellName = document.getElementById('vault-cell-name').value.trim();
+            if (!cellName) return;
+
+            if(db) {
+                db.ref('quantum_vault/' + cellName).once('value').then((snapshot) => {
+                    const cell = snapshot.val();
+                    if (cell) {
+                        document.getElementById('vault-cell-data').value = cell.data;
+                        alert("[BAŞARILI] Hücre şifresi veritabanından çözüldü.");
+                    } else {
+                        alert("[HATA] Belirtilen hücre veritabanında bulunamadı.");
+                    }
+                });
+            }
+        }
+
+        // Acil Durum Yayını Yap (Global Siren Tetikleyici)
+        function fireEmergencyBroadcast(status) {
+            if(db) {
+                db.ref('system_status/emergency').set(status);
+            }
+        }
+
+        // Z9 Protokol Seviyesini Değiştir
+        function updateZ9Protocol(level) {
+            if(db) {
+                db.ref('system_status/z9_protocol').set(level);
+            }
+        }
+
+    </script>
 </body>
 </html>
