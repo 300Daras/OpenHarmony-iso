@@ -9,18 +9,17 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 
-    <script>
+ <script>
         const firebaseConfig = {
             apiKey: "BURAYA_GERÇEK_KEYİNİ_YAZ",
-            authDomain: "PROJE_ID.firebaseapp.com",
-            databaseURL: "https://PROJE_ID.firebaseio.com",
-            projectId: "PROJE_ID",
-            storageBucket: "PROJE_ID.appspot.com",
+            authDomain: "code-racoon.firebaseapp.com",
+            databaseURL: "https://code-racoon.firebaseio.com", 
+            projectId: "code-racoon",
+            storageBucket: "code-racoon.appspot.com",
             messagingSenderId: "SENDER_ID",
             appId: "APP_ID"
         };
         
-        // Hata vermemesi için uygulama kontrolü
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
@@ -263,122 +262,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding-bottom: 8px;
-        }
 
-        .card-title {
-            font-size: 0.9rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--neon-white);
-        }
-
-        /* TERMİNAL MİMARİSİ */
-        .terminal-card {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 350px;
-        }
-
-        .terminal-body {
-            background-color: #040406;
-            border: 1px solid rgba(255, 102, 0, 0.2);
-            border-radius: 8px;
-            padding: 14px;
-            font-size: 0.85rem;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            gap: 6px;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.95);
-        }
-
-        .terminal-line {
-            line-height: 1.4;
-            word-break: break-all;
-            white-space: pre-wrap;
-        }
-
-        .line-system { color: var(--primary-orange); }
-        .line-success { color: var(--success); }
-        .line-error { color: var(--error); }
-        .line-warning { color: var(--warning); }
-        .line-info { color: #ffffff; }
-
-        .terminal-input-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: auto;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            padding-top: 10px;
-        }
-
-        .terminal-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: var(--text-main);
-            font-family: monospace;
-            font-size: 0.85rem;
-        }
-
-        /* DENETLEYİCİ VE SÜRGÜLER */
-        .slider-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .slider-row {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .slider-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .panel-slider {
-            width: 100%;
-            accent-color: var(--primary-orange);
-            background: #111;
-            outline: none;
-            height: 6px;
-            border-radius: 3px;
-        }
-
-        .panel-btn {
-            background: #14141f;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 9px 14px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            transition: all 0.2s;
-            margin-top: 8px;
-        }
-
-        .panel-btn:hover {
-            background: var(--primary-orange);
-            color: #000;
-            box-shadow: 0 0 10px var(--glow-orange);
-        }
-
-        /* CANLI OSİLOSKOP CANVAS */
-        #oscilloscope-canvas {
+     
             width: 100%;
             height: 70px;
             background: #06060c;
