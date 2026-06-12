@@ -1558,14 +1558,23 @@ db.ref('online_users_count').on('value', (snapshot) => {
         firebase.auth().signInAnonymously().then(() => {
             console.log("[Code:Racoon OS]: Veritabanı bağlantısı stabil.");
 
-            // 1. AKTİF GRUP KULLANICI SAYICI (Presence)
-            const presenceRef = db.ref('online_users_count');
-            db.ref('.info/connected').on('value', (snap) => {
-                if (snap.val() === true) {
-                    presenceRef.transaction(c => (c || 0) + 1);
-                    presenceRef.onDisconnect().transaction(c => (c && c > 0 ? c - 1 : 0));
-                }
-            });
+          // 100 KİŞİ SINIR YÖNETİCİSİ (Tek yetkili blok)
+const presenceRef = db.ref('online_users_count');
+db.ref('.info/connected').on('value', (snap) => {
+    if (snap.val() === true) {
+        presenceRef.transaction((current) => {
+            if (current >= 100) return current; 
+            return (current || 0) + 1;
+        }, (err, committed, snap) => {
+            if (committed && snap.val() > 100) {
+                presenceRef.transaction(c => c > 0 ? c - 1 : 0);
+                alert("Sistem Kapasitesi Dolu!");
+            } else if (committed) {
+                presenceRef.onDisconnect().transaction(c => c > 0 ? c - 1 : 0);
+            }
+        });
+    }
+});
 
             // 2. ACİL DURUM (EMERGENCY) CANLI DİNLEYİCİ
             db.ref('system_status/emergency').on('value', (snapshot) => {
