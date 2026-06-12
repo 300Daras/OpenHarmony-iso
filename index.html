@@ -11,20 +11,67 @@
 
     <script>
         const firebaseConfig = {
-            apiKey: "BURAYA_KENDİ_KEYİNİ_YAZ",
-            authDomain: "BURAYA_PROJECT_ID.firebaseapp.com",
-            databaseURL: "BURAYA_DATABASE_URL",
-            projectId: "BURAYA_PROJECT_ID",
-            storageBucket: "BURAYA_PROJECT_ID.appspot.com",
-            messagingSenderId: "BURAYA_SENDER_ID",
-            appId: "BURAYA_APP_ID"
+            apiKey: "BURAYA_GERÇEK_KEYİNİ_YAZ",
+            authDomain: "PROJE_ID.firebaseapp.com",
+            databaseURL: "https://PROJE_ID.firebaseio.com",
+            projectId: "PROJE_ID",
+            storageBucket: "PROJE_ID.appspot.com",
+            messagingSenderId: "SENDER_ID",
+            appId: "APP_ID"
         };
-        firebase.initializeApp(firebaseConfig);
+        
+        // Hata vermemesi için uygulama kontrolü
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
         const db = firebase.database(); 
-        console.log("Sistem Veritabanı Bağlantısı: BAŞARILI");
+        console.log("Firebase Başarıyla Bağlandı.");
     </script>
-</head>
+
     <style>
+        /* ==========================================================================
+           1. KÜRESEL SİBERPUNK DEĞİŞKENLERİ VE TASARIM TEMELLERİ
+           ========================================================================== */
+        :root {
+            --primary-orange: #ff6600;
+            --dark-orange: #b34700;
+            --neon-white: #ffffff;
+            --glow-orange: rgba(255, 102, 0, 0.5);
+            --glow-white: rgba(255, 255, 255, 0.2);
+            --bg-dark: #050508;
+            --panel-bg: rgba(14, 14, 20, 0.92);
+            --border-color: #2a2a35;
+            --text-main: #f0f0f5;
+            --text-muted: #9999aa;
+            --success: #00ff66;
+            --error: #ff3333;
+            --warning: #ffcc00;
+            --war-red: #800000;
+            --terminal-ghost: rgba(0, 255, 102, 0.45);
+            --overclock-red: #ff0033;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: background 0.3s ease, filter 0.3s ease, transform 0.1s ease;
+        }
+        /* ... diğer stil kodların burada devam edecek ... */
+    </style>
+</head>
+<body>
         /* ==========================================================================
            1. KÜRESEL SİBERPUNK DEĞİŞKENLERİ VE TASARIM TEMELLERİ
            ========================================================================== */
