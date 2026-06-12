@@ -1682,6 +1682,36 @@
             }
         }
 
+        // --- SİSTEMİ AÇILIŞTA OTOMATİK BAŞLATAN TETİKLEYİCİ ---
+    window.addEventListener('load', function() {
+        console.log("Code:Racoon OS v5.1 - Başlatılıyor...");
+        
+        // Kilit ekranını gizle
+        const lockScreen = document.getElementById('lock-screen');
+        if (lockScreen) lockScreen.style.display = 'none';
+        
+        // Terminali görünür yap
+        const mainTerminal = document.getElementById('main-terminal');
+        if (mainTerminal) mainTerminal.style.display = 'block';
+        
+        // Eğer terminal başlatma fonksiyonun varsa onu tetikle
+        if (typeof startTerminalBoot === "function") {
+            startTerminalBoot();
+        }
+    });
+
+    // Kilit ekranı şifre kontrol fonksiyonu (Butonun için)
+    function checkPassword() {
+        const passwordInput = document.getElementById('lock-password-input');
+        if (passwordInput.value === "racoon" || passwordInput.value === "") {
+            document.getElementById('lock-screen').style.display = 'none';
+            document.getElementById('main-terminal').style.display = 'block';
+            if (typeof startTerminalBoot === "function") startTerminalBoot();
+        } else {
+            alert("ERİŞİM REDDEDİLDİ!");
+            passwordInput.value = "";
+        }
+    }
     </script>
 </body>
 </html>
