@@ -5,6 +5,22 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "BURAYA_API_KEY_YAZ",
+            authDomain: "BURAYA_PROJECT_ID.firebaseapp.com",
+            databaseURL: "BURAYA_DATABASE_URL",
+            projectId: "BURAYA_PROJECT_ID",
+            storageBucket: "BURAYA_PROJECT_ID.appspot.com",
+            messagingSenderId: "BURAYA_SENDER_ID",
+            appId: "BURAYA_APP_ID"
+        };
+        
+        // Firebase'i başlat ve 'db'yi tanımla
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database(); 
+        console.log("Bağlantı Başarılı: Veritabanı tanımlandı.");
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="site-title">Code:Racoon OS - Çekirdek Komuta Merkezi v5.1</title>
