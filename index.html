@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code:Racoon OS - Çekirdek Komuta Merkezi v6.0 Ultra</title>
+    <title>Code:Racoon OS - Çekirdek Komuta Merkezi v10.3 Ultra</title>
 
-    <!-- Firebase Kütüphaneleri -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -15,27 +14,41 @@
            1. KÜRESEL SİBERPUNK DEĞİŞKENLERİ VE TASARIM TEMELLERİ
            ========================================================================== */
         :root {
+            /* Turuncu Tonlar */
             --primary-orange: #ff6600;
             --dark-orange: #b34700;
-            --neon-white: #ffffff;
             --glow-orange: rgba(255, 102, 0, 0.5);
+            
+            /* Beyaz ve Gri Tonlar */
+            --neon-white: #ffffff;
             --glow-white: rgba(255, 255, 255, 0.2);
-            --bg-dark: #050508;
-            --panel-bg: rgba(14, 14, 20, 0.94);
-            --border-color: #2a2a35;
             --text-main: #f0f0f5;
             --text-muted: #9999aa;
+            
+            /* Arkaplan ve Panel Tonları */
+            --bg-dark: #050508;
+            --panel-bg: rgba(14, 14, 20, 0.85);
+            --border-color: #2a2a35;
+            --border-neon: 1px solid #ff6600;
+            
+            /* Durum Renkleri */
             --success: #00ff66;
             --error: #ff3333;
             --warning: #ffcc00;
             --war-red: #800000;
-            --terminal-ghost: rgba(0, 255, 102, 0.45);
             --overclock-red: #ff0033;
+            
+            /* Siber Renkler */
+            --terminal-ghost: rgba(0, 255, 102, 0.45);
+            --neon-purple: #bc13fe;
             --navbow-purple: #b300ff;
             --navbow-glow: rgba(179, 0, 255, 0.5);
+            --neon-cyan: #00f0ff;
+            --neon-red: #ff0055;
+            --neon-green: #39ff14;
         }
 
-        /* Temel Reset */
+        /* Temel Reset ve Kutu Modeli */
         *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
@@ -44,14 +57,35 @@
             user-select: none;
         }
 
+        /* Ana Gövde Yapılandırması */
         body {
             background-color: var(--bg-dark);
-            color: var(--text-main);
+            color: var(--neon-white);
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 6px 100%;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
             transition: background 0.3s ease, filter 0.3s ease, transform 0.1s ease;
+        }
+
+        /* Dinamik Scanline Efekti */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            bottom: 0; 
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 99999;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
         }
 
         /* ==========================================================================
@@ -181,45 +215,79 @@
            5. ANA SİSTEM ARAYÜZÜ (HEADER)
            ========================================================================== */
         header {
-            background-color: #0b0b10;
+            background: rgba(10, 10, 15, 0.95);
             border-bottom: 2px solid var(--primary-orange);
-            padding: 12px 20px;
+            box-shadow: 0 0 15px var(--glow-orange);
+            padding: 15px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 0 20px var(--glow-orange);
             z-index: 100;
             transition: border-color 0.3s;
         }
 
-        .brand h1 {
-            font-size: 1.3rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--neon-white);
-        }
-
-        .brand h1 span {
-            color: var(--primary-orange);
-            text-shadow: 0 0 8px var(--primary-orange);
-            transition: color 0.3s;
-        }
-
-        .header-controls {
+        .logo-area {
             display: flex;
-            gap: 15px;
             align-items: center;
+            gap: 15px;
         }
 
-        .level-select {
-            background: #0d0d13;
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border: var(--border-neon);
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--primary-orange) 10%, transparent 70%);
+            box-shadow: 0 0 10px var(--primary-orange);
+            animation: pulse 2s infinite alternate;
+        }
+
+        .logo-text h1 {
+            font-size: 1.4rem;
             color: var(--primary-orange);
-            border: 1px solid var(--primary-orange);
-            padding: 6px 12px;
-            border-radius: 4px;
+            text-shadow: 0 0 8px var(--glow-orange);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .logo-text span {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .controls-area {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .selector-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .selector-wrapper label {
+            font-size: 0.75rem;
+            color: var(--primary-orange);
+            text-transform: uppercase;
+        }
+
+        .cyber-select {
+            background: #000;
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+            padding: 8px 12px;
+            font-family: monospace;
             font-weight: bold;
             outline: none;
             cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 240, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        .cyber-select:focus {
+            box-shadow: 0 0 12px var(--neon-cyan);
         }
 
         .env-badge {
@@ -237,181 +305,278 @@
         main {
             flex: 1;
             display: grid;
-            grid-template-columns: 350px 1fr 370px;
-            gap: 15px;
-            padding: 15px;
-            min-height: 0;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+            height: calc(100vh - 80px);
+            overflow: hidden;
         }
 
-        .panel-column {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            overflow-y: auto;
+        @media (max-width: 1024px) {
+            main {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(4, auto);
+                overflow-y: auto;
+            }
         }
 
-        .card {
-            background-color: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
-            transition: border-color 0.3s, box-shadow 0.3s;
+        .cyber-panel {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 102, 0, 0.3);
+            border-radius: 6px;
+            padding: 20px;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
+            transition: all 0.3s ease;
         }
 
-        .card:hover { 
-            border-color: var(--primary-orange); 
+        .cyber-panel::before {
+            content: "";
+            position: absolute;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary-orange), transparent);
         }
 
-        .card.navbow-style {
-            border-color: var(--navbow-purple);
-            box-shadow: inset 0 0 20px rgba(179, 0, 255, 0.2);
-        }
-        
-        .card.navbow-style:hover {
-            border-color: #d400ff;
-            box-shadow: inset 0 0 30px rgba(179, 0, 255, 0.4);
+        .cyber-panel:hover {
+            border-color: var(--primary-orange);
         }
 
-        .card-header {
+        .panel-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255, 102, 0, 0.2);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
         }
 
-        .card-title {
-            font-weight: bold;
-            font-size: 0.9rem;
-            color: var(--neon-white);
-            letter-spacing: 0.5px;
-        }
-
-        .navbow-title {
-            color: var(--navbow-purple);
-            text-shadow: 0 0 5px var(--navbow-purple);
-        }
-
-        /* Butonlar */
-        .panel-btn {
-            background: transparent;
+        .panel-title {
+            font-size: 1.1rem;
             color: var(--primary-orange);
-            border: 1px solid var(--primary-orange);
-            padding: 8px 14px;
-            border-radius: 4px;
-            cursor: pointer;
+            text-shadow: 0 0 5px var(--glow-orange);
+            display: flex;
+            align-items: center;
+            gap: 10px;
             font-weight: bold;
-            transition: 0.2s;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            width: 100%;
-            margin-bottom: 5px;
         }
 
-        .panel-btn:hover { 
-            background: var(--primary-orange); 
-            color: #000; 
-            box-shadow: 0 0 12px var(--glow-orange);
-        }
-
-        .navbow-btn {
-            color: var(--navbow-purple);
-            border-color: var(--navbow-purple);
-        }
-
-        .navbow-btn:hover {
-            background: var(--navbow-purple);
-            color: #fff;
-            box-shadow: 0 0 15px var(--navbow-purple);
-        }
-
-        /* Inputlar */
-        .panel-input {
-            background: #06060a;
-            border: 1px solid var(--border-color);
-            padding: 10px;
-            border-radius: 6px;
-            color: var(--text-main);
-            outline: none;
-            width: 100%;
-            margin-top: 10px;
-            text-align: center;
-            font-size: 0.9rem;
-        }
-
-        .panel-input:focus { 
-            border-color: var(--primary-orange); 
+        .panel-status {
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            border-radius: 3px;
+            background: rgba(0, 255, 0, 0.1);
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
         }
 
         /* ==========================================================================
-           7. GELİŞMİŞ TERMİNAL GÖVDESİ
+           7. TERMİNAL VE SİMÜLASYON MOTORU ARABİRİMİ
            ========================================================================== */
-        .terminal-card {
+        .terminal-container {
             flex: 1;
+            background: #020204;
+            border: 1px solid #222;
+            border-radius: 4px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
-        }
-
-        .terminal-body {
-            flex: 1;
-            background: #040408;
-            border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 6px;
-            padding: 12px;
-            overflow-y: auto;
-            font-size: 0.82rem;
-            margin-bottom: 10px;
+            overflow: hidden;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
         }
 
-        .terminal-line { 
-            margin-bottom: 5px; 
-            line-height: 1.4;
+        .terminal-logs {
+            flex: 1;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            padding-right: 5px;
+        }
+
+        .terminal-line {
+            margin-bottom: 4px;
             word-break: break-all;
             white-space: pre-wrap;
         }
 
-        .line-info { color: var(--text-main); }
-        .line-success { color: var(--success); }
-        .line-error { color: var(--error); }
+        .line-system { color: #aaa; }
+        .line-success { color: var(--neon-green); text-shadow: 0 0 3px rgba(57, 255, 20, 0.4); }
         .line-warning { color: var(--warning); }
+        .line-error { color: var(--neon-red); text-shadow: 0 0 5px rgba(255, 0, 85, 0.4); }
+        .line-info { color: var(--neon-white); }
         .line-muted { color: var(--text-muted); }
-        .line-system { color: #00e5ff; }
-        .line-navbow { color: #d400ff; font-weight: bold; }
+        .line-navbow { color: var(--neon-purple); text-shadow: 0 0 8px rgba(188, 19, 254, 0.6); font-weight: bold; }
 
-        .terminal-input-row { 
-            display: flex; 
-            align-items: center; 
-            gap: 8px;
-            background: #09090f;
-            padding: 8px;
+        .terminal-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: #09090e;
+            border-top: 1px solid #333;
+            padding-top: 8px;
             border-radius: 4px;
-            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .prompt-label {
-            color: var(--primary-orange); 
+        .terminal-prompt {
+            color: var(--primary-orange);
             font-weight: bold;
+            margin-right: 10px;
             white-space: nowrap;
         }
 
-        .terminal-input { 
-            flex: 1; 
-            background: transparent; 
-            border: none; 
-            color: var(--success); 
+        .terminal-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--success);
             font-family: monospace;
-            outline: none; 
-            font-size: 0.9rem; 
+            font-size: 0.9rem;
         }
 
         /* ==========================================================================
-           8. SÜPER KATMANLAR VE GÜVENLİK PANELLERİ
+           8. ISO İNDİRME VE SEVİYE SİSTEMİ BİLEŞENLERİ
+           ========================================================================== */
+        .iso-card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+        }
+
+        .iso-box {
+            border: 2px dashed rgba(0, 240, 255, 0.4);
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            background: rgba(0, 240, 255, 0.02);
+            transition: all 0.3s ease;
+        }
+
+        .iso-box:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+        }
+
+        .cyber-btn {
+            background: linear-gradient(135deg, var(--dark-orange), var(--primary-orange));
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            font-family: monospace;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: 0 4px 10px var(--glow-orange);
+            transition: all 0.2s ease;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .cyber-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px var(--primary-orange);
+            color: #000;
+        }
+
+        .cyber-btn:active {
+            transform: translateY(1px);
+        }
+
+        .cyber-btn.cyan {
+            background: linear-gradient(135deg, #008b9b, var(--neon-cyan));
+            box-shadow: 0 4px 10px rgba(0, 240, 255, 0.3);
+        }
+        .cyber-btn.cyan:hover {
+            box-shadow: 0 6px 18px var(--neon-cyan);
+            color: #fff;
+        }
+
+        .cyber-btn.purple {
+            background: linear-gradient(135deg, #7a09aa, var(--neon-purple));
+            box-shadow: 0 4px 10px rgba(188, 19, 254, 0.3);
+        }
+        .cyber-btn.purple:hover {
+            box-shadow: 0 6px 18px var(--neon-purple);
+            color: #fff;
+        }
+
+        /* İndirme İlerleme Çubuğu */
+        .progress-container {
+            width: 100%;
+            background: #111;
+            border: 1px solid #333;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-green));
+            box-shadow: 0 0 10px var(--neon-green);
+            transition: width 0.1s linear;
+        }
+
+        /* ==========================================================================
+           9. NAVBOW KONTROL PANELİ VE DUYURU YAPILARI
+           ========================================================================== */
+        .navbow-panel-container {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .cyber-input {
+            background: #0a0a10;
+            border: 1px solid var(--primary-orange);
+            padding: 10px;
+            color: #fff;
+            font-family: monospace;
+            outline: none;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .cyber-input:focus {
+            box-shadow: 0 0 10px var(--glow-orange);
+            border-color: var(--primary-orange);
+        }
+
+        .toggle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.03);
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #222;
+        }
+
+        /* ==========================================================================
+           10. SÜPER KATMANLAR VE GÜVENLİK PANELLERİ
            ========================================================================== */
         .overlay-layer {
             position: fixed;
@@ -487,53 +652,107 @@
             overflow-y: auto;
         }
 
-        /* KUTLAMA / ANNOUNCEMENT EKRANI */
-        #celebration-overlay {
+        /* ==========================================================================
+           11. TAM EKRAN DUYURU VE MODAL KATMANLARI
+           ========================================================================== */
+        .fullscreen-announcement {
             position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 10000005;
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh;
+            background: rgba(5, 5, 8, 0.98);
+            z-index: 10000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            border: 5px solid var(--neon-purple);
+            box-shadow: inset 0 0 50px rgba(188, 19, 254, 0.5);
+            padding: 40px;
+            text-align: center;
+        }
+
+        .announcement-title {
+            font-size: 3.5rem;
+            color: var(--neon-purple);
+            text-shadow: 0 0 20px var(--neon-purple);
+            margin-bottom: 30px;
+            font-weight: bold;
+            letter-spacing: 4px;
+            animation: glitchText 1s infinite alternate;
+        }
+
+        .announcement-body {
+            font-size: 2rem;
+            color: #fff;
+            max-width: 80%;
+            line-height: 1.6;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+            border-bottom: 2px dashed rgba(188,19,254,0.3);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        /* Brute Force Kilit Ekranı */
+        #brute-lock-screen {
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh;
+            background: rgba(15, 0, 0, 0.96);
+            z-index: 20000;
             display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+            color: var(--neon-red);
+            font-family: monospace;
         }
 
-        #celebration-canvas {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+        /* Canvas Confetti Alanı */
+        #party-canvas {
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh;
             pointer-events: none;
-            z-index: 1;
+            z-index: 15000;
+            display: none;
         }
 
-        .celebration-content {
-            z-index: 2;
-            text-align: center;
-            animation: pulseKutlama 2s infinite;
+        /* ==========================================================================
+           12. ALT BİLGİ VE STATUS BAR
+           ========================================================================== */
+        footer {
+            background: #030305;
+            border-top: 1px solid #222;
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #666;
         }
 
-        .celebration-title {
-            font-size: 4rem;
-            color: var(--navbow-purple);
-            text-shadow: 0 0 30px var(--navbow-glow), 0 0 60px var(--navbow-purple);
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 5px;
+        #bottom-status-text {
+            transition: all 0.3s ease;
         }
 
-        .celebration-msg {
-            font-size: 2rem;
-            color: var(--neon-white);
-            text-shadow: 0 0 10px #fff;
+        /* ==========================================================================
+           13. ANİMASYONLAR (KEYFRAMES)
+           ========================================================================== */
+        @keyframes pulse {
+            from { box-shadow: 0 0 5px var(--primary-orange); }
+            to { box-shadow: 0 0 20px var(--primary-orange); }
         }
 
-        @keyframes pulseKutlama {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        @keyframes glitchText {
+            0% { transform: skew(0deg); }
+            50% { transform: skew(-1deg); color: #ff00ff; }
+            100% { transform: skew(1deg); color: var(--neon-cyan); }
         }
 
         .scan-line {
@@ -554,25 +773,7 @@
             100% { top: 0%; }
         }
 
-        body.overclocked {
-            --primary-orange: var(--overclock-red);
-            --glow-orange: rgba(255, 0, 51, 0.6);
-        }
-
-        .vault-notebox {
-            height: 80px;
-            background: #050508;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 8px;
-            font-size: 0.8rem;
-            resize: none;
-            outline: none;
-            border-radius: 6px;
-            margin-top: 5px;
-            width: 100%;
-        }
-
+        /* Ekstra Z9 Ekranı */
         #z9-screen {
             position: fixed;
             top: 0; 
@@ -588,24 +789,10 @@
             line-height: 1.6;
         }
 
-        #flashbang {
-            position: fixed;
-            top: 0; 
-            left: 0; 
-            width: 100vw; 
-            height: 100vh;
-            background: #fff;
-            z-index: 100000001;
-            display: none;
-            pointer-events: none;
-        }
-    
-        /* ==========================================================================
-           9. DAEMON CANLI LOG FEED BARI
-           ========================================================================== */
+        /* DAEMON CANLI LOG FEED BARI */
         #daemon-bar {
             position: fixed;
-            bottom: 20px;
+            bottom: 40px;
             right: 20px;
             width: 340px;
             background: rgba(4, 4, 8, 0.97);
@@ -627,18 +814,9 @@
             margin-bottom: 3px;
         }
 
-        #oscilloscope-canvas { 
-            width: 100%;
-            height: 65px; 
-            background: #030306; 
-            border: 1px solid rgba(255,255,255,0.04); 
-            border-radius: 6px; 
-            margin: 10px 0;
-        }
-
-        /* Daemon UI List Container */
+        /* Systemctl UI List Container */
         .daemon-list-container {
-            font-size: 0.75rem; 
+            font-size: 0.75rem;
             display: flex; 
             flex-direction: column; 
             gap: 6px;
@@ -647,7 +825,7 @@
         }
 
         .daemon-item {
-            display: flex; 
+            display: flex;
             justify-content: space-between; 
             background: rgba(255,255,255,0.02); 
             padding: 5px; 
@@ -655,37 +833,22 @@
             align-items: center;
         }
 
-        /* Navbow Switch Container */
-        .navbow-switch-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(179,0,255,0.1);
-            padding: 8px;
-            border-radius: 4px;
-            margin-bottom: 8px;
-            border: 1px solid rgba(179,0,255,0.3);
-        }
-
     </style>
 </head>
 <body>
 
-    <!-- ÜST UYARI MARQUEE (HERKES İÇİN) -->
     <div id="global-alert-marquee">
         <marquee scrollamount="4" behavior="scroll" direction="left">
-            ⚠️ [SİSTEM UYARISI]: CODE:RACOON SYSD-CORE V6.0 AGRESİF DEPLOYMENT YAPILANDIRMASI AKTİF. BLUE-GREEN MATRİSİ ÇALIŞIYOR. EN YENİ DEPLOY_WATCHERD DERLEMESİ İÇİN YENİLEME BEKLENİYOR...
+            ⚠️ [SİSTEM UYARISI]: CODE:RACOON SYSD-CORE V10.3 AGRESİF DEPLOYMENT YAPILANDIRMASI AKTİF. BLUE-GREEN MATRİSİ ÇALIŞIYOR. EN YENİ DEPLOY_WATCHERD DERLEMESİ İÇİN YENİLEME BEKLENİYOR...
         </marquee>
     </div>
 
-    <!-- NAVBOW DUYURU MARQUEE (GİZLİ, NAVBOW'DAN TETİKLENİR) -->
     <div id="navbow-broadcast-marquee">
         <marquee id="navbow-marquee-text" scrollamount="6" behavior="scroll" direction="left">
             [NAVBOW BROADCAST] - BOŞ DUYURU
         </marquee>
     </div>
 
-    <!-- SAĞ ALT CANLI DAEMON PANELİ -->
     <div id="daemon-bar">
         <div style="color:var(--primary-orange); font-weight:bold; margin-bottom:6px; border-bottom:1px solid #222; display:flex; justify-content:space-between;">
             <span>📡 SYSD BACKGROUND DAEMON FEED</span>
@@ -694,22 +857,11 @@
         <div id="daemon-feed-container"></div>
     </div>
 
-    <!-- ARKAPLAN VE EFEKTLER -->
     <div class="crt-scanlines"></div>
     <div id="flashbang"></div>
     <canvas id="matrix-bg"></canvas>
     <canvas id="tv-static-canvas"></canvas>
 
-    <!-- KUTLAMA OVERLAY (NAVBOW ANNOUNCEMENT) -->
-    <div id="celebration-overlay">
-        <canvas id="celebration-canvas"></canvas>
-        <div class="celebration-content">
-            <h1 class="celebration-title">🎉 GLOBAL DUYURU 🎉</h1>
-            <p class="celebration-msg" id="celeb-msg">Sistem başarıyla güncellendi!</p>
-        </div>
-    </div>
-
-    <!-- BOOT SİMÜLASYONU -->
     <div id="boot-screen">
         <div id="boot-log"></div>
         <div class="boot-bar-wrapper">
@@ -717,494 +869,203 @@
         </div>
     </div>
 
-    <!-- KİLİT EKRANI -->
     <div id="boot-login-screen" class="overlay-layer" style="z-index: 100000002;">
         <div class="lock-container" style="border-color: var(--primary-orange); box-shadow: 0 0 40px var(--glow-orange);">
             <div style="font-size: 3rem; margin-bottom: 10px;">🔐</div>
             <h2 style="color: var(--primary-orange); margin-bottom: 10px; letter-spacing: 2px;">OS ÇEKİRDEK KİLİDİ</h2>
             <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">Sistem mühürlendi. Devam etmek için ana bilgisayar şifresini girin.</p>
             <input type="password" id="boot-pass-key" class="panel-input" placeholder="Erişim Anahtarını Girin..." style="border-color: var(--primary-orange);" onkeydown="if(event.key==='Enter') verifyBootPassword()">
-            <button class="panel-btn" onclick="verifyBootPassword()" style="width: 100%; margin-top: 15px; background: var(--primary-orange); color: #000;">Kilit Mekanizmasını Çöz</button>
+            <button class="cyber-btn" onclick="verifyBootPassword()" style="width: 100%; margin-top: 15px; background: var(--primary-orange); color: #000;">Kilit Mekanizmasını Çöz</button>
         </div>
     </div>
 
-    <!-- ACİL DURUM EKRANI -->
-    <div id="attack-overlay">
-        <div class="attack-box">
-            <div style="font-size: 3.5rem; margin-bottom: 10px; animation: blink 1s infinite;">☣️</div>
-            <div id="glitch-title">ACİL DURUM UYARISI</div>
-            <p style="color: #fff; margin-bottom: 10px;">Racoon Ekibimizle Beraber Sorunu Çözmeye Çalışıyoruz</p>
-            <h3 style="color: var(--warning); letter-spacing: 3px;">SİTEDEN AYRILMAYIN</h3>
-            <div id="fake-log-stream"></div>
-            <button class="panel-btn" onclick="deactivateGlobalEmergency()" style="margin-top: 15px; border-color: var(--error); color: var(--error);">[ Protokolü Devre Dışı Bırak ]</button>
-        </div>
-    </div>
-
-    <!-- BRUTE FORCE KİLİT EKRANI -->
-    <div id="brute-lock-screen" class="overlay-layer">
-        <div class="lock-container">
-            <h2 style="color: var(--error); margin-bottom: 10px;">🚨 SİSTEM MÜHÜRLENDİ</h2>
-            <p style="color: var(--text-muted); font-size: 0.85rem;">Çok fazla hatalı deneme algılandı. Güvenlik kilidi aktif.</p>
-            <div style="font-size: 2.5rem; margin: 15px 0; color: #fff;" id="lock-countdown">30</div>
-            <input type="password" id="bypass-key" class="panel-input" placeholder="Master Şifreyi Girin...">
-            <button class="panel-btn" onclick="verifyBypassMaster()" style="width: 100%; margin-top:10px;">Mührü Çöz</button>
-        </div>
-    </div>
-
-    <!-- Z9 KERNEL PANIC -->
     <div id="z9-screen">
         <p>KERNEL PANIC / CRITICAL ERROR: SYSTEM_DESTROYED</p>
         <p>REASON: PROTOCOL_Z9_INITIATED_BY_RACOON_CORE</p>
         <p>GRUB Rescue> _</p>
     </div>
 
-    <!-- ANA HEADER -->
     <header>
-        <div class="brand">
-            <h1>Code:<span>Racoon OS</span> v6.0</h1>
+        <div class="logo-area">
+            <div class="logo-icon"></div>
+            <div class="logo-text">
+                <h1>Code:Racoon OS</h1>
+                <span>Çekirdek Komuta Merkezi v10.3 Ultra</span>
+            </div>
         </div>
-        <div class="header-controls">
-            <span class="env-badge" id="env-indicator">ENV: Production-A (Stable)</span>
-            <div style="font-size: 0.8rem; color: var(--text-muted);" id="sekme-düğüm-display">Aktif Siber Sekme Ağı: 1 Düğüm</div>
-            <select class="level-select" id="user-level-selector" onchange="switchUserLevel(this.value)">
-                <option value="lvl1">Lvl 1 - Ghost Operator</option>
-                <option value="lvl2">Lvl 2 - Nebula Operator</option>
-                <option value="lvl3">Lvl 3 - Kernel Developer</option>
-                <option value="lvl4">Lvl 4 - SRE Expert</option>
-                <option value="lvl5">Lvl 5 - Racoon Core Dev</option>
-            </select>
+
+        <div class="controls-area">
+            <div class="selector-wrapper">
+                <label>Sistem Yetki Katmanı</label>
+                <select id="user-level-selector" class="cyber-select" onchange="handleLevelSelectChange(this.value)">
+                    <option value="lvl1">Level 1 - Standart Kullanıcı</option>
+                    <option value="lvl2">Level 2 - Güvenli Operatör</option>
+                    <option value="lvl3">Level 3 - Kıdemli Mühendis</option>
+                    <option value="lvl4">Level 4 - SRE Sistem Sorumlusu</option>
+                    <option value="lvl5">Level 5 - Altyapı Mimarı</option>
+                    <option value="lvl6">Level 6 - Ghost Operator</option>
+                    <option value="lvl7">Level 7 - Nebula Operator</option>
+                </select>
+            </div>
         </div>
     </header>
 
-    <!-- ANA İÇERİK GRID -->
-    <main id="main-terminal">
-        
-        <!-- SOL PANEL KOLONU -->
-        <div class="panel-column">
-            
-            <!-- ISO İNDİRME PANELİ (SADECE LVL 1 ve LVL 2 İÇİN GÖRÜNÜR) -->
-            <div class="card" id="iso-card">
-                <div class="card-header">
-                    <div class="card-title">💿 ISO Dağıtım Merkezi</div>
-                </div>
-                <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 10px;">
-                    Ghost ve Nebula Operatörleri için Racoon OS Çekirdek İmajını yerel ortama indirme yetkisi.
-                </p>
-                <button class="panel-btn" style="background:var(--success); color:#000; border:none;" onclick="downloadKernelISO()">OS ISO İmajını İndir</button>
+    <main>
+        <section class="cyber-panel">
+            <div class="panel-header">
+                <div class="panel-title">📡 Sistem Çekirdek Terminali</div>
+                <div class="panel-status">ÇEVRİMİÇİ</div>
             </div>
-
-            <!-- BİYOMETRİK TARAMA -->
-            <div class="card" style="position: relative;">
-                <div class="scan-line" id="faceid-scanline"></div>
-                <div class="card-header">
-                    <div class="card-title">🧬 Biyometrik FaceID Profil Taraması</div>
+            <div class="terminal-container">
+                <div class="terminal-logs" id="terminal-logs-container">
+                    <div class="terminal-line line-system">>> Code:Racoon Çekirdek Modülleri Yükleniyor...</div>
+                    <div class="terminal-line line-success">>> Bağlantı Güvenli. Terminal Emirlerinizi Bekliyor.</div>
+                    <div class="terminal-line line-warning">>> İpucu: Gizli komutlar yalnızca doğru katmanlarda çalışır.</div>
                 </div>
-                <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 10px;">
-                    Yüksek yetki doğrulaması ve lazer matris taramasını başlatmak için tetikleyin.
-                </p>
-                <button class="panel-btn" onclick="triggerFaceIDScan()">Biyometrik Taramayı Başlat</button>
-            </div>
-
-            <!-- KUANTUM VAULT (SADECE LVL 5 İÇİN GÖRÜNÜR) -->
-            <div class="card" id="quantum-vault-card" style="display: none;">
-                <div class="card-header">
-                    <div class="card-title">🗄️ Racoon Kuantum Veri Kasası (Vault)</div>
-                </div>
-                <label style="font-size: 0.75rem; color: var(--text-muted);">Hücre Adı:</label>
-                <input type="text" id="vault-cell-name" class="panel-input" style="padding: 5px; margin-bottom: 5px;" placeholder="gizli_hucre">
-                <label style="font-size: 0.75rem; color: var(--text-muted);">Hücre Verisi / Not:</label>
-                <textarea id="vault-cell-data" class="vault-notebox" placeholder="Çok gizli kripto verileri buraya..."></textarea>
-                <div style="display: flex; gap: 5px; margin-top: 5px;">
-                    <button class="panel-btn" style="flex: 1;" onclick="saveToVault()">Hücreyi Kilitle</button>
-                    <button class="panel-btn" style="flex: 1;" onclick="loadFromVault()">Hücreyi Çöz</button>
+                <div class="terminal-input-wrapper">
+                    <span class="terminal-prompt" id="term-prompt-label">racoon@core:~$</span>
+                    <input type="text" id="terminal-cmd-input" class="terminal-input" placeholder="Komut yazın..." autocomplete="off" autofocus onkeydown="handleTerminalKeyPress(event)">
                 </div>
             </div>
+        </section>
 
-            <!-- SYSTEMCTL LİSTESİ -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">⚙️ Systemctl Servis Denetleyicisi</div>
-                </div>
-                <div id="service-status-list" class="daemon-list-container">
-                    <!-- Dinamik olarak JS'den dolacak -->
-                </div>
+        <section class="cyber-panel">
+            <div class="panel-header">
+                <div class="panel-title">💾 Cordex OS ISO İndirme</div>
+                <div class="panel-status" id="iso-panel-status" style="color:var(--neon-cyan); border-color:var(--neon-cyan); background:rgba(0,240,255,0.1)">HAZIR</div>
             </div>
-
-        </div>
-
-        <!-- ORTA PANEL KOLONU (TERMİNAL) -->
-        <div class="panel-column">
-            <div class="card terminal-card">
-                <div class="card-header">
-                    <div class="card-title">📜 Çekirdek Komuta Konsolu (Terminal v6.0)</div>
-                    <div style="font-size: 0.75rem; color: var(--primary-orange); font-weight:bold;" id="terminal-mode-badge">GHOST_OPERATOR</div>
-                </div>
-                <div class="terminal-body" id="term-body"></div>
-                <div class="terminal-input-row">
-                    <span class="prompt-label" id="term-prompt-label">ghost-operator@racoon-os:~$</span>
-                    <input type="text" id="term-input" class="terminal-input" placeholder="Komut girin ('help' yazarak izin verilen araçları inceleyin)..." autofocus autocomplete="off">
-                </div>
-            </div>
-        </div>
-
-        <!-- SAĞ PANEL KOLONU -->
-        <div class="panel-column">
-            
-            <!-- NAVBOW KONTROL PANELİ (SADECE LVL 3,4,5 İÇİN GÖRÜNÜR) -->
-            <div class="card navbow-style" id="navbow-card" style="display: none;">
-                <div class="card-header">
-                    <div class="card-title navbow-title">🌌 NAVBOW KONTROL PANELİ</div>
-                </div>
-                
-                <div class="navbow-switch-row">
-                    <span style="font-size:0.8rem; color:#fff;">Sistemi Güncelleme Moduna Al</span>
-                    <button class="panel-btn navbow-btn" style="width:auto; margin:0;" onclick="navbowToggleUpdateMode()">TETİKLE</button>
-                </div>
-
-                <div class="navbow-switch-row">
-                    <span style="font-size:0.8rem; color:#fff;">Sistemi Canlıya Al (Go Live)</span>
-                    <button class="panel-btn navbow-btn" style="width:auto; margin:0;" onclick="navbowGoLive()">TETİKLE</button>
-                </div>
-
-                <div style="margin-top: 10px; padding-top:10px; border-top: 1px solid rgba(179,0,255,0.2);">
-                    <label style="font-size: 0.75rem; color: #d400ff;">Küresel Duyuru Metni:</label>
-                    <input type="text" id="navbow-announcement-input" class="panel-input" style="border-color:#b300ff; color:#fff;" placeholder="Duyuruyu yazın...">
-                    <button class="panel-btn navbow-btn" style="margin-top: 5px;" onclick="navbowMakeAnnouncement()">🚀 DUYURUYU FIRLAT (KUTLAMA)</button>
-                </div>
-
-                <div style="margin-top: 10px; padding-top:10px; border-top: 1px solid rgba(179,0,255,0.2);">
-                    <div style="font-size: 0.8rem; color: #d400ff; margin-bottom:5px;">Daemon Güç Kontrolü:</div>
-                    <div id="navbow-daemon-controls" style="display:flex; flex-direction:column; gap:5px; max-height: 120px; overflow-y:auto;">
-                        <!-- JS Tarafından Doldurulacak -->
+            <div class="iso-card-body">
+                <div class="iso-box">
+                    <h3 style="color:var(--neon-cyan); margin-bottom:10px;">Cordex_OS_v10.3_Core.iso</h3>
+                    <p style="font-size:0.8rem; color:#aaa; margin-bottom:15px;">Boyut: 4.12 GB | Mimari: x86_64 / ARM64 Hybrid</p>
+                    <button class="cyber-btn cyan" onclick="triggerIsoDownload()">ISO DOSYASINI İNDİR</button>
+                    <div class="progress-container" id="iso-progress-container">
+                        <div class="progress-bar" id="iso-progress-bar"></div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- AMD RYZEN Z1 OVERCLOCK PANEKİ -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">🚀 AMD Ryzen Z1 Extreme Monitör</div>
+        <section class="cyber-panel" id="services-panel">
+            <div class="panel-header">
+                <div class="panel-title">⚙️ Systemctl Servis Denetleyicisi</div>
+            </div>
+            <div id="service-status-list" class="daemon-list-container">
                 </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; margin-bottom: 10px;">
-                    <span>İşlemci Güç Durumu:</span>
-                    <span id="oc-status-text" style="color: var(--success); font-weight: bold;">NORMAL MOD (2400 RPM)</span>
-                </div>
-                <button class="panel-btn" id="oc-toggle-btn" onclick="toggleOverclock()">Overclock [OC] Modunu Tetikle</button>
+        </section>
 
-                <canvas id="oscilloscope-canvas"></canvas>
-
-                <div class="slider-group">
-                    <div class="slider-row" style="margin-bottom: 10px;">
-                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 5px;">
-                            <span>Parazit Katman Opaklığı</span>
-                            <span id="lbl-noise-alpha">0.20</span>
+        <section class="cyber-panel navbow-style" id="navbow-ui-panel" style="grid-column: 1 / span 2; display: none;">
+            <div class="panel-header" style="border-color: var(--neon-purple);">
+                <div class="panel-title navbow-title" style="color: var(--neon-purple); text-shadow: 0 0 10px var(--neon-purple);">🌌 NAVBOW EN ÜST YÖNETİM MATRİSİ (SECRET LAYER)</div>
+                <div class="panel-status" style="color:var(--neon-purple); border-color:var(--neon-purple); background:rgba(188,19,254,0.1)">EN ÜST YETKİ</div>
+            </div>
+            <div class="navbow-panel-container" style="display: flex;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div class="toggle-container">
+                            <span>Sistem Güncelleme Modu</span>
+                            <input type="checkbox" id="system-update-toggle" checked style="cursor:pointer;">
                         </div>
-                        <input type="range" min="0" max="100" value="20" class="panel-input" style="padding: 0; margin: 0;" id="slider-noise-alpha" oninput="updateNoiseParameters()">
-                    </div>
-                    <div class="slider-row">
-                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 5px;">
-                            <span>Gürültü Frekansı</span>
-                            <span id="lbl-noise-freq">30Hz</span>
+                        <div class="toggle-container">
+                            <span>Live Aktif Yayın Modu</span>
+                            <input type="checkbox" id="live-mode-toggle" checked style="cursor:pointer;">
                         </div>
-                        <input type="range" min="5" max="100" value="30" class="panel-input" style="padding: 0; margin: 0;" id="slider-noise-freq" oninput="updateNoiseParameters()">
+                        <div class="form-group">
+                            <label style="color: var(--neon-purple);">Navbow Global Duyuru Gönderimi</label>
+                            <input type="text" id="announcement-input" class="cyber-input" style="border-color: var(--neon-purple);" placeholder="Navbow:(Duyurum) Formatında yayınlanacak metni yazın...">
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px; border-left: 1px solid rgba(188,19,254,0.2); padding-left: 20px;">
+                        <p style="font-size:0.85rem; text-align:center; color:#ccc;">Aşağıdaki buton siber sızıntı protokolünü başlatır ve Iso Leaked uyarısıyla matrisi parti moduna geçirir.</p>
+                        <button class="cyber-btn purple" style="width: 100%; max-width: 300px;" onclick="triggerNavbowParty()">SİBER PARTİ SİSTEMİNİ TETİKLE</button>
                     </div>
                 </div>
             </div>
-
-            <!-- TELEMETRİ SENSÖRÜ -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">📡 Bölgesel Çevre & Telemetri</div>
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.8rem;">
-                    <div style="display: flex; justify-content: space-between;">
-                        <span>Anlık Poyraz Rüzgârı:</span>
-                        <span id="telemetry-poyraz" style="color: var(--warning);">24 km/s</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between;">
-                        <span>Reşitköy Barajı Doluluk Oranı:</span>
-                        <span id="telemetry-baraj" style="color: var(--success);">%42.8</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between;">
-                        <span>Siber İyonizasyon Hızı:</span>
-                        <span id="telemetry-iyonizasyon" style="color: #00e5ff;">14.2 THz</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between;">
-                        <span>Ağ Akış Akıllı Kararlılığı:</span>
-                        <span id="telemetry-firewall" style="color: var(--success);">%100 OPTİMİZE</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </section>
     </main>
 
+    <div class="fullscreen-announcement" id="navbow-fullscreen-modal">
+        <div class="announcement-title">⚡ GLOBAL NAVBOW TRANSMISSION ⚡</div>
+        <div class="announcement-body" id="announcement-modal-text">Navbow:(Sistem Yayında!)</div>
+        <button class="cyber-btn purple" onclick="closeFullScreenAnnouncement()">BAĞLANTIYI KES</button>
+    </div>
+
+    <div id="brute-lock-screen">
+        <h1 style="font-size: 3rem; margin-bottom: 20px;">!!! SİBER GÜVENLİK BLOKAJI !!!</h1>
+        <p style="font-size: 1.2rem; margin-bottom: 30px; text-align:center;">Çok fazla hatalı deneme yapıldı. Çekirdek kendini kilitledi.</p>
+        <div style="font-size: 2.5rem; font-weight: bold; margin-bottom: 20px;" id="lock-countdown">30</div>
+        <div class="form-group" style="width: 300px;">
+            <input type="password" id="bypass-key" class="cyber-input" style="border-color:var(--neon-red); text-align:center;" placeholder="MASTER BYPASS ANAHTARI">
+            <button class="cyber-btn" style="background:var(--neon-red);" onclick="verifyBypassMaster()">KİLİDİ KIR</button>
+        </div>
+    </div>
+
+    <canvas id="party-canvas"></canvas>
+
+    <footer>
+        <div>Sistem Durumu: <span id="system-global-status" style="color:var(--neon-cyan)">AKTİF</span></div>
+        <div id="bottom-status-text">Matrix Koruma Protokolü Devrede</div>
+        <div>&copy; 2026 Code:Racoon OS Project</div>
+    </footer>
+
     <script>
-        // ==========================================================================
-        // 1. KRİPTOGRAFİK ŞİFRELER VE ERİŞİM MATRİSLERİ
-        // ==========================================================================
+        // ----------------------------------------------------------------------
+        // A. KRİPTOGRAFİK ŞİFRELER VE ERİŞİM MATRİSLERİ
+        // ----------------------------------------------------------------------
         const CORESYS_KEYS = {
-            BOOT_KEY: "R4c00n_Ch3k1rd3k_2026!",
-            NEBULA_KEY: "nebula_op_22",
-            KERNEL_KEY: "kernel123",
+            BOOT_KEY: "Racoon", // ÇEKİRDEK KİLİDİ ŞİFRESİ İSTEDİĞİN GİBİ "Racoon" YAPILDI
+            MASTER_KEY: "U1tr4_Byp4ss_M4tr1x_99",
             SRE_KEY: "SRE_M4st3r_X99",
-            RACOON_KEY: "C0d3_R4c00n_S3cr3t5",
-            MASTER_KEY: "U1tr4_Byp4ss_M4tr1x_99"
+            VAULT_KEY: "C0d3_R4c00n_S3cr3t5",
+            NEBULA_KEY: "nebula_op_22"
         };
 
-        // KULLANICI SEVİYE SİSTEMİ YAPILANDIRMASI
-        let currentUserLevelNum = 1; 
-        let currentUserLevelString = 'lvl1'; // lvl1 (Ghost), lvl2 (Nebula), lvl3 (Kernel), lvl4 (SRE), lvl5 (Racoon)
-        let currentPromptTemplate = "ghost-operator@racoon-os:~$ ";
-        
-        let isOverclockActive = false;
-        let isEmergencyActive = false;
+        // ----------------------------------------------------------------------
+        // B. KÜRESEL DURUM DEĞİŞKENLERİ
+        // ----------------------------------------------------------------------
+        let currentUserLevel = "lvl1"; 
+        let isNavbowActive = false; 
         let wrongAttemptsCount = 0;
+        let lockCountdownInterval;
+        let audioContext = null;
         let commandHistory = [];
         let terminalLogs = [];
-        let sentinelWarnings = 0;
-        let lockCountdownInterval = null;
-        let currentEnvironment = "Production-A";
-        let iptablesHttpDropped = false;
 
-        // SANAL DOCKER VE K8S STATE MATRİSİ
-        let dockerContainers = {
-            "portfolio-frontend": { status: "RUNNING", uptime: "42 hours", image: "racoon/nginx-frontend:v6.0" },
-            "vfs-database": { status: "RUNNING", uptime: "156 hours", image: "racoon/redis-cluster:v5.2" },
-            "analytics-api": { status: "RUNNING", uptime: "12 hours", image: "racoon/node-api:latest" },
-            "auth-microservice": { status: "RUNNING", uptime: "5 hours", image: "racoon/auth-go:v1.2" }
-        };
-
-        // ENTEGRE DAEMON VE SERVIS REJISTRAZYONU (GENİŞLETİLMİŞ)
+        // ----------------------------------------------------------------------
+        // C. SANAL DOSYA SİSTEMİ (VFS) VE DAEMONLAR
+        // ----------------------------------------------------------------------
         const DAEMON_REGISTRY = {
-            "grub": { name: "GRUB-Boot-Supervisor", active: true, status: "RUNNING", cpu: 0.1, ram: 4, bootTime: 120 },
-            "core": { name: "Racoon-Core-Monitor", active: true, status: "RUNNING", cpu: 0.4, ram: 12, bootTime: 250 },
-            "deploy-watcherd": { name: "Deploy-Watcher-Daemon", active: true, status: "RUNNING", cpu: 0.8, ram: 16, bootTime: 450 },
-            "k8s-monitord": { name: "K8s-Self-Healing-Engine", active: true, status: "RUNNING", cpu: 1.2, ram: 32, bootTime: 600 },
-            "cron-watcherd": { name: "Cron-Tab-Scheduler", active: true, status: "RUNNING", cpu: 0.2, ram: 8, bootTime: 150 },
-            "config-validator": { name: "YAML-JSON-Linter", active: true, status: "RUNNING", cpu: 0.5, ram: 14, bootTime: 310 },
-            "recoveryd": { name: "High-CPU-Failsafe-Recovery", active: true, status: "RUNNING", cpu: 0.1, ram: 6, bootTime: 90 },
-            "navbow-daemon": { name: "Navbow-UI-Bridge", active: true, status: "RUNNING", cpu: 1.5, ram: 45, bootTime: 500 },
-            "telemetry-sensor": { name: "Telemetry-Weather-Sync", active: true, status: "RUNNING", cpu: 0.3, ram: 10, bootTime: 220 }
+            "grub": { name: "GRUB-Boot-Supervisor", active: true, status: "RUNNING" },
+            "core": { name: "Racoon-Core-Monitor", active: true, status: "RUNNING" },
+            "deploy": { name: "Deploy-Watcher-Daemon", active: true, status: "RUNNING" },
+            "k8s": { name: "K8s-Self-Healing-Engine", active: true, status: "RUNNING" },
+            "telemetry": { name: "Telemetry-Weather-Sync", active: true, status: "RUNNING" }
         };
 
-        // SANAL DOSYA SİSTEMİ (VFS) - DEVASA GENİŞLETİLMİŞ
-        let virtualFileSystem = {
-            "/": { isDir: true, perm: "drwxr-xr-x", owner: "root", group: "root" },
-            "/home": { isDir: true, perm: "drwxr-xr-x", owner: "root", group: "root" },
-            "/home/racoon": { isDir: true, perm: "drwxr-xr--", owner: "racoon", group: "developers" },
-            "/home/racoon/.bashrc": { isDir: false, perm: "-rw-r--r--", owner: "racoon", group: "developers", content: 'export PS1="racoon-hacker@os:\\$ "\nexport SECRET_PASS="R4c00n_Ch3k1rd3k_2026!"\nexport PATH=$PATH:/opt/racoon/bin' },
-            "/home/racoon/config.json": { isDir: false, perm: "-rw-rw-r--", owner: "racoon", group: "developers", content: '{\n  "projectName": "Code:Racoon OS",\n  "version": "6.0",\n  "debug": true\n}' },
-            "/home/racoon/nebula_hint.txt": { isDir: false, perm: "-r--r--r--", owner: "racoon", group: "developers", content: "To ascend to Nebula Operator, use pass: nebula_op_22" },
-            "/root": { isDir: true, perm: "drwx------", owner: "root", group: "wheel" },
-            "/root/secrets.txt": { isDir: false, perm: "-r--------", owner: "root", group: "wheel", content: "CRITICAL_FLAG_RACOON_CORE_ACCESS_GRANTED.\nSudo bypass password key found: 'SRE_M4st3r_X99'\nKernel key: 'kernel123'" },
-            "/root/navbow_core.log": { isDir: false, perm: "-r--------", owner: "root", group: "wheel", content: "Navbow initiated correctly. Awaiting Level 3+ clearance." },
-            "/var": { isDir: true, perm: "drwxr-xr-x", owner: "root", group: "root" },
-            "/var/log": { isDir: true, perm: "drwxr-xr-x", owner: "root", group: "root" },
-            "/var/log/syslog": { isDir: false, perm: "-rw-r--r--", owner: "root", group: "root", content: "[SYS] Kernel initialized.\n[DAEMON] deploy-watcherd started.\n[HINT] Looking for privilege escalation? Cat /home/racoon/nebula_hint.txt or /root/secrets.txt" },
-            "/var/log/auth.log": { isDir: false, perm: "-rw-r--r--", owner: "root", group: "root", content: "[AUTH] Ghost operator logged in.\n[AUTH] Failed sudo attempt by anonymous." },
-            "/etc": { isDir: true, perm: "drwxr-xr-x", owner: "root", group: "root" },
-            "/etc/passwd": { isDir: false, perm: "-rw-r--r--", owner: "root", group: "root", content: "root:x:0:0:root:/root:/bin/bash\nracoon:x:1000:1000:Racoon,,,:/home/racoon:/bin/bash\nghost:x:1001:1001:Ghost,,,:/home/ghost:/bin/false" }
+        const virtualFileSystem = {
+            "/": { isDir: true, perm: "drwxr-xr-x", owner: "root" },
+            "/home": { isDir: true, perm: "drwxr-xr-x", owner: "root" },
+            "/home/racoon": { isDir: true, perm: "drwxr-xr--", owner: "racoon" },
+            "/root": { isDir: true, perm: "drwx------", owner: "root" },
+            "/root/secrets.txt": { isDir: false, perm: "-r--------", owner: "root", content: "Master Key: U1tr4_Byp4ss_M4tr1x_99" },
+            "/etc": { isDir: true, perm: "drwxr-xr-x", owner: "root" }
         };
 
-        let currentVirtualDir = "/home/racoon";
-        let cpuTemperature = 44;
-        let watchdogInterval = null;
-        let daemonUiInterval = null;
-
-        // ==========================================================================
-        // 2. KUTLAMA / CONFETTI SİSTEMİ (10 SANİYELİK NAVBOW ANNOUNCEMENT)
-        // ==========================================================================
-        const celebCanvas = document.getElementById('celebration-canvas');
-        const celebCtx = celebCanvas.getContext('2d');
-        let confettiArray = [];
-        let confettiAnimationId = null;
-
-        function resizeCelebCanvas() {
-            celebCanvas.width = window.innerWidth;
-            celebCanvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCelebCanvas);
-        resizeCelebCanvas();
-
-        class ConfettiParticle {
-            constructor() {
-                this.x = Math.random() * celebCanvas.width;
-                this.y = Math.random() * celebCanvas.height - celebCanvas.height;
-                this.size = Math.random() * 10 + 5;
-                this.speedY = Math.random() * 3 + 2;
-                this.speedX = Math.random() * 2 - 1;
-                this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                this.rotation = Math.random() * 360;
-                this.rotationSpeed = Math.random() * 10 - 5;
-            }
-            update() {
-                this.y += this.speedY;
-                this.x += this.speedX;
-                this.rotation += this.rotationSpeed;
-                if (this.y > celebCanvas.height) {
-                    this.y = -10;
-                    this.x = Math.random() * celebCanvas.width;
-                }
-            }
-            draw() {
-                celebCtx.save();
-                celebCtx.translate(this.x, this.y);
-                celebCtx.rotate(this.rotation * Math.PI / 180);
-                celebCtx.fillStyle = this.color;
-                celebCtx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
-                celebCtx.restore();
-            }
-        }
-
-        function initConfetti() {
-            confettiArray = [];
-            for (let i = 0; i < 200; i++) {
-                confettiArray.push(new ConfettiParticle());
-            }
-        }
-
-        function animateConfetti() {
-            celebCtx.clearRect(0, 0, celebCanvas.width, celebCanvas.height);
-            for (let i = 0; i < confettiArray.length; i++) {
-                confettiArray[i].update();
-                confettiArray[i].draw();
-            }
-            confettiAnimationId = requestAnimationFrame(animateConfetti);
-        }
-
-        function startConfettiEngine() {
-            initConfetti();
-            animateConfetti();
-        }
-
-        function stopConfettiEngine() {
-            cancelAnimationFrame(confettiAnimationId);
-            celebCtx.clearRect(0, 0, celebCanvas.width, celebCanvas.height);
-        }
-
-        // ==========================================================================
-        // 3. SİSTEM SES VE SİREN MOTORU
-        // ==========================================================================
-        let audioCtx = null;
-        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        let sirenInterval = null; let primaryOsc = null; let secondaryOsc = null; let sirenGain = null;
-
-        function playFailSafeSiren() {
-            initAudio(); if (sirenInterval) return;
-            sirenGain = audioCtx.createGain(); sirenGain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-            sirenGain.connect(audioCtx.destination);
-            let highToggle = false;
-            sirenInterval = setInterval(() => {
-                if (!isEmergencyActive) { stopFailSafeSiren(); return; }
-                let freq1 = highToggle ? 880 : 580; let freq2 = highToggle ? 940 : 620;
-                if (primaryOsc) { try { primaryOsc.stop(); } catch(e){} }
-                if (secondaryOsc) { try { secondaryOsc.stop(); } catch(e){} }
-                primaryOsc = audioCtx.createOscillator(); primaryOsc.type = 'sawtooth';
-                primaryOsc.frequency.setValueAtTime(freq1, audioCtx.currentTime);
-                secondaryOsc = audioCtx.createOscillator(); secondaryOsc.type = 'sine';
-                secondaryOsc.frequency.setValueAtTime(freq2, audioCtx.currentTime);
-                primaryOsc.connect(sirenGain); secondaryOsc.connect(sirenGain);
-                primaryOsc.start(); secondaryOsc.start();
-                highToggle = !highToggle;
-            }, 350);
-        }
-
-        function stopFailSafeSiren() {
-            if (sirenInterval) { clearInterval(sirenInterval); sirenInterval = null; }
-            if (primaryOsc) { try { primaryOsc.stop(); } catch(e){} primaryOsc = null; }
-            if (secondaryOsc) { try { secondaryOsc.stop(); } catch(e){} secondaryOsc = null; }
-        }
-
-        // ==========================================================================
-        // 4. RETRO VE MATRIX GÖRSEL EFEKTLER
-        // ==========================================================================
-        const matrixCanvas = document.getElementById('matrix-bg');
-        const matrixCtx = matrixCanvas.getContext('2d');
-        function resizeMatrixCanvas() { matrixCanvas.width = window.innerWidth; matrixCanvas.height = window.innerHeight; }
-        window.addEventListener('resize', resizeMatrixCanvas); resizeMatrixCanvas();
-
-        const matrixChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ☣️🦝⚙️💎🔒⚡";
-        const matrixFontSize = 14;
-        const matrixColumns = Math.floor(matrixCanvas.width / matrixFontSize) + 1;
-        const matrixDrops = Array(matrixColumns).fill(1);
-
-        function drawMatrixRain() {
-            matrixCtx.fillStyle = 'rgba(5, 5, 8, 0.05)';
-            matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
-            matrixCtx.fillStyle = isOverclockActive ? '#ff0033' : '#00ff66';
-            matrixCtx.font = matrixFontSize + 'px monospace';
-            for (let i = 0; i < matrixDrops.length; i++) {
-                let char = matrixChars[Math.floor(Math.random() * matrixChars.length)];
-                matrixCtx.fillText(char, i * matrixFontSize, matrixDrops[i] * matrixFontSize);
-                if (matrixDrops[i] * matrixFontSize > matrixCanvas.height && Math.random() > 0.975) matrixDrops[i] = 0;
-                matrixDrops[i] += isOverclockActive ? 2 : 1;
-            }
-        }
-        setInterval(drawMatrixRain, 35);
-
-        const staticCanvas = document.getElementById('tv-static-canvas');
-        const staticCtx = staticCanvas.getContext('2d');
-        function resizeStaticCanvas() { staticCanvas.width = window.innerWidth; staticCanvas.height = window.innerHeight; }
-        window.addEventListener('resize', resizeStaticCanvas); resizeStaticCanvas();
-        let noiseAlpha = 0.22;
-
-        function drawTvStatic() {
-            if (staticCanvas.style.display === 'none' && !isEmergencyActive) return;
-            let width = staticCanvas.width; let height = staticCanvas.height;
-            let imgData = staticCtx.createImageData(width, height); let data = imgData.data;
-            for (let i = 0; i < data.length; i += 4) {
-                let val = Math.floor(Math.random() * 255);
-                data[i] = val; data[i+1] = val; data[i+2] = val;
-                data[i+3] = Math.floor(Math.random() * (noiseAlpha * 255));
-            }
-            staticCtx.putImageData(imgData, 0, 0);
-        }
-        setInterval(drawTvStatic, 45);
-
-        function updateNoiseParameters() {
-            noiseAlpha = document.getElementById('slider-noise-alpha').value / 100;
-            let freq = document.getElementById('slider-noise-freq').value;
-            document.getElementById('lbl-noise-alpha').innerText = noiseAlpha.toFixed(2);
-            document.getElementById('lbl-noise-freq').innerText = freq + "Hz";
-        }
-
-        const oscCanvas = document.getElementById('oscilloscope-canvas');
-        const oscCtx = oscCanvas.getContext('2d');
-        let oscSlice = 0;
-        function drawOscilloscope() {
-            oscCtx.clearRect(0, 0, oscCanvas.width, oscCanvas.height);
-            oscCtx.beginPath(); oscCtx.lineWidth = 2;
-            oscCtx.strokeStyle = isOverclockActive ? '#ff0033' : '#00ff66';
-            let width = oscCanvas.width; let height = oscCanvas.height;
-            oscCtx.moveTo(0, height / 2);
-            for (let i = 0; i < width; i++) {
-                let amp = isOverclockActive ? 25 : 12;
-                let freq = isOverclockActive ? 0.08 : 0.04;
-                let y = (height / 2) + Math.sin(i * freq + oscSlice) * amp + (Math.random() * 3 - 1.5);
-                oscCtx.lineTo(i, y);
-            }
-            oscCtx.stroke(); oscSlice += isOverclockActive ? 0.3 : 0.12;
-            requestAnimationFrame(drawOscilloscope);
-        }
-        requestAnimationFrame(drawOscilloscope);
-
-        // ==========================================================================
-        // 5. BOOT SEQUENCE & ÇEKİRDEK KİLİT MEKANİZMASI
-        // ==========================================================================
+        // ----------------------------------------------------------------------
+        // D. BOOT SEQUENCE SİMÜLASYONU
+        // ----------------------------------------------------------------------
         const bootLogs = [
-            "[INIT] Code:Racoon OS Çekirdek Önyükleyici v6.0-ULTRA başlatılıyor...",
+            "[INIT] Code:Racoon OS Çekirdek Önyükleyici v10.3-ULTRA başlatılıyor...",
             "[INFO] Ana mimari donanım altyapısı Lenovo Legion Go / Yoga optimize.",
             "[INFO] AMD Ryzen Z1 Extreme mimarisi doğrulandı: 8 Cores / 16 Threads.",
             "[SYSTEM] Grafik Altyapısı: Retro CRT Scanline Filtresi başarıyla enjekte edildi.",
             "[SYSTEM] Üst Marquee Bilgi Akış Hattı (Alert-Bar) sisteme monte edildi.",
-            "[DAEMON] systemd-analyze blame tetikleniyor, servis süreleri ölçülüyor...",
             "[DAEMON] deploy-watcherd (CI/CD Kontrolörü) tahsis süresi: 450ms",
             "[DAEMON] k8s-monitord (Kendi Kendini Onaran Pod Motoru) tahsis süresi: 600ms",
-            "[DAEMON] config-validator-daemon (YAML/JSON Linter) tahsis süresi: 310ms",
-            "[SECURITY] 5 Kademeli Rol ve Yetki Seviye Sistemi (Progression Matrix) yüklendi.",
-            "[SECURITY] GHOST, NEBULA, KERNEL, SRE, RACOON Matrisleri doğrulandı.",
+            "[SECURITY] Ghost (Level 6), Nebula (Level 7) matrisleri hiyerarşiye yüklendi.",
+            "[SECURITY] Navbow gizli protokolleri sisteme gömüldü.",
             "[NETWORK] Siber İyonizasyon ölçüm hattı 14.2 THz frekansına kilitlendi.",
-            "[AUDIO] Fail-Safe Programatik Web Audio API siren sentezleyicisi hazır.",
             "[BOOT] Matris bütünlüğü doğrulandı. Çekirdek kilit anahtarı bekleniyor..."
         ];
 
@@ -1218,7 +1079,7 @@
                     logBox.appendChild(p); logBox.scrollTop = logBox.scrollHeight;
                     currentLine++;
                 }
-            }, 120);
+            }, 100);
 
             let progressInterval = setInterval(() => {
                 if (progressWidth < 100) {
@@ -1229,79 +1090,138 @@
                         document.getElementById('boot-login-screen').style.display = 'flex';
                     }, 400);
                 }
-            }, 40);
+            }, 30);
         }
+
+        window.onload = function() {
+            startBootSequence();
+            renderServicesUi();
+        };
 
         function verifyBootPassword() {
             let val = document.getElementById('boot-pass-key').value;
+            // Boot Şifresi İstediğin Gibi Racoon Yapıldı
             if (val === CORESYS_KEYS.BOOT_KEY) {
                 document.getElementById('boot-login-screen').style.display = 'none';
                 document.getElementById('boot-screen').style.display = 'none';
-                localStorage.setItem('racoon_os_authorized', 'true');
-                appendTerminalLine("[BAŞARILI] Çekirdek bütünlük kilidi açıldı.", "line-success");
-                appendTerminalLine(`HOŞ GELDİN, SİBER MATRİS OPERATÖRÜ. GÜNCEL SEVİYE: GHOST_OPERATOR`, "line-warning");
-                renderServicesUi();
-                startBackgroundDaemonFeeds();
-                updateUIForLevel();
+                appendTerminalLine("[BAŞARILI] Çekirdek bütünlük kilidi açıldı. Hoş geldin Operator.", "line-success");
             } else {
                 alert("❌ HATALI ÇEKİRDEK ŞİFRESİ! Erişim Reddedildi.");
                 document.getElementById('boot-pass-key').value = "";
             }
         }
 
-        window.onload = function() {
-            startBootSequence();
-            setupTabSyncChannels();
-        };
-
-        // MULTI-TAB SYNC SİMÜLASYONU
-        function setupTabSyncChannels() {
-            const channelKey = 'racoon_cyber_nodes';
-            function updateTabCountDisplay() {
-                let tabs = JSON.parse(localStorage.getItem(channelKey) || "{}");
-                let now = Date.now(); let activeCount = 0;
-                for (let id in tabs) { if (now - tabs[id] < 3000) activeCount++; }
-                if (activeCount === 0) activeCount = 1;
-                document.getElementById('sekme-düğüm-display').innerText = `Aktif Siber Sekme Ağı: ${activeCount} Düğüm`;
+        // ----------------------------------------------------------------------
+        // E. SEVİYE DEĞİŞİM VE YETKİLENDİRME SİSTEMİ (LEVEL 1-7 HİYERARŞİSİ)
+        // ----------------------------------------------------------------------
+        function handleLevelSelectChange(val) {
+            // Eğer Navbow seviyesindeyken kullanıcı listeden normal bir level seçerse, Navbow gizli modundan çıkılır
+            if (isNavbowActive) {
+                exitNavbowMode();
             }
-            let myTabId = Math.random().toString(36).substring(2);
-            setInterval(() => {
-                let tabs = JSON.parse(localStorage.getItem(channelKey) || "{}");
-                tabs[myTabId] = Date.now();
-                localStorage.setItem(channelKey, JSON.stringify(tabs));
-                updateTabCountDisplay();
-            }, 1000);
-            updateTabCountDisplay();
+            switchUserLevel(val);
         }
 
-        // ==========================================================================
-        // 6. UI YÖNETİMİ, NAVBOW VE DAEMONLAR
-        // ==========================================================================
-        function updateUIForLevel() {
-            let isoCard = document.getElementById('iso-card');
-            let navbowCard = document.getElementById('navbow-card');
-            let vaultCard = document.getElementById('quantum-vault-card');
-
-            // ISO İndirme Yetkisi: Sadece Level 1 ve 2
-            if (currentUserLevelNum <= 2) {
-                isoCard.style.display = 'flex';
+        function switchUserLevel(levelId) {
+            currentUserLevel = levelId;
+            let promptName = "operator";
+            
+            if (levelId === "lvl6") promptName = "ghost-operator";
+            if (levelId === "lvl7") promptName = "nebula-operator";
+            
+            document.getElementById("term-prompt-label").innerText = `${promptName}@racoon-os:~$`;
+            appendTerminalLine(`>> Kullanıcı yetki katmanı değiştirildi: [${levelId.toUpperCase()}]`, "line-warning");
+            
+            // ISO panel durum metnini güncelle (SADECE İLK 2 LEVEL İNDİREBİLİR KURALI)
+            let isoStatus = document.getElementById("iso-panel-status");
+            if (levelId === "lvl1" || levelId === "lvl2") {
+                isoStatus.innerText = "İNDİRME YETKİSİ VAR";
+                isoStatus.style.color = "var(--neon-green)";
+                isoStatus.style.borderColor = "var(--neon-green)";
             } else {
-                isoCard.style.display = 'none';
+                isoStatus.innerText = "İNDİRME YETKİSİ YOK";
+                isoStatus.style.color = "var(--neon-red)";
+                isoStatus.style.borderColor = "var(--neon-red)";
+            }
+        }
+
+        // ----------------------------------------------------------------------
+        // F. TERMİNAL KOMUT ÇALIŞTIRMA VE GİZLİ NAVBOW TETİKLEYİCİSİ
+        // ----------------------------------------------------------------------
+        function handleTerminalKeyPress(e) {
+            if (e.key === "Enter") {
+                let inputEl = document.getElementById("terminal-cmd-input");
+                let cmd = inputEl.value.trim();
+                if (cmd === "") return;
+
+                let currentPrompt = document.getElementById("term-prompt-label").innerText;
+                appendTerminalLine(`${currentPrompt} ${cmd}`, "line-info");
+                commandHistory.push(cmd);
+                executeCoreCommand(cmd);
+                inputEl.value = "";
+            }
+        }
+
+        function appendTerminalLine(text, className) {
+            let container = document.getElementById("terminal-logs-container");
+            let line = document.createElement("div");
+            line.className = `terminal-line ${className}`;
+            line.innerText = text;
+            container.appendChild(line);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function executeCoreCommand(cmd) {
+            let parts = cmd.toLowerCase().split(" ");
+            let baseCmd = parts[0];
+
+            // GİZLİ NAVBOW LEVEL GİRİŞ KONTROLÜ (EN ÜST GİZLİ KATMAN)
+            if (baseCmd === "navbow") {
+                // Sadece ve sadece Level 3 (Kıdemli Mühendis) katmanındayken girilebilir
+                if (currentUserLevel === "lvl3") {
+                    enterNavbowMode();
+                } else {
+                    // Level 3 dışında biri yazarsa "komut bulunamadı" diyecek!
+                    appendTerminalLine(`Komut bulunamadı: '${cmd}'. Yardım için 'help' yazın.`, "line-error");
+                }
+                return;
             }
 
-            // Navbow Panel Yetkisi: Level 3 ve üstü
-            if (currentUserLevelNum >= 3) {
-                navbowCard.style.display = 'flex';
-                renderNavbowDaemons();
-            } else {
-                navbowCard.style.display = 'none';
-            }
-
-            // Kuantum Kasa: Sadece Level 5
-            if (currentUserLevelNum === 5) {
-                vaultCard.style.display = 'flex';
-            } else {
-                vaultCard.style.display = 'none';
+            // STANDART KOMUT KONTROLLERİ
+            switch (baseCmd) {
+                case "help":
+                    // Navbow gizli level olduğu için yardım listesinde kesinlikle gözükmeyecek!
+                    appendTerminalLine("--- MEVCUT SİSTEM KOMUTLARI ---", "line-warning");
+                    appendTerminalLine("clear            - Terminal ekranını temizler.", "line-system");
+                    appendTerminalLine("sysinfo          - Çekirdek işletim sistemi bilgilerini gösterir.", "line-system");
+                    appendTerminalLine("check-lock       - Çekirdek kilidinin durumunu sorgular.", "line-system");
+                    appendTerminalLine("history          - Komut geçmişini listeler.", "line-system");
+                    appendTerminalLine("ls               - Sanal dosya sistemini listeler.", "line-system");
+                    break;
+                case "clear":
+                    document.getElementById("terminal-logs-container").innerHTML = "";
+                    break;
+                case "sysinfo":
+                    appendTerminalLine("İşletim Sistemi: Code:Racoon OS v10.3 Ultra Core", "line-success");
+                    appendTerminalLine("Platform: Hybrid Kernel Architecture (Cordex Base)", "line-success");
+                    appendTerminalLine("Matrix Durumu: Senkronize", "line-success");
+                    break;
+                case "check-lock":
+                    appendTerminalLine(">> Çekirdek Güvenlik Durumu: AES-Racoon-256 ile Korunuyor", "line-warning");
+                    break;
+                case "history":
+                    appendTerminalLine("--- KOMUT GEÇMİŞİ ---", "line-system");
+                    commandHistory.forEach((c, i) => appendTerminalLine(`${i+1}: ${c}`, "line-muted"));
+                    break;
+                case "ls":
+                    appendTerminalLine("Directory listing for: /", "line-system");
+                    appendTerminalLine("drwxr-xr-x   root   root   home", "line-success");
+                    appendTerminalLine("drwx------   root   wheel  root", "line-success");
+                    appendTerminalLine("drwxr-xr-x   root   root   etc", "line-success");
+                    break;
+                default:
+                    appendTerminalLine(`Komut bulunamadı: '${cmd}'. Yardım için 'help' yazın.`, "line-error");
+                    break;
             }
         }
 
@@ -1318,705 +1238,313 @@
             }
         }
 
-        function renderNavbowDaemons() {
-            let container = document.getElementById('navbow-daemon-controls');
-            container.innerHTML = "";
-            for (let id in DAEMON_REGISTRY) {
-                let d = DAEMON_REGISTRY[id];
-                let btnText = d.status === "RUNNING" ? "DURDUR" : "BAŞLAT";
-                let btnColor = d.status === "RUNNING" ? "var(--error)" : "var(--success)";
-                
-                let div = document.createElement('div');
-                div.style = "display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.5); padding:4px; border-radius:3px;";
-                div.innerHTML = `
-                    <span style="font-size:0.75rem; color:#fff;">${d.name}</span>
-                    <button style="background:transparent; border:1px solid ${btnColor}; color:${btnColor}; padding:2px 6px; font-size:0.7rem; cursor:pointer;" 
-                            onclick="toggleDaemonNavbow('${id}')">${btnText}</button>
-                `;
-                container.appendChild(div);
-            }
+        // ----------------------------------------------------------------------
+        // G. GİZLİ NAVBOW LEVEL AKTİF ETME PROTOKOLÜ (EN ÜST KATMAN)
+        // ----------------------------------------------------------------------
+        function enterNavbowMode() {
+            isNavbowActive = true;
+            appendTerminalLine(">> [KRİTİK UYARI] GİZLİ NAVBOW EN ÜST KATMANINA BAŞARIYLA GİRİŞ YAPILDI!", "line-navbow");
+            appendTerminalLine(">> Navbow Matrisi Yükleniyor... Tüm alt yetki seviyeleri askıya alındı.", "line-navbow");
+            
+            // Terminal Promptunu Navbow Olarak Değiştir
+            document.getElementById("term-prompt-label").innerText = `root@navbow-core:#`;
+            document.getElementById("term-prompt-label").style.color = "var(--neon-purple)";
+
+            // Navbow UI Panelini Görünür Yap
+            document.getElementById("navbow-ui-panel").style.display = "flex";
+            
+            // Üst bar durumunu güncelle
+            document.getElementById("system-global-status").innerText = "NAVBOW MODU";
+            document.getElementById("system-global-status").style.color = "var(--neon-purple)";
+            document.getElementById("system-global-status").style.textShadow = "0 0 10px var(--neon-purple)";
         }
 
-        function toggleDaemonNavbow(daemonId) {
-            if (!DAEMON_REGISTRY[daemonId]) return;
-            let currentStatus = DAEMON_REGISTRY[daemonId].status;
-            if (currentStatus === "RUNNING") {
-                DAEMON_REGISTRY[daemonId].status = "STOPPED";
-                appendTerminalLine(`[NAVBOW] Daemon Durduruldu: ${daemonId}`, "line-warning");
+        function exitNavbowMode() {
+            isNavbowActive = false;
+            document.getElementById("navbow-ui-panel").style.display = "none";
+            document.getElementById("system-global-status").innerText = "AKTİF";
+            document.getElementById("system-global-status").style.color = "var(--neon-cyan)";
+            document.getElementById("system-global-status").style.textShadow = "none";
+            document.getElementById("term-prompt-label").style.color = "var(--primary-orange)";
+            appendTerminalLine(">> Navbow gizli katmanından çıkış yapıldı.", "line-system");
+            
+            // Eski terminal promptuna geri dön
+            switchUserLevel(currentUserLevel);
+        }
+
+        // ----------------------------------------------------------------------
+        // H. GERÇEK ISO İNDİRME SİSTEMİ (BLOB API İLE GERÇEK İNDİRME)
+        // ----------------------------------------------------------------------
+        function triggerIsoDownload() {
+            // KURAL: Sadece ilk iki level (lvl1 ve lvl2) indirebilir, başkası indiremez!
+            if (currentUserLevel !== "lvl1" && currentUserLevel !== "lvl2") {
+                appendTerminalLine("[YETKİ REDDEDİLDİ] ISO indirme yetkisi sadece Level 1 ve Level 2 katmanlarına özeldir!", "line-error");
+                alert("Erişim Engellendi: Bu seviyede ISO indirme yetkiniz bulunmuyor. Sistem yalnızca Ghost (Lvl6) ve Nebula (Lvl7) gibi yüksek seviyelerde indirmeyi kilitler.");
+                return;
+            }
+
+            appendTerminalLine("[SİSTEM] Gerçek ISO indirme akışı tetiklendi. Veri blokları derleniyor...", "line-warning");
+            let progContainer = document.getElementById("iso-progress-container");
+            let progBar = document.getElementById("iso-progress-bar");
+            
+            progContainer.style.display = "block";
+            let width = 0;
+            
+            let downloadInterval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(downloadInterval);
+                    appendTerminalLine("[BAŞARILI] Veri bütünlüğü doğrulandı. İndirme tarayıcı üzerinden başlatılıyor...", "line-success");
+                    
+                    // Gerçek Dosya İndirme Tetikleyicisi (Blob Düzenlemesi)
+                    // Gerçekçi hissettirmesi için büyük bir dummy text array oluşturulur
+                    let massiveDataArray = [];
+                    massiveDataArray.push("=== CODE:RACOON OS - CORDEX HYBRID KERNEL V10.3 ===\n");
+                    massiveDataArray.push("BUILD: 2026-06-20 | ARCH: x86_64\n\n");
+                    for (let i = 0; i < 500; i++) {
+                        massiveDataArray.push(`0x00${i}F: ALLOCATED_SECTOR_BLOCK_${i} [VERIFIED]\n`);
+                    }
+                    massiveDataArray.push("\n[EOF] KERNEL COMPILED SUCCESSFULLY.");
+
+                    const blob = new Blob(massiveDataArray, { type: "application/octet-stream" });
+                    const downloadUrl = URL.createObjectURL(blob);
+                    
+                    const temporaryAnchor = document.createElement("a");
+                    temporaryAnchor.href = downloadUrl;
+                    temporaryAnchor.download = "Cordex_OS_v10.3_Core.iso";
+                    document.body.appendChild(temporaryAnchor);
+                    temporaryAnchor.click();
+                    
+                    // İşlem sonrası DOM Temizliği
+                    document.body.removeChild(temporaryAnchor);
+                    URL.revokeObjectURL(downloadUrl);
+                    
+                    setTimeout(() => {
+                        progContainer.style.display = "none";
+                        progBar.style.width = "0%";
+                    }, 2000);
+                } else {
+                    width += 2; 
+                    progBar.style.width = width + "%";
+                }
+            }, 50);
+        }
+
+        // ----------------------------------------------------------------------
+        // I. NAVBOW BAĞIMSIZ SİBER PARTİ SİSTEMİ, KONFETİ VE SOUND SYNTHESIZER
+        // ----------------------------------------------------------------------
+        function triggerNavbowParty() {
+            appendTerminalLine(">> [SİNYAL] Siber Parti Sistemi Başlatıldı! Matris sızdırılıyor...", "line-navbow");
+            
+            // 1. Alt bar durum yazısını güncelleme (KURAL: "Iso Leaked" YAZACAK)
+            let btmText = document.getElementById("bottom-status-text");
+            btmText.innerText = "Iso Leaked";
+            btmText.style.color = "var(--neon-red)";
+            btmText.style.textShadow = "0 0 10px var(--neon-red)";
+            btmText.style.fontWeight = "bold";
+
+            // 2. Tam Ekran Duyuruyu Gösterme (KURAL: Format -> Navbow:(Duyurum) )
+            let announcementVal = document.getElementById("announcement-input").value.trim();
+            if (announcementVal === "") {
+                announcementVal = "Navbow:(SİSTEM MATRİSİ KONTROL ALTINDA!)"; // Varsayılan format
             } else {
-                DAEMON_REGISTRY[daemonId].status = "RUNNING";
-                appendTerminalLine(`[NAVBOW] Daemon Başlatıldı: ${daemonId}`, "line-success");
+                // Eğer kullanıcı düz metin yazdıysa parantezleri ve formatı biz ekliyoruz
+                if (!announcementVal.startsWith("Navbow:(")) {
+                    announcementVal = `Navbow:(${announcementVal})`;
+                }
             }
-            renderServicesUi();
-            renderNavbowDaemons();
+            showFullScreenAnnouncement(announcementVal);
+
+            // 3. Konfetileri Patlatma (Javascript Particle System)
+            startCyberConfetti();
+
+            // 4. Web Audio API Parti Müziğini Çalma
+            playSynthesizedPartyMusic();
         }
 
-        function navbowToggleUpdateMode() {
-            appendTerminalLine("[NAVBOW] SİSTEM GÜNCELLEME MODUNA ALINDI. Harici trafik sınırlandırıldı.", "line-warning");
-            document.getElementById('navbow-broadcast-marquee').style.display = 'block';
-            document.getElementById('navbow-marquee-text').innerText = "⚠️ [BAKIM MODU]: SİSTEM GÜNCELLEME MODUNDADIR. KESİNTİLER YAŞANABİLİR.";
-            document.getElementById('navbow-marquee-text').style.color = "var(--warning)";
+        function showFullScreenAnnouncement(formattedMsg) {
+            let modal = document.getElementById("navbow-fullscreen-modal");
+            let modalText = document.getElementById("announcement-modal-text");
+            
+            // Duyuru metnini direkt olarak basıyoruz
+            modalText.innerText = formattedMsg;
+            modal.style.display = "flex";
         }
 
-        function navbowGoLive() {
-            appendTerminalLine("[NAVBOW] SİSTEM CANLIYA (GO-LIVE) ALINDI. Tüm portlar aktif.", "line-success");
-            document.getElementById('navbow-broadcast-marquee').style.display = 'block';
-            document.getElementById('navbow-marquee-text').innerText = "🚀 [SİSTEM CANLI]: YENİ VERSİYON AKTİF. TRAFİK %100 YÖNLENDİRİLDİ.";
-            document.getElementById('navbow-marquee-text').style.color = "var(--success)";
+        function closeFullScreenAnnouncement() {
+            document.getElementById("navbow-fullscreen-modal").style.display = "none";
+            stopCyberConfetti();
+            
+            // Alt bar yazısını normale döndür
+            let btmText = document.getElementById("bottom-status-text");
+            btmText.innerText = "Matrix Koruma Protokolü Devrede";
+            btmText.style.color = "#666";
+            btmText.style.textShadow = "none";
+            btmText.style.fontWeight = "normal";
         }
 
-        function navbowMakeAnnouncement() {
-            let input = document.getElementById('navbow-announcement-input');
-            let msg = input.value.trim();
-            if (!msg) {
-                appendTerminalLine("[NAVBOW] Boş duyuru atılamaz.", "line-error");
-                return;
+        // ==========================================================================
+        // J. SAF JAVASCRIPT KONFETİ MOTORU (DIŞ KÜTÜPHANESİZ)
+        // ==========================================================================
+        let confettiInterval;
+        function startCyberConfetti() {
+            const canvas = document.getElementById("party-canvas");
+            const ctx = canvas.getContext("2d");
+            canvas.style.display = "block";
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            let particles = [];
+            const colors = ["#ff6600", "#bc13fe", "#00f0ff", "#39ff14", "#ff0055"];
+
+            for (let i = 0; i < 200; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    r: Math.random() * 6 + 4,
+                    d: Math.random() * canvas.height,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    tilt: Math.random() * 10 - 5,
+                    tiltAngleIncremental: Math.random() * 0.07 + 0.02,
+                    tiltAngle: 0
+                });
             }
-            
-            // Kutlama animasyonu 10 sn
-            document.getElementById('celeb-msg').innerText = msg;
-            document.getElementById('celebration-overlay').style.display = 'flex';
-            startConfettiEngine();
-            
-            appendTerminalLine(`[NAVBOW BROADCAST FIRLATILDI]: ${msg}`, "line-navbow");
 
-            setTimeout(() => {
-                document.getElementById('celebration-overlay').style.display = 'none';
-                stopConfettiEngine();
-            }, 10000);
+            function drawConfetti() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach((p, index) => {
+                    p.tiltAngle += p.tiltAngleIncremental;
+                    p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
+                    p.x += Math.sin(p.tiltAngle);
+                    p.tilt = Math.sin(p.tiltAngle - index / 3) * 15;
 
-            input.value = "";
-        }
+                    ctx.beginPath();
+                    ctx.lineWidth = p.r;
+                    ctx.strokeStyle = p.color;
+                    ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+                    ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+                    ctx.stroke();
 
-        // ==========================================================================
-        // 7. GERÇEKÇİ ISO İNDİRME SİMÜLASYONU (SADECE GHOST VE NEBULA)
-        // ==========================================================================
-        function downloadKernelISO() {
-            if (currentUserLevelNum > 2) {
-                appendTerminalLine("[HATA] Bu özellik sadece Ghost ve Nebula operatörleri içindir.", "line-error");
-                return;
+                    if (p.y > canvas.height) {
+                        particles[index] = {
+                            x: Math.random() * canvas.width,
+                            y: -20,
+                            r: p.r,
+                            d: p.d,
+                            color: p.color,
+                            tilt: Math.random() * 10 - 5,
+                            tiltAngleIncremental: p.tiltAngleIncremental,
+                            tiltAngle: 0
+                        };
+                    }
+                });
             }
 
-            appendTerminalLine("[SİSTEM] ISO İmajı hazırlanıyor, tarayıcı üzerinden indirme başlıyor...", "line-system");
-            
-            // Gerçek bir Blob oluşturup cihaza indirterek "gerçeklik" hissi yaratıyoruz.
-            let dummyData = "=== RACOON OS KERNEL V6.0 BOOTABLE ISO ===\n";
-            for(let i=0; i<100; i++) {
-                dummyData += `0x00${i}A: KERNEL_SECTOR_${i} [OK] - ALLOCATED\n`;
+            confettiInterval = setInterval(drawConfetti, 20);
+        }
+
+        function stopCyberConfetti() {
+            clearInterval(confettiInterval);
+            const canvas = document.getElementById("party-canvas");
+            canvas.style.display = "none";
+        }
+
+        // ==========================================================================
+        // K. WEB AUDIO API - CANLI SENTEZLENEN PARTİ MÜZİĞİ
+        // ==========================================================================
+        function playSynthesizedPartyMusic() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
+
+            let time = audioContext.currentTime;
             
-            let blob = new Blob([dummyData], {type: "application/x-iso9660-image"});
-            let url = URL.createObjectURL(blob);
+            // 16 Adımlı Siberpunk Melodi Döngüsü
+            let notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25, 587.33, 659.25];
             
-            let a = document.createElement("a");
-            a.href = url;
-            a.download = "racoon-core-v6.0.iso";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            appendTerminalLine("[BAŞARILI] racoon-core-v6.0.iso indirme işlemi tamamlandı.", "line-success");
+            for (let i = 0; i < 32; i++) {
+                let osc = audioContext.createOscillator();
+                let gain = audioContext.createGain();
+                
+                // Dalga tipini değiştirerek elektronik hissiyatı artırıyoruz
+                osc.type = i % 2 === 0 ? "sawtooth" : "square";
+                osc.frequency.setValueAtTime(notes[Math.floor(Math.random() * notes.length)], time);
+                
+                gain.gain.setValueAtTime(0.2, time); // Ses yüksekliği ayarı
+                gain.gain.exponentialRampToValueAtTime(0.01, time + 0.3);
+                
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                
+                osc.start(time);
+                osc.stop(time + 0.4);
+                
+                time += 0.2; // 140 BPM Hızlı bir ritim
+            }
         }
 
         // ==========================================================================
-        // 8. TERMİNAL SATIR YAZIM ALTYAPISI
+        // L. MATRİS YAĞMURU ÇİZİM FONKSİYONU
         // ==========================================================================
-        function appendTerminalLine(text, className = "line-info") {
-            let body = document.getElementById('term-body');
-            let div = document.createElement('div');
-            div.className = `terminal-line ${className}`;
-            div.innerText = text;
-            body.appendChild(div);
-            body.scrollTop = body.scrollHeight;
-            terminalLogs.push(text);
+        const matrixCanvas = document.getElementById('matrix-bg');
+        const matrixCtx = matrixCanvas.getContext('2d');
+        function resizeMatrixCanvas() { 
+            matrixCanvas.width = window.innerWidth; 
+            matrixCanvas.height = window.innerHeight; 
         }
+        window.addEventListener('resize', resizeMatrixCanvas); 
+        resizeMatrixCanvas();
+
+        const matrixChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ☣️🦝⚙️💎🔒⚡";
+        const matrixFontSize = 14;
+        const matrixColumns = Math.floor(matrixCanvas.width / matrixFontSize) + 1;
+        const matrixDrops = Array(matrixColumns).fill(1);
+
+        function drawMatrixRain() {
+            matrixCtx.fillStyle = 'rgba(5, 5, 8, 0.05)';
+            matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+            matrixCtx.fillStyle = '#00ff66';
+            matrixCtx.font = matrixFontSize + 'px monospace';
+            
+            for (let i = 0; i < matrixDrops.length; i++) {
+                let char = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                matrixCtx.fillText(char, i * matrixFontSize, matrixDrops[i] * matrixFontSize);
+                if (matrixDrops[i] * matrixFontSize > matrixCanvas.height && Math.random() > 0.975) {
+                    matrixDrops[i] = 0;
+                }
+                matrixDrops[i] += 1;
+            }
+        }
+        setInterval(drawMatrixRain, 35);
 
         // ==========================================================================
-        // 9. RECOVERYD - DISASTER RECOVERY VE DAEMON AKIŞ SİMÜLATÖRÜ
+        // M. SİSTEM DAEMON LOG AKIŞ SİMÜLATÖRÜ
         // ==========================================================================
         function startBackgroundDaemonFeeds() {
             let container = document.getElementById('daemon-feed-container');
-            
-            daemonUiInterval = setInterval(() => {
-                if(DAEMON_REGISTRY["deploy-watcherd"].status === "RUNNING") {
-                    let fakeIP = `10.240.${Math.floor(Math.random()*254)}.${Math.floor(Math.random()*254)}`;
-                    let div = document.createElement('div');
-                    div.className = 'daemon-log-line';
-                    div.style.color = '#00ffaa';
-                    div.innerText = `[deploy-watcherd] ${fakeIP} -> Gelen Paket Doğrulandı. Kural: OK`;
-                    container.appendChild(div);
-                }
-                
-                if (DAEMON_REGISTRY["cron-watcherd"].status === "RUNNING" && Math.random() > 0.8) {
-                    let div = document.createElement('div');
-                    div.className = 'daemon-log-line';
-                    div.style.color = 'var(--warning)';
-                    div.innerText = `[cron-watcherd] GÖREV OK: */5 * * * * -> VFS Veri Sistemi Başarıyla Yedeklendi.`;
-                    container.appendChild(div);
+            setInterval(() => {
+                let fakeIP = `10.240.${Math.floor(Math.random()*254)}.${Math.floor(Math.random()*254)}`;
+                let div = document.createElement('div');
+                div.className = 'daemon-log-line';
+                div.style.color = '#00ffaa';
+                div.innerText = `[deploy-watcherd] ${fakeIP} -> Gelen Paket Doğrulandı. Kural: OK`;
+                container.appendChild(div);
+
+                if (Math.random() > 0.8) {
+                    let div2 = document.createElement('div');
+                    div2.className = 'daemon-log-line';
+                    div2.style.color = 'var(--warning)';
+                    div2.innerText = `[cron-watcherd] GÖREV OK: VFS Veri Sistemi Yedeklendi.`;
+                    container.appendChild(div2);
                 }
 
-                if(container.children.length > 5) container.removeChild(container.firstChild);
+                while(container.children.length > 5) {
+                    container.removeChild(container.firstChild);
+                }
             }, 2500);
         }
+        setTimeout(startBackgroundDaemonFeeds, 3000);
 
-        function triggerRecoveryGuard() {
-            appendTerminalLine("[FAILSAFE] High CPU load or infinite loop candidate detected by recoveryd.", "line-warning");
-            appendTerminalLine("[FAILSAFE] Process killed instantly. Reverting to last stable checkpoint.", "line-success");
-        }
-
-        // ==========================================================================
-        // 10. KADEMELİ SEVİYE SİSTEMİ (PROGRESSION MATRIX)
-        // ==========================================================================
-        function switchUserLevel(levelVal) {
-            let selector = document.getElementById('user-level-selector');
-            
-            if (levelVal === 'lvl2' && currentUserLevelNum < 2) {
-                let pass = prompt("🌌 Nebula Operator Yetki Anahtarını Girin (İpucu: Logları veya configleri inceleyin):");
-                if (pass !== CORESYS_KEYS.NEBULA_KEY) { 
-                    alert("Yetkisiz Erişim Reddedildi!"); selector.value = currentUserLevelString; return; 
-                }
-                currentUserLevelNum = 2;
-            } else if (levelVal === 'lvl3' && currentUserLevelNum < 3) {
-                let pass = prompt("🛠️ Kernel Developer Aktivasyon Şifresini Girin:");
-                if (pass !== CORESYS_KEYS.KERNEL_KEY) {
-                    alert("Kernel yetki matrisi doğrulanamadı!"); selector.value = currentUserLevelString; return;
-                }
-                currentUserLevelNum = 3;
-            } else if (levelVal === 'lvl4' && currentUserLevelNum < 4) {
-                let pass = prompt("🛡️ Site Reliability Engineer (SRE) Master Kodunu Girin:");
-                if (pass !== CORESYS_KEYS.SRE_KEY) {
-                    alert("SRE Kimlik Doğrulama Hatası!"); selector.value = currentUserLevelString; return;
-                }
-                currentUserLevelNum = 4;
-            } else if (levelVal === 'lvl5' && currentUserLevelNum < 5) {
-                let pass = prompt("🦝 RACOON CORE DEV MUTLAK YETKİ ŞİFRESİNİ GİRİN:");
-                if (pass !== CORESYS_KEYS.RACOON_KEY) {
-                    alert("Mühür Kırılamadı! Sadece Code:Racoon Core Dev erişebilir."); selector.value = currentUserLevelString; return;
-                }
-                currentUserLevelNum = 5;
-            }
-
-            currentUserLevelString = levelVal;
-            let badge = document.getElementById('terminal-mode-badge');
-            let promptLbl = document.getElementById('term-prompt-label');
-            
-            if(levelVal === 'lvl1') { currentUserLevelNum = 1; badge.innerText = "GHOST_OPERATOR"; currentPromptTemplate = "ghost-operator@racoon-os:~$ "; }
-            else if(levelVal === 'lvl2') { badge.innerText = "NEBULA_OPERATOR"; currentPromptTemplate = "nebula-op@racoon-os:~$ "; }
-            else if(levelVal === 'lvl3') { badge.innerText = "KERNEL_DEVELOPER"; currentPromptTemplate = "kernel-dev@racoon-os:# "; }
-            else if(levelVal === 'lvl4') { badge.innerText = "SRE_EXPERT"; currentPromptTemplate = "sre-expert@racoon-os:# "; }
-            else if(levelVal === 'lvl5') { badge.innerText = "RACOON_CORE_DEV"; currentPromptTemplate = "root@racoon-core-dev:# "; }
-            
-            promptLbl.innerText = currentPromptTemplate;
-            appendTerminalLine(`[YETKİ MATRİSİ] Yeni kademeye geçildi: ${badge.innerText}`, "line-system");
-            
-            updateUIForLevel();
-        }
-
-        // ==========================================================================
-        // 11. DOCKER & K8S
-        // ==========================================================================
-        function runK8sSelfHealing(containerName) {
-            if(DAEMON_REGISTRY["k8s-monitord"].status !== "RUNNING") {
-                appendTerminalLine(`[MÜHENDİSLİK] K8s-monitord kapalı olduğu için kendi kendini iyileştirme tetiklenemedi!`, "line-error");
-                return;
-            }
-            setTimeout(() => {
-                appendTerminalLine(`[K8s-monitord] ⚠️ Pod çökmesi algılandı: ${containerName}`, "line-warning");
-                setTimeout(() => {
-                    dockerContainers[containerName].status = "RUNNING";
-                    appendTerminalLine(`[K8s-monitord] ✅ [Self-Healing] Yeni pod instance'ı 3 saniyede otomatik ayağa kaldırıldı!`, "line-success");
-                }, 1500);
-            }, 1000);
-        }
-
-        // ==========================================================================
-        // 12. ÇEKİRDEK KOMUT YORUMLAYICISI
-        // ==========================================================================
-        document.getElementById('term-input').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                let val = this.value;
-                this.value = "";
-                if(val.trim() !== "") executeCommand(val);
-            }
-        });
-
-        function executeCommand(rawCommand) {
-            let cmdTrimmed = rawCommand.trim();
-            if (!cmdTrimmed) return;
-            
-            // LEVEL 1 (GHOST OPERATOR) KISITLAMASI
-            if (currentUserLevelNum === 1) {
-                appendTerminalLine(`${currentPromptTemplate}${cmdTrimmed}`, "line-info");
-                appendTerminalLine("[GHOST OPERATOR KISITLAMASI]: Hiçbir terminal komutuna erişiminiz yok. Sadece ISO indirme işlemini gerçekleştirebilirsiniz.", "line-error");
-                return;
-            }
-
-            commandHistory.push(cmdTrimmed);
-            appendTerminalLine(`${currentPromptTemplate}${cmdTrimmed}`, "line-info");
-            
-            let parts = cmdTrimmed.split(' ');
-            let baseCmd = parts[0].toLowerCase();
-            let args = parts.slice(1).join(' ');
-
-            if (DAEMON_REGISTRY["config-validator"].status === "RUNNING" && (cmdTrimmed.includes("{") || cmdTrimmed.includes("}"))) {
-                if (!cmdTrimmed.includes('"') || cmdTrimmed.includes(",}")) {
-                    appendTerminalLine("[LINTER] SyntaxError: Unexpected token or formatting flaw in config string.", "line-error");
-                    return;
-                }
-            }
-
-            let targetCheck = rawCommand.toLowerCase();
-            let forbiddenWords = ["exploit", "malware", "virus"];
-            if (forbiddenWords.some(w => targetCheck.includes(w))) {
-                sentinelWarnings++;
-                appendTerminalLine(`[SENTINEL-AI UYARI]: Tehditkar siber aktivite kelimesi algılandı! (${sentinelWarnings}/3)`, "line-error");
-                if (sentinelWarnings >= 3) {
-                    appendTerminalLine("🚨 [SENTINEL-AI]: GÜVENLİK TEHDİDİ Sınırı Aşıldı. Giriş 5 saniye mühürlendi.", "line-error");
-                    document.getElementById('term-input').disabled = true;
-                    setTimeout(() => {
-                        document.getElementById('term-input').disabled = false;
-                        document.getElementById('term-input').focus();
-                        sentinelWarnings = 0;
-                        appendTerminalLine("[SENTINEL-AI]: Kilit açıldı. İzleme sürüyor.", "line-success");
-                    }, 5000);
-                    return;
-                }
-            }
-
-            if(cmdTrimmed.includes("while(true)") || cmdTrimmed.includes("for(;;)")) {
-                triggerRecoveryGuard();
-                return;
-            }
-
-            switch(baseCmd) {
-                case 'help':
-                    printHelpMenu();
-                    break;
-                case 'run-pipeline':
-                    runPipelineSimulation();
-                    break;
-                case 'switch-env':
-                    currentEnvironment = currentEnvironment === "Production-A" ? "Production-B" : "Production-A";
-                    document.getElementById('env-indicator').innerText = `ENV: ${currentEnvironment} (${currentEnvironment === "Production-A" ? "Stable" : "Testing Mode"})`;
-                    appendTerminalLine(`[BLUE-GREEN] Sanal trafik hattı yönlendirildi! Aktif Sürüm: ${currentEnvironment}`, "line-system");
-                    break;
-                case 'sudo':
-                    handleSudoChallenge(parts);
-                    break;
-                case 'env':
-                    appendTerminalLine("--- ENVIRONMENT VARIABLES ---", "line-system");
-                    appendTerminalLine("PS1=" + currentPromptTemplate, "line-muted");
-                    appendTerminalLine("USER_LEVEL=" + currentUserLevelString.toUpperCase(), "line-muted");
-                    appendTerminalLine("SECRET_HASH_KEY=bXlfc3VwZXJfcmFjb29uX2tleV8yMDI2", "line-muted");
-                    appendTerminalLine("PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", "line-muted");
-                    break;
-                case 'chmod':
-                    handleChmod(parts);
-                    break;
-                case 'chown':
-                    handleChown(parts);
-                    break;
-                case 'ls':
-                    handleLs();
-                    break;
-                case 'cat':
-                    handleCat(args);
-                    break;
-                case 'docker':
-                    handleDockerCommand(parts);
-                    break;
-                case 'metrics-view':
-                    printMetricsView();
-                    break;
-                case 'systemctl':
-                    handleSystemctl(parts);
-                    break;
-                case 'journalctl':
-                    handleJournalctl(parts);
-                    break;
-                case 'iptables':
-                    handleIptables(parts);
-                    break;
-                case 'strace':
-                    handleStrace(args);
-                    break;
-                case 'netstat':
-                    printNetstat();
-                    break;
-                case 'systemd-analyze':
-                    if (parts[1] === 'blame') {
-                        appendTerminalLine("--- systemd-analyze blame (Açılış Hız Analizi) ---", "line-system");
-                        for (let id in DAEMON_REGISTRY) {
-                            appendTerminalLine(`${DAEMON_REGISTRY[id].bootTime}ms  [+] ${DAEMON_REGISTRY[id].name}.service`, "line-muted");
-                        }
-                    } else {
-                        appendTerminalLine("Kullanım: systemd-analyze blame", "line-warning");
-                    }
-                    break;
-                case 'clear':
-                    document.getElementById('term-body').innerHTML = "";
-                    break;
-                case 'history':
-                    appendTerminalLine("--- KOMUT GEÇMİŞİ ---", "line-system");
-                    commandHistory.forEach((c, i) => appendTerminalLine(`${i+1}: ${c}`, "line-muted"));
-                    break;
-                case 'overclock':
-                    runThermalWatchdog();
-                    break;
-                case 'coolant':
-                    if (DAEMON_REGISTRY.core.status === "RUNNING") {
-                        cpuTemperature = 43;
-                        appendTerminalLine("❄️ [COOLANT]: Sıvı azot enjekte edildi! Donanım stabilize: 43°C", "line-success");
-                    } else {
-                        appendTerminalLine("Sistem izleme servisi kapalı.", "line-warning");
-                    }
-                    break;
-                case 'self-destruct':
-                    initiateSelfDestruct();
-                    break;
-                default:
-                    appendTerminalLine(`[HATA]: '${baseCmd}' geçerli bir komut olarak algılanmadı.`, "line-error");
-            }
-        }
-
-        function printHelpMenu() {
-            appendTerminalLine("=== Code:Racoon OS v6.0 Terminal Komutları ===", "line-success");
-            appendTerminalLine("help                     : Bu yardım menüsünü listeler.", "line-muted");
-            appendTerminalLine("run-pipeline             : Canlı CI/CD Pipeline hattını çalıştırır.", "line-muted");
-            appendTerminalLine("switch-env               : Blue-Green Deployment ortamları arası geçiş.", "line-muted");
-            appendTerminalLine("env                      : Çevre (environment) değişkenlerini dökümler.", "line-muted");
-            appendTerminalLine("ls / cat                 : Sanal dosya sisteminde gezinme ve dosya okuma.", "line-muted");
-            appendTerminalLine("chmod / chown            : Dosya izin maskelerini değiştirir.", "line-muted");
-            appendTerminalLine("docker ps / docker stop  : Sanal Docker konteynerlerini yönetir.", "line-muted");
-            appendTerminalLine("metrics-view             : Prometheus/Grafana ASCII CLI panelini açar.", "line-muted");
-            appendTerminalLine("systemctl [stop/start]   : Arka plan daemon servislerini komuta eder.", "line-muted");
-            appendTerminalLine("journalctl -f --unit=... : Belirtilen daemona ait canlı logları çeker.", "line-muted");
-            appendTerminalLine("iptables [kurallar]      : Sanal firewall kurallarını manipüle eder.", "line-muted");
-            appendTerminalLine("strace [komut]           : Komutun arkasındaki sanal sistem çağrılarını basar.", "line-muted");
-            appendTerminalLine("netstat -an              : Aktif TCP/UDP soket ve portlarını listeler.", "line-muted");
-            appendTerminalLine("systemd-analyze blame    : Servislerin açılış hızlarını raporlar.", "line-muted");
-            appendTerminalLine("overclock / coolant      : İşlemci sıcaklık manipülasyonları.", "line-muted");
-            appendTerminalLine("clear / history          : Terminal ekranı yönetimi.", "line-muted");
-        }
-
-        // ==========================================================================
-        // DİĞER KOMUT FONKSİYONLARI 
-        // ==========================================================================
-        function runPipelineSimulation() {
-            appendTerminalLine("[CI/CD] GitHub Actions Workspace tetiklendi...", "line-system");
-            let pipelineLogs = [
-                "🔧 [STAGE 1/4] Linting check initiated via ESLint...",
-                "🔧 [STAGE 1/4] Linting code guidelines... [OK]",
-                "🧪 [STAGE 2/4] Running Jest unit test framework suites...",
-                "🧪 [STAGE 2/4] Test Suites: 14 passed, 14 total. Snapshots: 0. [OK]",
-                "📦 [STAGE 3/4] Compiling Kernel ISO architecture via Ninja Build...",
-                "📦 [STAGE 3/4] ISO Generation completed: racoon-core-v6.0.iso [OK]",
-                "🚀 [STAGE 4/4] Deploying to active environment slot... Success!"
-            ];
-            pipelineLogs.forEach((log, index) => {
-                setTimeout(() => {
-                    appendTerminalLine(log, index % 2 === 0 ? "line-muted" : "line-success");
-                }, (index + 1) * 400);
-            });
-        }
-
-        function handleSudoChallenge(parts) {
-            if (parts.length < 3) {
-                appendTerminalLine("Kullanım Örneği: sudo cat /root/secrets.txt", "line-warning");
-                return;
-            }
-            let subAction = parts[1].toLowerCase();
-            let subArgs = parts.slice(2).join(' ');
-
-            let pass = prompt("🔑 [sudo] Password for root required:");
-            if (pass === CORESYS_KEYS.SRE_KEY || pass === CORESYS_KEYS.RACOON_KEY) {
-                appendTerminalLine("[OK] Kimlik doğrulandı. Kök yetki izni geçici olarak sağlandı.", "line-success");
-                if (subAction === 'cat') {
-                    if (virtualFileSystem[subArgs]) {
-                        appendTerminalLine(`--- Reading ${subArgs} with root permissions ---`, "line-system");
-                        appendTerminalLine(virtualFileSystem[subArgs].content, "line-info");
-                    } else {
-                        appendTerminalLine(`Dosya bulunamadı: ${subArgs}`, "line-error");
-                    }
-                }
-            } else {
-                appendTerminalLine("❌ Hatalı şifre denemesi. Bu olay yetkililere rapor edilecek!", "line-error");
-            }
-        }
-
-        function handleLs() {
-            appendTerminalLine(`Directory listing for: ${currentVirtualDir}`, "line-system");
-            appendTerminalLine("Permissions  Owner    Group        Name", "line-system");
-            for (let path in virtualFileSystem) {
-                if (path !== '/' && path.startsWith(currentVirtualDir) && path.replace(currentVirtualDir, "").split("/").length === 2) {
-                    let f = virtualFileSystem[path];
-                    let name = path.replace(currentVirtualDir + "/", "");
-                    appendTerminalLine(`${f.perm}   ${f.owner}   ${f.group}   ${name}`, f.isDir ? "line-success" : "line-info");
-                }
-            }
-        }
-
-        function handleCat(filePath) {
-            let fullPath = filePath.startsWith("/") ? filePath : currentVirtualDir + "/" + filePath;
-            let fileNode = virtualFileSystem[fullPath];
-            if (!fileNode) { appendTerminalLine(`cat: ${filePath}: Dosya bulunamadı.`, "line-error"); return; }
-            if (fileNode.isDir) { appendTerminalLine(`cat: ${filePath}: Bir dizin okunamaz.`, "line-error"); return; }
-            if (fileNode.owner === "root" && currentUserLevelNum < 4) {
-                appendTerminalLine("Permission Denied: SRE (Lvl 4) veya üstü yetki gerekir.", "line-error");
-                return;
-            }
-            appendTerminalLine(fileNode.content, "line-info");
-        }
-
-        function handleChmod(parts) {
-            if(parts.length < 3) { appendTerminalLine("Kullanım: chmod +x <dosya>", "line-warning"); return; }
-            let mask = parts[1]; let target = parts[2];
-            let fullPath = target.startsWith("/") ? target : currentVirtualDir + "/" + target;
-            if(virtualFileSystem[fullPath]) {
-                if(currentUserLevelNum < 3) { appendTerminalLine("HATA: İzin maskelerini manipüle etmek Kernel Dev yetkisi gerektirir.", "line-error"); return; }
-                virtualFileSystem[fullPath].perm = mask.includes("7") ? "-rwxr-xr-x" : "-rwxrwxrwx";
-                appendTerminalLine(`[OK] Maske güncellendi -> '${virtualFileSystem[fullPath].perm}'`, "line-success");
-            } else { appendTerminalLine("Dosya bulunamadı.", "line-error"); }
-        }
-
-        function handleChown(parts) {
-            if(parts.length < 3) { appendTerminalLine("Kullanım: chown <sahip> <dosya>", "line-warning"); return; }
-            let owner = parts[1]; let target = parts[2];
-            let fullPath = target.startsWith("/") ? target : currentVirtualDir + "/" + target;
-            if(virtualFileSystem[fullPath]) {
-                if(currentUserLevelNum < 4) { appendTerminalLine("HATA: Sahiplik devri SRE yetkisi gerektirir.", "line-error"); return; }
-                virtualFileSystem[fullPath].owner = owner;
-                appendTerminalLine(`[OK] Sahiplik devredildi -> ${owner}`, "line-success");
-            } else { appendTerminalLine("Dosya bulunamadı.", "line-error"); }
-        }
-
-        function handleDockerCommand(parts) {
-            if (parts.length < 2) { appendTerminalLine("Kullanım: docker ps | docker stop <name>", "line-warning"); return; }
-            let sub = parts[1].toLowerCase();
-            
-            if (sub === 'ps') {
-                appendTerminalLine("CONTAINER ID   IMAGE                         STATUS          UPTIME          NAMES", "line-system");
-                let idCount = 821931;
-                for (let cName in dockerContainers) {
-                    let c = dockerContainers[cName];
-                    let col = c.status === "RUNNING" ? "line-success" : "line-error";
-                    appendTerminalLine(`dc0f${idCount}   ${c.image.padEnd(28)}  ${c.status.padEnd(14)}  ${c.uptime.padEnd(14)}  ${cName}`, col);
-                    idCount += 142;
-                }
-            } else if (sub === 'stop') {
-                let name = parts[2];
-                if (!name || !dockerContainers[name]) { appendTerminalLine("Geçersiz konteyner.", "line-error"); return; }
-                if (currentUserLevelNum < 3) { appendTerminalLine("Erişim Reddedildi: Kernel Developer gereklidir.", "line-error"); return; }
-                
-                dockerContainers[name].status = "STOPPED";
-                appendTerminalLine(`[Docker] Konteyner kapatıldı: ${name}`, "line-warning");
-                
-                if (name === "portfolio-frontend") {
-                    appendTerminalLine("[⚠️ KRİTİK]: Arayüz konteyneri çöktü!", "line-error");
-                    document.getElementById('main-terminal').style.opacity = "0.2";
-                }
-                
-                runK8sSelfHealing(name);
-                setTimeout(() => {
-                    if (name === "portfolio-frontend") document.getElementById('main-terminal').style.opacity = "1";
-                }, 3500);
-            }
-        }
-
-        function printMetricsView() {
-            appendTerminalLine("📊 === PROMETHEUS METRICS MONITORING ===", "line-success");
-            let cpuBar = isOverclockActive ? "██████████████████▒▒ 92%" : "██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒ 32%";
-            let ramBar = "████████████▒▒▒▒▒▒▒▒ 64% (21.4 GB / 32 GB)";
-            let rpsVal = isOverclockActive ? Math.floor(Math.random()*800)+900 : Math.floor(Math.random()*150)+40;
-            
-            appendTerminalLine(`[VIRTUAL CPU LOAD] : ${cpuBar}`, isOverclockActive ? "line-error" : "line-success");
-            appendTerminalLine(`[MEMORY ALLOCATION]: ${ramBar}`, "line-info");
-            appendTerminalLine(`[NETWORK PACKETS]  : IN: ${Math.floor(Math.random()*500)} pkt/s | OUT: ${Math.floor(Math.random()*300)} pkt/s`, "line-muted");
-            appendTerminalLine(`[HTTP REQUESTS/SEC]: ${rpsVal} RPS`, "line-system");
-        }
-
-        function handleSystemctl(parts) {
-            if (parts.length < 3) { appendTerminalLine("Kullanım: systemctl [stop/start/restart] <servis-adi>", "line-warning"); return; }
-            let action = parts[1].toLowerCase();
-            let unit = parts[2].toLowerCase();
-
-            if (!DAEMON_REGISTRY[unit]) { appendTerminalLine(`Hata: '${unit}' servisi bulunamadı.`, "line-error"); return; }
-            if (currentUserLevelNum < 4) { appendTerminalLine("HATA: Systemctl komutlarını yürütmek SRE gerektirir.", "line-error"); return; }
-
-            if (action === 'stop') {
-                DAEMON_REGISTRY[unit].status = "STOPPED";
-                appendTerminalLine(`[systemctl] Servis durduruldu: ${unit}`, "line-warning");
-            } else if (action === 'start' || action === 'restart') {
-                DAEMON_REGISTRY[unit].status = "RUNNING";
-                appendTerminalLine(`[systemctl] Servis başlatıldı: ${unit}`, "line-success");
-            }
-            renderServicesUi();
-            renderNavbowDaemons();
-        }
-
-        function handleJournalctl(parts) {
-            let unitArg = parts.find(p => p.startsWith("--unit="));
-            if (!unitArg) { appendTerminalLine("Kullanım: journalctl -f --unit=deploy-watcherd", "line-warning"); return; }
-            let unitName = unitArg.split("=")[1];
-            if (!DAEMON_REGISTRY[unitName]) { appendTerminalLine("Servis kaydı bulunamadı.", "line-error"); return; }
-            appendTerminalLine(`--- Canlı Akış Günlükleri: ${DAEMON_REGISTRY[unitName].name}.service ---`, "line-system");
-            appendTerminalLine(`[LOG] [${Date.now() - 5000}] SPI Thread pool allocation verified.`, "line-muted");
-            appendTerminalLine(`[LOG] [${Date.now() - 2000}] Watchdog status check: 0 flaws reported.`, "line-success");
-        }
-
-        function handleIptables(parts) {
-            let fullStr = parts.join(" ");
-            if (fullStr.includes("DROP") && fullStr.includes("80")) {
-                iptablesHttpDropped = true;
-                appendTerminalLine("[FIREWALL] ⛔ Kural eklendi: Port 80 trafiği DROP edildi.", "line-error");
-                document.getElementById('daemon-live-indicator').innerText = "[DISCONNECTED]";
-                document.getElementById('daemon-live-indicator').style.color = "var(--error)";
-            } else if (fullStr.includes("-F") || fullStr.includes("ACCEPT")) {
-                iptablesHttpDropped = false;
-                appendTerminalLine("[FIREWALL] ✅ Kurallar sıfırlandı.", "line-success");
-                document.getElementById('daemon-live-indicator').innerText = "[LIVE]";
-                document.getElementById('daemon-live-indicator').style.color = "var(--success)";
-            } else {
-                appendTerminalLine("Aktif Firewall Tablosu: Chain INPUT (Policy ACCEPT).", "line-muted");
-            }
-        }
-
-        function handleStrace(cmdArg) {
-            if (!cmdArg) { appendTerminalLine("Kullanım: strace cat config.json", "line-warning"); return; }
-            appendTerminalLine(`[strace] Tracking syscalls for: '${cmdArg}'`, "line-system");
-            setTimeout(() => { appendTerminalLine("execve(\"/bin/cat\", [\"cat\"], 0x7ffea1b2) = 0", "line-muted"); }, 100);
-            setTimeout(() => { appendTerminalLine("openat(AT_FDCWD, \"File\", O_RDONLY) = 3", "line-warning"); }, 200);
-            setTimeout(() => { appendTerminalLine("read(3, \"...\", 128) = 64", "line-muted"); }, 300);
-            setTimeout(() => { appendTerminalLine("close(3) = 0", "line-muted"); }, 400);
-        }
-
-        function printNetstat() {
-            appendTerminalLine("Proto Recv-Q Send-Q Local Address           Foreign Address         State", "line-system");
-            appendTerminalLine("tcp        0      0 127.0.0.1:6379          0.0.0.0:* LISTEN (vfs-db)", "line-muted");
-            appendTerminalLine("tcp        0      0 192.168.1.44:52132      140.82.121.4:443        ESTABLISHED (github-api)", "line-success");
-            appendTerminalLine("tcp6       0      0 :::80                   :::* LISTEN (portfolio-front)", "line-muted");
-        }
-
-        // ==========================================================================
-        // ESKİ FONKSİYONLAR: FACEID, OVERCLOCK, VAULT, SELF-DESTRUCT
-        // ==========================================================================
-        function triggerFaceIDScan() {
-            let scanLine = document.getElementById('faceid-scanline');
-            scanLine.style.display = 'block';
-            appendTerminalLine("FaceID Biyometrik Tarayıcı Başlatıldı. Lazer matrisi taranıyor...", "line-system");
-            setTimeout(() => {
-                scanLine.style.display = 'none';
-                appendTerminalLine("Biyometrik Taraması Tamamlandı. Erişim Onaylandı: Dağhan", "line-success");
-            }, 2000);
-        }
-
-        function toggleOverclock() {
-            isOverclockActive = !isOverclockActive;
-            let btn = document.getElementById('oc-toggle-btn');
-            let statusText = document.getElementById('oc-status-text');
-            if (isOverclockActive) {
-                document.body.classList.add('overclocked');
-                statusText.innerText = "OVERCLOCK AKTİF (6800 RPM [MAX])";
-                statusText.style.color = "var(--error)";
-                btn.innerText = "Overclock Kapat [Normal Mod]";
-                appendTerminalLine(">> KRİTİK UYARI: AMD Ryzen Z1 Extreme hız aşırtma modu devrede! Fanlar: 6800 RPM.", "line-warning");
-            } else {
-                document.body.classList.remove('overclocked');
-                statusText.innerText = "NORMAL MOD (2400 RPM)";
-                statusText.style.color = "var(--success)";
-                btn.innerText = "Overclock [OC] Modunu Tetikle";
-                appendTerminalLine(">> Donanım normal moda döndü.", "line-success");
-            }
-        }
-
-        function runThermalWatchdog() {
-            DAEMON_REGISTRY.core.cpu = 9.8;
-            appendTerminalLine("[⚠️ WATCHDOG]: Overclock modu aktif. Sıcaklık izleniyor...", "line-warning");
-            watchdogInterval = setInterval(() => {
-                cpuTemperature += Math.floor(Math.random() * 6) + 3;
-                appendTerminalLine(`[TELEMETRİ]: CPU Sıcaklığı -> ${cpuTemperature}°C`, cpuTemperature > 85 ? "line-error" : "line-warning");
-                if(cpuTemperature >= 100) {
-                    clearInterval(watchdogInterval);
-                    appendTerminalLine("🚨 [CRITICAL]: Sistem erime seviyesinde! Failsafe tetikleniyor...", "line-error");
-                    activateGlobalEmergency();
-                }
-            }, 1500);
-        }
-
-        function activateGlobalEmergency() {
-            isEmergencyActive = true;
-            document.getElementById('attack-overlay').style.display = 'flex';
-            document.getElementById('tv-static-canvas').style.display = 'block';
-            playFailSafeSiren();
-            
-            let logStream = document.getElementById('fake-log-stream');
-            let streamInterval = setInterval(() => {
-                if(!isEmergencyActive) { clearInterval(streamInterval); return; }
-                let p = document.createElement('p');
-                p.innerText = `[RECOVERY-LOG] Core sector ${Math.floor(Math.random()*500)} cooling sequence bypass flag generated.`;
-                logStream.appendChild(p);
-                logStream.scrollTop = logStream.scrollHeight;
-            }, 500);
-        }
-
-        function deactivateGlobalEmergency() {
-            isEmergencyActive = false;
-            document.getElementById('attack-overlay').style.display = 'none';
-            document.getElementById('tv-static-canvas').style.display = 'none';
-            stopFailSafeSiren();
-            cpuTemperature = 45;
-            appendTerminalLine("[SUCCESS] Küresel acil durum bayrağı el ile kaldırıldı.", "line-success");
-        }
-
-        function saveToVault() {
-            let cellName = document.getElementById('vault-cell-name').value.trim();
-            let cellData = document.getElementById('vault-cell-data').value;
-            if (!cellName) return;
-            localStorage.setItem("vault_" + cellName, cellData);
-            alert("[BAŞARILI] Veri Kuantum Hücre Veritabanına şifrelenerek kilitlendi.");
-        }
-
-        function loadFromVault() {
-            let cellName = document.getElementById('vault-cell-name').value.trim();
-            if (!cellName) return;
-            let data = localStorage.getItem("vault_" + cellName);
-            if (data !== null) {
-                document.getElementById('vault-cell-data').value = data;
-                alert("[BAŞARILI] Hücre şifresi çözüldü.");
-            } else {
-                alert("[HATA] Hücre matriste bulunamadı!");
-            }
-        }
-
-        function initiateSelfDestruct() {
-            appendTerminalLine("!! KENDİ KENDİNİ İMHA PROTOKOLÜ TETİKLENDİ !!", "line-error");
-            let counter = 5;
-            let destructInterval = setInterval(() => {
-                if (counter > 0) {
-                    appendTerminalLine(`Sistem imhasına kalan süre: ${counter}...`, "line-warning");
-                    counter--;
-                } else {
-                    clearInterval(destructInterval);
-                    document.getElementById('z9-screen').style.display = 'block';
-                }
-            }, 1000);
-        }
-
-        function verifyBypassMaster() {
-            let key = document.getElementById('bypass-key').value;
-            if (key === CORESYS_KEYS.MASTER_KEY) {
-                clearInterval(lockCountdownInterval);
-                document.getElementById('brute-lock-screen').style.display = 'none';
-                wrongAttemptsCount = 0;
-                switchUserLevel('lvl1');
-                document.getElementById('user-level-selector').value = 'lvl1';
-                appendTerminalLine(">> Master Kripto Anahtarı ile siber mühür kırıldı.", "line-success");
-            } else {
-                alert("Master Bypass anahtarı geçersiz!");
-            }
-            document.getElementById('bypass-key').value = "";
-        }
     </script>
 </body>
 </html>
