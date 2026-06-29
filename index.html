@@ -51,10 +51,13 @@
         #persistent-lockdown-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #050000; z-index: var(--z-lockdown); display: none; flex-direction: column; justify-content: center; align-items: center; border: 10px solid var(--critical-red); box-shadow: inset 0 0 150px var(--critical-red); }
         .lockdown-timer { font-size: 8rem; color: var(--error); font-weight: bold; text-shadow: 0 0 30px var(--error); margin: 20px 0; animation: pulseText 1s infinite; }
         
-        #cowboy-repair-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #001100; z-index: var(--z-lockdown); display: none; flex-direction: column; justify-content: center; align-items: center; border: 5px solid var(--success); }
-        .repair-gear { font-size: 5rem; color: var(--cowboy-gold); animation: spinGear 2s linear infinite; margin-bottom: 30px; }
-        .repair-progress-bar { width: 60%; height: 30px; border: 2px solid var(--success); background: #000; margin-top: 20px; position: relative; }
-        .repair-fill { height: 100%; width: 0%; background: var(--success); box-shadow: 0 0 15px var(--success); transition: width 1s linear; }
+        #cowboy-repair-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0a0a0a; z-index: var(--z-lockdown); display: none; flex-direction: column; padding: 30px; font-family: 'Courier New', monospace; border: 4px solid #ff6600; box-shadow: inset 0 0 50px rgba(255, 102, 0, 0.2); }
+.linux-header { color: #ff6600; font-size: 1.3rem; margin-bottom: 15px; border-bottom: 1px dashed #ff6600; padding-bottom: 10px; font-weight: bold; letter-spacing: 1px; }
+.linux-log-box { flex-grow: 1; width: 100%; background: #000000; border: 1px solid #333; padding: 20px; overflow-y: auto; color: #ffffff; font-size: 0.9rem; line-height: 1.6; margin-bottom: 15px; text-align: left; }
+.repair-progress-bar { width: 100%; height: 15px; border: 1px solid #ff6600; background: #000; position: relative; }
+.repair-fill { height: 100%; width: 0%; background: #ffffff; box-shadow: 0 0 10px rgba(255, 255, 255, 0.8); transition: width 0.1s ease; }
+.log-ok { color: #ff6600; font-weight: bold; }
+.log-info { color: #ffffff; }
 
         .aegis-shield-active { position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: 5px solid var(--aegis-shield); box-shadow: inset 0 0 50px var(--aegis-glow); pointer-events: none; z-index: 999; animation: aegisPulse 2s infinite alternate; }
         .telemetry-graph { height: 100px; background: repeating-linear-gradient(90deg, transparent, transparent 10px, rgba(0, 255, 102, 0.1) 10px, rgba(0, 255, 102, 0.1) 11px); border: 1px solid var(--success); position: relative; overflow: hidden; }
