@@ -18,13 +18,16 @@
             --neon-white: #ffffff; --text-muted: #9999aa;
             --bg-dark: #020203; --panel-bg: rgba(10, 10, 15, 0.95);
             --border-neon: 1px solid #ff6600; --border-heavy: 2px solid #b34700;
-            --success: #00ff66; --error: #ff3333; --warning: #ffcc00; --critical-red: #8b0000;
+            --success: #00ff66; --error: #ff3333;
+            --warning: #ffcc00; --critical-red: #8b0000;
             --nambow-purple: #bc13fe; --nambow-glow: rgba(188, 19, 254, 0.6);
             --cowboy-gold: #ffaa00; --cowboy-glow: rgba(255, 170, 0, 0.6);
-            --complex-blue: #0088ff; --complex-glow: rgba(0, 136, 255, 0.6);
+            --complex-blue: #0088ff;
+            --complex-glow: rgba(0, 136, 255, 0.6);
             --nebula-pink: #ff007f;
             --cowboy-plus-crimson: #dc143c; --cowboy-plus-glow: rgba(220, 20, 60, 0.8);
-            --aegis-shield: #00ffff; --aegis-glow: rgba(0, 255, 255, 0.5);
+            --aegis-shield: #00ffff;
+            --aegis-glow: rgba(0, 255, 255, 0.5);
             --z-bg: -10; --z-panel: 10; --z-modal: 1000; --z-lockdown: 9999;
         }
 
@@ -34,10 +37,10 @@
         ::-webkit-scrollbar-thumb { background: var(--primary-orange); border-radius: 4px; }
 
         #main-container { display: none; flex-direction: column; padding: 20px; gap: 20px; width: 100%; height: 100%; overflow-y: auto; position: relative; z-index: var(--z-panel); }
-        .matrix-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: var(--z-bg); opacity: 0.2; transition: all 0.5s ease; }
+        .matrix-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vw; z-index: var(--z-bg); opacity: 0.2; transition: all 0.5s ease; }
 
         /* ==========================================================================
-           2. 5-PIN'Lİ SİBER GİRİŞ EKRANI
+           2. SİBER GİRİŞ EKRANI
            ========================================================================== */
         #login-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9990; }
         .login-box { border: 2px solid var(--primary-orange); padding: 50px; text-align: center; box-shadow: 0 0 30px var(--dark-orange); background: rgba(0,0,0,0.9); border-radius: 10px; position: relative; overflow: hidden; }
@@ -46,18 +49,19 @@
         .pin-slot:focus { box-shadow: 0 0 20px var(--primary-orange); background: rgba(255, 102, 0, 0.2); transform: scale(1.1); }
 
         /* ==========================================================================
-           3. OP MODÜLLER VE EKRANLAR (CSS)
+           3. KRİTİK EKRANLAR (LOCKDOWN VE COWBOY OTO-ONARIM)
            ========================================================================== */
         #persistent-lockdown-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #050000; z-index: var(--z-lockdown); display: none; flex-direction: column; justify-content: center; align-items: center; border: 10px solid var(--critical-red); box-shadow: inset 0 0 150px var(--critical-red); }
         .lockdown-timer { font-size: 8rem; color: var(--error); font-weight: bold; text-shadow: 0 0 30px var(--error); margin: 20px 0; animation: pulseText 1s infinite; }
         
-        #cowboy-repair-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0a0a0a; z-index: var(--z-lockdown); display: none; flex-direction: column; padding: 30px; font-family: 'Courier New', monospace; border: 4px solid #ff6600; box-shadow: inset 0 0 50px rgba(255, 102, 0, 0.2); }
-.linux-header { color: #ff6600; font-size: 1.3rem; margin-bottom: 15px; border-bottom: 1px dashed #ff6600; padding-bottom: 10px; font-weight: bold; letter-spacing: 1px; }
-.linux-log-box { flex-grow: 1; width: 100%; background: #000000; border: 1px solid #333; padding: 20px; overflow-y: auto; color: #ffffff; font-size: 0.9rem; line-height: 1.6; margin-bottom: 15px; text-align: left; }
-.repair-progress-bar { width: 100%; height: 15px; border: 1px solid #ff6600; background: #000; position: relative; }
-.repair-fill { height: 100%; width: 0%; background: #ffffff; box-shadow: 0 0 10px rgba(255, 255, 255, 0.8); transition: width 0.1s ease; }
-.log-ok { color: #ff6600; font-weight: bold; }
-.log-info { color: #ffffff; }
+        #cowboy-repair-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #050508; z-index: var(--z-lockdown); display: none; flex-direction: column; padding: 40px; font-family: 'Courier New', monospace; border: 6px solid #ffaa00; box-shadow: inset 0 0 80px rgba(255, 170, 0, 0.3); }
+        .linux-header { color: #ffaa00; font-size: 1.4rem; margin-bottom: 15px; border-bottom: 2px dashed #ffaa00; padding-bottom: 10px; font-weight: bold; letter-spacing: 2px; display: flex; justify-content: space-between; }
+        .linux-log-box { flex-grow: 1; width: 100%; background: #000000; border: 2px solid #222; padding: 25px; overflow-y: auto; color: #ffffff; font-size: 0.95rem; line-height: 1.7; margin-bottom: 20px; text-align: left; box-shadow: inset 0 0 20px rgba(0,0,0,1); }
+        .repair-progress-bar { width: 100%; height: 25px; border: 2px solid #ffaa00; background: #000; position: relative; border-radius: 4px; overflow: hidden; }
+        .repair-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #ff6600, #ffaa00); box-shadow: 0 0 20px rgba(255, 170, 0, 0.8); transition: width 0.1s linear; }
+        .log-ok { color: #00ff66; font-weight: bold; }
+        .log-warn { color: #ffcc00; font-weight: bold; }
+        .log-fail { color: #ff3333; font-weight: bold; }
 
         .aegis-shield-active { position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: 5px solid var(--aegis-shield); box-shadow: inset 0 0 50px var(--aegis-glow); pointer-events: none; z-index: 999; animation: aegisPulse 2s infinite alternate; }
         .telemetry-graph { height: 100px; background: repeating-linear-gradient(90deg, transparent, transparent 10px, rgba(0, 255, 102, 0.1) 10px, rgba(0, 255, 102, 0.1) 11px); border: 1px solid var(--success); position: relative; overflow: hidden; }
@@ -72,34 +76,31 @@
         .hyper-overclock-active { filter: contrast(150%) saturate(200%); box-shadow: inset 0 0 100px var(--hyper-orange); }
 
         /* ==========================================================================
-           4. ANİMASYONLAR VE BİLEŞENLER
+           4. PANEL VE BUTON TASARIMLARI
            ========================================================================== */
         @keyframes pulseText { 0%, 100% { opacity: 1; text-shadow: 0 0 30px var(--error); } 50% { opacity: 0.3; text-shadow: 0 0 10px var(--error); } }
-        @keyframes spinGear { 100% { transform: rotate(360deg); } }
         @keyframes aegisPulse { 0% { box-shadow: inset 0 0 20px var(--aegis-glow); border-color: rgba(0,255,255,0.3); } 100% { box-shadow: inset 0 0 80px var(--aegis-glow); border-color: rgba(0,255,255,1); } }
         @keyframes vortexSpin { 0% { transform: rotate(0deg) scale(1); opacity: 1; } 50% { transform: rotate(1080deg) scale(0.1); opacity: 0; } 100% { transform: rotate(2160deg) scale(1); opacity: 1; } }
         @keyframes scanTitanium { 0% { top: 0; opacity: 1; } 90% { top: 100%; opacity: 1; } 100% { top: 100%; opacity: 0; } }
         @keyframes heavyGlitch { 0% { transform: translate(0); filter: hue-rotate(0); } 20% { transform: translate(-5px, 5px); filter: hue-rotate(90deg); } 40% { transform: translate(-5px, -5px); filter: hue-rotate(180deg); } 60% { transform: translate(5px, 5px); filter: hue-rotate(270deg); } 80% { transform: translate(5px, -5px); filter: hue-rotate(360deg); } 100% { transform: translate(0); filter: hue-rotate(0); } }
         @keyframes echoExpand { 0% { width: 10px; height: 10px; opacity: 1; border-width: 5px; } 100% { width: 100vw; height: 100vw; opacity: 0; border-width: 1px; } }
-        @keyframes partyGlow { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
-        .party-mode { animation: partyGlow 2s linear infinite; }
-        @keyframes sonEmirShake { 0% { transform: translate(0, 0); } 20% { transform: translate(-10px, 10px); background: #330000; } 40% { transform: translate(10px, -10px); background: #550000; } 60% { transform: translate(-10px, -10px); background: #110000; } 80% { transform: translate(10px, 10px); background: #440000; } 100% { transform: translate(0, 0); } }
-        .son-emir-active { animation: sonEmirShake 0.3s infinite; border: 8px solid darkred !important; }
-
+        
         .cyber-btn { padding: 15px; background: rgba(0,0,0,0.8); color: var(--neon-white); border: 1px solid var(--primary-orange); cursor: pointer; transition: 0.3s; font-weight: bold; text-transform: uppercase; border-radius: 5px; width: 100%; margin-bottom: 10px; }
         .cyber-btn:hover { background: var(--primary-orange); color: #000; box-shadow: 0 0 15px var(--primary-orange); }
-        .nambow-btn { border-color: var(--nambow-purple); color: var(--nambow-purple); }
-        .nambow-btn:hover { background: var(--nambow-purple); color: #fff; box-shadow: 0 0 20px var(--nambow-purple); }
-        .cowboy-btn { border-color: var(--cowboy-gold); color: var(--cowboy-gold); }
-        .cowboy-btn:hover { background: var(--cowboy-gold); color: #000; box-shadow: 0 0 20px var(--cowboy-gold); }
+        
         .complex-btn { border-color: var(--complex-blue); color: var(--complex-blue); }
         .complex-btn:hover { background: var(--complex-blue); color: #fff; box-shadow: 0 0 20px var(--complex-blue); }
+        
+        .cowboy-btn { border-color: var(--cowboy-gold); color: var(--cowboy-gold); }
+        .cowboy-btn:hover { background: var(--cowboy-gold); color: #000; box-shadow: 0 0 20px var(--cowboy-gold); }
+        
         .cowboy-plus-btn { border-color: var(--cowboy-plus-crimson); color: var(--cowboy-plus-crimson); background: #200000; }
         .cowboy-plus-btn:hover { background: var(--cowboy-plus-crimson); color: #fff; box-shadow: 0 0 30px var(--cowboy-plus-glow); }
 
         .cyber-select, .cyber-input { width: 100%; padding: 12px; background: rgba(0,0,0,0.8); border: 1px solid #555; color: #fff; margin-bottom: 15px; border-radius: 4px; outline: none; }
         .cyber-input:focus { border-color: var(--primary-orange); box-shadow: 0 0 10px var(--glow-orange); }
-        .panel-block { background: var(--panel-bg); border: var(--border-neon); padding: 20px; border-radius: 8px; position: relative; box-shadow: inset 0 0 20px rgba(0,0,0,0.8); }
+        
+        .panel-block { background: var(--panel-bg); border: var(--border-neon); padding: 20px; border-radius: 8px; position: relative; box-shadow: inset 0 0 20px rgba(0,0,0,0.8); display: none; }
         .panel-title { color: var(--primary-orange); border-bottom: 2px solid var(--primary-orange); padding-bottom: 10px; margin-bottom: 15px; font-size: 1.2rem; text-transform: uppercase; }
         
         #navbow-fullscreen-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5, 5, 8, 0.98); z-index: var(--z-modal); display: none; justify-content: center; align-items: center; flex-direction: column; text-align: center; }
@@ -107,7 +108,8 @@
         .modal-border-cowboy { border: 10px solid var(--cowboy-gold); box-shadow: inset 0 0 100px var(--cowboy-glow); }
         .announcement-title { font-size: 4rem; margin-bottom: 20px; font-weight: bold; letter-spacing: 5px; }
         .announcement-body { font-size: 2.5rem; color: #fff; margin-bottom: 40px; padding: 20px; border-bottom: 2px dashed #aaa; }
-        .feature-box { display: flex; align-items: center; justify-content: space-between; padding: 10px; border: 1px solid #444; margin-bottom: 10px; background: rgba(0,0,0,0.5); }
+        
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; width: 100%; }
     </style>
 </head>
 <body>
@@ -127,11 +129,15 @@
     </div>
 
     <div id="cowboy-repair-screen">
-        <div class="repair-gear">⚙️</div>
-        <h2 style="color: var(--success); font-size: 2.5rem; letter-spacing: 3px;">COWBOY OTO-ONARIM SİSTEMİ AKTİF</h2>
-        <p style="color: #aaa; margin-top: 15px;">Çekirdek bütünlüğü yeniden sağlanıyor... Lütfen bekleyin.</p>
-        <div class="repair-progress-bar"><div class="repair-fill" id="repair-fill-bar"></div></div>
-        <p id="repair-log" style="color: var(--success); margin-top: 20px; font-size: 1.1rem;">Veri blokları taranıyor: %0</p>
+        <div class="linux-header">
+            <span>🚀 COWBOY KERNEL AUTO-RECOVERY SYSTEM v4.9</span>
+            <span id="repair-percentage">0%</span>
+        </div>
+        <div class="linux-log-box" id="linux-log-stream"></div>
+        <div class="repair-progress-bar">
+            <div class="repair-fill" id="repair-fill-bar"></div>
+        </div>
+        <p id="repair-log" style="color: var(--cowboy-gold); font-weight: bold;">[STATUS]: Onarım döngüsü tetikleniyor...</p>
     </div>
 
     <div id="login-screen">
@@ -151,7 +157,7 @@
     </div>
 
     <div id="main-container">
-        <div class="panel-block" style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); border-bottom: 3px solid var(--primary-orange);">
+        <div class="panel-block" style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); border-bottom: 3px solid var(--primary-orange); display: flex;">
             <div>
                 <h1 style="color: var(--primary-orange); font-size: 1.5rem; margin-bottom: 5px;">CODE:RACOON OS v12.0</h1>
                 <span style="color: var(--success); font-size: 0.8rem; background: rgba(0,255,102,0.1); padding: 3px 8px; border-radius: 3px; border: 1px solid var(--success);">MİMARİ: Z1 EXTREME</span>
@@ -167,92 +173,68 @@
                     <option value="lvl5">Level 5 - Mimari</option>
                     <option value="lvl6">Level 6 - Ghost</option>
                     <option value="lvl7">Level 7 - Nebula</option>
-                    <option value="lvl8" style="color: var(--nambow-purple);">Level 8 - NAMBOW</option>
-                    <option value="lvl99" style="color: var(--cowboy-plus-crimson); display: none;" id="cowboy-plus-option">Level 99 - COWBOY+</option>
+                    <option value="lvl8" style="color: var(--nambow-purple);">Level 8 - NAMBOW MASTER</option>
+                    <option value="lvl10" style="color: var(--cowboy-plus-crimson); display: none;" id="cowboy-plus-option">Level 10 - COWBOY+</option>
                 </select>
             </div>
         </div>
 
-        <div class="panel-block" style="border-color: #333;">
-            <div class="panel-title" style="color: #fff; border-color: #555; display: flex; justify-content: space-between;">
-                <span>⚙️ ARKA PLAN SERVİSLERİ</span><span style="color: var(--success); font-size: 0.9rem;">TÜMÜ ÇALIŞIYOR</span>
+        <div class="grid-layout">
+            <div id="main-telemetry" class="panel-block" style="display: block;">
+                <div class="panel-title">📡 SİSTEM TELEMETRİSİ</div>
+                <div class="telemetry-graph">
+                    <div class="telemetry-line"></div>
+                </div>
+                <p style="margin-top: 10px; font-size: 0.85rem; color: #888;">APU Tüketimi ve Çekirdek Frekansı Gerçek Zamanlı Akışı.</p>
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div class="feature-box"><span class="feature-label">racoon-core.service</span><span class="feature-status">[AKTİF]</span></div>
-                <div class="feature-box"><span class="feature-label">vfs-sync-daemon</span><span class="feature-status">[AKTİF]</span></div>
-                <div class="feature-box"><span class="feature-label">aegis-firewall.socket</span><span class="feature-status" id="aegis-daemon-status" style="color: #888;">[STANDBY]</span></div>
-                <div class="feature-box"><span class="feature-label">cowboy-telemetry</span><span class="feature-status">[AKTİF]</span></div>
-            </div>
-            <div style="margin-top: 15px;">
-                <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 5px;">Çekirdek Yükleme Matrisi (Real-time)</p>
-                <div class="telemetry-graph" id="main-telemetry"><div class="telemetry-line"></div></div>
-            </div>
-        </div>
 
-        <div class="panel-block" style="border-color: var(--success);">
-            <div class="panel-title" style="color: var(--success); border-color: var(--success);">💿 CORDEX OS ISO İNŞA MOTORU</div>
-            <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 15px;">Cordex_v12_Z1_Edition.iso derlemesini başlatabilirsiniz. Şifre: racoon_iso_2026</p>
-            <div style="display: flex; gap: 10px;">
-                <input type="password" id="iso-password" class="cyber-input" style="margin-bottom: 0; border-color: var(--success); color: var(--success);" placeholder="Derleme Şifresi">
-                <button class="cyber-btn" style="margin-bottom: 0; border-color: var(--success); color: var(--success); width: 200px;" onclick="triggerRealIsoDownload()">DERLE & İNDİR</button>
+            <div id="iso-builder" class="panel-block" style="display: block;">
+                <div class="panel-title">💿 CORDEX LIVE ISO COMPILER</div>
+                <input type="password" id="iso-password" class="cyber-input" placeholder="DERLEME ŞİFRESİ GİRİN">
+                <button class="cyber-btn" onclick="buildCordexIso()">ISO DERLEMEYİ TETİKLE</button>
+                <div id="iso-progress-container" style="display: none; margin-top: 15px;">
+                    <p style="color: var(--success); font-size: 0.9rem; margin-bottom: 5px;" id="iso-status-text">Veri Blokları Hazırlanıyor...</p>
+                    <div style="width: 100%; height: 20px; border: 1px solid var(--success); background: #000; position: relative;">
+                        <div id="iso-progress-fill" style="width: 0%; height: 100%; background: var(--success); box-shadow: 0 0 10px var(--success); transition: width 0.1s;"></div>
+                    </div>
+                </div>
             </div>
-            <div id="iso-progress-container" style="display: none; margin-top: 20px;">
-                <p style="color: var(--success); font-size: 0.8rem; margin-bottom: 5px;" id="iso-status-text">Veri Blokları Hazırlanıyor...</p>
-                <div style="width: 100%; height: 20px; border: 1px solid var(--success); background: #000; position: relative;">
-                    <div id="iso-progress-fill" style="width: 0%; height: 100%; background: var(--success); box-shadow: 0 0 10px var(--success); transition: width 0.1s;"></div>
+
+            <div id="nambow-master-panel" class="panel-block">
+                <div class="panel-title" style="color: var(--nambow-purple); border-color: var(--nambow-purple); text-align: center;">🌌 NAMBOW YÖNETİM MATRİSİ</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <button class="cyber-btn complex-btn" onclick="unlockComplexLayer()">💠 COMPLEX MODÜLÜ</button>
+                    <button class="cyber-btn cowboy-btn" onclick="unlockCowboyLayer()">🤠 COWBOY KONTROL</button>
+                    <button class="cyber-btn cowboy-plus-btn" onclick="unlockCowboyPlusLayer()" style="grid-column: 1 / span 2; padding: 20px; font-size: 1.2rem;">🔥 COWBOY+ LEVEL 10 KİLİDİNİ AÇ 🔥</button>
+                </div>
+            </div>
+
+            <div id="complex-panel" class="panel-block" style="border-color: var(--complex-blue); background: rgba(0, 136, 255, 0.02);">
+                <div class="panel-title" style="color: var(--complex-blue); border-color: var(--complex-blue);">💠 COMPLEX KATMANI ARCHITECTURE</div>
+                <button class="cyber-btn complex-btn" onclick="triggerTitaniumScan()">🔍 TITANIUM SCANNER AKTİF ET</button>
+                <button class="cyber-btn complex-btn" onclick="triggerEchoPing()">🔊 ECHO LOCATOR DETEKTÖRÜ</button>
+                <button class="cyber-btn complex-btn" style="background: rgba(0,136,255,0.1);" onclick="triggerQuantumSync()">🧬 QUANTUM NEXUS SYNC</button>
+            </div>
+
+            <div id="cowboy-panel" class="panel-block" style="border-color: var(--cowboy-gold); background: rgba(255, 170, 0, 0.02);">
+                <div class="panel-title" style="color: var(--cowboy-gold); border-color: var(--cowboy-gold);">🤠 COWBOY MODÜLER DENETLEYİCİ</div>
+                <button class="cyber-btn cowboy-btn" onclick="triggerAegisShield()">🛡️ AEGIS SECURITY SHIELD DEPLOY</button>
+                <button class="cyber-btn cowboy-btn" onclick="triggerChronosDrive()">⏳ CHRONOS SLOW-MOTION ENGINE</button>
+                <button class="cyber-btn cowboy-btn" style="background: rgba(255,170,0,0.1);" onclick="triggerLassoBypass()">🐴 LASSO PROTOCOL BYPASS</button>
+            </div>
+
+            <div id="cowboy-plus-panel" class="panel-block" style="border-color: var(--cowboy-plus-crimson); background: rgba(220, 20, 60, 0.03); grid-column: 1 / -1;">
+                <div class="panel-title" style="color: var(--cowboy-plus-crimson); border-color: var(--cowboy-plus-crimson); text-align: center;">🔥 COWBOY+ ULTIMATE OVERRIDE PANEL (LEVEL 10) 🔥</div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                    <button class="cyber-btn" style="border-color: var(--hyper-orange); color: var(--hyper-orange); background: #331100;" onclick="toggleHyperOverclock()">🚀 HYPER-DRIVE OVERCLOCK</button>
+                    <button class="cyber-btn" style="background: var(--cowboy-plus-crimson);" onclick="triggerGenesisGlitch()">⚡ NEON-GENESIS GLITCH ENGINE ⚡</button>
+                    <button class="cyber-btn" style="border-color: var(--nebula-pink); color: var(--nebula-pink); background: #200010;" onclick="triggerZeroDayInjector()">☣️ CRITICAL ZERO-DAY INJECTOR</button>
                 </div>
             </div>
         </div>
 
-        <div id="nambow-master-panel" class="panel-block" style="display: none; background: rgba(188, 19, 254, 0.05); border: 2px solid var(--nambow-purple);">
-            <div class="panel-title" style="color: var(--nambow-purple); border-color: var(--nambow-purple); text-align: center;">🌌 NAMBOW YÖNETİM MATRİSİ</div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <button class="cyber-btn complex-btn" onclick="unlockComplexLayer()">💠 COMPLEX MODÜLÜ</button>
-                <button class="cyber-btn cowboy-btn" onclick="unlockCowboyLayer()">🤠 COWBOY KONTROL</button>
-                <button class="cyber-btn cowboy-plus-btn" onclick="unlockCowboyPlusLayer()" style="grid-column: 1 / span 2; padding: 20px; font-size: 1.2rem;">🔥 COWBOY+ (OVERRIDE) KİLİDİNİ AÇ 🔥</button>
-            </div>
-        </div>
-
-        <div id="complex-panel" class="panel-block" style="display: none; background: rgba(0, 136, 255, 0.05); border: 2px solid var(--complex-blue);">
-            <div class="panel-title" style="color: var(--complex-blue); border-color: var(--complex-blue);">💠 COMPLEX YAPISAL ANALİZ</div>
-            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <button class="cyber-btn complex-btn" style="flex: 1;" onclick="complexDiagnostic()">STANDART TARAMA</button>
-                <button class="cyber-btn complex-btn" style="flex: 1; border-style: dashed;" onclick="triggerTitaniumScan()">TITANIUM SCANNER</button>
-            </div>
-            <div id="complex-log-area" style="height: 100px; background: #000; border: 1px solid var(--complex-blue); overflow-y: auto; padding: 10px; font-size: 0.8rem; color: var(--complex-blue);">[COMPLEX] Beklemede...</div>
-        </div>
-
-        <div id="cowboy-panel" class="panel-block" style="display: none; background: rgba(255, 170, 0, 0.05); border: 2px solid var(--cowboy-gold);">
-            <div class="panel-title" style="color: var(--cowboy-gold); border-color: var(--cowboy-gold); text-align: center;">🤠 COWBOY STANDART KOMUTA</div>
-            <div style="background: rgba(0,0,0,0.5); padding: 15px; border: 1px solid var(--cowboy-gold); margin-bottom: 20px;">
-                <select id="cowboy-person-select" class="cyber-select" style="border-color: var(--cowboy-gold); color: var(--cowboy-gold); font-weight: bold;">
-                    <option value="Nambow">Nambow</option><option value="Complex">Complex</option><option value="Cowboy">Cowboy</option><option value="Code:Racoon">Code:Racoon</option>
-                </select>
-                <input type="text" id="cowboy-msg-input" class="cyber-input" style="border-color: var(--cowboy-gold); color: var(--cowboy-gold);" placeholder="Duyuru girin...">
-                <button class="cyber-btn cowboy-btn" style="margin-bottom: 0;" onclick="sendCowboyAnnouncement()">YAYINLA</button>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <button class="cyber-btn" style="border-color: var(--warning); color: var(--warning);" onclick="activateCowboyMode('guncelleme')">⚙️ GÜNCELLEME MODU</button>
-                <button class="cyber-btn" style="border-color: #ff007f; color: #ff007f;" onclick="activateCowboyMode('parti')">🎉 PARTİ (ISO RELEASE)</button>
-                <button class="cyber-btn" style="grid-column: 1 / span 2; border-color: var(--error); background: #220000; color: var(--error);" onclick="activateCowboyMode('sonemir')">☢️ SON EMİR (SİSTEMİ YOK ET) ☢️</button>
-            </div>
-        </div>
-
-        <div id="cowboy-plus-panel" class="panel-block cowboy-plus-panel" style="display: none;">
-            <div class="panel-title" style="color: var(--cowboy-plus-crimson); border-color: var(--cowboy-plus-crimson); text-align: center; font-size: 2rem;">🔥 COWBOY+ OVERRIDE 🔥</div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <button class="cyber-btn" style="border-color: var(--aegis-shield); color: var(--aegis-shield);" onclick="toggleAegisFirewall()">🛡️ AEGIS FIREWALL</button>
-                <button class="cyber-btn" style="border-color: #fff; color: #fff;" onclick="triggerVortexPurge()">🌪️ VORTEX CACHE PURGE</button>
-                <button class="cyber-btn" style="border-color: #00ffcc; color: #00ffcc;" onclick="toggleChronosMode()">⏳ CHRONOS TIME-SHIFT</button>
-                <button class="cyber-btn" style="border-color: #888; color: #888;" onclick="toggleGhostCloak()">👻 GHOST PROTOCOL</button>
-                <button class="cyber-btn" style="border-color: var(--neon-cyan); color: var(--neon-cyan);" onclick="triggerEchoPing()">📡 ECHO-LOCATION</button>
-                <button class="cyber-btn" style="border-color: var(--hyper-orange); color: var(--hyper-orange); background: #331100;" onclick="toggleHyperOverclock()">🚀 HYPER-DRIVE OVERCLOCK</button>
-            </div>
-            <button class="cyber-btn" style="width: 100%; margin-top: 15px; background: var(--cowboy-plus-crimson);" onclick="triggerGenesisGlitch()">⚡ NEON-GENESIS GLITCH ENGINE ⚡</button>
-        </div>
-
-        <div id="terminal-block" class="panel-block">
-            <div id="terminal-output" style="flex-grow: 1; overflow-y: auto; color: var(--neon-white); font-size: 15px; padding: 15px; min-height:200px;">
+        <div id="terminal-block" class="panel-block" style="display: flex; flex-direction: column; grid-column: 1 / -1;">
+            <div id="terminal-output" style="flex-grow: 1; overflow-y: auto; color: var(--neon-white); font-size: 15px; padding: 15px; min-height: 250px; background: #000; border: 1px solid #222;">
                 <div style="color: var(--success);">>> Code:Racoon OS Terminal v12.0 Başlatıldı.</div>
             </div>
             <div style="display: flex; gap: 10px; background: #09090e; padding: 15px; border-top: 1px solid #222;">
@@ -263,266 +245,399 @@
     </div>
 
     <div id="navbow-fullscreen-modal">
-        <h1 class="announcement-title" id="modal-title" style="color: var(--neon-purple);">GLOBAL TRANSMISSION</h1>
-        <div class="announcement-body" id="modal-body-text">Boş Mesaj</div>
-        <button class="cyber-btn" style="width: 300px;" onclick="closeFullScreenModal()">BAĞLANTIYI KES</button>
+        <h1 class="announcement-title" id="modal-title">TITLE</h1>
+        <p class="announcement-body" id="modal-body-text">BODY TEXT</p>
+        <button class="cyber-btn" style="width: 300px;" onclick="closeFullScreenModal()">ANLAŞILDI, KATMANI KAPAT</button>
     </div>
 
     <script>
-        /* ==========================================================================
-           TÜM JAVASCRIPT ÇEKİRDEĞİ (EKSİKSİZ VE TEK PARÇA)
-           ========================================================================== */
-        const MASTER_PIN = "20268";
-        const LOCKDOWN_BYPASS_KEY = "20268";
-        const ISO_BUILD_KEY = "racoon_iso_2026";
-        
-        const LEVEL_AUTH_VAULT = {
-            "lvl1": "", "lvl2": "operator_22", "lvl3": "dev_core_33", "lvl4": "admin_sys_44",
-            "lvl5": "architect_55", "lvl6": "ghost_protocol_66", "lvl7": "nebula_override_77",
-            "lvl8": "nambow_god_mode_88", "lvl99": "override_cowboy_plus_99"
-        };
+        const MASTER_PIN = "16542";
+        const ISO_BUILD_KEY = "racoon2026";
+        let currentHierarchy = "lvl1";
 
-        let currentLevel = "lvl1";
-        let bypassTimerActive = false;
-        let opStates = { aegis: false, chronos: false, ghost: false, hyper: false, vortex: false };
+        let opStates = { aegis: false, chronos: false, ghost: false, hyper: false };
 
-        window.onload = function() {
-            let checkLockdown = localStorage.getItem("racoon_son_emir_lock");
-            if (checkLockdown === "ACTIVE") {
-                document.getElementById("login-screen").style.display = "none";
-                document.getElementById("main-container").style.display = "none";
-                document.getElementById("persistent-lockdown-screen").style.display = "flex";
-                startLockdownSequence();
-            } else {
-                let pinBox = document.getElementById("pin1");
-                if(pinBox) pinBox.focus();
-            }
-        };
+        // MATRIX BACKGROUND IMPLEMENTATION
+        const canvas = document.getElementById("matrix-canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*()_+=-";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const rainDrops = Array(Math.floor(columns)).fill(1);
 
-        function startLockdownSequence() {
-            let timerDisplay = document.getElementById("lockdown-timer-display");
-            let inputField = document.getElementById("lockdown-bypass-input");
-            inputField.disabled = true;
-            inputField.placeholder = "SİSTEM MÜHÜRLÜ - BEKLEYİN...";
-            
-            let timeLeft = 60;
-            let countdown = setInterval(() => {
-                timeLeft--;
-                timerDisplay.innerText = `00:${timeLeft < 10 ? '0'+timeLeft : timeLeft}`;
-                if (timeLeft <= 0) {
-                    clearInterval(countdown);
-                    timerDisplay.innerText = "GİRİŞ BEKLENİYOR";
-                    inputField.disabled = false;
-                    inputField.placeholder = "BYPASS ŞİFRESİNİ GİRİN";
-                    inputField.focus();
-                    bypassTimerActive = true;
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = opStates.hyper ? "#ff4500" : "#ff6600";
+            ctx.font = fontSize + "px monospace";
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
                 }
-            }, 1000);
-        }
-
-        function attemptLockdownBypass() {
-            if (!bypassTimerActive) return;
-            let bypassInput = document.getElementById("lockdown-bypass-input").value;
-            let errorMsg = document.getElementById("lockdown-error");
-
-            if (bypassInput === LOCKDOWN_BYPASS_KEY) {
-                errorMsg.style.display = "none";
-                document.getElementById("persistent-lockdown-screen").style.display = "none";
-                startCowboyAutoRepair();
-            } else {
-                errorMsg.style.display = "block";
-                document.getElementById("lockdown-bypass-input").value = "";
-                setTimeout(() => { errorMsg.style.display = "none"; }, 2000);
+                rainDrops[i]++;
             }
         }
+        setInterval(drawMatrix, 30);
 
-        function startCowboyAutoRepair() {
-            let repairScreen = document.getElementById("cowboy-repair-screen");
-            repairScreen.style.display = "flex";
-            let repairBar = document.getElementById("repair-fill-bar");
-            let repairLog = document.getElementById("repair-log");
-            let progress = 0;
-            
-            let repairInterval = setInterval(() => {
-                progress += 5; 
-                repairBar.style.width = progress + "%";
-                repairLog.innerText = `Veri blokları onarılıyor: %${progress}`;
-                if (progress >= 100) {
-                    clearInterval(repairInterval);
-                    repairLog.innerText = "SİSTEM BAŞARIYLA ONARILDI. YENİDEN BAŞLATILIYOR...";
-                    localStorage.removeItem("racoon_son_emir_lock");
-                    setTimeout(() => { window.location.reload(); }, 2000);
-                }
-            }, 1000);
-        }
+        window.addEventListener("resize", () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
 
-        function moveToNext(currentElement, nextElementId) {
-            if (currentElement.value.length >= currentElement.maxLength && nextElementId) {
-                document.getElementById(nextElementId).focus();
+        // LOGIN FLOW
+        function moveToNext(current, nextId) {
+            if (current.value.length >= current.maxLength && nextId) {
+                document.getElementById(nextId).focus();
             }
         }
 
         function checkFullPin() {
-            let pin = document.getElementById("pin1").value + document.getElementById("pin2").value + 
-                      document.getElementById("pin3").value + document.getElementById("pin4").value + 
-                      document.getElementById("pin5").value;
-
+            let pin = "";
+            for(let i=1; i<=5; i++) pin += document.getElementById("pin"+i).value;
             if (pin.length === 5) {
                 if (pin === MASTER_PIN) {
                     document.getElementById("login-screen").style.display = "none";
                     document.getElementById("main-container").style.display = "flex";
                     logTerm("Sistem Ana Girişi Başarılı. Z1 Extreme Mimarisi Senkronize.", "success");
                     startTelemetryStream();
+                    checkSonEmirLockdownState();
                 } else {
-                    let errorMsg = document.getElementById("pin-error");
-                    errorMsg.style.display = "block";
+                    document.getElementById("pin-error").style.display = "block";
                     for(let i=1; i<=5; i++) document.getElementById("pin"+i).value = "";
                     document.getElementById("pin1").focus();
-                    setTimeout(() => { errorMsg.style.display = "none"; }, 2000);
                 }
             }
         }
 
-        function handleLevelSelectChange(val) {
-            if (val === "lvl8" || val === "lvl99") {
-                if (!confirm("KRİTİK UYARI: Yüksek yetki katmanına geçiş yapıyorsunuz. Devam edilsin mi?")) {
-                    document.getElementById("user-level-selector").value = currentLevel;
-                    return;
-                }
-            }
-            if (val !== "lvl1") {
-                let attempt = prompt(`[GÜVENLİK PROTOKOLÜ] ${val.toUpperCase()} katmanı için şifreyi girin:`);
-                if (attempt !== LEVEL_AUTH_VAULT[val]) {
-                    alert("❌ ERİŞİM REDDEDİLDİ!");
-                    document.getElementById("user-level-selector").value = currentLevel;
-                    return;
-                }
-            }
-            switchLevel(val);
-        }
-
-        function switchLevel(lvl) {
-            currentLevel = lvl;
-            document.getElementById("terminal-prompt").innerText = `${lvl}@racoon:~$`;
-            document.getElementById("nambow-master-panel").style.display = "none";
-            document.getElementById("cowboy-panel").style.display = "none";
-            document.getElementById("complex-panel").style.display = "none";
-            document.getElementById("cowboy-plus-panel").style.display = "none";
+        // TERMINAL ENGINE
+        function logTerm(msg, type = "info") {
+            const out = document.getElementById("terminal-output");
+            let color = "var(--neon-white)";
+            if (type === "success") color = "var(--success)";
+            if (type === "error") color = "var(--error)";
+            if (type === "warn") color = "var(--warning)";
+            if (type === "purple") color = "var(--nambow-purple)";
+            if (type === "gold") color = "var(--cowboy-gold)";
+            if (type === "crimson") color = "var(--cowboy-plus-crimson)";
             
-            if (lvl === "lvl8") {
-                document.getElementById("nambow-master-panel").style.display = "block";
-                document.getElementById("terminal-prompt").style.color = "var(--nambow-purple)";
-                document.getElementById("cowboy-plus-option").style.display = "block";
-                logTerm("NAMBOW MATRİSİ AKTİF.", "nambow");
-            } else if (lvl === "lvl99") {
-                document.getElementById("cowboy-plus-panel").style.display = "block";
-                document.getElementById("terminal-prompt").style.color = "var(--cowboy-plus-crimson)";
-                logTerm("🔥 COWBOY+ OVERRIDE AKTİF.", "error");
-            } else {
-                document.getElementById("terminal-prompt").style.color = "var(--primary-orange)";
-            }
-        }
-
-        function unlockComplexLayer() { document.getElementById("complex-panel").style.display = "block"; }
-        function unlockCowboyLayer() { document.getElementById("cowboy-panel").style.display = "block"; }
-        function unlockCowboyPlusLayer() { document.getElementById("user-level-selector").value = "lvl99"; handleLevelSelectChange("lvl99"); }
-
-        function sendCowboyAnnouncement() {
-            let person = document.getElementById("cowboy-person-select").value;
-            let msg = document.getElementById("cowboy-msg-input").value.trim();
-            if (msg === "") return;
-            showFullScreenModal(`[YAYIN KANALI: ${person.toUpperCase()}]`, `${person}:(${msg})`, 'cowboy');
-            document.getElementById("cowboy-msg-input").value = "";
-        }
-
-        function activateCowboyMode(mode) {
-            if (mode === "guncelleme") alert("⚙️ GÜNCELLEME MODU AKTİF");
-            else if (mode === "parti") showFullScreenModal("ISO RELEASED", "Parti Modu Devrede.", "nambow");
-            else if (mode === "sonemir") {
-                if(confirm("DİKKAT! SON EMİR SİSTEMİ KALICI OLARAK KİLİTLER. EMİN MİSİNİZ?")) {
-                    localStorage.setItem("racoon_son_emir_lock", "ACTIVE");
-                    setTimeout(() => { window.location.reload(); }, 2000);
-                }
-            }
-        }
-
-        function toggleAegisFirewall() {
-            opStates.aegis = !opStates.aegis;
-            document.getElementById("aegis-firewall").style.display = opStates.aegis ? "block" : "none";
-            document.getElementById("aegis-firewall").className = opStates.aegis ? "aegis-shield-active" : "";
-            logTerm(opStates.aegis ? "Aegis Aktif" : "Aegis Kapalı", "warning");
+            out.innerHTML += `<div style="color: ${color}; margin-bottom: 4px;">>> [${new Date().toLocaleTimeString()}] ${msg}</div>`;
+            out.scrollTop = out.scrollHeight;
         }
 
         function startTelemetryStream() {
             setInterval(() => {
-                let fakeCPU = Math.floor(Math.random() * 40) + 10;
-                if(opStates.hyper) fakeCPU += 50; 
-                document.querySelector("#main-telemetry .telemetry-line").style.bottom = `${fakeCPU}%`;
+                let fakeCPU = Math.floor(Math.random() * 35) + 15;
+                if(opStates.hyper) fakeCPU += 55;
+                document.querySelector(".telemetry-line").style.bottom = `${fakeCPU}%`;
+            }, 800);
+        }
+
+        // LEVEL MANAGER
+        function handleLevelSelectChange(val) {
+            currentHierarchy = val;
+            const prompt = document.getElementById("terminal-prompt");
+            
+            // Hide custom secret modules by default
+            document.getElementById("nambow-master-panel").style.display = "none";
+            document.getElementById("complex-panel").style.display = "none";
+            document.getElementById("cowboy-panel").style.display = "none";
+            document.getElementById("cowboy-plus-panel").style.display = "none";
+            document.body.className = "";
+
+            if (val === "lvl1") { prompt.innerText = "guest@racoon:~$"; prompt.style.color = "var(--primary-orange)"; }
+            else if (val === "lvl2") { prompt.innerText = "standard@racoon:~$"; prompt.style.color = "var(--success)"; }
+            else if (val === "lvl3") { prompt.innerText = "developer@racoon:~$"; prompt.style.color = "var(--complex-blue)"; }
+            else if (val === "lvl4") { prompt.innerText = "admin@racoon:#"; prompt.style.color = "var(--warning)"; }
+            else if (val === "lvl5") { prompt.innerText = "architect@racoon:#"; prompt.style.color = "#00ffff"; }
+            else if (val === "lvl6") { prompt.innerText = "ghost@kernel:#"; prompt.style.color = "#fff"; document.body.classList.add("ghost-cloaked"); }
+            else if (val === "lvl7") { prompt.innerText = "nebula@void:#"; prompt.style.color = "var(--nebula-pink)"; }
+            else if (val === "lvl8") {
+                prompt.innerText = "nambow@matrix:#"; prompt.style.color = "var(--nambow-purple)";
+                document.getElementById("nambow-master-panel").style.display = "block";
+                logTerm("NAMBOW Yönetim katmanı aktif edildi.", "purple");
+            }
+            else if (val === "lvl10") {
+                prompt.innerText = "COWBOY_PLUS@OVERRIDE:#"; prompt.style.color = "var(--cowboy-plus-crimson)";
+                document.getElementById("cowboy-plus-panel").style.display = "block";
+                logTerm("LEVEL 10 COWBOY+ ÇEKİRDEK KONTROLÜ ELE GEÇİRDİ!", "crimson");
+            }
+            logTerm(`Hiyerarşi değiştirildi: ${val.toUpperCase()}`, "info");
+        }
+
+        // RECOVERY & LOCKDOWN LOGIC
+        function checkSonEmirLockdownState() {
+            if (localStorage.getItem("racoon_son_emir_lock") === "true") {
+                document.getElementById("persistent-lockdown-screen").style.display = "flex";
+                triggerLockdownCountdown();
+            }
+        }
+
+        function triggerLockdownCountdown() {
+            let timerDisplay = document.getElementById("lockdown-timer-display");
+            let count = 10;
+            timerDisplay.innerText = count;
+            
+            let interval = setInterval(() => {
+                count--;
+                timerDisplay.innerText = count;
+                if (count <= 0) {
+                    clearInterval(interval);
+                    triggerCowboyAutoRepair();
+                }
             }, 1000);
         }
 
-        function triggerVortexPurge() {
-            document.body.classList.add("vortex-purge-active");
-            setTimeout(() => { document.body.classList.remove("vortex-purge-active"); document.getElementById("terminal-output").innerHTML = ""; }, 1500);
+        // DETAYLANDIRILMIŞ DETAYLI LINUX LOG STREAM & OTO-ONARIM MOTORU
+        function triggerCowboyAutoRepair() {
+            document.getElementById("persistent-lockdown-screen").style.display = "none";
+            document.getElementById("cowboy-repair-screen").style.display = "flex";
+
+            const logStream = document.getElementById("linux-log-stream");
+            const fillBar = document.getElementById("repair-fill-bar");
+            const statusText = document.getElementById("repair-log");
+            const percentageText = document.getElementById("repair-percentage");
+
+            const repairLogs = [
+                { text: "[  +0.000000] Linux version 6.8.12-racoon-core (gcc version 13.2.0)", type: "info" },
+                { text: "[  +0.021054] CPU0: AMD Ryzen Z1 Extreme APU @ 3.30GHz (8 Cores, 16 Threads)", type: "info" },
+                { text: "[  +0.089124] AMD-Vi: Initialization safe mode enabled.", type: "ok" },
+                { text: "[  +0.142091] Core hardware alignment validation matching perfect state.", type: "ok" },
+                { text: "[  +0.312940] Cordex OS microkernel restoring image partition...", type: "info" },
+                { text: "[  +0.582104] [CRITICAL] SON EMİR PROTOKOLÜ KİLİDİ ALGILANDI (Local Storage Lock)", type: "fail" },
+                { text: "[  +0.812903] Cowboy Auto-Recovery subsystem overriding system hooks...", type: "warn" },
+                { text: "[  +1.102941] Purging file locks in filesystem-racoon configuration layer...", type: "info" },
+                { text: "[  +1.492019] Resetting hardware encryption modules to default master arrays...", type: "ok" },
+                { text: "[  +1.920194] Rebuilding Firebase structure connection pools...", type: "info" },
+                { text: "[  +2.301941] [COWBOY] Cleaning memory block leaks at 0x7FFA41B20C", type: "ok" },
+                { text: "[  +2.710294] [COWBOY] Restoring user permission rulesets to standard level trees...", type: "ok" },
+                { text: "[  +3.201941] [COWBOY] Level 10 architecture option re-validated via local validation", type: "ok" },
+                { text: "[  +3.681204] Flushing network sockets, iptables profiles, and routing gateways...", type: "info" },
+                { text: "[  +4.102914] Core integrity fully verified: Cordex_v12_Z1_Edition setup stable.", type: "ok" },
+                { text: "[  +4.691024] Removing local storage lockdown block entry permanently...", type: "warn" },
+                { text: "[  +5.210941] [SUCCESS] COWBOY AUTO REPAIR SEQUENCE FULLY TERMINATED. PREPARING REBOOT.", type: "ok" }
+            ];
+
+            let currentLogIndex = 0;
+            let progress = 0;
+
+            let repairInterval = setInterval(() => {
+                progress += 2.5;
+                if (progress > 100) progress = 100;
+
+                fillBar.style.width = progress + "%";
+                percentageText.innerText = Math.floor(progress) + "%";
+                statusText.innerText = `[ONARIM DURUMU]: Çekirdek blok tamiri tamamlanıyor... %${Math.floor(progress)}`;
+
+                // Feed detailed logs based on progress markers
+                if (currentLogIndex < repairLogs.length && progress >= (currentLogIndex * (100 / repairLogs.length))) {
+                    let logItem = repairLogs[currentLogIndex];
+                    let logClass = "log-info";
+                    if (logItem.type === "ok") logClass = "log-ok";
+                    if (logItem.type === "warn") logClass = "log-warn";
+                    if (logItem.type === "fail") logClass = "log-fail";
+
+                    logStream.innerHTML += `<div class="${logClass}">${logItem.text}</div>`;
+                    logStream.scrollTop = logStream.scrollHeight;
+                    currentLogIndex++;
+                }
+
+                if (progress >= 100) {
+                    clearInterval(repairInterval);
+                    localStorage.removeItem("racoon_son_emir_lock");
+                    statusText.innerText = "BAŞARIYLA TAMAMLANDI! SİSTEM YENİDEN BAŞLATILIYOR...";
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                }
+            }, 180);
         }
 
-        function toggleChronosMode() { opStates.chronos = !opStates.chronos; document.body.classList.toggle("chronos-slow", opStates.chronos); }
-        function toggleGhostCloak() { opStates.ghost = !opStates.ghost; document.body.classList.toggle("ghost-cloaked", opStates.ghost); }
-        function triggerEchoPing() { let echo = document.getElementById("echo-locator"); echo.classList.remove("ping"); void echo.offsetWidth; echo.classList.add("ping"); }
-        function toggleHyperOverclock() { opStates.hyper = !opStates.hyper; document.body.classList.toggle("hyper-overclock-active", opStates.hyper); }
-        function triggerGenesisGlitch() { document.body.classList.add("genesis-glitch"); setTimeout(() => { document.body.classList.remove("genesis-glitch"); }, 2500); }
-
-        function triggerTitaniumScan() {
-            document.getElementById("titanium-scanner-layer").style.display = "block";
-            setTimeout(() => { document.getElementById("titanium-scanner-layer").style.display = "none"; logTerm("Scan Tamamlandı", "success"); }, 3000);
-        }
-
-        function complexDiagnostic() { logTerm("COMPLEX Tarama başlatıldı...", "complex"); }
-
-        document.getElementById("terminal-input").addEventListener("keypress", function(e) {
-            if (e.key === "Enter") {
-                let cmd = this.value.toLowerCase().trim();
-                logTerm(`guest@racoon:~$ ${cmd}`, "user");
-                if (cmd === "clear") document.getElementById("terminal-output").innerHTML = "";
-                else if (cmd === "help") logTerm("Komutlar: clear, status, scan", "info");
-                else logTerm(`Bilinmeyen komut: ${cmd}`, "error");
-                this.value = "";
+        function attemptLockdownBypass() {
+            let pass = document.getElementById("lockdown-bypass-input").value;
+            if (pass === "20268") {
+                localStorage.removeItem("racoon_son_emir_lock");
+                window.location.reload();
+            } else {
+                document.getElementById("lockdown-error").style.display = "block";
+                setTimeout(() => { document.getElementById("lockdown-error").style.display = "none"; }, 2000);
             }
-        });
-
-        function logTerm(msg, type) {
-            let div = document.createElement("div");
-            div.style.marginBottom = "5px";
-            div.style.color = type === "success" ? "var(--success)" : type === "error" ? "var(--error)" : type === "warning" ? "var(--warning)" : "#ccc";
-            div.innerText = `>> ${msg}`;
-            let t = document.getElementById("terminal-output");
-            t.appendChild(div);
-            t.scrollTop = t.scrollHeight;
         }
 
-        function showFullScreenModal(title, body, style) {
-            let modal = document.getElementById("navbow-fullscreen-modal");
+        // COMPILER CORE
+        function buildCordexIso() {
+            if (document.getElementById("iso-password").value !== ISO_BUILD_KEY) {
+                alert("❌ HATALI DERLEME ŞİFRESİ!");
+                return;
+            }
+            document.getElementById("iso-progress-container").style.display = "block";
+            let fill = document.getElementById("iso-progress-fill");
+            let status = document.getElementById("iso-status-text");
+            let p = 0;
+            let buildInterval = setInterval(() => {
+                p += 4;
+                fill.style.width = p + "%";
+                status.innerText = `ISO Derleniyor: %${p} - Paketler: [linux-firmware, kernel-core, filesystem-racoon]`;
+                if (p >= 100) {
+                    clearInterval(buildInterval);
+                    status.innerText = "DERLEME TAMAMLANDI. BAŞLATILIYOR...";
+                    const blob = new Blob(["ISO_DATA_BLOB_CONTAINING_RACCOON_OS_CORE"], {type: "application/x-iso9660-image"});
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "Cordex_v12_Z1_Edition.iso";
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    logTerm("ISO İndirme başlatıldı: Cordex_v12_Z1_Edition.iso", "success");
+                }
+            }, 150);
+        }
+
+        // BUTTON INTERACTION IMPLEMENTATIONS
+        function unlockComplexLayer() {
+            document.getElementById("complex-panel").style.display = "block";
+            logTerm("Complex panel katman erişimi sağlandı.", "info");
+        }
+        function unlockCowboyLayer() {
+            document.getElementById("cowboy-panel").style.display = "block";
+            logTerm("Cowboy denetleyici katman erişimi sağlandı.", "gold");
+        }
+        function unlockCowboyPlusLayer() {
+            document.getElementById("cowboy-plus-option").style.display = "block";
+            document.getElementById("user-level-selector").value = "lvl10";
+            handleLevelSelectChange("lvl10");
+        }
+
+        function showFullScreenModal(title, body, type) {
+            const modal = document.getElementById("navbow-fullscreen-modal");
             document.getElementById("modal-title").innerText = title;
             document.getElementById("modal-body-text").innerText = body;
-            modal.className = style === 'cowboy' ? "modal-border-cowboy" : "modal-border-nambow";
+            modal.className = type === 'cowboy' ? "modal-border-cowboy" : "modal-border-nambow";
             modal.style.display = "flex";
         }
-        function closeFullScreenModal() { document.getElementById("navbow-fullscreen-modal").style.display = "none"; }
-
-        function triggerRealIsoDownload() {
-            if (document.getElementById("iso-password").value !== ISO_BUILD_KEY) { alert("❌ HATALI ŞİFRE!"); return; }
-            document.getElementById("iso-progress-container").style.display = "block";
-            let fill = document.getElementById("iso-progress-fill"), status = document.getElementById("iso-status-text"), p = 0;
-            let build = setInterval(() => {
-                p += 5; fill.style.width = p + "%"; status.innerText = `Derleniyor: %${p}`;
-                if (p >= 100) {
-                    clearInterval(build); status.innerText = "TAMAMLANDI.";
-                    const url = window.URL.createObjectURL(new Blob(["ISO_DATA"], {type: "application/octet-stream"}));
-                    const a = document.createElement("a"); a.href = url; a.download = "Cordex_v12.iso";
-                    document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url);
-                }
-            }, 100);
+        function closeFullScreenModal() {
+            document.getElementById("navbow-fullscreen-modal").style.display = "none";
         }
+
+        function triggerTitaniumScan() {
+            const scanner = document.getElementById("titanium-scanner-layer");
+            scanner.style.display = "block";
+            logTerm("TITANIUM SCANNER BAŞLATILDI - Tüm bellek blokları taranıyor...", "info");
+            setTimeout(() => { scanner.style.display = "none"; logTerm("Titanium tarama temiz: Donanımsal sızıntı yok.", "success"); }, 3000);
+        }
+
+        function triggerEchoPing() {
+            const ring = document.getElementById("echo-locator");
+            ring.classList.add("ping");
+            logTerm("ECHO LOCATOR PING SİNYALİ GÖNDERİLDİ!", "info");
+            setTimeout(() => { ring.classList.remove("ping"); }, 1500);
+        }
+
+        function triggerAegisShield() {
+            opStates.aegis = !opStates.aegis;
+            const badge = document.getElementById("aegis-status-badge");
+            if(opStates.aegis) {
+                badge.innerText = "AEGIS: AKTİF"; badge.style.color = "var(--success)"; badge.style.borderColor = "var(--success)";
+                document.getElementById("aegis-firewall").className = "aegis-shield-active";
+                logTerm("Aegis Güvenlik Kalkanı Tüm Protokolleri Kilitledi.", "success");
+            } else {
+                badge.innerText = "AEGIS: KAPALI"; badge.style.color = "#666"; badge.style.borderColor = "#444";
+                document.getElementById("aegis-firewall").className = "";
+                logTerm("Aegis Kalkanı Devre Dışı Bırakıldı.", "warn");
+            }
+        }
+
+        function triggerChronosDrive() {
+            opStates.chronos = !opStates.chronos;
+            if(opStates.chronos) {
+                document.body.classList.add("chronos-slow");
+                logTerm("CHRONOS DRIVE ETKİN: Zaman matrisi yavaşlatıldı.", "warn");
+            } else {
+                document.body.classList.remove("chronos-slow");
+                logTerm("Chronos Drive normal senkronizasyona döndü.", "info");
+            }
+        }
+
+        function toggleHyperOverclock() {
+            opStates.hyper = !opStates.hyper;
+            if(opStates.hyper) {
+                document.body.classList.add("hyper-overclock-active");
+                logTerm("🚀 HYPER-DRIVE OVERCLOCK AKTİF! APU FREKANSI %150 SEVİYESİNDE!", "crimson");
+            } else {
+                document.body.classList.remove("hyper-overclock-active");
+                logTerm("Hyper-Drive Kapatıldı. Standart frekans yüküne dönüldü.", "info");
+            }
+        }
+
+        function triggerGenesisGlitch() {
+            document.body.classList.add("genesis-glitch");
+            logTerm("⚡ NEON-GENESIS ENGINE GLITCH MODU TETİKLENDİ ⚡", "error");
+            setTimeout(() => { document.body.classList.remove("genesis-glitch"); }, 1000);
+        }
+
+        // ==========================================================================
+        // 5. YENİ EKLENEN 3 ADET SAHTE/UYDURMA ÖZELLİK FONKSİYONLARI
+        // ==========================================================================
+        
+        // 1. Complex Katmanı İçin: Quantum Nexus Sync
+        function triggerQuantumSync() {
+            logTerm("[COMPLEX] Quantum Nexus Sync katmanı eşleştiriliyor...", "info");
+            setTimeout(() => {
+                logTerm("🧬 Eşleşme Başarılı! Çoklu iş parçacıklı veri matrisi senkronize edildi.", "success");
+                showFullScreenModal("💠 QUANTUM NEXUS MATRİSİ", "Çoklu paralel evren iş parçacığı hattı senkronize edildi. Kod mimarisi kararlı durumda.", "complex");
+            }, 800);
+        }
+
+        // 2. Cowboy Katmanı İçin: Lasso Protocol Bypass
+        function triggerLassoBypass() {
+            logTerm("[COWBOY] Lasso Protocol Bypass tetikleniyor...", "gold");
+            setTimeout(() => {
+                logTerm("🐴 Protokol Atlatıldı: Yerel kimlik denetim zinciri başarıyla bypass edildi.", "warn");
+            }, 600);
+        }
+
+        // 3. Cowboy+ Katmanı İçin: Critical Zero-Day Injector
+        function triggerZeroDayInjector() {
+            logTerm("☣️ CRITICAL ZERO-DAY INJECTOR PROTOKOLÜ ÇALIŞTIRILIYOR...", "crimson");
+            document.body.classList.add("genesis-glitch");
+            setTimeout(() => {
+                document.body.classList.remove("genesis-glitch");
+                logTerm("🔥 Hedef çekirdek tampon bellek taşması tetiklendi ve bellek alanı manipüle edildi!", "error");
+            }, 1200);
+        }
+
+        // COMMAND INPUT INTERFACE
+        document.getElementById("terminal-input").addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                let cmd = this.value.trim().toLowerCase();
+                if (!cmd) return;
+                logTerm(`${cmd}`, "info");
+                this.value = "";
+
+                if (cmd === "help") {
+                    logTerm("Mevcut Komutlar: help, clear, sonemir, stats, levelup", "info");
+                } else if (cmd === "clear") {
+                    document.getElementById("terminal-output").innerHTML = "";
+                } else if (cmd === "sonemir") {
+                    logTerm("!!! ACİL DURUM: SON EMİR TETİKLENDİ !!!", "error");
+                    localStorage.setItem("racoon_son_emir_lock", "true");
+                    document.getElementById("main-container").classList.add("son-emir-active");
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else if (cmd === "stats") {
+                    logTerm(`Aegis Shield: ${opStates.aegis ? "AKTİF" : "KAPALI"} | Hiyerarşi: ${currentHierarchy.toUpperCase()}`, "info");
+                } else if (cmd === "levelup") {
+                    unlockCowboyPlusLayer();
+                } else {
+                    logTerm(`Komut anlaşılamadı: '${cmd}'. Yardım için 'help' yazın.`, "error");
+                }
+            }
+        });
     </script>
 </body>
 </html>
