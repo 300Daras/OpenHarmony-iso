@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code:Racoon OS - Cowboy+ & Complex Architecture v13.5</title>
+    <title>Code:Racoon OS - Ninja & Quantum Architecture v14.0</title>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
@@ -30,17 +30,20 @@
             /* Arka Plan Tonlamaları */
             --bg-dark: #020203; 
             --panel-bg: rgba(10, 10, 15, 0.95);
+            --kuantum-bg: rgba(0, 50, 100, 0.1);
             
             /* Sınır ve Kenarlık Matrisleri */
             --border-neon: 1px solid #ff6600; 
             --border-heavy: 2px solid #b34700;
             --border-white: 2px solid var(--pure-white);
+            --border-kuantum: 2px dashed #00ffff;
             
             /* Durum ve Uyarı Renkleri */
             --success: #00ff66; 
             --error: #ff3333;
             --warning: #ffcc00; 
             --critical-red: #8b0000;
+            --invasion-red: #ff0000;
             
             /* Özel Hiyerarşi Katman Renkleri */
             --nambow-purple: #bc13fe; 
@@ -57,6 +60,7 @@
             
             /* Z-Index Hiyerarşisi */
             --z-bg: -10; 
+            --z-scanline: -5;
             --z-panel: 10; 
             --z-modal: 1000; 
             --z-lockdown: 9999;
@@ -79,6 +83,19 @@
             overflow-x: hidden; 
             width: 100vw; 
             height: 100vh; 
+            transition: filter 0.5s ease;
+        }
+
+        /* İstila Modu Ekran Titremesi ve Renk Kayması */
+        body.invasion-mode {
+            animation: invasionShake 0.5s infinite;
+            filter: contrast(150%) saturate(200%) hue-rotate(300deg);
+            background-color: #220000;
+        }
+
+        /* Parti Modu Renk Cümbüşü */
+        body.party-mode {
+            animation: partyRainbow 2s infinite linear;
         }
         
         ::-webkit-scrollbar { 
@@ -103,6 +120,7 @@
             z-index: var(--z-panel); 
         }
         
+        /* Matris Yağmuru Arka Planı */
         .matrix-bg { 
             position: fixed; 
             top: 0; 
@@ -114,6 +132,25 @@
             transition: all 0.5s ease; 
         }
 
+        /* Tarama Çizgisi (Scanline) Efekti */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            z-index: var(--z-scanline);
+            pointer-events: none;
+        }
+
         /* ==========================================================================
            3. ÇİFT DOĞRULAMALI GİRİŞ EKRANI (PIN & KUANTUM HASH)
            ========================================================================== */
@@ -123,7 +160,7 @@
             left: 0; 
             width: 100vw; 
             height: 100vh; 
-            background: #000; 
+            background: radial-gradient(circle at center, #111, #000); 
             display: flex; 
             flex-direction: column; 
             justify-content: center; 
@@ -135,20 +172,20 @@
             border: 2px solid var(--primary-orange); 
             padding: 50px; 
             text-align: center; 
-            box-shadow: 0 0 30px var(--dark-orange); 
-            background: rgba(0,0,0,0.9); 
-            border-radius: 10px; 
+            box-shadow: 0 0 40px var(--dark-orange), inset 0 0 20px rgba(0,0,0,0.8); 
+            background: rgba(5,5,10,0.95); 
+            border-radius: 15px; 
             position: relative; 
             overflow: hidden; 
-            width: 600px;
+            width: 650px;
         }
 
         .auth-method-selector {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #333;
+            gap: 20px;
+            margin-bottom: 35px;
+            border-bottom: 1px solid #444;
             padding-bottom: 15px;
         }
         
@@ -156,19 +193,22 @@
             background: none;
             border: 1px solid #444;
             color: #888;
-            padding: 10px 20px;
+            padding: 12px 25px;
             cursor: pointer;
             transition: 0.3s;
             font-weight: bold;
             letter-spacing: 2px;
+            border-radius: 4px;
         }
         
         .auth-tab.active {
             border-color: var(--primary-orange);
             color: var(--primary-orange);
+            background: rgba(255, 102, 0, 0.1);
             box-shadow: 0 0 15px rgba(255,102,0,0.3);
         }
 
+        /* PIN Girişi Stilleri */
         .pin-container { 
             display: flex; 
             gap: 15px; 
@@ -177,24 +217,25 @@
         }
         
         .pin-slot { 
-            width: 60px; 
-            height: 80px; 
+            width: 65px; 
+            height: 85px; 
             background: rgba(255, 102, 0, 0.05); 
             border: 2px solid var(--primary-orange); 
             color: var(--primary-orange); 
-            font-size: 40px; 
+            font-size: 45px; 
             text-align: center; 
-            border-radius: 8px; 
+            border-radius: 10px; 
             outline: none; 
-            transition: all 0.3s ease; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
         }
         
         .pin-slot:focus { 
-            box-shadow: 0 0 20px var(--primary-orange); 
+            box-shadow: 0 0 25px var(--primary-orange); 
             background: rgba(255, 102, 0, 0.2); 
-            transform: scale(1.1); 
+            transform: scale(1.15) translateY(-5px); 
         }
 
+        /* Kuantum Hash Girişi Stilleri */
         #quantum-login-section {
             display: none;
             flex-direction: column;
@@ -203,25 +244,26 @@
         }
 
         .quantum-hash-input {
-            width: 80%;
-            padding: 20px;
-            font-size: 20px;
+            width: 85%;
+            padding: 22px;
+            font-size: 22px;
             background: rgba(0, 136, 255, 0.05);
             border: 2px solid var(--complex-blue);
             color: var(--complex-blue);
             text-align: center;
-            letter-spacing: 5px;
+            letter-spacing: 6px;
             outline: none;
-            border-radius: 5px;
-            transition: 0.3s;
+            border-radius: 8px;
+            transition: 0.4s;
         }
 
         .quantum-hash-input:focus {
-            box-shadow: 0 0 25px var(--complex-glow);
+            box-shadow: 0 0 30px var(--complex-glow);
+            background: rgba(0, 136, 255, 0.15);
         }
 
         /* ==========================================================================
-           4. KRİTİK SİSTEM EKRANLARI (SON EMİR & BEYAZ ONARIM)
+           4. KRİTİK SİSTEM EKRANLARI (SON EMİR & BEYAZ ONARIM AŞAMALARI)
            ========================================================================== */
         
         /* Kalıcı Mühür (Lockdown) Ekranı */
@@ -237,20 +279,20 @@
             flex-direction: column; 
             justify-content: center; 
             align-items: center; 
-            border: 10px solid var(--critical-red); 
-            box-shadow: inset 0 0 150px var(--critical-red); 
+            border: 15px solid var(--critical-red); 
+            box-shadow: inset 0 0 200px var(--critical-red); 
         }
         
         .lockdown-timer { 
-            font-size: 8rem; 
+            font-size: 10rem; 
             color: var(--error); 
             font-weight: bold; 
-            text-shadow: 0 0 30px var(--error); 
+            text-shadow: 0 0 40px var(--error); 
             margin: 20px 0; 
-            animation: pulseText 1s infinite; 
+            animation: pulseText 0.8s infinite; 
         }
         
-        /* BEYAZ & FUTURİSTİK COWBOY ONARIM EKRANI */
+        /* BEYAZ & FUTURİSTİK COWBOY ONARIM EKRANI - AŞAMA 1 VE AŞAMA 2 */
         #cowboy-repair-screen { 
             position: fixed; 
             top: 0; 
@@ -261,12 +303,20 @@
             z-index: var(--z-lockdown); 
             display: none; 
             flex-direction: column; 
-            padding: 40px; 
+            padding: 50px; 
             font-family: 'Courier New', monospace; 
             border: 8px solid var(--pure-white); 
-            box-shadow: inset 0 0 100px rgba(255, 255, 255, 0.2); 
-            background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
-            background-size: 20px 20px;
+            box-shadow: inset 0 0 150px rgba(255, 255, 255, 0.3); 
+            background-image: 
+                radial-gradient(circle, rgba(255,255,255,0.1) 2px, transparent 2px),
+                radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 40px 40px, 20px 20px;
+            animation: breatheBackground 4s infinite alternate;
+        }
+
+        @keyframes breatheBackground {
+            0% { box-shadow: inset 0 0 100px rgba(255, 255, 255, 0.1); }
+            100% { box-shadow: inset 0 0 200px rgba(255, 255, 255, 0.4); }
         }
 
         /* Onarım Yetki Katmanı (Şifre İsteyen Kısım) */
@@ -275,65 +325,69 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 2px solid var(--pure-white);
-            padding: 50px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            border: 3px solid var(--pure-white);
+            padding: 60px;
             text-align: center;
-            box-shadow: 0 0 50px var(--white-glow);
+            box-shadow: 0 0 80px var(--white-glow);
             z-index: 10;
-            border-radius: 15px;
-            width: 600px;
+            border-radius: 20px;
+            width: 700px;
         }
 
         #repair-auth-layer h2 {
             color: var(--pure-white);
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-            letter-spacing: 4px;
-            text-shadow: 0 0 15px var(--pure-white);
+            font-size: 2.8rem;
+            margin-bottom: 25px;
+            letter-spacing: 5px;
+            text-shadow: 0 0 20px var(--pure-white);
         }
 
+        /* Gizli Onarım Şifresi Girdisi */
         .white-cyber-input {
             width: 100%;
-            padding: 15px;
-            font-size: 24px;
-            background: rgba(0,0,0,0.8);
+            padding: 18px;
+            font-size: 28px;
+            background: rgba(0,0,0,0.9);
             border: 2px solid var(--pure-white);
             color: var(--pure-white);
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             outline: none;
-            letter-spacing: 5px;
+            letter-spacing: 8px;
             transition: 0.3s;
+            border-radius: 5px;
         }
 
         .white-cyber-input:focus {
-            box-shadow: 0 0 30px var(--white-glow);
-            background: rgba(255,255,255,0.1);
+            box-shadow: 0 0 40px var(--white-glow);
+            background: rgba(255,255,255,0.15);
         }
 
         .white-cyber-btn {
             background: var(--pure-white);
             color: #000;
-            padding: 20px;
-            font-size: 1.5rem;
+            padding: 22px;
+            font-size: 1.6rem;
             font-weight: bold;
             border: none;
             width: 100%;
             cursor: pointer;
             transition: 0.3s;
             text-transform: uppercase;
+            border-radius: 5px;
         }
 
         .white-cyber-btn:hover {
             background: #000;
             color: var(--pure-white);
-            border: 2px solid var(--pure-white);
-            box-shadow: 0 0 40px var(--pure-white);
+            border: 3px solid var(--pure-white);
+            box-shadow: 0 0 50px var(--pure-white);
+            transform: translateY(-2px);
         }
 
-        /* Onarım İşlem Katmanı */
+        /* Aşama 1: Çekirdek Onarım İşlem Katmanı */
         #repair-process-layer {
             display: none;
             flex-direction: column;
@@ -341,91 +395,142 @@
             height: 100%;
         }
 
+        /* Aşama 2: Bilgileri Recover Etme Katmanı */
+        #phase2-recovery-layer {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            animation: quantumShift 1s ease-in-out;
+        }
+
+        @keyframes quantumShift {
+            0% { filter: invert(1) hue-rotate(180deg); opacity: 0; }
+            50% { filter: blur(5px); opacity: 0.5; }
+            100% { filter: none; opacity: 1; }
+        }
+
         .white-linux-header { 
             color: var(--pure-white); 
-            font-size: 1.8rem; 
-            margin-bottom: 20px; 
-            border-bottom: 3px solid var(--pure-white); 
-            padding-bottom: 15px; 
+            font-size: 2rem; 
+            margin-bottom: 25px; 
+            border-bottom: 4px solid var(--pure-white); 
+            padding-bottom: 20px; 
             font-weight: bold; 
-            letter-spacing: 3px; 
+            letter-spacing: 4px; 
             display: flex; 
             justify-content: space-between; 
-            text-shadow: 0 0 10px var(--pure-white);
+            text-shadow: 0 0 15px var(--pure-white);
         }
         
         .white-linux-log-box { 
             flex-grow: 1; 
             width: 100%; 
-            background: rgba(0, 0, 0, 0.8); 
-            border: 2px solid var(--pure-white); 
-            padding: 30px; 
+            background: rgba(0, 0, 0, 0.85); 
+            border: 3px solid var(--pure-white); 
+            padding: 35px; 
             overflow-y: auto; 
             color: var(--ghost-white); 
-            font-size: 1.1rem; 
-            line-height: 1.8; 
-            margin-bottom: 20px; 
+            font-size: 1.2rem; 
+            line-height: 1.9; 
+            margin-bottom: 25px; 
             text-align: left; 
-            box-shadow: inset 0 0 40px rgba(255,255,255,0.1); 
+            box-shadow: inset 0 0 50px rgba(255,255,255,0.15); 
+            border-radius: 8px;
+        }
+
+        /* Bilgi Onarım Log Kutusu Özel Stili */
+        #phase2-log-stream {
+            color: #00ffff;
+            border-color: #00ffff;
+            box-shadow: inset 0 0 50px rgba(0, 255, 255, 0.2);
         }
         
         .white-repair-progress-bar { 
             width: 100%; 
-            height: 35px; 
-            border: 2px solid var(--pure-white); 
-            background: #000; 
+            height: 40px; 
+            border: 3px solid var(--pure-white); 
+            background: #111; 
             position: relative; 
-            border-radius: 4px; 
+            border-radius: 6px; 
             overflow: hidden; 
+        }
+
+        /* Bilgi Onarım İlerleme Çubuğu Özel Stili */
+        #phase2-fill-bar {
+            background: linear-gradient(90deg, #0088ff, #00ffff);
+            box-shadow: 0 0 40px #00ffff;
         }
         
         .white-repair-fill { 
             height: 100%; 
             width: 0%; 
             background: var(--pure-white); 
-            box-shadow: 0 0 30px var(--pure-white); 
-            transition: width 0.1s linear; 
+            box-shadow: 0 0 40px var(--pure-white); 
+            transition: width 0.15s cubic-bezier(0.4, 0, 0.2, 1); 
         }
 
         /* ==========================================================================
-           5. GÖRSEL EFEKTLER VE ANİMASYONLAR
+           5. GÖRSEL EFEKTLER, ANİMASYONLAR VE HATA SİMÜLASYONLARI (NINJA)
            ========================================================================== */
+        
+        /* İstila Modu Titremesi */
+        @keyframes invasionShake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        /* Parti Modu Renk Geçişi */
+        @keyframes partyRainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
         .aegis-shield-active { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            border: 8px solid var(--aegis-shield); box-shadow: inset 0 0 80px var(--aegis-glow); 
-            pointer-events: none; z-index: 999; animation: aegisPulse 1.5s infinite alternate; 
+            border: 10px solid var(--aegis-shield); box-shadow: inset 0 0 100px var(--aegis-glow); 
+            pointer-events: none; z-index: 999; animation: aegisPulse 1s infinite alternate; 
         }
         
         .chronos-slow { 
-            animation-duration: 10s !important; transition-duration: 2s !important; 
-            filter: hue-rotate(180deg) saturate(50%); 
+            animation-duration: 12s !important; transition-duration: 3s !important; 
+            filter: hue-rotate(180deg) saturate(50%) brightness(80%); 
         }
         
         .hyper-overclock-active { 
-            filter: contrast(150%) saturate(200%); 
-            box-shadow: inset 0 0 150px var(--hyper-orange); 
+            filter: contrast(180%) saturate(250%); 
+            box-shadow: inset 0 0 200px var(--hyper-orange); 
         }
 
         .genesis-glitch { 
-            animation: heavyGlitch 0.2s infinite; 
-            filter: invert(1) hue-rotate(90deg);
+            animation: heavyGlitch 0.1s infinite; 
+            filter: invert(1) hue-rotate(120deg);
         }
 
         .titanium-scanner { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 8px; 
-            background: var(--neon-white); box-shadow: 0 0 30px #fff; 
-            animation: scanTitanium 2.5s infinite linear; display: none; z-index: 500; 
+            position: absolute; top: 0; left: 0; width: 100%; height: 10px; 
+            background: var(--neon-white); box-shadow: 0 0 40px #fff; 
+            animation: scanTitanium 2s infinite linear; display: none; z-index: 500; 
         }
 
-        @keyframes pulseText { 0%, 100% { opacity: 1; text-shadow: 0 0 30px var(--error); } 50% { opacity: 0.3; text-shadow: 0 0 10px var(--error); } }
-        @keyframes aegisPulse { 0% { box-shadow: inset 0 0 30px var(--aegis-glow); border-color: rgba(0,255,255,0.4); } 100% { box-shadow: inset 0 0 100px var(--aegis-glow); border-color: rgba(0,255,255,1); } }
+        @keyframes pulseText { 0%, 100% { opacity: 1; text-shadow: 0 0 40px var(--error); } 50% { opacity: 0.3; text-shadow: 0 0 15px var(--error); } }
+        @keyframes aegisPulse { 0% { box-shadow: inset 0 0 40px var(--aegis-glow); border-color: rgba(0,255,255,0.5); } 100% { box-shadow: inset 0 0 120px var(--aegis-glow); border-color: rgba(0,255,255,1); } }
         @keyframes scanTitanium { 0% { top: 0; opacity: 1; } 90% { top: 100%; opacity: 1; } 100% { top: 100%; opacity: 0; } }
         @keyframes heavyGlitch { 
             0% { transform: translate(0); } 
-            20% { transform: translate(-10px, 10px); } 
-            40% { transform: translate(-10px, -10px); } 
-            60% { transform: translate(10px, 10px); } 
-            80% { transform: translate(10px, -10px); } 
+            20% { transform: translate(-15px, 15px); } 
+            40% { transform: translate(-15px, -15px); } 
+            60% { transform: translate(15px, 15px); } 
+            80% { transform: translate(15px, -15px); } 
             100% { transform: translate(0); } 
         }
 
@@ -433,135 +538,191 @@
            6. ARAYÜZ, BUTON VE PANEL TASARIMLARI
            ========================================================================== */
         .cyber-btn { 
-            padding: 15px; 
-            background: rgba(0,0,0,0.8); 
+            padding: 18px; 
+            background: rgba(0,0,0,0.85); 
             color: var(--neon-white); 
             border: 1px solid var(--primary-orange); 
             cursor: pointer; 
             transition: 0.3s; 
             font-weight: bold; 
             text-transform: uppercase; 
-            border-radius: 5px; 
+            border-radius: 6px; 
             width: 100%; 
-            margin-bottom: 10px; 
-            font-size: 0.9rem;
+            margin-bottom: 12px; 
+            font-size: 0.95rem;
+            letter-spacing: 1px;
         }
         
         .cyber-btn:hover { 
             background: var(--primary-orange); 
             color: #000; 
-            box-shadow: 0 0 15px var(--primary-orange); 
+            box-shadow: 0 0 20px var(--primary-orange); 
+            transform: scale(1.02);
         }
         
         .complex-btn { border-color: var(--complex-blue); color: var(--complex-blue); }
-        .complex-btn:hover { background: var(--complex-blue); color: #fff; box-shadow: 0 0 20px var(--complex-blue); }
+        .complex-btn:hover { background: var(--complex-blue); color: #fff; box-shadow: 0 0 25px var(--complex-blue); }
         
         .cowboy-btn { border-color: var(--cowboy-gold); color: var(--cowboy-gold); }
-        .cowboy-btn:hover { background: var(--cowboy-gold); color: #000; box-shadow: 0 0 20px var(--cowboy-gold); }
+        .cowboy-btn:hover { background: var(--cowboy-gold); color: #000; box-shadow: 0 0 25px var(--cowboy-gold); }
         
         .cowboy-plus-btn { border-color: var(--cowboy-plus-crimson); color: var(--cowboy-plus-crimson); background: #200000; }
-        .cowboy-plus-btn:hover { background: var(--cowboy-plus-crimson); color: #fff; box-shadow: 0 0 30px var(--cowboy-plus-glow); }
+        .cowboy-plus-btn:hover { background: var(--cowboy-plus-crimson); color: #fff; box-shadow: 0 0 35px var(--cowboy-plus-glow); }
 
         .critical-lockdown-btn {
             border-color: var(--error);
             color: var(--error);
             background: #2b0000;
-            font-size: 1.1rem;
-            letter-spacing: 2px;
-            animation: pulseText 2s infinite;
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            animation: pulseText 1.5s infinite;
         }
         
         .critical-lockdown-btn:hover {
             background: var(--error);
             color: #fff;
-            box-shadow: 0 0 30px var(--error);
+            box-shadow: 0 0 40px var(--error);
             animation: none;
+            transform: scale(1.05);
         }
 
         .cyber-select, .cyber-input { 
             width: 100%; 
-            padding: 12px; 
-            background: rgba(0,0,0,0.8); 
+            padding: 15px; 
+            background: rgba(0,0,0,0.85); 
             border: 1px solid #555; 
             color: #fff; 
-            margin-bottom: 15px; 
-            border-radius: 4px; 
+            margin-bottom: 18px; 
+            border-radius: 5px; 
             outline: none; 
+            font-size: 1rem;
         }
         
         .cyber-input:focus { 
             border-color: var(--primary-orange); 
-            box-shadow: 0 0 10px var(--glow-orange); 
+            box-shadow: 0 0 15px var(--glow-orange); 
         }
         
         .panel-block { 
             background: var(--panel-bg); 
             border: var(--border-neon); 
-            padding: 20px; 
-            border-radius: 8px; 
+            padding: 25px; 
+            border-radius: 10px; 
             position: relative; 
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8); 
+            box-shadow: inset 0 0 25px rgba(0,0,0,0.9); 
             display: none; 
         }
         
         .panel-title { 
             color: var(--primary-orange); 
             border-bottom: 2px solid var(--primary-orange); 
-            padding-bottom: 10px; 
-            margin-bottom: 15px; 
-            font-size: 1.2rem; 
+            padding-bottom: 12px; 
+            margin-bottom: 20px; 
+            font-size: 1.3rem; 
             text-transform: uppercase; 
+            letter-spacing: 2px;
         }
         
         .grid-layout { 
             display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
-            gap: 20px; 
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); 
+            gap: 25px; 
             width: 100%; 
         }
+
+        /* Modal Ekranı */
+        #navbow-fullscreen-modal { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            background: rgba(5, 5, 8, 0.98); 
+            z-index: var(--z-modal); 
+            display: none; 
+            justify-content: center; 
+            align-items: center; 
+            flex-direction: column; 
+            text-align: center; 
+        }
+        .modal-border-message { border: 10px solid #fff; box-shadow: inset 0 0 100px rgba(255,255,255,0.5); }
+        .announcement-title { font-size: 4rem; margin-bottom: 20px; font-weight: bold; letter-spacing: 5px; color: #fff; }
+        .announcement-body { font-size: 2.5rem; color: #aaa; margin-bottom: 40px; padding: 20px; border-bottom: 2px dashed #aaa; }
+        
+        /* Top Bar Root Oranı Göstergesi */
+        .root-status-indicator {
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 8px 15px;
+            border-radius: 5px;
+            background: rgba(255, 0, 0, 0.2);
+            border: 2px solid var(--error);
+            color: var(--error);
+            margin-left: 20px;
+            transition: all 0.5s;
+        }
+        .root-status-indicator.rooted {
+            background: rgba(0, 255, 102, 0.2);
+            border: 2px solid var(--success);
+            color: var(--success);
+            box-shadow: 0 0 20px var(--success);
+        }
+
     </style>
 </head>
 <body>
 
     <canvas id="matrix-canvas" class="matrix-bg"></canvas>
+    <div class="scanlines"></div>
     <div id="aegis-firewall" style="display: none;"></div>
     <div id="titanium-scanner-layer" class="titanium-scanner"></div>
 
     <div id="persistent-lockdown-screen">
-        <h1 style="color: var(--error); font-size: 4rem; text-shadow: 0 0 20px var(--error); letter-spacing: 5px;">SİSTEM YOK EDİLDİ</h1>
-        <p style="color: #aaa; font-size: 1.5rem; margin-top: 10px;">SON EMİR PROTOKOLÜ GEREĞİ ÇEKİRDEK KENDİNİ MÜHÜRLEDİ.</p>
-        <p style="color: #666; font-size: 1rem; margin-top: 10px;">(Sistemi kurtarmak için SİSTEMİ ZORLA butonuna basarak Onarım Katmanına geçin)</p>
-        <div class="lockdown-timer" id="lockdown-timer-display">FATAL</div>
-        <button class="cyber-btn" style="width: 400px; padding: 20px; font-size: 1.2rem; border-color: var(--error); color: var(--error);" onclick="triggerCowboyAutoRepair()">SİSTEMİ ZORLA (REPAIR)</button>
+        <h1 style="color: var(--error); font-size: 4.5rem; text-shadow: 0 0 30px var(--error); letter-spacing: 6px;">SİSTEM YOK EDİLDİ</h1>
+        <p style="color: #aaa; font-size: 1.6rem; margin-top: 15px;">SON EMİR PROTOKOLÜ GEREĞİ ÇEKİRDEK KENDİNİ MÜHÜRLEDİ.</p>
+        <p style="color: #666; font-size: 1.1rem; margin-top: 15px;">(Sistemi kurtarmak için SİSTEMİ ZORLA butonuna basarak Onarım Katmanına geçin)</p>
+        <div class="lockdown-timer" id="lockdown-timer-display">FATAL_ERR</div>
+        <button class="cyber-btn" style="width: 450px; padding: 25px; font-size: 1.4rem; border-color: var(--error); color: var(--error);" onclick="triggerCowboyAutoRepair()">SİSTEMİ ZORLA (REPAIR MODU)</button>
     </div>
 
     <div id="cowboy-repair-screen">
         
         <div id="repair-auth-layer">
             <h2>COWBOY OTO-ONARIM AĞI</h2>
-            <p style="color: #ccc; margin-bottom: 20px;">Sistemi kurtarmak için yüksek yetki onarım anahtarı gereklidir.</p>
-            <input type="password" id="repair-password-input" class="white-cyber-input" placeholder="GÜVENLİK ANAHTARI GİRİNİZ" autocomplete="off">
+            <p style="color: #ccc; margin-bottom: 25px; font-size: 1.1rem;">Sistemi kurtarmak için yüksek yetki onarım anahtarı gereklidir.</p>
+            <input type="password" id="repair-password-input" class="white-cyber-input" placeholder="GÜVENLİK ANAHTARI..." autocomplete="off">
             <button class="white-cyber-btn" onclick="validateRepairPassword()">DOĞRULA VE ÇEKİRDEĞİ ONAR</button>
-            <p id="repair-auth-error" style="color: var(--error); margin-top: 20px; display: none; font-weight: bold; font-size: 1.2rem;">ERİŞİM REDDEDİLDİ. GEÇERSİZ ANAHTAR.</p>
         </div>
 
         <div id="repair-process-layer">
             <div class="white-linux-header">
-                <span>🚀 COWBOY KERNEL AUTO-RECOVERY v13.5 - WHITE EDITION</span>
+                <span>🚀 COWBOY KERNEL AUTO-RECOVERY v14.0 - WHITE EDITION</span>
                 <span id="repair-percentage" style="color: var(--pure-white);">0%</span>
             </div>
             <div class="white-linux-log-box" id="linux-log-stream"></div>
             <div class="white-repair-progress-bar">
                 <div class="white-repair-fill" id="repair-fill-bar"></div>
             </div>
-            <p id="repair-log" style="color: var(--pure-white); font-weight: bold; margin-top: 15px; text-shadow: 0 0 10px var(--pure-white);">[STATUS]: Yetki bekleniyor...</p>
+            <p id="repair-log" style="color: var(--pure-white); font-weight: bold; margin-top: 15px; font-size: 1.2rem; text-shadow: 0 0 15px var(--pure-white);">[STATUS]: Yetki doğrulandı. Çekirdek onarımı başlatılıyor...</p>
+        </div>
+
+        <div id="phase2-recovery-layer">
+            <div class="white-linux-header" style="border-bottom-color: #00ffff; color: #00ffff;">
+                <span>🧬 AŞAMA 2: ÖZEL BİLGİ RECOVERY (KUANTUM+ RESTORE)</span>
+                <span id="phase2-percentage" style="color: #00ffff;">0%</span>
+            </div>
+            <div class="white-linux-log-box" id="phase2-log-stream"></div>
+            <div class="white-repair-progress-bar" style="border-color: #00ffff;">
+                <div class="white-repair-fill" id="phase2-fill-bar"></div>
+            </div>
+            <p id="phase2-log" style="color: #00ffff; font-weight: bold; margin-top: 15px; font-size: 1.2rem; text-shadow: 0 0 15px #00ffff;">[STATUS]: Veri kurtarma düğümleri aktifleştirildi...</p>
         </div>
     </div>
 
     <div id="login-screen">
         <div class="login-box">
-            <h1 style="color: var(--primary-orange); text-shadow: 0 0 15px var(--glow-orange); font-size: 40px; margin-bottom: 5px;">CODE:RACOON OS</h1>
-            <p style="color: var(--success); font-size: 14px; margin-bottom: 25px; font-weight: bold; letter-spacing: 2px;">Z1 EXTREME APU | ÇİFT AŞAMALI GÜVENLİK AĞI</p>
+            <h1 style="color: var(--primary-orange); text-shadow: 0 0 20px var(--glow-orange); font-size: 45px; margin-bottom: 10px; font-weight: 900;">CODE:RACOON OS</h1>
+            <p style="color: var(--success); font-size: 15px; margin-bottom: 30px; font-weight: bold; letter-spacing: 3px;">Z1 EXTREME APU | ÇİFT AŞAMALI GÜVENLİK AĞI</p>
             
             <div class="auth-method-selector">
                 <button class="auth-tab active" id="tab-pin" onclick="switchLoginMethod('pin')">STANDART PIN</button>
@@ -569,37 +730,42 @@
             </div>
 
             <div id="pin-login-section">
-                <p style="color: #aaa;">GÜVENLİ AĞA GİRİŞ İÇİN 5 HANELİ PIN GİRİN</p>
+                <p style="color: #aaa; font-size: 1.1rem;">GÜVENLİ AĞA GİRİŞ İÇİN PIN GİRİN (Şifre sonu C)</p>
                 <div class="pin-container">
                     <input type="text" class="pin-slot" maxlength="1" oninput="moveToNext(this, 'pin2')" id="pin1" autocomplete="off" autofocus>
                     <input type="text" class="pin-slot" maxlength="1" oninput="moveToNext(this, 'pin3')" id="pin2" autocomplete="off">
                     <input type="text" class="pin-slot" maxlength="1" oninput="moveToNext(this, 'pin4')" id="pin3" autocomplete="off">
                     <input type="text" class="pin-slot" maxlength="1" oninput="moveToNext(this, 'pin5')" id="pin4" autocomplete="off">
-                    <input type="text" class="pin-slot" maxlength="1" oninput="checkFullPin()" id="pin5" autocomplete="off">
+                    <input type="text" class="pin-slot" maxlength="1" oninput="moveToNext(this, 'pin6')" id="pin5" autocomplete="off">
+                    <input type="text" class="pin-slot" maxlength="1" oninput="checkFullPin()" id="pin6" autocomplete="off">
                 </div>
-                <p id="pin-error" style="color: var(--error); margin-top: 20px; display: none; font-weight: bold;">HATA: YETKİSİZ PIN DENEMESİ</p>
+                <p id="pin-error" style="color: var(--error); margin-top: 25px; display: none; font-weight: bold; font-size: 1.2rem;">HATA: YETKİSİZ PIN DENEMESİ</p>
             </div>
 
             <div id="quantum-login-section">
-                <p style="color: var(--complex-blue);">NÖRAL AĞA BAĞLANMAK İÇİN KUANTUM HASH GİRİN</p>
-                <input type="text" id="quantum-hash-input" class="quantum-hash-input" placeholder="HASH..." autocomplete="off">
-                <button class="cyber-btn complex-btn" style="width: 80%; margin-top: 15px; font-size: 1.2rem;" onclick="checkQuantumHash()">SİSTEME BAĞLAN</button>
-                <p id="quantum-error" style="color: var(--error); margin-top: 15px; display: none; font-weight: bold;">HATA: HASH EŞLEŞMESİ BAŞARISIZ</p>
+                <p style="color: var(--complex-blue); font-size: 1.1rem;">NÖRAL AĞA BAĞLANMAK İÇİN KUANTUM HASH GİRİN</p>
+                <input type="text" id="quantum-hash-input" class="quantum-hash-input" placeholder="HASH CODE..." autocomplete="off">
+                <button class="cyber-btn complex-btn" style="width: 85%; margin-top: 20px; font-size: 1.3rem; padding: 20px;" onclick="checkQuantumHash()">SİSTEME BAĞLAN</button>
+                <p id="quantum-error" style="color: var(--error); margin-top: 20px; display: none; font-weight: bold; font-size: 1.2rem;">HATA: HASH EŞLEŞMESİ BAŞARISIZ</p>
             </div>
         </div>
     </div>
 
     <div id="main-container">
         
-        <div class="panel-block" style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); border-bottom: 3px solid var(--primary-orange); display: flex;">
-            <div>
-                <h1 style="color: var(--primary-orange); font-size: 1.8rem; margin-bottom: 5px;">CODE:RACOON OS v13.5</h1>
-                <span style="color: var(--success); font-size: 0.9rem; background: rgba(0,255,102,0.1); padding: 5px 10px; border-radius: 3px; border: 1px solid var(--success);">MİMARİ: Z1 EXTREME</span>
-                <span id="aegis-status-badge" style="color: #666; font-size: 0.9rem; background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 3px; border: 1px solid #444; margin-left: 10px;">AEGIS: KAPALI</span>
+        <div class="panel-block" style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); border-bottom: 4px solid var(--primary-orange); display: flex;">
+            <div style="display: flex; align-items: center;">
+                <div>
+                    <h1 style="color: var(--primary-orange); font-size: 2rem; margin-bottom: 5px;">CODE:RACOON OS v14.0</h1>
+                    <span style="color: var(--success); font-size: 0.95rem; background: rgba(0,255,102,0.1); padding: 5px 12px; border-radius: 3px; border: 1px solid var(--success);">MİMARİ: Z1 EXTREME</span>
+                </div>
+                <div id="global-root-status" class="root-status-indicator">
+                    ROOT EDİLME ORANI: %0
+                </div>
             </div>
-            <div style="text-align: right; width: 300px;">
-                <label style="color: #aaa; font-size: 0.9rem; display: block; margin-bottom: 5px;">SİSTEM HİYERARŞİSİ (ŞİFRELİ):</label>
-                <select id="user-level-selector" class="cyber-select" style="margin-bottom: 0; padding: 10px; font-weight: bold; font-size: 1rem;" onchange="handleLevelSelectChange(this.value)">
+            <div style="text-align: right; width: 320px;">
+                <label style="color: #aaa; font-size: 1rem; display: block; margin-bottom: 8px;">SİSTEM HİYERARŞİSİ (ŞİFRELİ):</label>
+                <select id="user-level-selector" class="cyber-select" style="margin-bottom: 0; padding: 12px; font-weight: bold; font-size: 1.1rem; color: var(--primary-orange);" onchange="handleLevelSelectChange(this.value)">
                     <option value="lvl1">Level 1 - Konuk</option>
                     <option value="lvl2">Level 2 - Standart</option>
                     <option value="lvl3">Level 3 - Geliştirici</option>
@@ -615,17 +781,38 @@
 
         <div class="grid-layout">
             
+            <div id="messaging-panel" class="panel-block" style="display: block; border-color: #fff;">
+                <div class="panel-title" style="color: #fff; border-color: #fff;">📡 SİSTEM MODLARI VE İLETİŞİM AĞI</div>
+                <p style="color: #aaa; font-size: 0.95rem; margin-bottom: 15px;">Ağ genelinde görsel ve işitsel manipülasyonlar.</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                    <button class="cyber-btn" style="border-color: #ff00ff; color: #ff00ff;" onclick="togglePartyMode()">🎉 PARTİ MODU</button>
+                    <button class="cyber-btn" style="border-color: var(--invasion-red); color: var(--invasion-red);" onclick="toggleInvasionMode()">👽 İSTİLA MODU</button>
+                </div>
+                <input type="text" id="global-message-input" class="cyber-input" placeholder="Global mesajınızı buraya girin...">
+                <button class="cyber-btn" style="background: var(--pure-white); color: #000;" onclick="sendGlobalMessage()">💬 TÜM AĞA MESAJ GÖNDER</button>
+            </div>
+
+            <div id="kuantum-plus-panel" class="panel-block" style="display: block; border: var(--border-kuantum); background: var(--kuantum-bg);">
+                <div class="panel-title" style="color: #00ffff; border-color: #00ffff;">🧬 KUANTUM+ ÖZEL VERİ GİRİŞİ</div>
+                <p style="color: #00ffff; font-size: 0.9rem; margin-bottom: 15px;">Bu panelden girilen özel bilgiler Aşama 2 onarımında kurtarılır. Ayrıca Root oranını artırarak ISO derlemesini aktif edebilirsiniz.</p>
+                <input type="text" id="special-data-input" class="cyber-input" style="border-color: #00ffff; color: #00ffff;" placeholder="Örn: VFS_NODE_KEY=0x99A, PROJE_KODU=CORDEX...">
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="root-percent-input" class="cyber-input" style="border-color: #00ffff; color: #00ffff; width: 40%;" placeholder="Root Oranı (0-100)" min="0" max="100">
+                    <button class="cyber-btn" style="border-color: #00ffff; color: #00ffff; width: 60%; margin-bottom: 15px;" onclick="updateKuantumData()">VERİLERİ İŞLE & ROOT GÜNCELLE</button>
+                </div>
+            </div>
+
             <div id="iso-builder-panel" class="panel-block" style="display: block; border-color: var(--success);">
                 <div class="panel-title" style="color: var(--success); border-color: var(--success);">💿 CORDEX LIVE ISO COMPILER</div>
-                <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 15px;">Derlemeyi başlatmak için şifre girin. (Şifre: racoon_iso_2026)</p>
+                <p style="color: #aaa; font-size: 0.95rem; margin-bottom: 15px;">DİKKAT: ISO derleyebilmek için Sistemin <b>%100 Root</b> edilmiş olması gerekir. (Şifre: racoon_iso_2026C)</p>
                 <div style="display: flex; gap: 10px;">
                     <input type="password" id="iso-password" class="cyber-input" style="margin-bottom: 0; border-color: var(--success); color: var(--success);" placeholder="DERLEME ŞİFRESİ">
-                    <button class="cyber-btn" style="margin-bottom: 0; border-color: var(--success); color: var(--success); width: 200px;" onclick="buildCordexIso()">DERLE & İNDİR</button>
+                    <button class="cyber-btn" style="margin-bottom: 0; border-color: var(--success); color: var(--success); width: 220px;" onclick="buildCordexIso()">DERLE & İNDİR</button>
                 </div>
                 <div id="iso-progress-container" style="display: none; margin-top: 20px;">
-                    <p style="color: var(--success); font-size: 0.8rem; margin-bottom: 5px;" id="iso-status-text">Veri Blokları Hazırlanıyor...</p>
-                    <div style="width: 100%; height: 20px; border: 1px solid var(--success); background: #000; position: relative;">
-                        <div id="iso-progress-fill" style="width: 0%; height: 100%; background: var(--success); box-shadow: 0 0 10px var(--success); transition: width 0.1s;"></div>
+                    <p style="color: var(--success); font-size: 0.9rem; margin-bottom: 5px;" id="iso-status-text">Veri Blokları Hazırlanıyor...</p>
+                    <div style="width: 100%; height: 25px; border: 1px solid var(--success); background: #000; position: relative;">
+                        <div id="iso-progress-fill" style="width: 0%; height: 100%; background: var(--success); box-shadow: 0 0 15px var(--success); transition: width 0.1s;"></div>
                     </div>
                 </div>
             </div>
@@ -635,14 +822,14 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <button class="cyber-btn complex-btn" onclick="unlockComplexLayer()">💠 COMPLEX MODÜLÜNÜ AÇ</button>
                     <button class="cyber-btn cowboy-btn" onclick="unlockCowboyLayer()">🤠 COWBOY KONTROLÜ AÇ</button>
-                    <button class="cyber-btn cowboy-plus-btn" onclick="unlockCowboyPlusLayer()" style="grid-column: 1 / span 2; padding: 20px; font-size: 1.2rem;">🔥 COWBOY+ KİLİDİNİ KIR VE AÇ 🔥</button>
+                    <button class="cyber-btn cowboy-plus-btn" onclick="unlockCowboyPlusLayer()" style="grid-column: 1 / span 2; padding: 22px; font-size: 1.3rem;">🔥 COWBOY+ KİLİDİNİ KIR VE AÇ 🔥</button>
                 </div>
             </div>
 
             <div id="complex-panel" class="panel-block" style="border-color: var(--complex-blue); background: rgba(0, 136, 255, 0.05);">
                 <div class="panel-title" style="color: var(--complex-blue); border-color: var(--complex-blue);">💠 COMPLEX KATMANI ARCHITECTURE</div>
-                <p style="color: #aaa; margin-bottom: 15px; font-size: 0.9rem;">Sistem donanımını ve kuantum durumunu analiz eder.</p>
-                <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+                <p style="color: #aaa; margin-bottom: 15px; font-size: 0.95rem;">Sistem donanımını ve kuantum durumunu analiz eder.</p>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
                     <button class="cyber-btn complex-btn" onclick="triggerTitaniumScan()">🔍 TITANIUM SCANNER (DONANIM ANALİZİ)</button>
                     <button class="cyber-btn complex-btn" style="background: rgba(0,136,255,0.15);" onclick="triggerQuantumSync()">🧬 QUANTUM NEXUS SYNC (KUANTUM EŞLEŞTİRME)</button>
                 </div>
@@ -650,58 +837,68 @@
 
             <div id="cowboy-panel" class="panel-block" style="border-color: var(--cowboy-gold); background: rgba(255, 170, 0, 0.05);">
                 <div class="panel-title" style="color: var(--cowboy-gold); border-color: var(--cowboy-gold);">🤠 COWBOY MODÜLER DENETLEYİCİ</div>
-                <p style="color: #aaa; margin-bottom: 15px; font-size: 0.9rem;">Gerçek zamanlı güvenlik ve zaman manipülasyonu.</p>
-                <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+                <p style="color: #aaa; margin-bottom: 15px; font-size: 0.95rem;">Gerçek zamanlı güvenlik ve zaman manipülasyonu.</p>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
                     <button class="cyber-btn cowboy-btn" onclick="triggerAegisShield()">🛡️ AEGIS SECURITY SHIELD DEPLOY</button>
                     <button class="cyber-btn cowboy-btn" style="background: rgba(255,170,0,0.15);" onclick="triggerChronosDrive()">⏳ CHRONOS SLOW-MOTION ENGINE</button>
-                    <button class="cyber-btn critical-lockdown-btn" style="margin-top: 15px;" onclick="executeSonEmir()">⚠️ SON EMİR (SİSTEMİ MÜHÜRLE) ⚠️</button>
+                    <button class="cyber-btn critical-lockdown-btn" style="margin-top: 20px;" onclick="executeSonEmir()">⚠️ SON EMİR (SİSTEMİ MÜHÜRLE) ⚠️</button>
                 </div>
             </div>
 
             <div id="cowboy-plus-panel" class="panel-block" style="border-color: var(--cowboy-plus-crimson); background: rgba(220, 20, 60, 0.05); grid-column: 1 / -1;">
-                <div class="panel-title" style="color: var(--cowboy-plus-crimson); border-color: var(--cowboy-plus-crimson); text-align: center; font-size: 1.8rem;">🔥 COWBOY+ ULTIMATE OVERRIDE PANEL (LEVEL 10) 🔥</div>
-                <p style="color: #aaa; margin-bottom: 25px; text-align: center; font-size: 1rem;">Sistem çekirdeğine mutlak erişim ve donanım limitlerini kaldırma.</p>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
-                    <button class="cyber-btn" style="border-color: var(--hyper-orange); color: var(--hyper-orange); background: #331100; font-size: 1.1rem; padding: 20px;" onclick="toggleHyperOverclock()">🚀 HYPER-DRIVE OVERCLOCK</button>
-                    <button class="cyber-btn" style="border-color: var(--neon-white); color: var(--neon-white); background: #222; font-size: 1.1rem; padding: 20px;" onclick="triggerGenesisGlitch()">⚡ NEON-GENESIS GLITCH INJECTOR</button>
-                    <button class="cyber-btn critical-lockdown-btn" style="grid-column: 1 / -1; font-size: 1.3rem; padding: 25px;" onclick="executeSonEmir()">💀 MUTLAK SON EMİR (GERİ DÖNÜŞ YOK - SİSTEMİ YIK) 💀</button>
+                <div class="panel-title" style="color: var(--cowboy-plus-crimson); border-color: var(--cowboy-plus-crimson); text-align: center; font-size: 2rem;">🔥 COWBOY+ ULTIMATE OVERRIDE PANEL (LEVEL 10) 🔥</div>
+                <p style="color: #aaa; margin-bottom: 30px; text-align: center; font-size: 1.1rem;">Sistem çekirdeğine mutlak erişim ve donanım limitlerini kaldırma.</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;">
+                    <button class="cyber-btn" style="border-color: var(--hyper-orange); color: var(--hyper-orange); background: #331100; font-size: 1.2rem; padding: 25px;" onclick="toggleHyperOverclock()">🚀 HYPER-DRIVE OVERCLOCK</button>
+                    <button class="cyber-btn" style="border-color: var(--neon-white); color: var(--neon-white); background: #222; font-size: 1.2rem; padding: 25px;" onclick="triggerGenesisGlitch()">⚡ NEON-GENESIS GLITCH INJECTOR</button>
+                    <button class="cyber-btn critical-lockdown-btn" style="grid-column: 1 / -1; font-size: 1.5rem; padding: 30px;" onclick="executeSonEmir()">💀 MUTLAK SON EMİR (GERİ DÖNÜŞ YOK - SİSTEMİ YIK) 💀</button>
                 </div>
             </div>
         </div>
 
         <div id="terminal-block" class="panel-block" style="display: flex; flex-direction: column; grid-column: 1 / -1;">
-            <div id="terminal-output" style="flex-grow: 1; overflow-y: auto; color: var(--neon-white); font-size: 16px; padding: 20px; min-height: 300px; background: #000; border: 1px solid #222; box-shadow: inset 0 0 15px rgba(0,0,0,1);">
-                <div style="color: var(--success); margin-bottom: 10px;">>> Code:Racoon OS Terminal v13.5 Başlatıldı. Z1 Extreme Devrede. Sistem Güvenli.</div>
+            <div id="terminal-output" style="flex-grow: 1; overflow-y: auto; color: var(--neon-white); font-size: 18px; padding: 25px; min-height: 350px; background: #000; border: 2px solid #222; box-shadow: inset 0 0 25px rgba(0,0,0,1);">
+                <div style="color: var(--success); margin-bottom: 15px; font-weight: bold;">>> Code:Racoon OS Terminal v14.0 Başlatıldı. Z1 Extreme Devrede. Sistem Güvenli.</div>
             </div>
-            <div style="display: flex; gap: 10px; background: #09090e; padding: 15px; border-top: 1px solid #222;">
-                <span id="terminal-prompt" style="color: var(--primary-orange); font-weight: bold; font-size: 18px;">guest@racoon:~$</span>
-                <input type="text" id="terminal-input" style="flex-grow: 1; background: none; border: none; color: var(--success); outline: none; font-size: 18px; font-weight: bold;" placeholder="Komut çalıştır... (Yardım için 'help' yazın)" autocomplete="off">
+            <div style="display: flex; gap: 15px; background: #09090e; padding: 20px; border-top: 2px solid #222;">
+                <span id="terminal-prompt" style="color: var(--primary-orange); font-weight: bold; font-size: 20px;">guest@racoon:~$</span>
+                <input type="text" id="terminal-input" style="flex-grow: 1; background: none; border: none; color: var(--success); outline: none; font-size: 20px; font-weight: bold;" placeholder="Komut çalıştır... (Yardım için 'help' yazın)" autocomplete="off">
             </div>
         </div>
     </div>
 
-    <script>
-        // --- SİSTEM ŞİFRE YAPILANDIRMALARI ---
-        const PIN_PASSWORD = "20268"; // İstenen yeni PIN şifresi
-        const QUANTUM_HASH = "CORDEX-Z1"; // 2. Karmaşık Yöntem Şifresi
-        const REPAIR_PASSWORD = "RECOVER"; // Beyaz Onarım ekranı şifresi
-        const ISO_BUILD_KEY = "racoon_iso_2026"; // ISO Şifresi
+    <div id="navbow-fullscreen-modal">
+        <h1 class="announcement-title" id="modal-title">SİSTEM MESAJI</h1>
+        <p class="announcement-body" id="modal-body-text">...</p>
+        <button class="cyber-btn" style="width: 400px; font-size: 1.2rem; background: #fff; color: #000;" onclick="closeFullScreenModal()">ONAYLA VE KAPAT</button>
+    </div>
 
-        // Levellere Şifre Tanımlaması (İstendiği gibi her levele şifre eklendi)
+    <script>
+        // --- SİSTEM ŞİFRE YAPILANDIRMALARI (C EKLENTİLİ) ---
+        const PIN_PASSWORD = "20268C"; // 6 Haneli yeni PIN şifresi
+        const QUANTUM_HASH = "CORDEX-Z1C"; // 2. Karmaşık Yöntem Şifresi
+        const REPAIR_PASSWORD = "RECOVERC"; // Beyaz Onarım ekranı şifresi
+        const ISO_BUILD_KEY = "racoon_iso_2026C"; // ISO Şifresi
+
+        // Levellere Şifre Tanımlaması (Sonlarına C eklendi)
         const LEVEL_PASSWORDS = {
             "lvl1": "", 
-            "lvl2": "lvl2",
-            "lvl3": "lvl3",
-            "lvl4": "lvl4",
-            "lvl5": "lvl5",
-            "lvl6": "lvl6",
-            "lvl7": "lvl7",
-            "lvl8": "lvl8",
-            "lvl10": "lvl10"
+            "lvl2": "lvl2C",
+            "lvl3": "lvl3C",
+            "lvl4": "lvl4C",
+            "lvl5": "lvl5C",
+            "lvl6": "lvl6C",
+            "lvl7": "lvl7C",
+            "lvl8": "lvl8C",
+            "lvl10": "lvl10C"
         };
         
         let previousLevel = "lvl1";
-        let opStates = { aegis: false, chronos: false, hyper: false };
+        let opStates = { aegis: false, chronos: false, hyper: false, party: false, invasion: false };
+        
+        // Kuantum+ Global Verileri
+        let currentRootPercentage = 0;
+        let storedSpecialData = [];
 
         // --- GİRİŞ METOTLARI KONTROLLERİ ---
         function switchLoginMethod(method) {
@@ -712,6 +909,7 @@
                 document.getElementById('tab-pin').classList.add('active');
                 document.getElementById('pin-login-section').style.display = 'block';
                 document.getElementById('quantum-login-section').style.display = 'none';
+                document.getElementById('pin1').focus();
             } else {
                 document.getElementById('tab-quantum').classList.add('active');
                 document.getElementById('pin-login-section').style.display = 'none';
@@ -729,14 +927,14 @@
         // 1. Giriş Yöntemi: PIN Doğrulama
         function checkFullPin() {
             let pin = "";
-            for(let i=1; i<=5; i++) pin += document.getElementById("pin"+i).value;
-            if (pin.length === 5) {
+            for(let i=1; i<=6; i++) pin += document.getElementById("pin"+i).value;
+            if (pin.length === 6) {
                 if (pin === PIN_PASSWORD) { grantAccess("STANDART PIN DOĞRULANDI. GÜVENLİ AĞA BAĞLANILDI."); } 
                 else {
                     document.getElementById("pin-error").style.display = "block";
-                    for(let i=1; i<=5; i++) document.getElementById("pin"+i).value = "";
+                    for(let i=1; i<=6; i++) document.getElementById("pin"+i).value = "";
                     document.getElementById("pin1").focus();
-                    setTimeout(() => { document.getElementById("pin-error").style.display = "none"; }, 2000);
+                    setTimeout(() => { document.getElementById("pin-error").style.display = "none"; }, 2500);
                 }
             }
         }
@@ -748,7 +946,7 @@
             else {
                 document.getElementById("quantum-error").style.display = "block";
                 document.getElementById("quantum-hash-input").value = "";
-                setTimeout(() => { document.getElementById("quantum-error").style.display = "none"; }, 2000);
+                setTimeout(() => { document.getElementById("quantum-error").style.display = "none"; }, 2500);
             }
         }
 
@@ -763,7 +961,7 @@
         // --- LEVEL ŞİFRE SİSTEMİ ---
         function handleLevelSelectChange(val) {
             if(val !== "lvl1") {
-                let pass = prompt(`[ ${val.toUpperCase()} ] Katmanı yüksek güvenlik ile şifrelenmiştir. Lütfen şifreyi giriniz:`);
+                let pass = prompt(`[ ${val.toUpperCase()} ] Katmanı yüksek güvenlik ile şifrelenmiştir. Lütfen şifreyi giriniz (C Harfli):`);
                 if(pass !== LEVEL_PASSWORDS[val]) {
                     alert("❌ HATALI LEVEL ŞİFRESİ! Erişim Reddedildi. Hiyerarşi korunuyor.");
                     document.getElementById("user-level-selector").value = previousLevel;
@@ -816,9 +1014,79 @@
             handleLevelSelectChange("lvl10");
         }
 
-        // --- 6 ADET YENİ BUTON ÖZELLİĞİ (ÇALIŞAN FONKSİYONLAR) ---
+        // --- YENİ İLETİŞİM VE MOD FONKSİYONLARI ---
+        function togglePartyMode() {
+            opStates.party = !opStates.party;
+            if(opStates.party) {
+                document.body.classList.add('party-mode');
+                logTerm("🎉 PARTİ MODU AKTİF! Renk matrisi RGB spektrumuna alındı.", "purple");
+            } else {
+                document.body.classList.remove('party-mode');
+                logTerm("🎉 Parti modu kapatıldı. Normal renk spektrumuna dönülüyor.", "info");
+            }
+        }
 
-        // 1. COMPLEX: Titanium Scanner
+        function toggleInvasionMode() {
+            opStates.invasion = !opStates.invasion;
+            if(opStates.invasion) {
+                document.body.classList.add('invasion-mode');
+                logTerm("👽 İSTİLA MODU AKTİF! Sistem kritik kırmızı alarma alındı ve sarsıntı simülasyonu başlatıldı.", "error");
+            } else {
+                document.body.classList.remove('invasion-mode');
+                logTerm("👽 İstila modu iptal edildi. Titreşim amortisörleri devrede.", "success");
+            }
+        }
+
+        function sendGlobalMessage() {
+            let msg = document.getElementById("global-message-input").value.trim();
+            if(!msg) return;
+            
+            document.getElementById("modal-title").innerText = "GLOBAL AĞ MESAJI";
+            document.getElementById("modal-body-text").innerText = msg;
+            document.getElementById("navbow-fullscreen-modal").style.display = "flex";
+            
+            logTerm(`[YAYIN] Tüm ağa mesaj gönderildi: "${msg}"`, "warning");
+            document.getElementById("global-message-input").value = "";
+        }
+
+        function closeFullScreenModal() {
+            document.getElementById("navbow-fullscreen-modal").style.display = "none";
+        }
+
+        // --- KUANTUM+ ÖZEL VERİ VE ROOT KONTROL FONKSİYONU ---
+        function updateKuantumData() {
+            let specialData = document.getElementById("special-data-input").value.trim();
+            let rootPercentInput = document.getElementById("root-percent-input").value;
+            
+            if(specialData) {
+                storedSpecialData.push(specialData);
+                logTerm(`[KUANTUM+] Özel veri matrise işlendi: ${specialData}`, "complex");
+                document.getElementById("special-data-input").value = "";
+            }
+
+            if(rootPercentInput !== "") {
+                let parsedPercent = parseInt(rootPercentInput);
+                if(parsedPercent >= 0 && parsedPercent <= 100) {
+                    currentRootPercentage = parsedPercent;
+                    
+                    let indicator = document.getElementById("global-root-status");
+                    indicator.innerText = `ROOT EDİLME ORANI: %${currentRootPercentage}`;
+                    
+                    if(currentRootPercentage === 100) {
+                        indicator.classList.add("rooted");
+                        logTerm("🔓 [KUANTUM+] SİSTEM %100 ROOT EDİLDİ! ISO derleme kilitleri kaldırıldı.", "success");
+                    } else {
+                        indicator.classList.remove("rooted");
+                        logTerm(`[KUANTUM+] Root edilme oranı %${currentRootPercentage} olarak güncellendi.`, "warning");
+                    }
+                } else {
+                    logTerm("HATA: Root oranı 0 ile 100 arasında olmalıdır.", "error");
+                }
+                document.getElementById("root-percent-input").value = "";
+            }
+        }
+
+        // --- 6 ADET YENİ BUTON ÖZELLİĞİ (ÇALIŞAN FONKSİYONLAR) ---
         function triggerTitaniumScan() {
             const scanner = document.getElementById("titanium-scanner-layer");
             scanner.style.display = "block";
@@ -829,7 +1097,6 @@
             }, 3000);
         }
 
-        // 2. COMPLEX: Quantum Nexus Sync
         function triggerQuantumSync() {
             logTerm("[COMPLEX] QUANTUM NEXUS SYNC tetikleniyor. Veri matrisleri hizalanıyor...", "info");
             setTimeout(() => {
@@ -837,7 +1104,6 @@
             }, 1200);
         }
 
-        // 3. COWBOY: Aegis Shield Deploy
         function triggerAegisShield() {
             opStates.aegis = !opStates.aegis;
             const badge = document.getElementById("aegis-status-badge");
@@ -858,7 +1124,6 @@
             }
         }
 
-        // 4. COWBOY: Chronos Slow-Motion Engine
         function triggerChronosDrive() {
             opStates.chronos = !opStates.chronos;
             if(opStates.chronos) {
@@ -870,7 +1135,6 @@
             }
         }
 
-        // 5. COWBOY+: Hyper-Drive Overclock
         function toggleHyperOverclock() {
             opStates.hyper = !opStates.hyper;
             if(opStates.hyper) {
@@ -882,7 +1146,6 @@
             }
         }
 
-        // 6. COWBOY+: Neon-Genesis Glitch
         function triggerGenesisGlitch() {
             logTerm("⚡ [COWBOY+] NEON-GENESIS GLITCH INJECTOR SİSTEME ENJEKTE EDİLDİ!", "error");
             document.body.classList.add("genesis-glitch");
@@ -892,13 +1155,20 @@
             }, 1500);
         }
 
-        // --- ISO İNDİRME MOTORU (GERİ EKLENDİ VE ÇALIŞIYOR) ---
+        // --- ISO İNDİRME MOTORU (ROOT ORANI KONTROLLÜ) ---
         function buildCordexIso() {
+            if(currentRootPercentage < 100) {
+                alert("❌ ERİŞİM REDDEDİLDİ: ISO derlemek için sistemin %100 ROOT edilmiş olması zorunludur!");
+                logTerm("[ISO MOTORU] Hata: Root edilme oranı yetersiz. Önce Kuantum+ panelinden sistemi fulleyin.", "error");
+                return;
+            }
+
             if (document.getElementById("iso-password").value !== ISO_BUILD_KEY) {
                 alert("❌ HATALI DERLEME ŞİFRESİ!");
                 logTerm("[ISO MOTORU] Hatalı derleme şifresi girildi. İşlem iptal.", "error");
                 return;
             }
+            
             document.getElementById("iso-progress-container").style.display = "block";
             let fill = document.getElementById("iso-progress-fill");
             let status = document.getElementById("iso-status-text");
@@ -907,7 +1177,7 @@
             logTerm("[ISO MOTORU] Cordex_v12_Z1_Edition.iso derlemesi başlatıldı. Lütfen bekleyin...", "info");
             
             let buildInterval = setInterval(() => {
-                p += 3;
+                p += 2;
                 if (p > 100) p = 100;
                 fill.style.width = p + "%";
                 status.innerText = `ISO Derleniyor: %${p} - Paketler: [linux-firmware, kernel-core, filesystem-racoon]`;
@@ -917,7 +1187,7 @@
                     status.innerText = "DERLEME TAMAMLANDI. DOSYA İNDİRİLİYOR...";
                     
                     // Sahte ISO Dosyası Oluşturma ve İndirme Tetikleyicisi
-                    const blob = new Blob(["CODE:RACOON_OS_ISO_BLOB_DATA_SIMULATION"], {type: "application/x-iso9660-image"});
+                    const blob = new Blob(["CODE:RACOON_OS_ISO_BLOB_DATA_SIMULATION_ROOTED"], {type: "application/x-iso9660-image"});
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement("a");
                     a.href = url;
@@ -929,10 +1199,10 @@
                     logTerm("[ISO MOTORU] ISO İndirme işlemi başarıyla tetiklendi: Cordex_v12_Z1_Edition.iso", "success");
                     setTimeout(() => { document.getElementById("iso-progress-container").style.display = "none"; }, 5000);
                 }
-            }, 150);
+            }, 100);
         }
 
-        // --- SON EMİR VE BEYAZ ONARIM (REPAIR) SİSTEMİ ---
+        // --- SON EMİR VE 2 AŞAMALI BEYAZ ONARIM (REPAIR) SİSTEMİ ---
         function executeSonEmir() {
             if(confirm("DİKKAT: Son Emir sistemi tamamen yıkacak ve mühürleyecektir. İşlem geri alınamaz. Onaylıyor musunuz?")) {
                 localStorage.setItem("racoon_son_emir_lock", "true");
@@ -952,21 +1222,28 @@
             document.getElementById("cowboy-repair-screen").style.display = "flex";
         }
 
+        // "Ninja" Hata Simülasyonu ve Yanlış Şifre Kontrolü
         function validateRepairPassword() {
             let pass = document.getElementById("repair-password-input").value;
             if (pass === REPAIR_PASSWORD) {
                 document.getElementById("repair-auth-layer").style.display = "none";
                 document.getElementById("repair-process-layer").style.display = "flex";
-                startWhiteRepairProcess(); 
+                startWhiteRepairProcessPhase1(); 
             } else {
+                // NINJA FATAL ERROR
                 document.getElementById("repair-auth-error").style.display = "block";
                 document.getElementById("repair-password-input").value = "";
-                setTimeout(() => { document.getElementById("repair-auth-error").style.display = "none"; }, 2500);
+                
+                alert("[NINJA BUILD ERROR] FATAL: Geçersiz Onarım Anahtarı!\nKernel panic - not syncing: VFS: Unable to mount root fs\nSistem güvenliği için arayüz başa sarılıyor...");
+                
+                setTimeout(() => { 
+                    window.location.reload(); 
+                }, 500);
             }
         }
 
-        // Beyaz Futuristik Akıcı Log Onarım Simülasyonu
-        function startWhiteRepairProcess() {
+        // Aşama 1: Standart Beyaz Çekirdek Onarımı
+        function startWhiteRepairProcessPhase1() {
             const logStream = document.getElementById("linux-log-stream");
             const fillBar = document.getElementById("repair-fill-bar");
             const statusText = document.getElementById("repair-log");
@@ -974,6 +1251,7 @@
 
             const repairLogs = [
                 "[ WHITE KERNEL INIT ] Z1 Extreme donanım mimarisi beyaz liste ile başlatılıyor...",
+                "[ NINJA_DEBUG ] Temel derleme hataları temizleniyor...",
                 "[ VERIFY ] Kuantum Hash tabloları bellek sektörlerine yeniden yazılıyor...",
                 "[ OVERRIDE ] Son Emir protokolü çekirdekten zorla sökülüyor... [ BAŞARILI ]",
                 "[ PURGE ] Sistemdeki karanlık veri sızıntıları saf ışıkla temizleniyor...",
@@ -981,34 +1259,94 @@
                 "[ FS-CHECK ] Dosya sistemi bütünlüğü onarılıyor. Inode'lar düzeltildi.",
                 "[ COWBOY ] Lokal depolama kilitleri kırılıyor... Anahtar Eşleşti.",
                 "[ NETWORK ] Aegis Güvenlik Kalkanı ayarları sıfırlanıyor...",
-                "[ UI-RESTORE ] Matrix arayüz değişkenleri standart forma geri getiriliyor...",
-                "[ SUCCESS ] ÇEKİRDEK ONARIMI TAMAMLANDI. BEYAZ KATMAN STABİLİZASYONU %100."
+                "[ PHASE 1 SUCCESS ] ÇEKİRDEK ONARIMI TAMAMLANDI. AŞAMA 2'YE GEÇİLİYOR."
             ];
 
             let currentLogIndex = 0;
             let progress = 0;
 
             let repairInterval = setInterval(() => {
-                progress += 2;
+                progress += 2.5;
                 if (progress > 100) progress = 100;
 
                 fillBar.style.width = progress + "%";
                 percentageText.innerText = Math.floor(progress) + "%";
-                statusText.innerText = `[ONARIM DURUMU]: Matris yeniden yazılıyor... %${Math.floor(progress)}`;
+                statusText.innerText = `[AŞAMA 1 DURUM]: Çekirdek Matrisi yeniden yazılıyor... %${Math.floor(progress)}`;
 
                 if (currentLogIndex < repairLogs.length && progress >= (currentLogIndex * (100 / repairLogs.length))) {
-                    logStream.innerHTML += `<div style="margin-bottom:10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;">> ${repairLogs[currentLogIndex]}</div>`;
+                    logStream.innerHTML += `<div style="margin-bottom:12px; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 6px;">> ${repairLogs[currentLogIndex]}</div>`;
                     logStream.scrollTop = logStream.scrollHeight;
                     currentLogIndex++;
                 }
 
                 if (progress >= 100) {
                     clearInterval(repairInterval);
-                    localStorage.removeItem("racoon_son_emir_lock");
-                    statusText.innerText = "SİSTEM BAŞARIYLA ONARILDI! ÇEKİRDEK YENİDEN BAŞLATILIYOR...";
-                    setTimeout(() => { window.location.reload(); }, 2500);
+                    statusText.innerText = "AŞAMA 1 TAMAMLANDI. BİLGİ RECOVERY (AŞAMA 2) BAŞLATILIYOR...";
+                    
+                    // Aşama 2'ye geçiş animasyonu ve gecikmesi
+                    setTimeout(() => { 
+                        document.getElementById("repair-process-layer").style.display = "none";
+                        startWhiteRepairProcessPhase2();
+                    }, 2000);
                 }
-            }, 120);
+            }, 150);
+        }
+
+        // Aşama 2: Bilgileri Recover Etme (Kuantum+ Verileri vb.)
+        function startWhiteRepairProcessPhase2() {
+            document.getElementById("phase2-recovery-layer").style.display = "flex";
+            
+            const logStream = document.getElementById("phase2-log-stream");
+            const fillBar = document.getElementById("phase2-fill-bar");
+            const statusText = document.getElementById("phase2-log");
+            const percentageText = document.getElementById("phase2-percentage");
+
+            // Daha önce girilmiş özel bilgiler varsa loglara ekleyelim
+            let dynamicLogs = [
+                "[ RECOVERY INIT ] Özel veri kümesi taranıyor...",
+                "[ KUANTUM+ ] Nöral bağlantılar analiz ediliyor..."
+            ];
+
+            if(storedSpecialData.length > 0) {
+                dynamicLogs.push(`[ DATA FOUND ] ${storedSpecialData.length} adet özel kullanıcı verisi tespit edildi.`);
+                storedSpecialData.forEach((data, index) => {
+                    dynamicLogs.push(`[ RESTORING ] Veri Düğümü #${index+1}: ${data} -> KURTARILDI.`);
+                });
+            } else {
+                dynamicLogs.push("[ WARN ] Kaydedilmiş özel Kuantum+ verisi bulunamadı. Boş geçiliyor.");
+            }
+
+            dynamicLogs.push("[ NINJA_CORE ] Derleme önbellekleri geri yükleniyor...");
+            dynamicLogs.push(`[ ROOT_STATUS ] Root oran hafızası kontrol ediliyor: %${currentRootPercentage} -> SIFIRLANIYOR.`);
+            dynamicLogs.push("[ SYS_READY ] Tüm kişisel ve çevresel bilgiler başarıyla kurtarıldı.");
+            dynamicLogs.push("[ PHASE 2 SUCCESS ] MUTLAK ONARIM TAMAMLANDI.");
+
+            let currentLogIndex = 0;
+            let progress = 0;
+
+            let phase2Interval = setInterval(() => {
+                progress += 3;
+                if (progress > 100) progress = 100;
+
+                fillBar.style.width = progress + "%";
+                percentageText.innerText = Math.floor(progress) + "%";
+                statusText.innerText = `[AŞAMA 2 DURUM]: Bilgiler Recover Ediliyor... %${Math.floor(progress)}`;
+
+                if (currentLogIndex < dynamicLogs.length && progress >= (currentLogIndex * (100 / dynamicLogs.length))) {
+                    logStream.innerHTML += `<div style="margin-bottom:12px; border-bottom: 1px dashed rgba(0,255,255,0.3); padding-bottom: 6px;">> ${dynamicLogs[currentLogIndex]}</div>`;
+                    logStream.scrollTop = logStream.scrollHeight;
+                    currentLogIndex++;
+                }
+
+                if (progress >= 100) {
+                    clearInterval(phase2Interval);
+                    localStorage.removeItem("racoon_son_emir_lock");
+                    statusText.innerText = "TÜM AŞAMALAR TAMAMLANDI! SİSTEM YENİDEN BAŞLATILIYOR...";
+                    
+                    // İşlemler tamamen bitince sayfayı yenile ve mühürü kaldır
+                    setTimeout(() => { window.location.reload(); }, 3000);
+                }
+            }, 180);
         }
 
         // --- TERMİNAL EKRANI YÖNETİMİ ---
@@ -1020,9 +1358,10 @@
             if (type === "warning") color = "var(--warning)";
             if (type === "purple") color = "var(--nambow-purple)";
             if (type === "gold") color = "var(--cowboy-gold)";
+            if (type === "complex") color = "var(--complex-blue)";
             if (type === "crimson") color = "var(--cowboy-plus-crimson)";
             
-            out.innerHTML += `<div style="color: ${color}; margin-bottom: 8px;">>> [${new Date().toLocaleTimeString()}] ${msg}</div>`;
+            out.innerHTML += `<div style="color: ${color}; margin-bottom: 10px; border-left: 2px solid ${color}; padding-left: 10px;">>> [${new Date().toLocaleTimeString()}] ${msg}</div>`;
             out.scrollTop = out.scrollHeight;
         }
 
@@ -1035,22 +1374,27 @@
                 this.value = "";
 
                 if (cmd === "help") {
-                    logTerm("Komutlar: help, clear, neofetch, sudo su, reboot, sonemir", "success");
+                    logTerm("Komutlar: help, clear, neofetch, sudo su, reboot, ninja, root", "success");
                 } else if (cmd === "clear") {
                     document.getElementById("terminal-output").innerHTML = "";
                     logTerm("Terminal temizlendi.", "info");
                 } else if (cmd === "neofetch") {
-                    logTerm("OS: Code:Racoon OS v13.5", "success");
+                    logTerm("OS: Code:Racoon OS v14.0 - Kuantum Edition", "success");
                     logTerm("Host: Lenovo Legion Go", "success");
                     logTerm("Kernel: Cordex-Z1-Extreme", "success");
-                    logTerm("Shell: racoon-bash 5.1", "success");
+                    logTerm("Shell: racoon-bash 6.0", "success");
+                    logTerm(`Root Status: %${currentRootPercentage}`, "warning");
+                } else if (cmd === "ninja") {
+                    logTerm("Ninja derleme motoru başlatılıyor...", "warning");
+                    setTimeout(() => { logTerm("NINJA FATAL ERROR: kernel compilation failed.", "error"); }, 1000);
+                } else if (cmd === "root") {
+                    logTerm(`Mevcut Sistem Root Oranı: %${currentRootPercentage}`, "info");
+                    if(currentRootPercentage === 100) logTerm("Sistem tamamen root edilmiştir. ISO işlemleri açık.", "success");
                 } else if (cmd === "sudo su") {
-                    logTerm("Root erişimi engellendi. Bu işlem için Cowboy+ seviyesine geçmelisiniz.", "error");
+                    logTerm("Root erişimi engellendi. Kuantum+ panelini kullanın.", "error");
                 } else if (cmd === "reboot") {
                     logTerm("Sistem yeniden başlatılıyor...", "warning");
                     setTimeout(() => { window.location.reload(); }, 1000);
-                } else if (cmd === "sonemir") {
-                    logTerm("HATA: Son Emir komutu terminalden kaldırılarak butonlara taşınmıştır.", "error");
                 } else {
                     logTerm(`bash: ${cmd}: komut bulunamadı`, "error");
                 }
@@ -1062,7 +1406,7 @@
         const ctx = canvas.getContext("2d");
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        const alphabet = "0101010101RACOON0101010101";
+        const alphabet = "0101010101RACOON0101010101NINJA0101010101";
         const fontSize = 16;
         const columns = canvas.width / fontSize;
         const rainDrops = Array(Math.floor(columns)).fill(1);
@@ -1086,7 +1430,7 @@
             canvas.height = window.innerHeight;
         });
 
-        // Sayfa yüklendiğinde kilidi kontrol et
+        // Sayfa yüklendiğinde mühür durumunu kontrol et
         window.onload = function() {
             let checkLockdown = localStorage.getItem("racoon_son_emir_lock");
             if (checkLockdown === "true") {
