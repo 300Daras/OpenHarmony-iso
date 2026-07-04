@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code:Racoon OS - Ninja & Quantum Architecture v14.0</title>
+    <title>Code:Racoon OS - Ninja & Quantum Architecture v14.5</title>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
@@ -64,6 +64,7 @@
             --z-panel: 10; 
             --z-modal: 1000; 
             --z-lockdown: 9999;
+            --z-boot: 10000;
         }
 
         /* ==========================================================================
@@ -471,7 +472,65 @@
         }
 
         /* ==========================================================================
-           5. GÖRSEL EFEKTLER, ANİMASYONLAR VE HATA SİMÜLASYONLARI (NINJA)
+           5. YENİ: BEYAZ BOOT EKRANI (AŞAMA 3 SONRASI)
+           ========================================================================== */
+        #white-boot-screen {
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100vw; height: 100vh; 
+            background: #ffffff; 
+            z-index: var(--z-boot); 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            color: #000; 
+            font-family: 'Courier New', monospace;
+        }
+
+        #white-boot-screen h1 {
+            font-size: 4rem; 
+            margin-bottom: 20px; 
+            border-bottom: 4px solid #000; 
+            padding-bottom: 15px;
+            letter-spacing: 5px;
+        }
+
+        #white-boot-screen p {
+            font-size: 1.6rem; 
+            margin-bottom: 40px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .boot-btn-grid {
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 20px;
+            width: 800px;
+        }
+
+        .boot-level-btn {
+            background: transparent;
+            color: #000;
+            border: 2px solid #000;
+            padding: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .boot-level-btn:hover {
+            background: #000;
+            color: #fff;
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        /* ==========================================================================
+           6. GÖRSEL EFEKTLER, ANİMASYONLAR VE HATA SİMÜLASYONLARI (NINJA)
            ========================================================================== */
         
         /* İstila Modu Titremesi */
@@ -535,7 +594,7 @@
         }
 
         /* ==========================================================================
-           6. ARAYÜZ, BUTON VE PANEL TASARIMLARI
+           7. ARAYÜZ, BUTON VE PANEL TASARIMLARI
            ========================================================================== */
         .cyber-btn { 
             padding: 18px; 
@@ -668,6 +727,18 @@
             box-shadow: 0 0 20px var(--success);
         }
 
+        /* Terminal Input Arka Planı (Matristen Okunabilmesi İçin) */
+        .terminal-input-container {
+            display: flex; 
+            gap: 15px; 
+            background: #050508; 
+            padding: 20px; 
+            border-top: 2px solid #333;
+            border-radius: 0 0 8px 8px;
+            position: relative;
+            z-index: 50;
+        }
+
     </style>
 </head>
 <body>
@@ -676,6 +747,22 @@
     <div class="scanlines"></div>
     <div id="aegis-firewall" style="display: none;"></div>
     <div id="titanium-scanner-layer" class="titanium-scanner"></div>
+
+    <div id="white-boot-screen">
+        <h1>CODE:RACOON OS - BOOT MANAGER</h1>
+        <p>Sistem ve veri matrisi başarıyla onarıldı. Hangi hiyerarşi düzeyinde boot etmek istersiniz?</p>
+        <div class="boot-btn-grid">
+            <button class="boot-level-btn" onclick="bootIntoLevel('lvl1')">Level 1 - Konuk</button>
+            <button class="boot-level-btn" onclick="bootIntoLevel('lvl2')">Level 2 - Standart</button>
+            <button class="boot-level-btn" onclick="bootIntoLevel('lvl3')">Level 3 - Geliştirici</button>
+            <button class="boot-level-btn" onclick="bootIntoLevel('lvl4')">Level 4 - Yönetici</button>
+            <button class="boot-level-btn" onclick="bootIntoLevel('lvl5')">Level 5 - Mimari</button>
+            <button class="boot-level-btn" onclick="bootIntoLevel('lvl6')">Level 6 - Ghost</button>
+            <button class="boot-level-btn" onclick="bootIntoLevel('lvl7')">Level 7 - Nebula</button>
+            <button class="boot-level-btn" onclick="bootIntoLevel('lvl8')">Level 8 - Nambow Master</button>
+            <button class="boot-level-btn" onclick="bootIntoLevel('lvl10')">Level 10 - Cowboy+</button>
+        </div>
+    </div>
 
     <div id="persistent-lockdown-screen">
         <h1 style="color: var(--error); font-size: 4.5rem; text-shadow: 0 0 30px var(--error); letter-spacing: 6px;">SİSTEM YOK EDİLDİ</h1>
@@ -696,7 +783,7 @@
 
         <div id="repair-process-layer">
             <div class="white-linux-header">
-                <span>🚀 COWBOY KERNEL AUTO-RECOVERY v14.0 - WHITE EDITION</span>
+                <span>🚀 COWBOY KERNEL AUTO-RECOVERY v14.5 - WHITE EDITION</span>
                 <span id="repair-percentage" style="color: var(--pure-white);">0%</span>
             </div>
             <div class="white-linux-log-box" id="linux-log-stream"></div>
@@ -730,14 +817,13 @@
             </div>
 
             <div id="pin-login-section">
-                <p style="color: #aaa; font-size: 1.1rem;">GÜVENLİ AĞA GİRİŞ İÇİN PIN GİRİN (Şifre sonu C)</p>
+                <p style="color: #aaa; font-size: 1.1rem;">GÜVENLİ AĞA GİRİŞ İÇİN PIN GİRİN</p>
                 <div class="pin-container">
                     <input type="text" class="pin-slot" maxlength="1" oninput="moveToNext(this, 'pin2')" id="pin1" autocomplete="off" autofocus>
                     <input type="text" class="pin-slot" maxlength="1" oninput="moveToNext(this, 'pin3')" id="pin2" autocomplete="off">
                     <input type="text" class="pin-slot" maxlength="1" oninput="moveToNext(this, 'pin4')" id="pin3" autocomplete="off">
                     <input type="text" class="pin-slot" maxlength="1" oninput="moveToNext(this, 'pin5')" id="pin4" autocomplete="off">
-                    <input type="text" class="pin-slot" maxlength="1" oninput="moveToNext(this, 'pin6')" id="pin5" autocomplete="off">
-                    <input type="text" class="pin-slot" maxlength="1" oninput="checkFullPin()" id="pin6" autocomplete="off">
+                    <input type="text" class="pin-slot" maxlength="1" oninput="checkFullPin()" id="pin5" autocomplete="off">
                 </div>
                 <p id="pin-error" style="color: var(--error); margin-top: 25px; display: none; font-weight: bold; font-size: 1.2rem;">HATA: YETKİSİZ PIN DENEMESİ</p>
             </div>
@@ -756,7 +842,7 @@
         <div class="panel-block" style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); border-bottom: 4px solid var(--primary-orange); display: flex;">
             <div style="display: flex; align-items: center;">
                 <div>
-                    <h1 style="color: var(--primary-orange); font-size: 2rem; margin-bottom: 5px;">CODE:RACOON OS v14.0</h1>
+                    <h1 style="color: var(--primary-orange); font-size: 2rem; margin-bottom: 5px;">CODE:RACOON OS v14.5</h1>
                     <span style="color: var(--success); font-size: 0.95rem; background: rgba(0,255,102,0.1); padding: 5px 12px; border-radius: 3px; border: 1px solid var(--success);">MİMARİ: Z1 EXTREME</span>
                 </div>
                 <div id="global-root-status" class="root-status-indicator">
@@ -781,7 +867,7 @@
 
         <div class="grid-layout">
             
-            <div id="messaging-panel" class="panel-block" style="display: block; border-color: #fff;">
+            <div id="messaging-panel" class="panel-block" style="display: none; border-color: #fff;">
                 <div class="panel-title" style="color: #fff; border-color: #fff;">📡 SİSTEM MODLARI VE İLETİŞİM AĞI</div>
                 <p style="color: #aaa; font-size: 0.95rem; margin-bottom: 15px;">Ağ genelinde görsel ve işitsel manipülasyonlar.</p>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
@@ -792,7 +878,7 @@
                 <button class="cyber-btn" style="background: var(--pure-white); color: #000;" onclick="sendGlobalMessage()">💬 TÜM AĞA MESAJ GÖNDER</button>
             </div>
 
-            <div id="kuantum-plus-panel" class="panel-block" style="display: block; border: var(--border-kuantum); background: var(--kuantum-bg);">
+            <div id="kuantum-plus-panel" class="panel-block" style="display: none; border: var(--border-kuantum); background: var(--kuantum-bg);">
                 <div class="panel-title" style="color: #00ffff; border-color: #00ffff;">🧬 KUANTUM+ ÖZEL VERİ GİRİŞİ</div>
                 <p style="color: #00ffff; font-size: 0.9rem; margin-bottom: 15px;">Bu panelden girilen özel bilgiler Aşama 2 onarımında kurtarılır. Ayrıca Root oranını artırarak ISO derlemesini aktif edebilirsiniz.</p>
                 <input type="text" id="special-data-input" class="cyber-input" style="border-color: #00ffff; color: #00ffff;" placeholder="Örn: VFS_NODE_KEY=0x99A, PROJE_KODU=CORDEX...">
@@ -804,7 +890,7 @@
 
             <div id="iso-builder-panel" class="panel-block" style="display: block; border-color: var(--success);">
                 <div class="panel-title" style="color: var(--success); border-color: var(--success);">💿 CORDEX LIVE ISO COMPILER</div>
-                <p style="color: #aaa; font-size: 0.95rem; margin-bottom: 15px;">DİKKAT: ISO derleyebilmek için Sistemin <b>%100 Root</b> edilmiş olması gerekir. (Şifre: racoon_iso_2026C)</p>
+                <p style="color: #aaa; font-size: 0.95rem; margin-bottom: 15px;">DİKKAT: ISO derleyebilmek için Sistemin <b>%100 Root</b> edilmiş olması gerekir. (Şifre: racoon_iso_2026)</p>
                 <div style="display: flex; gap: 10px;">
                     <input type="password" id="iso-password" class="cyber-input" style="margin-bottom: 0; border-color: var(--success); color: var(--success);" placeholder="DERLEME ŞİFRESİ">
                     <button class="cyber-btn" style="margin-bottom: 0; border-color: var(--success); color: var(--success); width: 220px;" onclick="buildCordexIso()">DERLE & İNDİR</button>
@@ -822,6 +908,7 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <button class="cyber-btn complex-btn" onclick="unlockComplexLayer()">💠 COMPLEX MODÜLÜNÜ AÇ</button>
                     <button class="cyber-btn cowboy-btn" onclick="unlockCowboyLayer()">🤠 COWBOY KONTROLÜ AÇ</button>
+                    <button class="cyber-btn" style="grid-column: 1 / span 2; border-color: var(--nambow-purple); color: var(--nambow-purple);" onclick="logTerm('🌌 NEBULA ROUTING ALGORITHM AKTİF! Trafik yörüngesi sapıyor...', 'purple')">🌌 NEBULA ROUTING ALGORITHM</button>
                     <button class="cyber-btn cowboy-plus-btn" onclick="unlockCowboyPlusLayer()" style="grid-column: 1 / span 2; padding: 22px; font-size: 1.3rem;">🔥 COWBOY+ KİLİDİNİ KIR VE AÇ 🔥</button>
                 </div>
             </div>
@@ -832,6 +919,7 @@
                 <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
                     <button class="cyber-btn complex-btn" onclick="triggerTitaniumScan()">🔍 TITANIUM SCANNER (DONANIM ANALİZİ)</button>
                     <button class="cyber-btn complex-btn" style="background: rgba(0,136,255,0.15);" onclick="triggerQuantumSync()">🧬 QUANTUM NEXUS SYNC (KUANTUM EŞLEŞTİRME)</button>
+                    <button class="cyber-btn complex-btn" style="border-style: dashed;" onclick="logTerm('📡 DEEP-SPACE TELEMETRY: Dış sensörlerden veri alınıyor...', 'complex')">📡 DEEP-SPACE TELEMETRY</button>
                 </div>
             </div>
 
@@ -841,6 +929,7 @@
                 <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
                     <button class="cyber-btn cowboy-btn" onclick="triggerAegisShield()">🛡️ AEGIS SECURITY SHIELD DEPLOY</button>
                     <button class="cyber-btn cowboy-btn" style="background: rgba(255,170,0,0.15);" onclick="triggerChronosDrive()">⏳ CHRONOS SLOW-MOTION ENGINE</button>
+                    <button class="cyber-btn cowboy-btn" style="background: #2b1d00;" onclick="logTerm('🔫 REVOLVER KERNEL PURGE: Zombileşmiş işlemler temizlendi.', 'gold')">🔫 REVOLVER KERNEL PURGE</button>
                     <button class="cyber-btn critical-lockdown-btn" style="margin-top: 20px;" onclick="executeSonEmir()">⚠️ SON EMİR (SİSTEMİ MÜHÜRLE) ⚠️</button>
                 </div>
             </div>
@@ -856,11 +945,11 @@
             </div>
         </div>
 
-        <div id="terminal-block" class="panel-block" style="display: flex; flex-direction: column; grid-column: 1 / -1;">
+        <div id="terminal-block" class="panel-block" style="display: flex; flex-direction: column; grid-column: 1 / -1; background: #050505;">
             <div id="terminal-output" style="flex-grow: 1; overflow-y: auto; color: var(--neon-white); font-size: 18px; padding: 25px; min-height: 350px; background: #000; border: 2px solid #222; box-shadow: inset 0 0 25px rgba(0,0,0,1);">
-                <div style="color: var(--success); margin-bottom: 15px; font-weight: bold;">>> Code:Racoon OS Terminal v14.0 Başlatıldı. Z1 Extreme Devrede. Sistem Güvenli.</div>
+                <div style="color: var(--success); margin-bottom: 15px; font-weight: bold;">>> Code:Racoon OS Terminal v14.5 Başlatıldı. Z1 Extreme Devrede. Sistem Güvenli.</div>
             </div>
-            <div style="display: flex; gap: 15px; background: #09090e; padding: 20px; border-top: 2px solid #222;">
+            <div class="terminal-input-container">
                 <span id="terminal-prompt" style="color: var(--primary-orange); font-weight: bold; font-size: 20px;">guest@racoon:~$</span>
                 <input type="text" id="terminal-input" style="flex-grow: 1; background: none; border: none; color: var(--success); outline: none; font-size: 20px; font-weight: bold;" placeholder="Komut çalıştır... (Yardım için 'help' yazın)" autocomplete="off">
             </div>
@@ -874,13 +963,13 @@
     </div>
 
     <script>
-        // --- SİSTEM ŞİFRE YAPILANDIRMALARI (C EKLENTİLİ) ---
-        const PIN_PASSWORD = "20268C"; // 6 Haneli yeni PIN şifresi
-        const QUANTUM_HASH = "CORDEX-Z1C"; // 2. Karmaşık Yöntem Şifresi
-        const REPAIR_PASSWORD = "RECOVERC"; // Beyaz Onarım ekranı şifresi
-        const ISO_BUILD_KEY = "racoon_iso_2026C"; // ISO Şifresi
+        // --- SİSTEM ŞİFRE YAPILANDIRMALARI ---
+        const PIN_PASSWORD = "20268"; // Standart kaldı
+        const QUANTUM_HASH = "CORDEX-Z1"; // Standart kaldı
+        const REPAIR_PASSWORD = "RECOVER"; // Standart kaldı
+        const ISO_BUILD_KEY = "racoon_iso_2026"; // Standart kaldı
 
-        // Levellere Şifre Tanımlaması (Sonlarına C eklendi)
+        // Levellere Şifre Tanımlaması (Rol değiştirme şifrelerinin sonuna C eklendi)
         const LEVEL_PASSWORDS = {
             "lvl1": "", 
             "lvl2": "lvl2C",
@@ -899,6 +988,9 @@
         // Kuantum+ Global Verileri
         let currentRootPercentage = 0;
         let storedSpecialData = [];
+
+        // Ninja Fakeout için Onarım Değişkenleri
+        let isNinjaFakeout = false;
 
         // --- GİRİŞ METOTLARI KONTROLLERİ ---
         function switchLoginMethod(method) {
@@ -924,22 +1016,20 @@
             }
         }
 
-        // 1. Giriş Yöntemi: PIN Doğrulama
         function checkFullPin() {
             let pin = "";
-            for(let i=1; i<=6; i++) pin += document.getElementById("pin"+i).value;
-            if (pin.length === 6) {
+            for(let i=1; i<=5; i++) pin += document.getElementById("pin"+i).value;
+            if (pin.length === 5) {
                 if (pin === PIN_PASSWORD) { grantAccess("STANDART PIN DOĞRULANDI. GÜVENLİ AĞA BAĞLANILDI."); } 
                 else {
                     document.getElementById("pin-error").style.display = "block";
-                    for(let i=1; i<=6; i++) document.getElementById("pin"+i).value = "";
+                    for(let i=1; i<=5; i++) document.getElementById("pin"+i).value = "";
                     document.getElementById("pin1").focus();
                     setTimeout(() => { document.getElementById("pin-error").style.display = "none"; }, 2500);
                 }
             }
         }
 
-        // 2. Giriş Yöntemi: Kuantum Hash Doğrulama (Karmaşık yöntem)
         function checkQuantumHash() {
             let hash = document.getElementById("quantum-hash-input").value;
             if (hash === QUANTUM_HASH) { grantAccess("KUANTUM SENKRONİZASYON BAŞARILI. NÖRAL AĞ KİLİDİ AÇILDI."); } 
@@ -950,7 +1040,6 @@
             }
         }
 
-        // Sisteme Giriş İzni
         function grantAccess(msg) {
             document.getElementById("login-screen").style.display = "none";
             document.getElementById("main-container").style.display = "flex";
@@ -958,10 +1047,10 @@
             checkSonEmirLockdownState();
         }
 
-        // --- LEVEL ŞİFRE SİSTEMİ ---
-        function handleLevelSelectChange(val) {
-            if(val !== "lvl1") {
-                let pass = prompt(`[ ${val.toUpperCase()} ] Katmanı yüksek güvenlik ile şifrelenmiştir. Lütfen şifreyi giriniz (C Harfli):`);
+        // --- LEVEL ŞİFRE SİSTEMİ (ve Beyaz Boot Bypass Desteği) ---
+        function handleLevelSelectChange(val, bypassAuth = false) {
+            if(!bypassAuth && val !== "lvl1") {
+                let pass = prompt(`[ ${val.toUpperCase()} ] Katmanı yüksek güvenlik ile şifrelenmiştir. Lütfen şifreyi giriniz (Sonu C harfli):`);
                 if(pass !== LEVEL_PASSWORDS[val]) {
                     alert("❌ HATALI LEVEL ŞİFRESİ! Erişim Reddedildi. Hiyerarşi korunuyor.");
                     document.getElementById("user-level-selector").value = previousLevel;
@@ -976,6 +1065,8 @@
             document.getElementById("complex-panel").style.display = "none";
             document.getElementById("cowboy-panel").style.display = "none";
             document.getElementById("cowboy-plus-panel").style.display = "none";
+            document.getElementById("messaging-panel").style.display = "none";
+            document.getElementById("kuantum-plus-panel").style.display = "none";
 
             const promptElement = document.getElementById("terminal-prompt");
 
@@ -988,15 +1079,32 @@
             else if (val === "lvl8") {
                 promptElement.innerText = "nambow@matrix:#"; promptElement.style.color = "var(--nambow-purple)";
                 document.getElementById("nambow-master-panel").style.display = "block";
-                logTerm("NAMBOW Yönetim katmanı şifresi doğrulandı ve Master Panel aktif edildi.", "purple");
+                document.getElementById("messaging-panel").style.display = "block";
+                document.getElementById("kuantum-plus-panel").style.display = "block";
+                logTerm("NAMBOW Yönetim katmanı aktif. Haberleşme ve Kuantum Kasası yetkileri verildi.", "purple");
             }
             else if (val === "lvl10") {
                 promptElement.innerText = "COWBOY_PLUS@OVERRIDE:#"; promptElement.style.color = "var(--cowboy-plus-crimson)";
                 document.getElementById("cowboy-plus-panel").style.display = "block";
-                logTerm("LEVEL 10 COWBOY+ ŞİFRESİ DOĞRULANDI. SİSTEM ÇEKİRDEĞİNE MUTLAK KONTROL SAĞLANDI!", "crimson");
+                document.getElementById("messaging-panel").style.display = "block";
+                document.getElementById("kuantum-plus-panel").style.display = "block";
+                logTerm("LEVEL 10 COWBOY+ AKTİF. SİSTEM ÇEKİRDEĞİNE MUTLAK KONTROL SAĞLANDI!", "crimson");
             }
             
-            logTerm(`Hiyerarşi değiştirildi: ${val.toUpperCase()}`, "info");
+            if(!bypassAuth) logTerm(`Hiyerarşi değiştirildi: ${val.toUpperCase()}`, "info");
+        }
+
+        // Beyaz Ekrandan Direkt Boot Etme
+        function bootIntoLevel(val) {
+            document.getElementById("white-boot-screen").style.display = "none";
+            document.getElementById("persistent-lockdown-screen").style.display = "none";
+            document.getElementById("cowboy-repair-screen").style.display = "none";
+            document.getElementById("login-screen").style.display = "none";
+            
+            document.getElementById("main-container").style.display = "flex";
+            document.getElementById("user-level-selector").value = val;
+            handleLevelSelectChange(val, true); // Şifre sormayı bypass et
+            logTerm(`[BOOT MGR] Sistem başarıyla kurtarıldı ve şifresiz olarak ${val.toUpperCase()} hiyerarşisinde başlatıldı.`, "success");
         }
 
         // Alt katmanları açma buton fonksiyonları (Nambow Panel İçinden)
@@ -1086,7 +1194,7 @@
             }
         }
 
-        // --- 6 ADET YENİ BUTON ÖZELLİĞİ (ÇALIŞAN FONKSİYONLAR) ---
+        // --- BUTON ÖZELLİKLERİ ---
         function triggerTitaniumScan() {
             const scanner = document.getElementById("titanium-scanner-layer");
             scanner.style.display = "block";
@@ -1155,7 +1263,7 @@
             }, 1500);
         }
 
-        // --- ISO İNDİRME MOTORU (ROOT ORANI KONTROLLÜ) ---
+        // --- ISO İNDİRME MOTORU ---
         function buildCordexIso() {
             if(currentRootPercentage < 100) {
                 alert("❌ ERİŞİM REDDEDİLDİ: ISO derlemek için sistemin %100 ROOT edilmiş olması zorunludur!");
@@ -1186,7 +1294,6 @@
                     clearInterval(buildInterval);
                     status.innerText = "DERLEME TAMAMLANDI. DOSYA İNDİRİLİYOR...";
                     
-                    // Sahte ISO Dosyası Oluşturma ve İndirme Tetikleyicisi
                     const blob = new Blob(["CODE:RACOON_OS_ISO_BLOB_DATA_SIMULATION_ROOTED"], {type: "application/x-iso9660-image"});
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement("a");
@@ -1202,7 +1309,7 @@
             }, 100);
         }
 
-        // --- SON EMİR VE 2 AŞAMALI BEYAZ ONARIM (REPAIR) SİSTEMİ ---
+        // --- SON EMİR VE "NINJA FAKEOUT" OTO ONARIM (REPAIR) SİSTEMİ ---
         function executeSonEmir() {
             if(confirm("DİKKAT: Son Emir sistemi tamamen yıkacak ve mühürleyecektir. İşlem geri alınamaz. Onaylıyor musunuz?")) {
                 localStorage.setItem("racoon_son_emir_lock", "true");
@@ -1222,43 +1329,42 @@
             document.getElementById("cowboy-repair-screen").style.display = "flex";
         }
 
-        // "Ninja" Hata Simülasyonu ve Yanlış Şifre Kontrolü
+        // Ninja Fakeout Logic
         function validateRepairPassword() {
             let pass = document.getElementById("repair-password-input").value;
-            if (pass === REPAIR_PASSWORD) {
-                document.getElementById("repair-auth-layer").style.display = "none";
-                document.getElementById("repair-process-layer").style.display = "flex";
-                startWhiteRepairProcessPhase1(); 
-            } else {
-                // NINJA FATAL ERROR
-                document.getElementById("repair-auth-error").style.display = "block";
-                document.getElementById("repair-password-input").value = "";
-                
-                alert("[NINJA BUILD ERROR] FATAL: Geçersiz Onarım Anahtarı!\nKernel panic - not syncing: VFS: Unable to mount root fs\nSistem güvenliği için arayüz başa sarılıyor...");
-                
-                setTimeout(() => { 
-                    window.location.reload(); 
-                }, 500);
-            }
+            
+            // Eğer şifre yanlışsa Fakeout modunu True yaparız. Doğruysa False.
+            isNinjaFakeout = (pass !== REPAIR_PASSWORD);
+            
+            // Kullanıcı ne girerse girsin (yanlış bile olsa) progress bar ekranına atıyoruz
+            document.getElementById("repair-auth-layer").style.display = "none";
+            document.getElementById("repair-process-layer").style.display = "flex";
+            
+            document.getElementById("repair-password-input").value = "";
+            startWhiteRepairProcessPhase1(); 
         }
 
-        // Aşama 1: Standart Beyaz Çekirdek Onarımı
+        // Aşama 1: Standart Beyaz Çekirdek Onarımı (NINJA TROLÜ İÇERİR)
         function startWhiteRepairProcessPhase1() {
             const logStream = document.getElementById("linux-log-stream");
             const fillBar = document.getElementById("repair-fill-bar");
             const statusText = document.getElementById("repair-log");
             const percentageText = document.getElementById("repair-percentage");
 
+            logStream.innerHTML = ""; // Temizle
+            fillBar.style.width = "0%";
+            percentageText.innerText = "0%";
+
             const repairLogs = [
                 "[ WHITE KERNEL INIT ] Z1 Extreme donanım mimarisi beyaz liste ile başlatılıyor...",
                 "[ NINJA_DEBUG ] Temel derleme hataları temizleniyor...",
                 "[ VERIFY ] Kuantum Hash tabloları bellek sektörlerine yeniden yazılıyor...",
-                "[ OVERRIDE ] Son Emir protokolü çekirdekten zorla sökülüyor... [ BAŞARILI ]",
-                "[ PURGE ] Sistemdeki karanlık veri sızıntıları saf ışıkla temizleniyor...",
-                "[ MEMORY ] RAM blokları 0xFFFFFF (Beyaz Hex) ile formatlanıyor...",
-                "[ FS-CHECK ] Dosya sistemi bütünlüğü onarılıyor. Inode'lar düzeltildi.",
-                "[ COWBOY ] Lokal depolama kilitleri kırılıyor... Anahtar Eşleşti.",
-                "[ NETWORK ] Aegis Güvenlik Kalkanı ayarları sıfırlanıyor...",
+                "[ OVERRIDE ] Son Emir protokolü çekirdekten sökülmeye çalışılıyor...",
+                "[ PURGE ] Sistemdeki karanlık veri sızıntıları saf ışıkla yıkanıyor...",
+                "[ MEMORY ] RAM blokları tahsis ediliyor...",
+                "[ FS-CHECK ] Dosya sistemi bütünlüğü analiz ediliyor...",
+                "[ COWBOY ] Lokal depolama kilitleri test ediliyor...",
+                "[ NETWORK ] Aegis Güvenlik Kalkanı ayarları optimize ediliyor...",
                 "[ PHASE 1 SUCCESS ] ÇEKİRDEK ONARIMI TAMAMLANDI. AŞAMA 2'YE GEÇİLİYOR."
             ];
 
@@ -1266,7 +1372,39 @@
             let progress = 0;
 
             let repairInterval = setInterval(() => {
-                progress += 2.5;
+                progress += 1.5;
+                
+                // NINJA FAKEOUT KONTROLÜ (YANLIŞ ŞİFRE GİRİLDİYSE %63'TE ÇÖKECEK)
+                if (isNinjaFakeout && progress >= 63) {
+                    clearInterval(repairInterval);
+                    statusText.innerText = "[ FATAL ERROR ]: YANLIŞ ŞİFRE! KERNEL ÇÖKTÜ!";
+                    statusText.style.color = "var(--error)";
+                    fillBar.style.background = "var(--error)";
+                    fillBar.style.boxShadow = "0 0 20px var(--error)";
+                    
+                    logStream.innerHTML += `<div style="color:var(--error); font-weight:bold; font-size:1.5rem; margin-top:20px;">>>> NINJA FATAL ERROR: Geçersiz Onarım Anahtarı Tespit Edildi! <<<</div>`;
+                    logStream.innerHTML += `<div style="color:var(--error);">Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)</div>`;
+                    logStream.scrollTop = logStream.scrollHeight;
+
+                    setTimeout(() => {
+                        alert("[NINJA BUILD ERROR]\nFATAL: Şifre Yanlış.\nSistem güvenliği ihlali tespit edildi. Kilit ekranına dönülüyor.");
+                        
+                        // Başa sar
+                        document.getElementById("repair-process-layer").style.display = "none";
+                        document.getElementById("cowboy-repair-screen").style.display = "none";
+                        document.getElementById("persistent-lockdown-screen").style.display = "flex";
+                        
+                        // Arayüzü eski haline getir
+                        statusText.style.color = "var(--pure-white)";
+                        fillBar.style.background = "var(--pure-white)";
+                        fillBar.style.boxShadow = "0 0 40px var(--pure-white)";
+                        document.getElementById("repair-auth-layer").style.display = "block"; // Bir sonraki deneme için auth'u göster
+                        
+                    }, 2000);
+                    
+                    return; // Fonksiyondan çık, ilerleme
+                }
+
                 if (progress > 100) progress = 100;
 
                 fillBar.style.width = progress + "%";
@@ -1279,6 +1417,7 @@
                     currentLogIndex++;
                 }
 
+                // Doğru Şifreyle %100 Olduysa
                 if (progress >= 100) {
                     clearInterval(repairInterval);
                     statusText.innerText = "AŞAMA 1 TAMAMLANDI. BİLGİ RECOVERY (AŞAMA 2) BAŞLATILIYOR...";
@@ -1289,10 +1428,10 @@
                         startWhiteRepairProcessPhase2();
                     }, 2000);
                 }
-            }, 150);
+            }, 100);
         }
 
-        // Aşama 2: Bilgileri Recover Etme (Kuantum+ Verileri vb.)
+        // Aşama 2: Bilgileri Recover Etme (SADECE DOĞRU ŞİFRE İLE BURAYA GELİNİR)
         function startWhiteRepairProcessPhase2() {
             document.getElementById("phase2-recovery-layer").style.display = "flex";
             
@@ -1301,9 +1440,10 @@
             const statusText = document.getElementById("phase2-log");
             const percentageText = document.getElementById("phase2-percentage");
 
-            // Daha önce girilmiş özel bilgiler varsa loglara ekleyelim
+            logStream.innerHTML = ""; // Temizle
+            
             let dynamicLogs = [
-                "[ RECOVERY INIT ] Özel veri kümesi taranıyor...",
+                "[ RECOVERY INIT ] Kullanıcı veri matrisi taranıyor...",
                 "[ KUANTUM+ ] Nöral bağlantılar analiz ediliyor..."
             ];
 
@@ -1313,11 +1453,11 @@
                     dynamicLogs.push(`[ RESTORING ] Veri Düğümü #${index+1}: ${data} -> KURTARILDI.`);
                 });
             } else {
-                dynamicLogs.push("[ WARN ] Kaydedilmiş özel Kuantum+ verisi bulunamadı. Boş geçiliyor.");
+                dynamicLogs.push("[ WARN ] Kaydedilmiş özel Kuantum+ verisi bulunamadı. Standart düğümler kuruluyor.");
             }
 
             dynamicLogs.push("[ NINJA_CORE ] Derleme önbellekleri geri yükleniyor...");
-            dynamicLogs.push(`[ ROOT_STATUS ] Root oran hafızası kontrol ediliyor: %${currentRootPercentage} -> SIFIRLANIYOR.`);
+            dynamicLogs.push(`[ ROOT_STATUS ] Root oran hafızası kontrol ediliyor: %${currentRootPercentage} -> GÜVENLİ HALE GETİRİLDİ.`);
             dynamicLogs.push("[ SYS_READY ] Tüm kişisel ve çevresel bilgiler başarıyla kurtarıldı.");
             dynamicLogs.push("[ PHASE 2 SUCCESS ] MUTLAK ONARIM TAMAMLANDI.");
 
@@ -1325,7 +1465,7 @@
             let progress = 0;
 
             let phase2Interval = setInterval(() => {
-                progress += 3;
+                progress += 2;
                 if (progress > 100) progress = 100;
 
                 fillBar.style.width = progress + "%";
@@ -1340,13 +1480,18 @@
 
                 if (progress >= 100) {
                     clearInterval(phase2Interval);
-                    localStorage.removeItem("racoon_son_emir_lock");
-                    statusText.innerText = "TÜM AŞAMALAR TAMAMLANDI! SİSTEM YENİDEN BAŞLATILIYOR...";
+                    localStorage.removeItem("racoon_son_emir_lock"); // Kilidi kalıcı olarak kaldır
+                    statusText.innerText = "TÜM AŞAMALAR TAMAMLANDI! BOOT YÖNETİCİSİ YÜKLENİYOR...";
                     
-                    // İşlemler tamamen bitince sayfayı yenile ve mühürü kaldır
-                    setTimeout(() => { window.location.reload(); }, 3000);
+                    // İşlemler bitince Beyaz Boot Ekranına At (Şifresiz geçiş)
+                    setTimeout(() => { 
+                        document.getElementById("white-boot-screen").style.display = "flex";
+                        // Arkadaki panelleri temizle
+                        document.getElementById("phase2-recovery-layer").style.display = "none";
+                        document.getElementById("cowboy-repair-screen").style.display = "none";
+                    }, 3000);
                 }
-            }, 180);
+            }, 120);
         }
 
         // --- TERMİNAL EKRANI YÖNETİMİ ---
@@ -1379,10 +1524,10 @@
                     document.getElementById("terminal-output").innerHTML = "";
                     logTerm("Terminal temizlendi.", "info");
                 } else if (cmd === "neofetch") {
-                    logTerm("OS: Code:Racoon OS v14.0 - Kuantum Edition", "success");
+                    logTerm("OS: Code:Racoon OS v14.5 - Kuantum Edition", "success");
                     logTerm("Host: Lenovo Legion Go", "success");
                     logTerm("Kernel: Cordex-Z1-Extreme", "success");
-                    logTerm("Shell: racoon-bash 6.0", "success");
+                    logTerm("Shell: racoon-bash 6.1", "success");
                     logTerm(`Root Status: %${currentRootPercentage}`, "warning");
                 } else if (cmd === "ninja") {
                     logTerm("Ninja derleme motoru başlatılıyor...", "warning");
