@@ -84,6 +84,45 @@
             100% { transform: scale(0, 0.001) translate3d(0, 0, 0); filter: brightness(0); }
         }
 
+        /* WINDOWS TARZI KAPANMA OVERLAY */
+        #win-shutdown-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #1c1f22 0%, #000000 100%);
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            z-index: var(--z-transition); opacity: 0; transition: opacity 0.7s ease;
+        }
+        #win-shutdown-overlay.active { display: flex; opacity: 1; }
+
+        .win-spinner { position: relative; width: 70px; height: 70px; margin-bottom: 35px; }
+        .win-spinner div {
+            position: absolute; width: 9px; height: 9px; border-radius: 50%;
+            background: #ffffff; top: 50%; left: 50%; margin: -4.5px;
+            animation: win-spin-fade 1.2s linear infinite;
+        }
+        .win-spinner div:nth-child(1)  { transform: rotate(0deg) translate(30px, 0);   animation-delay: -1.1s; }
+        .win-spinner div:nth-child(2)  { transform: rotate(30deg) translate(30px, 0);  animation-delay: -1.0s; }
+        .win-spinner div:nth-child(3)  { transform: rotate(60deg) translate(30px, 0);  animation-delay: -0.9s; }
+        .win-spinner div:nth-child(4)  { transform: rotate(90deg) translate(30px, 0);  animation-delay: -0.8s; }
+        .win-spinner div:nth-child(5)  { transform: rotate(120deg) translate(30px, 0); animation-delay: -0.7s; }
+        .win-spinner div:nth-child(6)  { transform: rotate(150deg) translate(30px, 0); animation-delay: -0.6s; }
+        .win-spinner div:nth-child(7)  { transform: rotate(180deg) translate(30px, 0); animation-delay: -0.5s; }
+        .win-spinner div:nth-child(8)  { transform: rotate(210deg) translate(30px, 0); animation-delay: -0.4s; }
+        .win-spinner div:nth-child(9)  { transform: rotate(240deg) translate(30px, 0); animation-delay: -0.3s; }
+        .win-spinner div:nth-child(10) { transform: rotate(270deg) translate(30px, 0); animation-delay: -0.2s; }
+        .win-spinner div:nth-child(11) { transform: rotate(300deg) translate(30px, 0); animation-delay: -0.1s; }
+        .win-spinner div:nth-child(12) { transform: rotate(330deg) translate(30px, 0); animation-delay: 0s; }
+
+        @keyframes win-spin-fade {
+            0%, 39%, 100% { opacity: 0.15; }
+            40% { opacity: 1; }
+        }
+
+        .win-shutdown-text {
+            color: #ffffff; font-family: var(--font-ui); font-size: 1.4rem;
+            font-weight: 300; letter-spacing: 0.5px; opacity: 0.95;
+            transition: opacity 0.4s ease;
+        }
+
         /* --------------------------------------------------------------------------
            1. LOGIN SCREEN
            -------------------------------------------------------------------------- */
@@ -444,6 +483,15 @@
         <div class="invasion-text">SİTEDEN HEMEN AYRILIN!</div>
     </div>
 
+    <!-- WINDOWS TARZI KAPANMA OVERLAY -->
+    <div id="win-shutdown-overlay">
+        <div class="win-spinner">
+            <div></div><div></div><div></div><div></div><div></div><div></div>
+            <div></div><div></div><div></div><div></div><div></div><div></div>
+        </div>
+        <div class="win-shutdown-text" id="win-shutdown-text">Oturumunuz kapatılıyor</div>
+    </div>
+
     <!-- 7. DESKTOP ENVIRONMENT -->
     <div id="os-desktop">
         <div class="desktop-bg-pattern"></div>
@@ -453,7 +501,7 @@
                 <div class="icon-img">>_</div>
                 <div class="icon-label">Terminal</div>
             </div>
-            <div class="icon" ondblclick="SYS_WM.openWindow('cpanel-win')">
+            <div class="icon" id="icon-cpanel" style="display: none;" ondblclick="SYS_WM.openWindow('cpanel-win')">
                 <div class="icon-img">⚙️</div>
                 <div class="icon-label">Control Panel</div>
             </div>
@@ -794,6 +842,11 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             }
 
             openWindow(id) {
+                // GÜVENLİK KATMANI: cpanel-win, ikon gizli olsa da doğrudan çağrılırsa yine engellenir
+                if (id === 'cpanel-win' && SYSTEM_ACTIVE_LEVEL < 8) {
+                    if (SYS_CORE.term) SYS_CORE.term.print(`[ACCESS DENIED] cpanel-win: Seviye 8 yetkisi gereklidir. Mevcut Seviye: ${SYSTEM_ACTIVE_LEVEL}`);
+                    return;
+                }
                 const win = document.getElementById(id);
                 if (win) {
                     win.style.display = 'flex';
@@ -944,6 +997,11 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                 document.getElementById('icon-iso').style.display = (levelNumber <= 8) ? 'flex' : 'none';
                 document.getElementById('icon-kernel').style.display = (levelNumber === 4 || levelNumber === 5) ? 'flex' : 'none';
 
+                // KURAL 4: Control Panel SADECE Level 8 ve üzeri için görünür/erişilebilir
+                const cpanelUnlocked = levelNumber >= 8;
+                document.getElementById('icon-cpanel').style.display = cpanelUnlocked ? 'flex' : 'none';
+                if (!cpanelUnlocked) this.wm.closeWindow('cpanel-win'); // Açık kalmışsa güvenlik amaçlı kapat
+
                 if(localStorage.getItem('racoon_lockdown') === 'true') {
                     document.getElementById('lockdown-screen').style.display = 'flex';
                 } else {
@@ -1021,12 +1079,35 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             document.getElementById('k-temp').innerText = (Math.floor(Math.random() * 15) + 40) + '°C';
         }
 
-        // KAPANMA TUŞU MANTIĞI VE ANİMASYONU
+        // KAPANMA TUŞU MANTIĞI VE ANİMASYONU (WINDOWS TARZI 3 AŞAMALI)
         function shutdownSystem() {
-            document.body.classList.add('crt-shutdown-active');
+            const overlay = document.getElementById('win-shutdown-overlay');
+            const text = document.getElementById('win-shutdown-text');
+
+            // 1. AŞAMA: Oturum kapatılıyor
+            text.innerText = 'Oturumunuz kapatılıyor';
+            text.style.opacity = '0.95';
+            overlay.classList.add('active');
+
+            // 2. AŞAMA: ~1.8sn sonra mesaj "sistem kapatılıyor"a döner (klasik Windows davranışı)
+            setTimeout(() => {
+                text.style.opacity = '0';
+                setTimeout(() => {
+                    text.innerText = 'Code:Racoon OS kapatılıyor';
+                    text.style.opacity = '0.95';
+                }, 400);
+            }, 1800);
+
+            // 3. AŞAMA: ~3.6sn sonra Windows ekranı söner, CRT kapanış efekti (monitör kapanışı) devreye girer
+            setTimeout(() => {
+                overlay.classList.remove('active');
+                document.body.classList.add('crt-shutdown-active');
+            }, 3600);
+
+            // 4. AŞAMA: Sistemi sıfırla
             setTimeout(() => {
                 window.location.reload();
-            }, 1500);
+            }, 4900);
         }
 
         // --- 6. LOCKDOWN (SON EMİR) & REPAIR ---
