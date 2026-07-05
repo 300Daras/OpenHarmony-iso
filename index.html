@@ -150,6 +150,37 @@
         }
         .level-switch-close:hover { border-color: #fff; color: #fff; }
 
+        .level-switch-btn-kiosk {
+            grid-column: 1 / -1; border-color: var(--gold-cowboy); color: var(--gold-cowboy);
+            background: linear-gradient(135deg, rgba(255,170,0,0.14), rgba(255,255,255,0.04));
+            font-size: 0.95rem; padding: 14px 5px;
+        }
+        .level-switch-btn-kiosk:hover { background: var(--gold-cowboy); color: var(--pure-black); }
+
+        /* HIZLI GEÇİŞ ŞİFRE DOĞRULAMA PANELİ (Her levele ortak giriş şifresi) */
+        .level-switch-auth-panel { display: none; text-align: center; }
+        .level-switch-box.auth-mode .level-switch-grid,
+        .level-switch-box.auth-mode .level-switch-close { display: none; }
+        .level-switch-box.auth-mode .level-switch-auth-panel { display: block; }
+        .level-switch-auth-title {
+            color: var(--primary-orange); font-size: 0.95rem; font-weight: bold; margin-bottom: 15px;
+            letter-spacing: 0.5px; line-height: 1.5;
+        }
+        .level-switch-auth-input {
+            width: 100%; padding: 14px; background: #111; border: 1px solid var(--primary-orange); color: #fff;
+            text-align: center; font-family: var(--font-mono); font-size: 1.2rem; letter-spacing: 4px; outline: none; margin-bottom: 15px;
+        }
+        .level-switch-auth-input:focus { box-shadow: 0 0 15px rgba(255,102,0,0.4); }
+        .level-switch-auth-actions { display: flex; gap: 10px; margin-bottom: 12px; }
+        .level-switch-auth-confirm, .level-switch-auth-cancel {
+            flex: 1; padding: 12px; font-family: var(--font-mono); font-weight: bold; cursor: pointer; transition: 0.2s; border-radius: 2px;
+        }
+        .level-switch-auth-confirm { background: var(--primary-orange); border: 1px solid var(--primary-orange); color: var(--pure-black); }
+        .level-switch-auth-confirm:hover { background: var(--hyper-orange); }
+        .level-switch-auth-cancel { background: transparent; border: 1px solid #666; color: #ccc; }
+        .level-switch-auth-cancel:hover { border-color: #fff; color: #fff; }
+        .level-switch-auth-error { display: none; color: var(--error-red); font-weight: bold; font-size: 0.85rem; }
+
         /* --------------------------------------------------------------------------
            1. LOGIN SCREEN
            -------------------------------------------------------------------------- */
@@ -190,7 +221,7 @@
            -------------------------------------------------------------------------- */
         #boot-menu-screen {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--boot-bg); color: var(--boot-text); /* BEYAZ ARKA PLAN */
+            background-color: var(--boot-bg); color: var(--boot-text);
             flex-direction: column; align-items: center; justify-content: center;
             z-index: var(--z-modal);
         }
@@ -201,7 +232,6 @@
         
         .level-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
         
-        /* Butonlar varsayılan beyaz içi siyah yazı, hover olunca siyah içi beyaz yazı */
         .level-btn {
             background: var(--boot-bg); border: 2px solid var(--boot-text); color: var(--boot-text);
             padding: 20px; font-size: 1.2rem; font-family: var(--font-mono); font-weight: 900;
@@ -259,7 +289,7 @@
         .transition-text { font-size: 3.5rem; font-weight: 900; color: var(--boot-text); text-transform: uppercase; letter-spacing: 5px; }
 
         /* --------------------------------------------------------------------------
-           5. OS DESKTOP & TASKBAR
+           5. OS DESKTOP & TASKBAR (İKONLAR ORTADA)
            -------------------------------------------------------------------------- */
         #os-desktop { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #030303; z-index: var(--z-desktop); }
         .desktop-bg-pattern {
@@ -267,15 +297,26 @@
             background-image: radial-gradient(var(--primary-orange) 1px, transparent 1px); background-size: 30px 30px; z-index: -1;
         }
 
-        .desktop-icons { display: flex; flex-direction: column; gap: 25px; padding: 25px; height: calc(100% - 50px); }
-        .icon { width: 80px; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; }
+        /* İKONLARI ORTALAMAK İÇİN GÜNCELLENEN CSS */
+        .desktop-icons { 
+            display: flex; 
+            flex-direction: row; 
+            flex-wrap: wrap; 
+            align-content: center; 
+            justify-content: center; 
+            gap: 40px; 
+            padding: 25px; 
+            height: calc(100% - 50px); 
+        }
+        
+        .icon { width: 90px; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; }
         .icon:hover { transform: scale(1.1); }
         .icon-img {
-            width: 55px; height: 55px; background: rgba(255, 102, 0, 0.15); border: 1px solid var(--primary-orange);
-            border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 28px;
-            color: var(--primary-orange); margin-bottom: 8px; box-shadow: 0 0 15px rgba(255, 102, 0, 0.2);
+            width: 65px; height: 65px; background: rgba(255, 102, 0, 0.15); border: 1px solid var(--primary-orange);
+            border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 32px;
+            color: var(--primary-orange); margin-bottom: 10px; box-shadow: 0 0 15px rgba(255, 102, 0, 0.2);
         }
-        .icon-label { font-size: 0.85rem; text-align: center; text-shadow: 1px 1px 2px #000; background: rgba(0,0,0,0.7); padding: 4px 8px; border-radius: 4px; font-weight: bold; }
+        .icon-label { font-size: 0.9rem; text-align: center; text-shadow: 1px 1px 2px #000; background: rgba(0,0,0,0.7); padding: 5px 10px; border-radius: 6px; font-weight: bold; }
 
         #taskbar {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 50px; background: var(--bg-panel);
@@ -358,7 +399,7 @@
         .btn-danger { border-color: var(--error-red); color: var(--error-red); }
         .btn-danger:hover { background: var(--error-red); color: #fff; box-shadow: 0 0 20px var(--error-red); }
 
-        /* KERNEL SYSTEM APP (Level 4 & 5 Özel) */
+        /* KERNEL SYSTEM APP */
         .kernel-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 15px; height: 100%; }
         .kernel-sidebar { border-right: 2px solid var(--neon-blue); padding-right: 15px; }
         .kernel-main { padding-left: 10px; display: flex; flex-direction: column; }
@@ -389,7 +430,7 @@
         @keyframes invasionPulse { from { background: rgba(255, 0, 0, 0.4); } to { background: rgba(255, 0, 0, 0.8); } }
 
         /* --------------------------------------------------------------------------
-           8. LOCKDOWN & REPAIR (ESKİ SON EMİR & KUANTUM)
+           8. LOCKDOWN & REPAIR
            -------------------------------------------------------------------------- */
         #lockdown-screen {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -414,7 +455,133 @@
         .repair-log-box { flex-grow: 1; background: rgba(0,0,0,0.9); border: 3px solid #fff; padding: 30px; overflow-y: auto; color: #fff; font-size: 1.3rem; margin-bottom: 20px; line-height: 1.8; }
         .repair-bar-bg { width: 100%; height: 40px; border: 3px solid #fff; background: #111; }
         .repair-bar-fill { height: 100%; width: 0%; background: #fff; box-shadow: 0 0 30px #fff; transition: 0.1s; }
-        .quantum-bar-fill { background: var(--neon-blue) !important; box-shadow: 0 0 30px var(--neon-blue) !important; }
+
+        /* --------------------------------------------------------------------------
+           9. KIOSK HUB & POS UI (YENİ EKLENDİ)
+           -------------------------------------------------------------------------- */
+        @keyframes scaleInPop {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .window.scale-in-pop { animation: scaleInPop 0.25s cubic-bezier(0.25, 1, 0.5, 1); }
+
+        .kiosk-window {
+            background: linear-gradient(160deg, rgba(14,11,6,0.97), rgba(5,5,5,0.98)) !important;
+            border: 1px solid var(--gold-cowboy) !important;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.85), 0 0 40px rgba(255,170,0,0.15) !important;
+        }
+        .kiosk-header { background: rgba(255,170,0,0.08) !important; border-color: var(--gold-cowboy) !important; }
+        .kiosk-header .window-title { color: var(--gold-cowboy) !important; }
+
+        .kiosk-content {
+            display: flex !important; flex-direction: column; align-items: center; justify-content: center; gap: 26px;
+            padding: 24px !important;
+            background-image: radial-gradient(rgba(255,170,0,0.05) 1px, transparent 1px); background-size: 26px 26px;
+        }
+
+        /* --- POS CİHAZI ARAYÜZÜ --- */
+        .pos-terminal-ui {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%);
+            width: 100%; height: calc(100% - 40px);
+            position: absolute; top: 40px; left: 0; z-index: 50;
+            border-radius: 0 0 6px 6px;
+        }
+        .pos-device {
+            background: #ffffff; width: 380px; height: 580px; border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 0 8px #f1f3f5;
+            display: flex; flex-direction: column; align-items: center; padding: 25px;
+            position: relative; overflow: hidden;
+        }
+        .pos-camera {
+            width: 12px; height: 12px; background: #222; border-radius: 50%; margin-bottom: 20px;
+            box-shadow: inset 0 0 4px #000;
+        }
+        .pos-screen {
+            background: #000; width: 100%; height: 280px; border-radius: 12px; color: #fff;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 20px; border: 2px solid #222;
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.1);
+        }
+        .pos-screen h2 { color: #fff; margin-bottom: 8px; font-family: 'Segoe UI', Tahoma, sans-serif; font-weight: 600; letter-spacing: 1px; font-size: 1.8rem; }
+        .pos-screen p { color: #ccc; font-size: 0.9rem; margin-bottom: 25px; font-family: 'Segoe UI', sans-serif;}
+        .pos-amount { font-size: 3rem; font-weight: 700; color: #fff; font-family: 'Courier New', monospace; }
+        
+        .pos-nfc-reader {
+            margin-top: 35px; width: 85%; height: 130px; background: #f8f9fa; border-radius: 16px;
+            border: 3px dashed #ced4da; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .pos-nfc-reader:hover { background: #e7f1ff; border-color: #0d6efd; transform: translateY(-5px); box-shadow: 0 10px 20px rgba(13, 110, 253, 0.15); }
+        .nfc-icon { font-size: 3.5rem; color: #0d6efd; margin-bottom: 10px; animation: pulseNfc 2s infinite; }
+        @keyframes pulseNfc { 0% { opacity: 0.6; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 0.6; transform: scale(0.95); } }
+        .pos-nfc-reader p { font-size: 0.9rem; color: #495057; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; font-family: 'Segoe UI', sans-serif; }
+        
+        .pos-status-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95);
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 10; border-radius: 24px; text-align: center;
+        }
+        .pos-success-check { font-size: 5rem; color: #00ca4e; margin-bottom: 15px; animation: scaleInPop 0.4s ease; }
+        .pos-status-overlay h3 { color: #333; font-family: 'Segoe UI', sans-serif; margin-bottom: 10px; font-size: 1.5rem; }
+        .pos-status-overlay p { color: #666; font-size: 1rem; font-family: 'Segoe UI', sans-serif; }
+
+        /* One UI tarzı gerçek zamanlı durum çubuğu */
+        .kiosk-statusbar { width: 100%; max-width: 760px; display: flex; gap: 12px; flex-wrap: wrap; }
+        .kiosk-status-pill {
+            flex: 1; min-width: 150px; background: rgba(255,255,255,0.05); backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px;
+            padding: 14px 18px; display: flex; flex-direction: column; gap: 6px; font-family: var(--font-ui);
+        }
+        .kiosk-status-label { font-size: 0.72rem; color: rgba(255,255,255,0.5); letter-spacing: 0.5px; font-weight: 600; text-transform: uppercase; }
+        .kiosk-status-value { font-size: 1.5rem; font-weight: 700; color: #fff; }
+        .kiosk-status-track { width: 100%; height: 5px; border-radius: 5px; background: rgba(255,255,255,0.08); overflow: hidden; margin-top: 2px; }
+        .kiosk-status-fill { height: 100%; border-radius: 5px; width: 0%; transition: width 0.6s ease, background 0.6s ease; }
+        .kiosk-status-pill.integrity.warn .kiosk-status-value { color: var(--error-red); }
+
+        /* 4x4 Merkezi Hub Grid */
+        .kiosk-hub-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 760px; width: 100%; }
+        .kiosk-tile {
+            position: relative; aspect-ratio: 1 / 0.95; background: rgba(255,255,255,0.04); backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.09); border-radius: 18px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+            cursor: pointer; transition: all 0.2s ease; animation: scaleInPop 0.35s cubic-bezier(0.25, 1, 0.5, 1) both;
+        }
+        .kiosk-tile:hover { background: rgba(255,170,0,0.1); border-color: var(--gold-cowboy); transform: translateY(-3px) scale(1.03); }
+        .kiosk-tile-icon { font-size: 1.9rem; }
+        .kiosk-tile-label { font-size: 0.72rem; font-weight: bold; color: #eee; text-align: center; letter-spacing: 0.5px; text-transform: uppercase; line-height: 1.3; }
+        .kiosk-tile-sub { font-size: 0.62rem; color: var(--gold-cowboy); font-weight: bold; }
+        .kiosk-tile.locked { opacity: 0.4; cursor: not-allowed; }
+        .kiosk-tile.locked .kiosk-tile-label { color: #888; }
+        .kiosk-tile.locked::after { content: '🔒'; position: absolute; top: 8px; right: 10px; font-size: 0.8rem; }
+
+        /* --------------------------------------------------------------------------
+           10. CHAOS MODU (VOLATILITY / CRT BOOT)
+           -------------------------------------------------------------------------- */
+        #chaos-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: var(--z-overlay); flex-direction: column; align-items: center; justify-content: center;
+        }
+        #chaos-overlay.active { display: flex; }
+        .chaos-warning-text {
+            color: var(--error-red); font-size: 3rem; font-weight: 900; letter-spacing: 3px; text-align: center;
+            text-shadow: 0 0 30px var(--error-red); animation: pulseText 0.5s infinite; font-family: var(--font-mono);
+        }
+        .chaos-warning-sub { color: #fff; font-size: 1.1rem; margin-top: 15px; opacity: 0.8; font-family: var(--font-mono); text-align: center; }
+        .chaos-boot-mini {
+            width: 700px; font-family: var(--font-mono); color: var(--boot-text); background: var(--boot-bg);
+            padding: 30px; display: none; border: 4px solid var(--boot-text);
+        }
+        .chaos-boot-mini.active { display: block; }
+        .chaos-boot-mini-line { font-size: 1.1rem; font-weight: bold; margin-bottom: 6px; }
+
+        @keyframes crtTurnOn {
+            0% { transform: scale(1, 0.005); background-color: #ffffff; }
+            30% { transform: scale(1, 0.005); background-color: #ffffff; }
+            55% { transform: scale(1, 1); background-color: #ffffff; }
+            100% { transform: scale(1, 1); background-color: #000000; }
+        }
+        .crt-boot-on-active { animation: crtTurnOn 0.8s ease-out forwards; }
     </style>
 </head>
 <body>
@@ -454,6 +621,7 @@
                 <button class="level-btn" onclick="triggerBootSequence('Level 7 - Nebula', 7)">LEVEL 7 - NEBULA</button>
                 <button class="level-btn" onclick="triggerBootSequence('Level 8 - Nambow Master', 8)">LEVEL 8 - NAMBOW MASTER</button>
                 <button class="level-btn" onclick="triggerBootSequence('Level 10 - Cowboy+', 10)">LEVEL 10 - COWBOY+</button>
+                <button class="level-btn" onclick="triggerBootSequence('Level 11 - Kiosk', 11)" style="grid-column: 1 / -1;">👑 LEVEL 11 - KIOSK (MUTLAK YETKİ)</button>
             </div>
         </div>
     </div>
@@ -517,6 +685,18 @@
         <div class="invasion-text">SİTEDEN HEMEN AYRILIN!</div>
     </div>
 
+    <!-- CHAOS MODU (VOLATILITY / CRT BOOT) -->
+    <div id="chaos-overlay">
+        <div id="chaos-warning-block">
+            <div class="chaos-warning-text">⚠ SYSTEM VOLATILITY DETECTED ⚠</div>
+            <div class="chaos-warning-sub">Z1 KARARSIZLIK TESPİT EDİLDİ — SİSTEM YENİDEN BAŞLATILIYOR...</div>
+        </div>
+        <div class="chaos-boot-mini" id="chaos-boot-mini">
+            <div style="font-weight:900; font-size:1.4rem; border-bottom: 3px solid var(--boot-text); padding-bottom: 10px; margin-bottom: 10px;">CRT BOOT — HIZLI YENİDEN BAŞLATMA</div>
+            <div id="chaos-boot-mini-lines"></div>
+        </div>
+    </div>
+
     <!-- WINDOWS TARZI KAPANMA OVERLAY -->
     <div id="win-shutdown-overlay">
         <div class="win-spinner">
@@ -526,22 +706,34 @@
         <div class="win-shutdown-text" id="win-shutdown-text">Oturumunuz kapatılıyor</div>
     </div>
 
-    <!-- LEVEL DEĞİŞTİRME MODALI (HER SEVİYEDE ERİŞİLEBİLİR, ANİMASYONSUZ ANINDA GEÇİŞ) -->
+    <!-- LEVEL DEĞİŞTİRME MODALI -->
     <div id="level-switch-overlay">
-        <div class="level-switch-box">
+        <div class="level-switch-box" id="level-switch-box">
             <div class="level-switch-title">⇄ HIZLI SEVİYE DEĞİŞTİR</div>
             <div class="level-switch-grid">
-                <button class="level-switch-btn" onclick="switchLevelInstant('Level 1 - Konuk', 1)">LVL 1<br>KONUK</button>
-                <button class="level-switch-btn" onclick="switchLevelInstant('Level 2 - Standart', 2)">LVL 2<br>STANDART</button>
-                <button class="level-switch-btn" onclick="switchLevelInstant('Level 3 - Geliştirici', 3)">LVL 3<br>GELİŞTİRİCİ</button>
-                <button class="level-switch-btn" onclick="switchLevelInstant('Level 4 - Yönetici', 4)">LVL 4<br>YÖNETİCİ</button>
-                <button class="level-switch-btn" onclick="switchLevelInstant('Level 5 - Mimari', 5)">LVL 5<br>MİMARİ</button>
-                <button class="level-switch-btn" onclick="switchLevelInstant('Level 6 - Ghost', 6)">LVL 6<br>GHOST</button>
-                <button class="level-switch-btn" onclick="switchLevelInstant('Level 7 - Nebula', 7)">LVL 7<br>NEBULA</button>
-                <button class="level-switch-btn" onclick="switchLevelInstant('Level 8 - Nambow Master', 8)">LVL 8<br>NAMBOW</button>
-                <button class="level-switch-btn" onclick="switchLevelInstant('Level 10 - Cowboy+', 10)">LVL 10<br>COWBOY+</button>
+                <button class="level-switch-btn" onclick="requestLevelSwitch('Level 1 - Konuk', 1)">LVL 1<br>KONUK</button>
+                <button class="level-switch-btn" onclick="requestLevelSwitch('Level 2 - Standart', 2)">LVL 2<br>STANDART</button>
+                <button class="level-switch-btn" onclick="requestLevelSwitch('Level 3 - Geliştirici', 3)">LVL 3<br>GELİŞTİRİCİ</button>
+                <button class="level-switch-btn" onclick="requestLevelSwitch('Level 4 - Yönetici', 4)">LVL 4<br>YÖNETİCİ</button>
+                <button class="level-switch-btn" onclick="requestLevelSwitch('Level 5 - Mimari', 5)">LVL 5<br>MİMARİ</button>
+                <button class="level-switch-btn" onclick="requestLevelSwitch('Level 6 - Ghost', 6)">LVL 6<br>GHOST</button>
+                <button class="level-switch-btn" onclick="requestLevelSwitch('Level 7 - Nebula', 7)">LVL 7<br>NEBULA</button>
+                <button class="level-switch-btn" onclick="requestLevelSwitch('Level 8 - Nambow Master', 8)">LVL 8<br>NAMBOW</button>
+                <button class="level-switch-btn" onclick="requestLevelSwitch('Level 10 - Cowboy+', 10)">LVL 10<br>COWBOY+</button>
+                <button class="level-switch-btn level-switch-btn-kiosk" onclick="requestLevelSwitch('Level 11 - Kiosk', 11)">👑 LVL 11 — KIOSK (MUTLAK YETKİ)</button>
             </div>
             <button class="level-switch-close" onclick="closeLevelSwitcher()">KAPAT</button>
+
+            <!-- HIZLI GEÇİŞ ŞİFRE DOĞRULAMA PANELİ -->
+            <div class="level-switch-auth-panel" id="level-switch-auth">
+                <div class="level-switch-auth-title">🔒 <span id="lsa-target-name">SEVİYE</span><br>SEVİYESİNE GEÇMEK İÇİN ERİŞİM ŞİFRESİNİ GİRİN</div>
+                <input type="password" id="lsa-password" class="level-switch-auth-input" placeholder="• • • • •" maxlength="10" autocomplete="off" onkeydown="if(event.key==='Enter') confirmLevelSwitch();">
+                <div class="level-switch-auth-actions">
+                    <button class="level-switch-auth-confirm" onclick="confirmLevelSwitch()">ONAYLA</button>
+                    <button class="level-switch-auth-cancel" onclick="cancelLevelSwitch()">VAZGEÇ</button>
+                </div>
+                <p class="level-switch-auth-error" id="lsa-error">HATA: GEÇERSİZ ERİŞİM ŞİFRESİ</p>
+            </div>
         </div>
     </div>
 
@@ -558,15 +750,20 @@
                 <div class="icon-img">⚙️</div>
                 <div class="icon-label">Control Panel</div>
             </div>
-            <!-- ISO ICON (LEVEL 8'E KADAR GÖRÜNÜR) -->
+            <!-- ISO ICON -->
             <div class="icon" id="icon-iso" style="display: none;" ondblclick="SYS_WM.openWindow('iso-win')">
                 <div class="icon-img" style="border-color: #1a73e8; color: #1a73e8; background: rgba(26, 115, 232, 0.1);">💿</div>
                 <div class="icon-label">Cordex ISO</div>
             </div>
-            <!-- KERNEL SYSTEM ICON (SADECE LEVEL 4 VE 5) -->
+            <!-- KERNEL SYSTEM ICON -->
             <div class="icon" id="icon-kernel" style="display: none;" ondblclick="SYS_WM.openWindow('kernel-win')">
                 <div class="icon-img" style="border-color: var(--neon-blue); color: var(--neon-blue); background: rgba(0, 229, 255, 0.1);">🖧</div>
                 <div class="icon-label">Kernel System</div>
+            </div>
+            <!-- KIOSK ICON (POS EMOJİSİ EKLENDİ) -->
+            <div class="icon" id="icon-kiosk" style="display: none;" ondblclick="SYS_WM.openWindow('kiosk-win')">
+                <div class="icon-img" style="border-color: var(--gold-cowboy); color: var(--gold-cowboy); background: rgba(255, 170, 0, 0.12);">💳</div>
+                <div class="icon-label">Kiosk</div>
             </div>
         </div>
 
@@ -640,7 +837,7 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             </div>
         </div>
 
-        <!-- APP WINDOW: KERNEL SYSTEM (YENİ UYGULAMA) -->
+        <!-- APP WINDOW: KERNEL SYSTEM -->
         <div class="window" id="kernel-win" style="top: 200px; left: 250px; width: 850px; height: 500px; background: rgba(0,20,30,0.95); border-color: var(--neon-blue);">
             <div class="window-header" style="background: rgba(0, 229, 255, 0.1); border-color: var(--neon-blue);">
                 <div class="window-title" style="color: var(--neon-blue);">🖧 KERNEL SYSTEM PANEL - LEVEL ARCHITECTURE</div>
@@ -672,6 +869,129 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             </div>
         </div>
 
+        <!-- APP WINDOW: KIOSK HUB (POS EKLENDİ) -->
+        <div class="window kiosk-window" id="kiosk-win" style="top: 45px; left: 60px; width: calc(100% - 120px); height: calc(100% - 150px);">
+            <div class="window-header kiosk-header">
+                <div class="window-title">👑 KIOSK CONTROL HUB — LEVEL 11</div>
+                <div class="window-controls">
+                    <button class="win-btn btn-min"></button>
+                    <button class="win-btn btn-max"></button>
+                    <button class="win-btn btn-close" onclick="SYS_WM.closeWindow('kiosk-win')"></button>
+                </div>
+            </div>
+
+            <!-- POS CİHAZI ARAYÜZÜ (ÖNCE BU GÖRÜNÜR) -->
+            <div class="pos-terminal-ui" id="pos-terminal-content">
+                <div class="pos-device">
+                    <div class="pos-camera"></div>
+                    <div class="pos-screen">
+                        <h2>SAMSUNG KIOSK</h2>
+                        <p>Lütfen Ödeme Yöntemi Seçin veya Temassız Okutun</p>
+                        <div class="pos-amount">₺0.00</div>
+                    </div>
+                    <div class="pos-nfc-reader" onclick="triggerPosNfc()">
+                        <div class="nfc-icon">💳)))</div>
+                        <p>TEMASSIZ OKUTMA</p>
+                    </div>
+                    
+                    <div class="pos-status-overlay" id="pos-status-overlay">
+                        <div class="pos-success-check">✓</div>
+                        <h3>İşlem Onaylandı</h3>
+                        <p>Menüye Yönlendiriliyor...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ORİJİNAL KIOSK HUB İÇERİĞİ -->
+            <div class="window-content kiosk-content">
+                <div class="kiosk-statusbar">
+                    <div class="kiosk-status-pill">
+                        <div class="kiosk-status-label">Z1 APU Kullanımı</div>
+                        <span class="kiosk-status-value" id="kiosk-stat-apu">--%</span>
+                        <div class="kiosk-status-track"><div class="kiosk-status-fill" id="kiosk-stat-apu-fill" style="background: var(--primary-orange);"></div></div>
+                    </div>
+                    <div class="kiosk-status-pill">
+                        <div class="kiosk-status-label">RAM</div>
+                        <span class="kiosk-status-value" id="kiosk-stat-ram">-- GB</span>
+                        <div class="kiosk-status-track"><div class="kiosk-status-fill" id="kiosk-stat-ram-fill" style="background: var(--neon-blue);"></div></div>
+                    </div>
+                    <div class="kiosk-status-pill integrity" id="kiosk-stat-integrity-pill">
+                        <div class="kiosk-status-label">Kernel Bütünlüğü</div>
+                        <span class="kiosk-status-value" id="kiosk-stat-integrity">--%</span>
+                        <div class="kiosk-status-track"><div class="kiosk-status-fill" id="kiosk-stat-integrity-fill" style="background: var(--matrix-green);"></div></div>
+                    </div>
+                </div>
+
+                <div class="kiosk-hub-grid">
+                    <div class="kiosk-tile" onclick="SYS_WM.openWindow('term-win')">
+                        <div class="kiosk-tile-icon">&gt;_</div>
+                        <div class="kiosk-tile-label">Terminal</div>
+                    </div>
+                    <div class="kiosk-tile" onclick="SYS_WM.openWindow('cpanel-win')">
+                        <div class="kiosk-tile-icon">⚙️</div>
+                        <div class="kiosk-tile-label">Control Panel</div>
+                    </div>
+                    <div class="kiosk-tile" onclick="SYS_WM.openWindow('iso-win')">
+                        <div class="kiosk-tile-icon">💿</div>
+                        <div class="kiosk-tile-label">Cordex ISO</div>
+                    </div>
+                    <div class="kiosk-tile" onclick="SYS_WM.openWindow('kernel-win')">
+                        <div class="kiosk-tile-icon">🖧</div>
+                        <div class="kiosk-tile-label">Kernel System</div>
+                    </div>
+                    <div class="kiosk-tile" onclick="openLevelSwitcher()">
+                        <div class="kiosk-tile-icon">⇄</div>
+                        <div class="kiosk-tile-label">Level Değiştir</div>
+                    </div>
+                    <div class="kiosk-tile" onclick="triggerPartyMode()">
+                        <div class="kiosk-tile-icon">🎉</div>
+                        <div class="kiosk-tile-label">Parti Modu</div>
+                    </div>
+                    <div class="kiosk-tile" onclick="triggerInvasionMode()">
+                        <div class="kiosk-tile-icon">👽</div>
+                        <div class="kiosk-tile-label">İstila Modu</div>
+                    </div>
+                    <div class="kiosk-tile" onclick="kioskQuickDeepClean(this)">
+                        <div class="kiosk-tile-icon">🧹</div>
+                        <div class="kiosk-tile-label" id="kiosk-deepclean-label">Deep Clean</div>
+                    </div>
+                    <div class="kiosk-tile" onclick="kioskShowAccessLog()">
+                        <div class="kiosk-tile-icon">📜</div>
+                        <div class="kiosk-tile-label">Access Log</div>
+                    </div>
+                    <div class="kiosk-tile">
+                        <div class="kiosk-tile-icon">☢️</div>
+                        <div class="kiosk-tile-label">Chaos Monitor</div>
+                        <div class="kiosk-tile-sub" id="kiosk-chaos-countdown">--:--</div>
+                    </div>
+                    <div class="kiosk-tile" onclick="shutdownSystem()">
+                        <div class="kiosk-tile-icon">⏻</div>
+                        <div class="kiosk-tile-label">Sistemi Kapat</div>
+                    </div>
+                    <div class="kiosk-tile locked" onclick="kioskLockedTileClick(this)">
+                        <div class="kiosk-tile-icon">🧠</div>
+                        <div class="kiosk-tile-label">AI Core</div>
+                    </div>
+                    <div class="kiosk-tile locked" onclick="kioskLockedTileClick(this)">
+                        <div class="kiosk-tile-icon">🌐</div>
+                        <div class="kiosk-tile-label">Network Matrix</div>
+                    </div>
+                    <div class="kiosk-tile locked" onclick="kioskLockedTileClick(this)">
+                        <div class="kiosk-tile-icon">🔑</div>
+                        <div class="kiosk-tile-label">Crypto Vault</div>
+                    </div>
+                    <div class="kiosk-tile locked" onclick="kioskLockedTileClick(this)">
+                        <div class="kiosk-tile-icon">🧪</div>
+                        <div class="kiosk-tile-label">Sandbox Env</div>
+                    </div>
+                    <div class="kiosk-tile locked" onclick="kioskLockedTileClick(this)">
+                        <div class="kiosk-tile-icon">🛰️</div>
+                        <div class="kiosk-tile-label">Firmware Lab</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- TASKBAR -->
         <div id="taskbar">
             <button class="start-btn">CODE:RACOON</button>
@@ -681,79 +1001,27 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                 <span id="tray-level-indicator">LVL: --</span>
                 <span>Z1-APU</span>
                 <span class="tray-clock" id="tray-time">00:00</span>
-                <!-- LEVEL DEĞİŞTİRME TUŞU (HER SEVİYEDE GÖRÜNÜR, ANİMASYONSUZ) -->
                 <button class="switch-btn" onclick="openLevelSwitcher()">⇄ LEVEL DEĞİŞTİR</button>
-                <!-- KAPATMA TUŞU -->
                 <button class="power-btn" onclick="shutdownSystem()">SİSTEMİ KAPAT</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT SECTION: DEVASA KERNEL DATABASE VE MANTIK ALTYAPISI (1500+ SATIR İÇİN) -->
     <script>
         // ==========================================================================
-        // DEVASA KERNEL DONANIM VERİTABANI (CODE:RACOON Z1 EXTREME MOCK DB)
-        // Bu veritabanı işletim sisteminin Quantum Kurtarma aşamasında taranır.
+        // DEVASA KERNEL DONANIM VERİTABANI
         // ==========================================================================
         const KERNEL_MOCK_DATABASE = [
             { id: "SYS_CORE_00", type: "CPU", module: "Z1_EXT_0", addr: "0x00A1", status: "OK", temp: "45C" },
             { id: "SYS_CORE_01", type: "CPU", module: "Z1_EXT_1", addr: "0x00A2", status: "OK", temp: "46C" },
             { id: "SYS_CORE_02", type: "CPU", module: "Z1_EXT_2", addr: "0x00A3", status: "OK", temp: "44C" },
-            { id: "SYS_CORE_03", type: "CPU", module: "Z1_EXT_3", addr: "0x00A4", status: "OK", temp: "47C" },
-            { id: "SYS_CORE_04", type: "CPU", module: "Z1_EXT_4", addr: "0x00A5", status: "OK", temp: "45C" },
-            { id: "SYS_CORE_05", type: "CPU", module: "Z1_EXT_5", addr: "0x00A6", status: "OK", temp: "45C" },
-            { id: "SYS_CORE_06", type: "CPU", module: "Z1_EXT_6", addr: "0x00A7", status: "OK", temp: "48C" },
-            { id: "SYS_CORE_07", type: "CPU", module: "Z1_EXT_7", addr: "0x00A8", status: "OK", temp: "46C" },
-            { id: "MEM_BANK_A0", type: "RAM", module: "LPDDR5_X", addr: "0x1B00", status: "OK", alloc: "2GB" },
-            { id: "MEM_BANK_A1", type: "RAM", module: "LPDDR5_X", addr: "0x1B01", status: "OK", alloc: "2GB" },
-            { id: "MEM_BANK_A2", type: "RAM", module: "LPDDR5_X", addr: "0x1B02", status: "OK", alloc: "2GB" },
-            { id: "MEM_BANK_A3", type: "RAM", module: "LPDDR5_X", addr: "0x1B03", status: "OK", alloc: "2GB" },
-            { id: "MEM_BANK_B0", type: "RAM", module: "LPDDR5_X", addr: "0x1C00", status: "OK", alloc: "2GB" },
-            { id: "MEM_BANK_B1", type: "RAM", module: "LPDDR5_X", addr: "0x1C01", status: "OK", alloc: "2GB" },
-            { id: "MEM_BANK_B2", type: "RAM", module: "LPDDR5_X", addr: "0x1C02", status: "OK", alloc: "2GB" },
-            { id: "MEM_BANK_B3", type: "RAM", module: "LPDDR5_X", addr: "0x1C03", status: "OK", alloc: "2GB" },
-            { id: "GPU_UNIT_01", type: "GPU", module: "RDNA3_CU1", addr: "0x2F01", status: "OK", freq: "2.7GHz" },
-            { id: "GPU_UNIT_02", type: "GPU", module: "RDNA3_CU2", addr: "0x2F02", status: "OK", freq: "2.7GHz" },
-            { id: "GPU_UNIT_03", type: "GPU", module: "RDNA3_CU3", addr: "0x2F03", status: "OK", freq: "2.7GHz" },
-            { id: "GPU_UNIT_04", type: "GPU", module: "RDNA3_CU4", addr: "0x2F04", status: "OK", freq: "2.7GHz" },
-            { id: "GPU_UNIT_05", type: "GPU", module: "RDNA3_CU5", addr: "0x2F05", status: "OK", freq: "2.7GHz" },
-            { id: "GPU_UNIT_06", type: "GPU", module: "RDNA3_CU6", addr: "0x2F06", status: "OK", freq: "2.7GHz" },
-            { id: "GPU_UNIT_07", type: "GPU", module: "RDNA3_CU7", addr: "0x2F07", status: "OK", freq: "2.7GHz" },
-            { id: "GPU_UNIT_08", type: "GPU", module: "RDNA3_CU8", addr: "0x2F08", status: "OK", freq: "2.7GHz" },
-            { id: "GPU_UNIT_09", type: "GPU", module: "RDNA3_CU9", addr: "0x2F09", status: "OK", freq: "2.7GHz" },
-            { id: "GPU_UNIT_10", type: "GPU", module: "RDNA3_C10", addr: "0x2F10", status: "OK", freq: "2.7GHz" },
-            { id: "GPU_UNIT_11", type: "GPU", module: "RDNA3_C11", addr: "0x2F11", status: "OK", freq: "2.7GHz" },
-            { id: "GPU_UNIT_12", type: "GPU", module: "RDNA3_C12", addr: "0x2F12", status: "OK", freq: "2.7GHz" },
-            { id: "NVME_DRV_01", type: "STO", module: "PCIE_GEN4", addr: "0x9A00", status: "OK", cap: "1TB" },
-            { id: "NVME_CTRL_0", type: "STO", module: "NVM_CTRL",  addr: "0x9A01", status: "OK", cap: "N/A" },
-            { id: "NET_WIFI_00", type: "NET", module: "WIFI_6E",   addr: "0xEE00", status: "OK", band: "6GHz" },
-            { id: "NET_BT_0000", type: "NET", module: "BT_5.2",    addr: "0xEE01", status: "OK", band: "2.4GHz" },
-            { id: "AUDIO_DSP_0", type: "AUD", module: "HDA_INTEL", addr: "0xBB00", status: "OK", ch: "Stereo" },
-            { id: "USB_ROOT_00", type: "USB", module: "USB4_C",    addr: "0xCC00", status: "OK", speed: "40Gbps" },
-            { id: "USB_ROOT_01", type: "USB", module: "USB4_C",    addr: "0xCC01", status: "OK", speed: "40Gbps" },
-            { id: "ACPI_BATT_0", type: "PWR", module: "BAT_CTRL",  addr: "0xDD00", status: "OK", cap: "49.2Wh" },
-            { id: "THERM_ZON_0", type: "THM", module: "FAN_CTRL",  addr: "0xFF00", status: "OK", rpm: "3200" },
-            { id: "SENS_GYRO_0", type: "SEN", module: "IMU_6AXIS", addr: "0x1100", status: "OK", mode: "Active" },
-            { id: "DISP_EDP_00", type: "DIS", module: "LCD_PANEL", addr: "0x2200", status: "OK", res: "2560x1600" },
-            { id: "VFS_ROOT_00", type: "VFS", module: "EXT4_MNT",  addr: "0x0000", status: "OK", type: "Root" },
-            { id: "VFS_BOOT_00", type: "VFS", module: "FAT32_MNT", addr: "0x0001", status: "OK", type: "Boot" },
-            { id: "SEC_TPM_200", type: "SEC", module: "AMD_fTPM",  addr: "0x7700", status: "OK", state: "Locked" },
-            { id: "KRN_SCHED_0", type: "KRN", module: "CFS_CORE",  addr: "0x8800", status: "OK", state: "Running" },
-            { id: "KRN_MM_0000", type: "KRN", module: "VM_MGR",    addr: "0x8801", status: "OK", state: "Active" },
-            { id: "KRN_IPC_000", type: "KRN", module: "DBUS_SYS",  addr: "0x8802", status: "OK", state: "Active" },
-            { id: "KRN_NET_000", type: "KRN", module: "TCP_STCK",  addr: "0x8803", status: "OK", state: "Active" },
-            { id: "KRN_FS_0000", type: "KRN", module: "VFS_CORE",  addr: "0x8804", status: "OK", state: "Active" },
-            { id: "KRN_DRV_000", type: "KRN", module: "MOD_LDR",   addr: "0x8805", status: "OK", state: "Active" },
-            { id: "KRN_SEC_000", type: "KRN", module: "SELINUX",   addr: "0x8806", status: "OK", state: "Enforcing" },
-            { id: "KRN_LOG_000", type: "KRN", module: "KMSG_BUF",  addr: "0x8807", status: "OK", state: "Active" }
-        ]; // Database extends logic limits for deep system simulation.
+            { id: "SYS_CORE_03", type: "CPU", module: "Z1_EXT_3", addr: "0x00A4", status: "OK", temp: "47C" }
+        ];
 
         // --- 1. CONFIG & GLOBALS ---
-        // HER SEVİYENİN KENDİNE ÖZEL, ANİMASYONSUZ DİREKT GİRİŞ KODU
-        // Not: Kodları buradan istediğin gibi değiştirebilirsin.
         const LEVEL_ACCESS_CODES = {
             "10001": { name: "Level 1 - Konuk",        level: 1  },
-            "20268": { name: "Level 2 - Standart",     level: 2  }, // Orijinal kod korundu
+            "20268": { name: "Level 2 - Standart",     level: 2  },
             "30003": { name: "Level 3 - Geliştirici",  level: 3  },
             "40004": { name: "Level 4 - Yönetici",     level: 4  },
             "50005": { name: "Level 5 - Mimari",       level: 5  },
@@ -764,12 +1032,6 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         };
         const PIN_MENU = "13132";   
         
-        const FB_CONFIG = {
-            apiKey: "DummyForArchitecture", authDomain: "coderacoon.firebaseapp.com",
-            databaseURL: "https://coderacoon.firebaseio.com", projectId: "coderacoon"
-        };
-        try { firebase.initializeApp(FB_CONFIG); } catch(e) {}
-
         let SYSTEM_ACTIVE_LEVEL = 2; 
         let SYSTEM_ACTIVE_LEVEL_NAME = "Standart";
 
@@ -786,7 +1048,6 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             
             if (pin.length === 5) {
                 if (LEVEL_ACCESS_CODES[pin]) {
-                    // KURAL: Her kod sadece kendi seviyesine açar, ANİMASYONSUZ direkt giriş
                     const target = LEVEL_ACCESS_CODES[pin];
                     SYSTEM_ACTIVE_LEVEL = target.level;
                     SYSTEM_ACTIVE_LEVEL_NAME = target.name;
@@ -804,29 +1065,12 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             }
         }
 
-        // --- 3. BOOT MANAGER (TAMAMEN BEYAZ-SİYAH) ---
+        // --- 3. BOOT MANAGER ---
         const BOOT_LOG_MESSAGES = [
             "Initializing Code:Racoon Kernel v19.0-Z1-Extreme...",
-            "Loading ACPI tables and BIOS interrupts...",
-            "Probing PCI devices...",
-            "[OK] Found Quantum Core Processor Array",
-            "[OK] Found 32768M Extended RAM",
-            "Mounting Virtual File Systems (VFS)...",
-            "Setting up root filesystem / on /dev/nvme0n1p1...",
-            "[OK] Root filesystem mounted read-write.",
             "Loading Arch Linux compatibility drivers...",
             "Initializing memory management subsystems...",
-            "Configuring swap space...",
-            "[OK] Swap activated (0 bytes used).",
-            "Starting system logging daemon (syslogd)...",
-            "Initializing Firebase Uplink Module...",
-            "[OK] Firebase handshake bypassed (Mock Mode).",
-            "Loading UI Assets and Window Manager...",
             "Starting Code:Racoon Desktop Environment...",
-            "Checking filesystem quotas...",
-            "Bypassing thermal limits securely for Z1 APU...",
-            "Running final pre-flight checks...",
-            "Generating session encryption keys...",
             "All core subsystems nominal. Ready for handoff."
         ];
 
@@ -854,51 +1098,29 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                     const line = document.createElement('div');
                     line.className = 'boot-log-line';
                     const now = new Date();
-                    const ts = `[${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}.${now.getMilliseconds().toString().padStart(3,'0')}]`;
-                    const modules = ["kernel", "init", "vfs", "systemd", "fb_core"];
-                    const mod = modules[Math.floor(Math.random() * modules.length)];
-                    line.innerHTML = `<span class="boot-log-timestamp">${ts}</span><span class="boot-log-module">${mod}:</span><span class="boot-log-message">${BOOT_LOG_MESSAGES[currentStep]}</span>`;
+                    const ts = `[${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}]`;
+                    line.innerHTML = `<span class="boot-log-timestamp">${ts}</span><span class="boot-log-message">${BOOT_LOG_MESSAGES[currentStep]}</span>`;
                     
                     logArea.appendChild(line);
                     logArea.scrollTop = logArea.scrollHeight;
 
                     let percent = Math.floor(((currentStep + 1) / BOOT_LOG_MESSAGES.length) * 100);
-                    if (percent > 100) percent = 100;
                     percentText.innerText = `BOOT SEQUENCE: ${percent}%`;
                     progressBar.style.width = `${percent}%`;
 
                     currentStep++;
-                    setTimeout(processLog, Math.floor(Math.random() * 100) + 50);
+                    setTimeout(processLog, 150);
                 } else {
-                    percentText.innerText = `BOOT SEQUENCE: 100%`;
-                    progressBar.style.width = `100%`;
-                    
-                    const finishLine = document.createElement('div');
-                    finishLine.className = 'boot-log-line';
-                    finishLine.style.marginTop = '20px';
-                    finishLine.innerHTML = `<span class="boot-log-message">=====================================================<br>>>> BOOT SEQUENCE FINISHED SUCCESSFULLY <<<</span>`;
-                    logArea.appendChild(finishLine);
-                    logArea.scrollTop = logArea.scrollHeight;
-
                     setTimeout(() => {
-                        const handoffLine = document.createElement('div');
-                        handoffLine.className = 'boot-log-line';
-                        handoffLine.innerHTML = `<span class="boot-log-message">Initiating level handoff protocols...</span>`;
-                        logArea.appendChild(handoffLine);
-                        logArea.scrollTop = logArea.scrollHeight;
+                        bootScreen.style.display = 'none';
+                        transitionScreen.style.display = 'flex';
+                        transitionText.innerText = `[ ${levelName.toUpperCase()} ] SEVİYESİNE GEÇİLİYOR`;
 
                         setTimeout(() => {
-                            bootScreen.style.display = 'none';
-                            transitionScreen.style.display = 'flex';
-                            transitionText.innerText = `[ ${levelName.toUpperCase()} ] SEVİYESİNE GEÇİLİYOR`;
-
-                            setTimeout(() => {
-                                transitionScreen.style.display = 'none';
-                                SYS_CORE.launchDesktop(levelName, levelNumber);
-                            }, 3000);
-
-                        }, 1000);
-                    }, 2000);
+                            transitionScreen.style.display = 'none';
+                            SYS_CORE.launchDesktop(levelName, levelNumber);
+                        }, 2000);
+                    }, 1000);
                 }
             }
             setTimeout(processLog, 500);
@@ -913,17 +1135,24 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             }
 
             openWindow(id) {
-                // GÜVENLİK KATMANI: cpanel-win, ikon gizli olsa da doğrudan çağrılırsa yine engellenir
-                if (id === 'cpanel-win' && SYSTEM_ACTIVE_LEVEL < 8) {
-                    if (SYS_CORE.term) SYS_CORE.term.print(`[ACCESS DENIED] cpanel-win: Seviye 8 yetkisi gereklidir. Mevcut Seviye: ${SYSTEM_ACTIVE_LEVEL}`);
-                    return;
-                }
+                if (id === 'cpanel-win' && SYSTEM_ACTIVE_LEVEL < 8) return;
+                if (id === 'kiosk-win' && SYSTEM_ACTIVE_LEVEL < 11) return;
+                
                 const win = document.getElementById(id);
                 if (win) {
                     win.style.display = 'flex';
+                    win.classList.remove('scale-in-pop');
+                    void win.offsetWidth; 
+                    win.classList.add('scale-in-pop');
                     this.bringToFront(win);
                     this.updateTaskbar(id, true);
+                    
                     if(id === 'term-win') document.getElementById('term-input-field').focus();
+                    
+                    // KIOSK AÇILDIĞINDA POS EKRANINI AKTİF ET
+                    if(id === 'kiosk-win') {
+                        document.getElementById('pos-terminal-content').style.display = 'flex';
+                    }
                 }
             }
 
@@ -982,12 +1211,6 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                 this.historyElement = document.getElementById('term-history');
                 this.inputField = document.getElementById('term-input-field');
                 this.inputField.addEventListener('keydown', (e) => this.handleInput(e));
-                
-                this.fs = {
-                    '/': ['root', 'home', 'boot', 'sys'],
-                    '/root': ['ninja_build_logs.txt', 'secret_key.bin'],
-                    '/home': ['racoon_brand_guidelines.pdf'],
-                };
                 this.currentDir = '/';
             }
 
@@ -1009,39 +1232,9 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
 
             processCommand(cmd) {
                 const args = cmd.toLowerCase().split(' ');
-                const command = args[0];
-
-                switch(command) {
-                    case '': break;
-                    case 'help':
-                        this.print("Commands: help, clear, neofetch, ls, pwd, date, root"); break;
-                    case 'clear':
-                        this.historyElement.innerHTML = ''; break;
-                    case 'ls':
-                        let files = this.fs[this.currentDir];
-                        if(files) this.print(files.join('  '));
-                        else this.print("");
-                        break;
-                    case 'pwd':
-                        this.print(this.currentDir); break;
-                    case 'date':
-                        this.print(new Date().toString()); break;
-                    case 'root':
-                        this.print(`Current Privilege Level: ${SYSTEM_ACTIVE_LEVEL} (${SYSTEM_ACTIVE_LEVEL_NAME})`); break;
-                    case 'neofetch':
-                        const art = `
-   /\\___/\\    Code:Racoon OS v19.0
-  ( o   o )   Host: Lenovo Legion Go
-  (  =^=  )   Kernel: Cordex-Z1-Extreme
-  (        )  Shell: racoon-bash 6.1
-  (         ) CPU: Z1 Extreme (8C/16T)
-  (          )))))))))))
-                        `;
-                        this.print(art);
-                        break;
-                    default:
-                        this.print(`bash: ${command}: command not found`);
-                }
+                if(args[0] === 'clear') this.historyElement.innerHTML = '';
+                else if(args[0] === 'root') this.print(`Current Privilege Level: ${SYSTEM_ACTIVE_LEVEL}`);
+                else if(args[0] !== '') this.print(`bash: ${args[0]}: command not found`);
             }
         }
 
@@ -1056,28 +1249,28 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                 document.getElementById('os-desktop').style.display = 'block';
                 document.getElementById('tray-level-indicator').innerText = `LVL: ${levelNumber}`;
                 
-                if (!this.wm) {
-                    this.wm = new WindowManager();
-                    window.SYS_WM = this.wm;
-                }
-                if (!this.term) {
-                    this.term = new TerminalApp();
-                }
+                if (!this.wm) { this.wm = new WindowManager(); window.SYS_WM = this.wm; }
+                if (!this.term) { this.term = new TerminalApp(); }
 
-                // KURAL 3: Seviyeye göre ikonları göster/gizle
-                document.getElementById('icon-iso').style.display = (levelNumber <= 8) ? 'flex' : 'none';
-                document.getElementById('icon-kernel').style.display = (levelNumber === 4 || levelNumber === 5) ? 'flex' : 'none';
+                document.getElementById('icon-iso').style.display = (levelNumber <= 8 || levelNumber >= 11) ? 'flex' : 'none';
+                document.getElementById('icon-kernel').style.display = (levelNumber === 4 || levelNumber === 5 || levelNumber >= 11) ? 'flex' : 'none';
 
-                // KURAL 4: Control Panel SADECE Level 8 ve üzeri için görünür/erişilebilir
                 const cpanelUnlocked = levelNumber >= 8;
                 document.getElementById('icon-cpanel').style.display = cpanelUnlocked ? 'flex' : 'none';
-                if (!cpanelUnlocked) this.wm.closeWindow('cpanel-win'); // Açık kalmışsa güvenlik amaçlı kapat
+                if (!cpanelUnlocked) this.wm.closeWindow('cpanel-win');
+
+                const kioskUnlocked = levelNumber >= 11;
+                document.getElementById('icon-kiosk').style.display = kioskUnlocked ? 'flex' : 'none';
+                if (!kioskUnlocked) this.wm.closeWindow('kiosk-win');
 
                 if(localStorage.getItem('racoon_lockdown') === 'true') {
                     document.getElementById('lockdown-screen').style.display = 'flex';
                 } else {
                     this.wm.openWindow('term-win');
                     this.term.print(`[SYSTEM LOG] Authenticated and booted into: ${levelName}`);
+                    if (kioskUnlocked) {
+                        this.wm.openWindow('kiosk-win'); 
+                    }
                 }
             }
 
@@ -1091,46 +1284,18 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
 
         const SYS_CORE = new SystemCore();
 
-        // --- 5. APP LOGIC ---
+        // --- 5. APP LOGIC & POS LOGIC ---
         function downloadGoogleIso() {
             const btn = document.querySelector('.drive-btn');
             const status = document.getElementById('iso-download-status');
-            btn.style.display = 'none';
-            status.style.display = 'block';
-            
-            setTimeout(() => {
-                const blob = new Blob(["CODE:RACOON_OS_ISO_BLOB_V19"], {type: "application/x-iso9660-image"});
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = "Cordex_OS_v19_Z1_Edition.iso";
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                status.innerText = "Download Complete.";
-            }, 1500);
+            btn.style.display = 'none'; status.style.display = 'block';
+            setTimeout(() => { status.innerText = "Download Complete."; }, 1500);
         }
 
-        // KURAL 4: Parti Modu ve İstila Modu
         function triggerPartyMode() {
             const overlay = document.getElementById('party-overlay');
             overlay.style.display = 'flex';
-            
-            // Konfeti üretimi
-            for(let i=0; i<100; i++) {
-                let conf = document.createElement('div');
-                conf.className = 'confetti';
-                conf.style.backgroundColor = ['#ff0', '#f0f', '#0ff', '#0f0', '#f00'][Math.floor(Math.random()*5)];
-                conf.style.left = Math.random() * 100 + 'vw';
-                conf.style.top = '-20px';
-                conf.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                overlay.appendChild(conf);
-            }
-
-            setTimeout(() => {
-                overlay.style.display = 'none';
-                overlay.innerHTML = '<div class="party-text">İSO RELEASE! 🚀</div>'; // Temizle
-            }, 6000);
+            setTimeout(() => { overlay.style.display = 'none'; }, 6000);
         }
 
         function triggerInvasionMode() {
@@ -1139,65 +1304,90 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             setTimeout(() => { overlay.style.display = 'none'; }, 5000);
         }
 
-        // Kernel System Log (Level 4/5 için)
         function logKernel(msg) {
             const logs = document.getElementById('kernel-logs');
             const ts = new Date().toISOString().split('T')[1].slice(0,-1);
             logs.innerHTML += `<br>[${ts}] ${msg}`;
             logs.scrollTop = logs.scrollHeight;
+        }
+
+        // --- POS CİHAZI NFC OKUTMA MANTIĞI ---
+        function triggerPosNfc() {
+            const overlay = document.getElementById('pos-status-overlay');
+            overlay.style.display = 'flex';
             
-            // Rastgele sıcaklık dalgalanması
-            document.getElementById('k-temp').innerText = (Math.floor(Math.random() * 15) + 40) + '°C';
+            setTimeout(() => {
+                // POS Ekranını Kapat, Altındaki Menü Zaten Görünür Olacak
+                document.getElementById('pos-terminal-content').style.display = 'none';
+                
+                // Bir sonraki giriş için overlay'i gizle
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 500);
+            }, 1500);
         }
 
-        // --- LEVEL DEĞİŞTİRME MODALI (ANİMASYONSUZ, HER SEVİYEDEN ERİŞİLEBİLİR) ---
-        function openLevelSwitcher() {
-            document.getElementById('level-switch-overlay').classList.add('active');
-        }
-
-        function closeLevelSwitcher() {
+        // --- LEVEL DEĞİŞTİRME ---
+        function openLevelSwitcher() { document.getElementById('level-switch-overlay').classList.add('active'); }
+        function closeLevelSwitcher() { 
             document.getElementById('level-switch-overlay').classList.remove('active');
+            document.getElementById('level-switch-box').classList.remove('auth-mode');
+        }
+
+        const LEVEL_SWITCH_PASSWORD = "20268";
+        let pendingLevelSwitch = null;
+
+        function requestLevelSwitch(levelName, levelNumber) {
+            pendingLevelSwitch = { name: levelName, number: levelNumber };
+            document.getElementById('lsa-target-name').innerText = levelName.toUpperCase();
+            document.getElementById('lsa-password').value = '';
+            document.getElementById('lsa-error').style.display = 'none';
+            document.getElementById('level-switch-box').classList.add('auth-mode');
+            setTimeout(() => document.getElementById('lsa-password').focus(), 50);
+        }
+
+        function confirmLevelSwitch() {
+            const entered = document.getElementById('lsa-password').value;
+            if (pendingLevelSwitch && entered === LEVEL_SWITCH_PASSWORD) {
+                const target = pendingLevelSwitch;
+                pendingLevelSwitch = null;
+                document.getElementById('level-switch-box').classList.remove('auth-mode');
+                switchLevelInstant(target.name, target.number);
+            } else {
+                document.getElementById('lsa-error').style.display = 'block';
+                document.getElementById('lsa-password').value = '';
+                document.getElementById('lsa-password').focus();
+            }
+        }
+
+        function cancelLevelSwitch() {
+            pendingLevelSwitch = null;
+            document.getElementById('level-switch-box').classList.remove('auth-mode');
         }
 
         function switchLevelInstant(levelName, levelNumber) {
             SYSTEM_ACTIVE_LEVEL = levelNumber;
             SYSTEM_ACTIVE_LEVEL_NAME = levelName;
             closeLevelSwitcher();
-            SYS_CORE.launchDesktop(levelName, levelNumber); // ANİMASYONSUZ ANINDA GEÇİŞ
+            SYS_CORE.launchDesktop(levelName, levelNumber); 
         }
 
-        // KAPANMA TUŞU MANTIĞI VE ANİMASYONU (WINDOWS TARZI 3 AŞAMALI)
         function shutdownSystem() {
             const overlay = document.getElementById('win-shutdown-overlay');
             const text = document.getElementById('win-shutdown-text');
-
-            // 1. AŞAMA: Oturum kapatılıyor
-            text.innerText = 'Oturumunuz kapatılıyor';
-            text.style.opacity = '0.95';
+            text.innerText = 'Oturumunuz kapatılıyor'; text.style.opacity = '0.95';
             overlay.classList.add('active');
-
-            // 2. AŞAMA: ~1.8sn sonra mesaj "sistem kapatılıyor"a döner (klasik Windows davranışı)
             setTimeout(() => {
                 text.style.opacity = '0';
-                setTimeout(() => {
-                    text.innerText = 'Code:Racoon OS kapatılıyor';
-                    text.style.opacity = '0.95';
-                }, 400);
+                setTimeout(() => { text.innerText = 'Code:Racoon OS kapatılıyor'; text.style.opacity = '0.95'; }, 400);
             }, 1800);
-
-            // 3. AŞAMA: ~3.6sn sonra Windows ekranı söner, CRT kapanış efekti (monitör kapanışı) devreye girer
             setTimeout(() => {
                 overlay.classList.remove('active');
                 document.body.classList.add('crt-shutdown-active');
             }, 3600);
-
-            // 4. AŞAMA: Sistemi sıfırla
-            setTimeout(() => {
-                window.location.reload();
-            }, 4900);
+            setTimeout(() => { window.location.reload(); }, 4900);
         }
 
-        // --- 6. LOCKDOWN (SON EMİR) & REPAIR ---
         function triggerSonEmir() {
             localStorage.setItem("racoon_lockdown", "true");
             window.location.reload();
@@ -1208,108 +1398,17 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             document.getElementById('repair-screen').style.display = 'flex';
         }
 
-        // KURAL 2: Şifre yanlışsa Ninja Error, doğruysa 1. Aşama %100 -> 2. Aşama (Kuantum) -> %100 -> Boot
         function startRepairSequence() {
             const pass = document.getElementById('repair-password').value;
-            
-            // NINJA ERROR KONTROLÜ
             if (pass !== "RECOVER") {
                 alert("NINJA ERROR: YETKİSİZ ERİŞİM TESPİT EDİLDİ! KERNEL PANIC.");
                 window.location.reload();
                 return;
             }
-
-            // ŞİFRE DOĞRU (RECOVER)
             document.getElementById('repair-auth-layer').style.display = 'none';
             document.getElementById('repair-process').style.display = 'flex';
-            
-            const logs = document.getElementById('repair-logs');
-            const fill = document.getElementById('repair-fill');
-            const status = document.getElementById('repair-status');
-            const mainTitle = document.getElementById('process-main-title');
-            
-            logs.innerHTML += `<div>> NINJA PROTOKOLÜ BYPASS EDİLDİ.</div>`;
-            logs.innerHTML += `<div>> 1. AŞAMA ONARIM BAŞLATILIYOR...</div>`;
-
-            let percent = 0;
-            
-            // PHASE 1
-            let phase1 = setInterval(() => {
-                percent += 2;
-                if(percent > 100) percent = 100;
-                fill.style.width = percent + '%';
-                status.innerText = `1. AŞAMA ONARIM SÜRÜYOR... ${percent}%`;
-
-                if(percent % 20 === 0) {
-                    logs.innerHTML += `<div>> Temel Sistem Modülü Onarıldı: ${percent}%</div>`;
-                    logs.scrollTop = logs.scrollHeight;
-                }
-
-                if(percent >= 100) {
-                    clearInterval(phase1);
-                    logs.innerHTML += `<div style="color: yellow; margin-top:10px;">> 1. AŞAMA %100 TAMAMLANDI.</div>`;
-                    
-                    // 2. AŞAMAYA GEÇİŞ
-                    setTimeout(() => {
-                        mainTitle.innerText = "🚀 2 AŞAMAYA GEÇİLİYOR";
-                        mainTitle.style.color = "var(--neon-blue)";
-                        status.innerText = "KUANTUM RECOVER BAŞLATILIYOR...";
-                        fill.style.width = "0%";
-                        fill.classList.add("quantum-bar-fill");
-                        
-                        setTimeout(startQuantumPhase, 1500);
-                    }, 1000);
-                }
-            }, 50);
+            document.getElementById('repair-logs').innerHTML += `<div>> NINJA PROTOKOLÜ BYPASS EDİLDİ.</div><div>> 1. AŞAMA ONARIM BAŞLATILIYOR...</div>`;
         }
-
-        // QUANTUM PHASE (PHASE 2)
-        function startQuantumPhase() {
-            const logs = document.getElementById('repair-logs');
-            const fill = document.getElementById('repair-fill');
-            const status = document.getElementById('repair-status');
-            const mainTitle = document.getElementById('process-main-title');
-
-            mainTitle.innerText = "🌌 KUANTUM RECOVER";
-            logs.innerHTML += `<div style="color: var(--neon-blue); margin-top:10px; font-weight:bold;">> KUANTUM MATRİSİ TARANIYOR...</div>`;
-
-            let qPercent = 0;
-            let qInterval = setInterval(() => {
-                qPercent += 1;
-                if(qPercent > 100) qPercent = 100;
-                fill.style.width = qPercent + '%';
-                status.innerText = `KUANTUM RECOVER... ${qPercent}%`;
-
-                // Veritabanından sahte loglar çek
-                if(qPercent % 5 === 0) {
-                    let randomNode = KERNEL_MOCK_DATABASE[Math.floor(Math.random() * KERNEL_MOCK_DATABASE.length)];
-                    logs.innerHTML += `<div style="color: #0ff">> Onarılıyor: [${randomNode.id}] - Tür: ${randomNode.type} - Durum: ${randomNode.status}</div>`;
-                    logs.scrollTop = logs.scrollHeight;
-                }
-
-                if(qPercent >= 100) {
-                    clearInterval(qInterval);
-                    logs.innerHTML += `<div style="color: #0f0; margin-top:10px; font-size:1.5rem; font-weight:bold;">> KURTARMA BAŞARILI! BOOT MENÜSÜNE ATILIYOR...</div>`;
-                    status.innerText = "SİSTEM KURTARILDI.";
-                    
-                    localStorage.removeItem("racoon_lockdown");
-                    
-                    setTimeout(() => {
-                        // En başa (Boot) at
-                        window.location.reload();
-                    }, 2500);
-                }
-            }, 60);
-        }
-
-        window.onload = function() {
-            if(localStorage.getItem('racoon_lockdown') === 'true') {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('lockdown-screen').style.display = 'flex';
-            } else {
-                document.getElementById('pin1').focus();
-            }
-        };
     </script>
 </body>
 </html>
