@@ -123,6 +123,33 @@
             transition: opacity 0.4s ease;
         }
 
+        /* LEVEL DEĞİŞTİRME MODALI */
+        #level-switch-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: var(--z-modal); align-items: center; justify-content: center;
+        }
+        #level-switch-overlay.active { display: flex; }
+        .level-switch-box {
+            background: var(--bg-window); border: var(--window-border); border-radius: 10px;
+            padding: 30px; width: 520px; box-shadow: 0 0 40px rgba(255,102,0,0.3);
+        }
+        .level-switch-title {
+            color: var(--primary-orange); font-size: 1.3rem; font-weight: bold; text-align: center;
+            margin-bottom: 20px; border-bottom: 1px dashed var(--primary-orange); padding-bottom: 10px;
+        }
+        .level-switch-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .level-switch-btn {
+            background: #111; border: 1px solid var(--primary-orange); color: var(--primary-orange);
+            padding: 12px 5px; font-family: var(--font-mono); font-weight: bold; cursor: pointer;
+            transition: 0.2s; font-size: 0.8rem; line-height: 1.4;
+        }
+        .level-switch-btn:hover { background: var(--primary-orange); color: var(--pure-black); }
+        .level-switch-close {
+            width: 100%; padding: 12px; background: transparent; border: 1px solid #666;
+            color: #ccc; cursor: pointer; font-family: var(--font-mono); font-weight: bold; transition: 0.2s;
+        }
+        .level-switch-close:hover { border-color: #fff; color: #fff; }
+
         /* --------------------------------------------------------------------------
            1. LOGIN SCREEN
            -------------------------------------------------------------------------- */
@@ -268,6 +295,13 @@
             transition: all 0.2s; box-shadow: 0 0 10px var(--error-red);
         }
         .power-btn:hover { background: #fff; color: var(--error-red); border-color: var(--error-red); transform: scale(1.05); }
+
+        .switch-btn {
+            background: transparent; color: var(--primary-orange); border: 2px solid var(--primary-orange); padding: 0 20px; height: 35px;
+            font-weight: 900; font-family: var(--font-ui); font-size: 1.1rem; cursor: pointer; margin-left: 15px;
+            transition: all 0.2s;
+        }
+        .switch-btn:hover { background: var(--primary-orange); color: var(--pure-black); transform: scale(1.05); }
 
         .taskbar-items { display: flex; flex-grow: 1; gap: 8px; }
         .taskbar-item {
@@ -492,6 +526,25 @@
         <div class="win-shutdown-text" id="win-shutdown-text">Oturumunuz kapatılıyor</div>
     </div>
 
+    <!-- LEVEL DEĞİŞTİRME MODALI (HER SEVİYEDE ERİŞİLEBİLİR, ANİMASYONSUZ ANINDA GEÇİŞ) -->
+    <div id="level-switch-overlay">
+        <div class="level-switch-box">
+            <div class="level-switch-title">⇄ HIZLI SEVİYE DEĞİŞTİR</div>
+            <div class="level-switch-grid">
+                <button class="level-switch-btn" onclick="switchLevelInstant('Level 1 - Konuk', 1)">LVL 1<br>KONUK</button>
+                <button class="level-switch-btn" onclick="switchLevelInstant('Level 2 - Standart', 2)">LVL 2<br>STANDART</button>
+                <button class="level-switch-btn" onclick="switchLevelInstant('Level 3 - Geliştirici', 3)">LVL 3<br>GELİŞTİRİCİ</button>
+                <button class="level-switch-btn" onclick="switchLevelInstant('Level 4 - Yönetici', 4)">LVL 4<br>YÖNETİCİ</button>
+                <button class="level-switch-btn" onclick="switchLevelInstant('Level 5 - Mimari', 5)">LVL 5<br>MİMARİ</button>
+                <button class="level-switch-btn" onclick="switchLevelInstant('Level 6 - Ghost', 6)">LVL 6<br>GHOST</button>
+                <button class="level-switch-btn" onclick="switchLevelInstant('Level 7 - Nebula', 7)">LVL 7<br>NEBULA</button>
+                <button class="level-switch-btn" onclick="switchLevelInstant('Level 8 - Nambow Master', 8)">LVL 8<br>NAMBOW</button>
+                <button class="level-switch-btn" onclick="switchLevelInstant('Level 10 - Cowboy+', 10)">LVL 10<br>COWBOY+</button>
+            </div>
+            <button class="level-switch-close" onclick="closeLevelSwitcher()">KAPAT</button>
+        </div>
+    </div>
+
     <!-- 7. DESKTOP ENVIRONMENT -->
     <div id="os-desktop">
         <div class="desktop-bg-pattern"></div>
@@ -628,6 +681,8 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                 <span id="tray-level-indicator">LVL: --</span>
                 <span>Z1-APU</span>
                 <span class="tray-clock" id="tray-time">00:00</span>
+                <!-- LEVEL DEĞİŞTİRME TUŞU (HER SEVİYEDE GÖRÜNÜR, ANİMASYONSUZ) -->
+                <button class="switch-btn" onclick="openLevelSwitcher()">⇄ LEVEL DEĞİŞTİR</button>
                 <!-- KAPATMA TUŞU -->
                 <button class="power-btn" onclick="shutdownSystem()">SİSTEMİ KAPAT</button>
             </div>
@@ -694,7 +749,19 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         ]; // Database extends logic limits for deep system simulation.
 
         // --- 1. CONFIG & GLOBALS ---
-        const PIN_DIRECT = "20268"; 
+        // HER SEVİYENİN KENDİNE ÖZEL, ANİMASYONSUZ DİREKT GİRİŞ KODU
+        // Not: Kodları buradan istediğin gibi değiştirebilirsin.
+        const LEVEL_ACCESS_CODES = {
+            "10001": { name: "Level 1 - Konuk",        level: 1  },
+            "20268": { name: "Level 2 - Standart",     level: 2  }, // Orijinal kod korundu
+            "30003": { name: "Level 3 - Geliştirici",  level: 3  },
+            "40004": { name: "Level 4 - Yönetici",     level: 4  },
+            "50005": { name: "Level 5 - Mimari",       level: 5  },
+            "60006": { name: "Level 6 - Ghost",        level: 6  },
+            "70007": { name: "Level 7 - Nebula",       level: 7  },
+            "80008": { name: "Level 8 - Nambow Master", level: 8 },
+            "10010": { name: "Level 10 - Cowboy+",     level: 10 }
+        };
         const PIN_MENU = "13132";   
         
         const FB_CONFIG = {
@@ -718,9 +785,13 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             for(let i=1; i<=5; i++) pin += document.getElementById("pin"+i).value;
             
             if (pin.length === 5) {
-                if (pin === PIN_DIRECT) {
+                if (LEVEL_ACCESS_CODES[pin]) {
+                    // KURAL: Her kod sadece kendi seviyesine açar, ANİMASYONSUZ direkt giriş
+                    const target = LEVEL_ACCESS_CODES[pin];
+                    SYSTEM_ACTIVE_LEVEL = target.level;
+                    SYSTEM_ACTIVE_LEVEL_NAME = target.name;
                     document.getElementById('login-screen').style.display = 'none';
-                    SYS_CORE.launchDesktop("Level 2 - Standart", 2);
+                    SYS_CORE.launchDesktop(target.name, target.level);
                 } else if (pin === PIN_MENU) {
                     document.getElementById('login-screen').style.display = 'none';
                     document.getElementById('boot-menu-screen').style.display = 'flex';
@@ -1077,6 +1148,22 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             
             // Rastgele sıcaklık dalgalanması
             document.getElementById('k-temp').innerText = (Math.floor(Math.random() * 15) + 40) + '°C';
+        }
+
+        // --- LEVEL DEĞİŞTİRME MODALI (ANİMASYONSUZ, HER SEVİYEDEN ERİŞİLEBİLİR) ---
+        function openLevelSwitcher() {
+            document.getElementById('level-switch-overlay').classList.add('active');
+        }
+
+        function closeLevelSwitcher() {
+            document.getElementById('level-switch-overlay').classList.remove('active');
+        }
+
+        function switchLevelInstant(levelName, levelNumber) {
+            SYSTEM_ACTIVE_LEVEL = levelNumber;
+            SYSTEM_ACTIVE_LEVEL_NAME = levelName;
+            closeLevelSwitcher();
+            SYS_CORE.launchDesktop(levelName, levelNumber); // ANİMASYONSUZ ANINDA GEÇİŞ
         }
 
         // KAPANMA TUŞU MANTIĞI VE ANİMASYONU (WINDOWS TARZI 3 AŞAMALI)
