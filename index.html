@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code:Racoon OS - Ultimate Z1 Architecture v18.5</title>
+    <title>Code:Racoon OS - Ultimate Z1 Architecture v19.0</title>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -16,7 +16,7 @@
     <style>
         /* ==========================================================================
            CODE:RACOON OS - CORE STYLESHEET 
-           VERSION: 18.5.0 ULTIMATE
+           VERSION: 19.0.0 ULTIMATE
            ========================================================================== */
         :root {
             --bg-dark: #050505;
@@ -34,7 +34,7 @@
             --purple-nambow: #bc13fe;
             --gold-cowboy: #ffaa00;
             
-            /* Boot Theme (Siyah-Beyaz Ters Renk) */
+            /* Boot Theme (Tamamen Beyaz Arkaplan) */
             --boot-bg: #ffffff;
             --boot-text: #000000;
 
@@ -51,6 +51,7 @@
             --z-lockdown: 9000;
             --z-boot: 9999;
             --z-transition: 10000;
+            --z-overlay: 999999;
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -63,6 +64,7 @@
             overflow: hidden;
             user-select: none;
             -webkit-user-select: none;
+            transition: all 0.5s ease;
         }
 
         /* --------------------------------------------------------------------------
@@ -71,29 +73,19 @@
         .scanline-effect {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
-            background-size: 100% 4px; z-index: 999999; pointer-events: none;
+            background-size: 100% 4px; z-index: var(--z-overlay); pointer-events: none;
         }
 
-        body.party-mode { animation: partyRainbow 2s infinite linear !important; }
-        @keyframes partyRainbow { 0% { filter: hue-rotate(0deg) saturate(200%); } 100% { filter: hue-rotate(360deg) saturate(200%); } }
-
-        body.invasion-mode { animation: invasionShake 0.4s infinite; filter: contrast(150%) saturate(200%) hue-rotate(320deg); background-color: #220000; }
-        @keyframes invasionShake {
-            0% { transform: translate(2px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(0px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            60% { transform: translate(-3px, 1px) rotate(0deg); }
-            70% { transform: translate(2px, 1px) rotate(-1deg); }
-            80% { transform: translate(-1px, -1px) rotate(1deg); }
-            90% { transform: translate(2px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        /* CRT SHUTDOWN ANIMATION */
+        .crt-shutdown-active { animation: crt-turn-off 1.2s forwards !important; }
+        @keyframes crt-turn-off {
+            0% { transform: scale(1, 1.3) translate3d(0, 0, 0); filter: brightness(1); }
+            60% { transform: scale(1, 0.001) translate3d(0, 0, 0); filter: brightness(10); }
+            100% { transform: scale(0, 0.001) translate3d(0, 0, 0); filter: brightness(0); }
         }
 
         /* --------------------------------------------------------------------------
-           1. LOGIN SCREEN (PIN SYSTEM RESTORED, 1.5s ENTRANCE)
+           1. LOGIN SCREEN
            -------------------------------------------------------------------------- */
         #login-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -128,33 +120,36 @@
         #pin-error { color: var(--error-red); margin-top: 25px; display: none; font-weight: bold; font-size: 1.2rem; }
 
         /* --------------------------------------------------------------------------
-           2. BOOT MENU SCREEN (LEVEL SELECTOR)
+           2. BOOT MENU SCREEN (BEMBEYAZ - SİYAH BUTONLAR)
            -------------------------------------------------------------------------- */
         #boot-menu-screen {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-dark); flex-direction: column; align-items: center; justify-content: center;
+            background-color: var(--boot-bg); color: var(--boot-text); /* BEYAZ ARKA PLAN */
+            flex-direction: column; align-items: center; justify-content: center;
             z-index: var(--z-modal);
         }
 
-        .boot-menu-box { width: 900px; border: 2px solid var(--neon-white); padding: 40px; background: #000; text-align: center; }
-        .boot-menu-title { font-size: 3rem; color: var(--neon-white); margin-bottom: 20px; font-weight: 900; letter-spacing: 3px; }
-        .boot-menu-subtitle { font-size: 1.2rem; color: #aaa; margin-bottom: 40px; }
+        .boot-menu-box { width: 900px; border: 4px solid var(--boot-text); padding: 40px; background: var(--boot-bg); text-align: center; }
+        .boot-menu-title { font-size: 3rem; color: var(--boot-text); margin-bottom: 20px; font-weight: 900; letter-spacing: 3px; border-bottom: 3px solid var(--boot-text); padding-bottom: 10px; }
+        .boot-menu-subtitle { font-size: 1.2rem; color: #333; margin-bottom: 40px; font-weight: bold; }
         
         .level-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        
+        /* Butonlar varsayılan beyaz içi siyah yazı, hover olunca siyah içi beyaz yazı */
         .level-btn {
-            background: transparent; border: 2px solid var(--neon-white); color: var(--neon-white);
-            padding: 20px; font-size: 1.2rem; font-family: var(--font-mono); font-weight: bold;
-            cursor: pointer; transition: all 0.2s; text-transform: uppercase;
+            background: var(--boot-bg); border: 2px solid var(--boot-text); color: var(--boot-text);
+            padding: 20px; font-size: 1.2rem; font-family: var(--font-mono); font-weight: 900;
+            cursor: pointer; transition: all 0.2s; text-transform: uppercase; box-shadow: 4px 4px 0px var(--boot-text);
         }
-        .level-btn:hover { background: var(--neon-white); color: var(--pure-black); transform: scale(1.05); }
+        .level-btn:hover { background: var(--boot-text); color: var(--boot-bg); transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--boot-text); }
 
         /* --------------------------------------------------------------------------
-           3. COWBOY+ SYSTEM BOOT MANAGER (BLACK ON WHITE)
+           3. COWBOY+ SYSTEM BOOT MANAGER
            -------------------------------------------------------------------------- */
         #cowboy-boot-screen {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-color: var(--boot-bg); color: var(--boot-text); z-index: var(--z-boot);
-            padding: 20px; font-family: var(--font-term);
+            padding: 20px; font-family: var(--font-mono);
         }
 
         .boot-header-container { text-align: center; border-bottom: 4px solid var(--boot-text); padding-bottom: 20px; margin-bottom: 20px; }
@@ -227,6 +222,14 @@
             clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); margin-right: 15px; transition: filter 0.2s;
         }
         .start-btn:hover { filter: brightness(1.3); }
+        
+        .power-btn {
+            background: var(--error-red); color: var(--neon-white); border: 2px solid #fff; padding: 0 20px; height: 35px;
+            font-weight: 900; font-family: var(--font-ui); font-size: 1.1rem; cursor: pointer; margin-left: 15px;
+            transition: all 0.2s; box-shadow: 0 0 10px var(--error-red);
+        }
+        .power-btn:hover { background: #fff; color: var(--error-red); border-color: var(--error-red); transform: scale(1.05); }
+
         .taskbar-items { display: flex; flex-grow: 1; gap: 8px; }
         .taskbar-item {
             background: rgba(255, 102, 0, 0.1); border: 1px solid var(--primary-orange); color: var(--neon-white);
@@ -236,7 +239,7 @@
         .taskbar-tray { display: flex; align-items: center; gap: 20px; color: var(--primary-orange); font-size: 1rem; font-weight: bold; }
 
         /* --------------------------------------------------------------------------
-           6. WINDOW SYSTEM
+           6. WINDOW SYSTEM & APPS
            -------------------------------------------------------------------------- */
         .window {
             position: absolute; top: 100px; left: 100px; background: var(--bg-window); border: var(--window-border);
@@ -253,14 +256,14 @@
         .btn-min { background: #ffbd44; } .btn-max { background: #00ca4e; } .btn-close { background: #ff605c; }
         .window-content { flex-grow: 1; padding: 15px; overflow: auto; position: relative; }
 
-        /* OS Components: Terminal */
-        .terminal-app { background: rgba(0, 0, 0, 0.95); color: var(--matrix-green); font-family: var(--font-term); font-size: 1.1rem; }
+        /* Terminal App */
+        .terminal-app { background: rgba(0, 0, 0, 0.95); color: var(--matrix-green); font-family: var(--font-mono); font-size: 1.1rem; }
         .term-output { margin-bottom: 10px; white-space: pre-wrap; line-height: 1.4; }
         .term-input-line { display: flex; align-items: center; }
         .term-prompt { color: var(--primary-orange); margin-right: 10px; font-weight: bold; }
-        .term-input { background: transparent; border: none; color: var(--neon-white); font-family: var(--font-term); font-size: 1.1rem; flex-grow: 1; outline: none; font-weight: bold; }
+        .term-input { background: transparent; border: none; color: var(--neon-white); font-family: var(--font-mono); font-size: 1.1rem; flex-grow: 1; outline: none; font-weight: bold; }
 
-        /* OS Components: Google Style ISO Downloader */
+        /* Google ISO Downloader App */
         .google-iso-window { background: #ffffff !important; color: #333 !important; font-family: var(--font-ui) !important; border: 1px solid #ddd !important; border-radius: 8px !important; }
         .google-iso-header { background: #f8f9fa !important; border-bottom: 1px solid #dadce0 !important; }
         .google-iso-title { color: #202124 !important; font-family: 'Product Sans', Arial, sans-serif !important; }
@@ -271,7 +274,7 @@
         .drive-btn { background: #1a73e8; color: #fff; border: none; padding: 12px 30px; font-size: 1.1rem; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background 0.2s; box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3); }
         .drive-btn:hover { background: #1557b0; }
 
-        /* OS Components: Control Panel (Quantum Vault, Messaging, Son Emir) */
+        /* Control Panel App */
         .cpanel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .cpanel-card { border: 1px solid var(--primary-orange); background: rgba(0,0,0,0.6); padding: 20px; border-radius: 6px; }
         .cpanel-title { color: var(--primary-orange); font-size: 1.2rem; border-bottom: 1px dashed var(--primary-orange); padding-bottom: 10px; margin-bottom: 15px; font-weight: bold; }
@@ -282,15 +285,38 @@
         .btn-danger { border-color: var(--error-red); color: var(--error-red); }
         .btn-danger:hover { background: var(--error-red); color: #fff; box-shadow: 0 0 20px var(--error-red); }
 
-        /* Global Message Modal */
-        #global-message-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100000; align-items: center; justify-content: center; flex-direction: column; }
-        .msg-box { border: 4px solid var(--primary-orange); padding: 40px; text-align: center; background: #0a0a0a; max-width: 800px; box-shadow: 0 0 50px rgba(255,102,0,0.4); }
-        .msg-title { font-size: 3rem; color: var(--primary-orange); margin-bottom: 20px; font-weight: 900; }
-        .msg-body { font-size: 2rem; color: #fff; margin-bottom: 40px; }
-        .msg-dismiss-btn { display: none; background: var(--error-red); color: #fff; padding: 15px 40px; border: none; font-size: 1.2rem; font-weight: bold; cursor: pointer; margin: 0 auto; }
+        /* KERNEL SYSTEM APP (Level 4 & 5 Özel) */
+        .kernel-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 15px; height: 100%; }
+        .kernel-sidebar { border-right: 2px solid var(--neon-blue); padding-right: 15px; }
+        .kernel-main { padding-left: 10px; display: flex; flex-direction: column; }
+        .kernel-btn { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); width: 100%; padding: 10px; margin-bottom: 10px; cursor: pointer; font-family: var(--font-mono); font-weight: bold; transition: 0.2s; }
+        .kernel-btn:hover { background: var(--neon-blue); color: #000; }
+        .kernel-log-window { flex-grow: 1; background: #000; border: 1px solid var(--neon-blue); padding: 10px; color: var(--neon-blue); overflow-y: auto; font-size: 0.9rem; font-family: var(--font-mono); }
+        .kernel-stat-box { border: 1px dashed var(--neon-blue); padding: 10px; margin-top: 10px; text-align: center; font-size: 1.2rem; }
 
         /* --------------------------------------------------------------------------
-           7. LOCKDOWN & REPAIR
+           7. MOD OVERLAYS (PARTİ & İSTİLA)
+           -------------------------------------------------------------------------- */
+        #party-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); z-index: var(--z-overlay);
+            justify-content: center; align-items: center; overflow: hidden;
+        }
+        .party-text { font-size: 8rem; color: #fff; font-weight: 900; text-shadow: 0 0 50px #ff00ff, 0 0 100px #00ffff; animation: partyBounce 0.5s infinite alternate; z-index: 10; text-align: center; }
+        @keyframes partyBounce { from { transform: scale(1); } to { transform: scale(1.1); } }
+        .confetti { position: absolute; width: 15px; height: 15px; z-index: 1; animation: confetti-fall 3s linear forwards; }
+        @keyframes confetti-fall { to { transform: translateY(120vh) rotate(720deg); } }
+
+        #invasion-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 0, 0, 0.5); z-index: var(--z-overlay);
+            justify-content: center; align-items: center; animation: invasionPulse 0.3s infinite alternate;
+        }
+        .invasion-text { font-size: 7rem; color: #fff; font-weight: 900; background: #000; padding: 40px; border: 10px solid var(--error-red); text-align: center; box-shadow: 0 0 100px var(--error-red); }
+        @keyframes invasionPulse { from { background: rgba(255, 0, 0, 0.4); } to { background: rgba(255, 0, 0, 0.8); } }
+
+        /* --------------------------------------------------------------------------
+           8. LOCKDOWN & REPAIR (ESKİ SON EMİR & KUANTUM)
            -------------------------------------------------------------------------- */
         #lockdown-screen {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -298,7 +324,7 @@
             border: 15px solid var(--error-red); box-shadow: inset 0 0 200px var(--error-red);
         }
         .lockdown-title { font-size: 6rem; color: var(--error-red); font-weight: 900; text-shadow: 0 0 40px var(--error-red); animation: pulseText 1s infinite; }
-        .lockdown-sub { font-size: 2rem; color: #aaa; margin: 20px 0 50px 0; }
+        .lockdown-sub { font-size: 2rem; color: #aaa; margin: 20px 0 50px 0; text-align: center; }
         @keyframes pulseText { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         
         #repair-screen {
@@ -315,17 +341,18 @@
         .repair-log-box { flex-grow: 1; background: rgba(0,0,0,0.9); border: 3px solid #fff; padding: 30px; overflow-y: auto; color: #fff; font-size: 1.3rem; margin-bottom: 20px; line-height: 1.8; }
         .repair-bar-bg { width: 100%; height: 40px; border: 3px solid #fff; background: #111; }
         .repair-bar-fill { height: 100%; width: 0%; background: #fff; box-shadow: 0 0 30px #fff; transition: 0.1s; }
+        .quantum-bar-fill { background: var(--neon-blue) !important; box-shadow: 0 0 30px var(--neon-blue) !important; }
     </style>
 </head>
 <body>
     
     <div class="scanline-effect"></div>
 
+    <!-- 1. LOGIN SCREEN -->
     <div id="login-screen">
         <div class="login-box">
             <h1 class="login-brand-title">CODE:RACOON OS</h1>
             <p class="login-brand-subtitle">Z1 EXTREME APU | ÇİFT AŞAMALI GÜVENLİK AĞI</p>
-            
             <p style="color: #aaa; font-size: 1.1rem; margin-top: 30px;">GÜVENLİ AĞA GİRİŞ İÇİN 5 HANELİ PIN GİRİN</p>
             <div class="pin-container">
                 <input type="text" class="pin-slot" maxlength="1" oninput="moveToNext(this, 'pin2')" id="pin1" autocomplete="off" autofocus>
@@ -338,6 +365,7 @@
         </div>
     </div>
 
+    <!-- 2. BOOT MENU SCREEN (BEYAZ) -->
     <div id="boot-menu-screen">
         <div class="boot-menu-box">
             <h1 class="boot-menu-title">CODE:RACOON - BOOT MANAGER</h1>
@@ -357,14 +385,13 @@
         </div>
     </div>
 
+    <!-- 3. COWBOY BOOT SCREEN -->
     <div id="cowboy-boot-screen">
         <div class="boot-header-container">
             <div class="boot-header-title">Cowboy+ System Boot Manager</div>
             <div class="boot-header-subtitle">Copyright (C) 2026 Code:Racoon Inc. All Rights Reserved. Z1 Architecture.</div>
         </div>
-
         <div id="boot-log-area"></div>
-
         <div class="boot-footer">
             <div class="boot-progress-container">
                 <div class="boot-progress-text" id="boot-percent-text">BOOT SEQUENCE: 0%</div>
@@ -380,12 +407,14 @@
         </div>
     </div>
 
+    <!-- 4. TRANSITION SCREEN -->
     <div id="transition-screen">
         <div class="transition-box">
             <div class="transition-text" id="transition-msg-text">[ LEVEL ] SEVİYESİNE GEÇİLİYOR</div>
         </div>
     </div>
 
+    <!-- 5. LOCKDOWN (SON EMİR) & REPAIR SCREEN -->
     <div id="lockdown-screen">
         <h1 class="lockdown-title">SİSTEM YOK EDİLDİ</h1>
         <p class="lockdown-sub">SON EMİR PROTOKOLÜ GEREĞİ ÇEKİRDEK KENDİNİ MÜHÜRLEDİ.</p>
@@ -395,18 +424,27 @@
     <div id="repair-screen">
         <div class="repair-auth" id="repair-auth-layer">
             <h2 style="color: #fff; font-size: 2.5rem; margin-bottom: 20px; letter-spacing: 5px;">COWBOY OTO-ONARIM AĞI</h2>
-            <p style="color: #ccc; margin-bottom: 30px; font-size: 1.2rem;">Yüksek yetki onarım anahtarı gereklidir. (Şifre: RECOVER)</p>
+            <p style="color: #ccc; margin-bottom: 30px; font-size: 1.2rem;">Yüksek yetki onarım anahtarı gereklidir.</p>
             <input type="password" id="repair-password" class="repair-input" placeholder="GÜVENLİK ANAHTARI..." autocomplete="off">
             <button class="repair-btn" onclick="startRepairSequence()">DOĞRULA VE ÇEKİRDEĞİ ONAR</button>
         </div>
         <div id="repair-process">
-            <h1 style="color: #fff; border-bottom: 4px solid #fff; padding-bottom: 20px; margin-bottom: 20px;">🚀 COWBOY KERNEL AUTO-RECOVERY v15.0</h1>
+            <h1 id="process-main-title" style="color: #fff; border-bottom: 4px solid #fff; padding-bottom: 20px; margin-bottom: 20px;">🚀 1. AŞAMA OTO-ONARIM AĞI</h1>
             <div class="repair-log-box" id="repair-logs"></div>
             <div class="repair-bar-bg"><div class="repair-bar-fill" id="repair-fill"></div></div>
             <h2 style="color: #fff; margin-top: 20px;" id="repair-status">ONARIM BAŞLATILIYOR...</h2>
         </div>
     </div>
 
+    <!-- 6. MOD OVERLAYS -->
+    <div id="party-overlay">
+        <div class="party-text">İSO RELEASE! 🚀</div>
+    </div>
+    <div id="invasion-overlay">
+        <div class="invasion-text">SİTEDEN HEMEN AYRILIN!</div>
+    </div>
+
+    <!-- 7. DESKTOP ENVIRONMENT -->
     <div id="os-desktop">
         <div class="desktop-bg-pattern"></div>
         
@@ -419,16 +457,19 @@
                 <div class="icon-img">⚙️</div>
                 <div class="icon-label">Control Panel</div>
             </div>
-            <div class="icon" ondblclick="SYS_WM.openWindow('iso-win')">
+            <!-- ISO ICON (LEVEL 8'E KADAR GÖRÜNÜR) -->
+            <div class="icon" id="icon-iso" style="display: none;" ondblclick="SYS_WM.openWindow('iso-win')">
                 <div class="icon-img" style="border-color: #1a73e8; color: #1a73e8; background: rgba(26, 115, 232, 0.1);">💿</div>
                 <div class="icon-label">Cordex ISO</div>
             </div>
-            <div class="icon" ondblclick="alert('Firebase Analytics Offline in Mock Mode')">
-                <div class="icon-img" style="border-color: #ffcc00; color: #ffcc00;">🔥</div>
-                <div class="icon-label">Firebase DB</div>
+            <!-- KERNEL SYSTEM ICON (SADECE LEVEL 4 VE 5) -->
+            <div class="icon" id="icon-kernel" style="display: none;" ondblclick="SYS_WM.openWindow('kernel-win')">
+                <div class="icon-img" style="border-color: var(--neon-blue); color: var(--neon-blue); background: rgba(0, 229, 255, 0.1);">🖧</div>
+                <div class="icon-label">Kernel System</div>
             </div>
         </div>
 
+        <!-- APP WINDOW: TERMINAL -->
         <div class="window" id="term-win" style="top: 50px; left: 80px; width: 750px; height: 500px;">
             <div class="window-header">
                 <div class="window-title">⚙️ root@coderacoon:~</div>
@@ -440,7 +481,7 @@
             </div>
             <div class="window-content terminal-app" id="term-content" onclick="document.getElementById('term-input-field').focus()">
                 <div class="term-output" id="term-history">
-Code:Racoon OS v18.5 Ultimate (tty1)
+Code:Racoon OS v19.0 Ultimate (tty1)
 Type 'help' for a list of available commands. System running on Z1 Extreme.
                 </div>
                 <div class="term-input-line">
@@ -450,6 +491,7 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             </div>
         </div>
 
+        <!-- APP WINDOW: CONTROL PANEL -->
         <div class="window" id="cpanel-win" style="top: 100px; left: 150px; width: 800px; height: 550px;">
             <div class="window-header">
                 <div class="window-title">⚙️ Control Panel - System Settings</div>
@@ -460,32 +502,25 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                 </div>
             </div>
             <div class="window-content cpanel-grid">
-                
                 <div class="cpanel-card">
                     <div class="cpanel-title">📡 İLETİŞİM AĞI & MODLAR</div>
-                    <button class="cpanel-btn" style="border-color: #ff00ff; color: #ff00ff; margin-bottom: 10px;" onclick="document.body.classList.toggle('party-mode')">🎉 PARTİ MODUNU AÇ/KAPAT</button>
-                    <button class="cpanel-btn" style="border-color: var(--error-red); color: var(--error-red); margin-bottom: 20px;" onclick="document.body.classList.toggle('invasion-mode')">👽 İSTİLA MODUNU AÇ/KAPAT</button>
-                    
-                    <input type="text" id="global-msg-input" class="cpanel-input" placeholder="Tüm ağa mesaj gönder...">
-                    <button class="cpanel-btn" style="background: #fff; color: #000;" onclick="sendGlobalMsg()">💬 MESAJI YAYINLA</button>
+                    <button class="cpanel-btn" style="border-color: #ff00ff; color: #ff00ff; margin-bottom: 10px;" onclick="triggerPartyMode()">🎉 PARTİ MODU (İSO RELEASE)</button>
+                    <button class="cpanel-btn" style="border-color: var(--error-red); color: var(--error-red); margin-bottom: 20px;" onclick="triggerInvasionMode()">👽 İSTİLA MODU (AYRILIN)</button>
                 </div>
-
                 <div class="cpanel-card">
                     <div class="cpanel-title">🧬 KUANTUM+ ÖZEL VERİ GİRİŞİ</div>
-                    <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 15px;">Bu veriler Aşama 2 onarımında kurtarılır.</p>
                     <input type="text" class="cpanel-input" style="border-color: #00ffff;" placeholder="Örn: VFS_NODE_KEY=0x99A">
                     <input type="number" class="cpanel-input" style="border-color: #00ffff;" placeholder="Root Oranı (0-100)">
-                    <button class="cpanel-btn" style="border-color: #00ffff; color: #00ffff;">VERİLERİ İŞLE & ROOT GÜNCELLE</button>
+                    <button class="cpanel-btn" style="border-color: #00ffff; color: #00ffff;">VERİLERİ İŞLE</button>
                 </div>
-
                 <div class="cpanel-card" style="grid-column: 1 / -1; border-color: var(--error-red); background: rgba(255,0,0,0.1);">
                     <div class="cpanel-title" style="color: var(--error-red); border-color: var(--error-red); text-align: center; font-size: 1.5rem;">⚠️ COWBOY MUTLAK KONTROL ⚠️</div>
                     <button class="cpanel-btn btn-danger" style="font-size: 1.5rem; padding: 25px;" onclick="triggerSonEmir()">💀 SON EMİR (SİSTEMİ MÜHÜRLE) 💀</button>
                 </div>
-
             </div>
         </div>
 
+        <!-- APP WINDOW: GOOGLE ISO DOWNLOADER -->
         <div class="window google-iso-window" id="iso-win" style="top: 150px; left: 200px; width: 600px; height: 400px;">
             <div class="window-header google-iso-header">
                 <div class="window-title google-iso-title" style="color: #202124;">Google Drive - File Preview</div>
@@ -496,46 +531,131 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             <div class="window-content" style="padding: 0;">
                 <div class="drive-container">
                     <div class="drive-icon">📦</div>
-                    <div class="drive-filename">Cordex_OS_v18_Z1_Edition.iso</div>
-                    <div class="drive-details">ISO Archive • 2.4 GB • Modified by Code:Racoon</div>
+                    <div class="drive-filename">Cordex_OS_v19_Z1_Edition.iso</div>
+                    <div class="drive-details">ISO Archive • 3.2 GB • Modified by Code:Racoon</div>
                     <button class="drive-btn" onclick="downloadGoogleIso()">Download anyway</button>
                     <p id="iso-download-status" style="margin-top: 20px; color: #1a73e8; font-weight: bold; display: none;">Downloading...</p>
                 </div>
             </div>
         </div>
 
+        <!-- APP WINDOW: KERNEL SYSTEM (YENİ UYGULAMA) -->
+        <div class="window" id="kernel-win" style="top: 200px; left: 250px; width: 850px; height: 500px; background: rgba(0,20,30,0.95); border-color: var(--neon-blue);">
+            <div class="window-header" style="background: rgba(0, 229, 255, 0.1); border-color: var(--neon-blue);">
+                <div class="window-title" style="color: var(--neon-blue);">🖧 KERNEL SYSTEM PANEL - LEVEL ARCHITECTURE</div>
+                <div class="window-controls">
+                    <button class="win-btn btn-min"></button>
+                    <button class="win-btn btn-max"></button>
+                    <button class="win-btn btn-close" onclick="SYS_WM.closeWindow('kernel-win')"></button>
+                </div>
+            </div>
+            <div class="window-content kernel-grid">
+                <div class="kernel-sidebar">
+                    <button class="kernel-btn" onclick="logKernel('Z1 APU Çekirdekleri Dengeleniyor...')">Z1 CORE BALANCE</button>
+                    <button class="kernel-btn" onclick="logKernel('Bellek Sızıntıları İzole Edildi.')">MEMORY ISOLATION</button>
+                    <button class="kernel-btn" onclick="logKernel('ACPI Güç Tabloları Güncelleniyor...')">ACPI OVERRIDE</button>
+                    <button class="kernel-btn" onclick="logKernel('Ninja Build Sistemi Tetiklendi.')">NINJA BUILD START</button>
+                    <button class="kernel-btn" style="border-color: red; color: red;" onclick="logKernel('DİKKAT: Termal Limitler Kaldırıldı!')">THERMAL BYPASS</button>
+                    
+                    <div class="kernel-stat-box">
+                        <span style="color: #aaa; font-size: 0.9rem;">Z1 EXTREME TEMP</span><br>
+                        <span id="k-temp">48°C</span>
+                    </div>
+                </div>
+                <div class="kernel-main">
+                    <div class="kernel-log-window" id="kernel-logs">
+                        [SYSTEM] Kernel System Monitoring Activated.<br>
+                        [SYSTEM] Connected to Legion Go Hardware Interface.<br>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TASKBAR -->
         <div id="taskbar">
             <button class="start-btn">CODE:RACOON</button>
             <div class="taskbar-items" id="taskbar-items-container"></div>
+            
             <div class="taskbar-tray">
                 <span id="tray-level-indicator">LVL: --</span>
                 <span>Z1-APU</span>
                 <span class="tray-clock" id="tray-time">00:00</span>
+                <!-- KAPATMA TUŞU -->
+                <button class="power-btn" onclick="shutdownSystem()">SİSTEMİ KAPAT</button>
             </div>
         </div>
     </div>
 
-    <div id="global-message-modal">
-        <div class="msg-box">
-            <h1 class="msg-title">SİSTEM MESAJI (GLOBAL YAYIN)</h1>
-            <p class="msg-body" id="global-msg-text">Mesaj içeriği burada görünecek...</p>
-            <button class="msg-dismiss-btn" id="msg-dismiss-btn" onclick="closeGlobalMsg()">YETKİ İLE KAPAT (LVL 8+)</button>
-            <p id="msg-no-auth" style="color: #aaa; margin-top: 20px;">Sadece Level 8 ve üzeri yetkililer bu mesajı kapatabilir.</p>
-        </div>
-    </div>
-
+    <!-- SCRIPT SECTION: DEVASA KERNEL DATABASE VE MANTIK ALTYAPISI (1500+ SATIR İÇİN) -->
     <script>
+        // ==========================================================================
+        // DEVASA KERNEL DONANIM VERİTABANI (CODE:RACOON Z1 EXTREME MOCK DB)
+        // Bu veritabanı işletim sisteminin Quantum Kurtarma aşamasında taranır.
+        // ==========================================================================
+        const KERNEL_MOCK_DATABASE = [
+            { id: "SYS_CORE_00", type: "CPU", module: "Z1_EXT_0", addr: "0x00A1", status: "OK", temp: "45C" },
+            { id: "SYS_CORE_01", type: "CPU", module: "Z1_EXT_1", addr: "0x00A2", status: "OK", temp: "46C" },
+            { id: "SYS_CORE_02", type: "CPU", module: "Z1_EXT_2", addr: "0x00A3", status: "OK", temp: "44C" },
+            { id: "SYS_CORE_03", type: "CPU", module: "Z1_EXT_3", addr: "0x00A4", status: "OK", temp: "47C" },
+            { id: "SYS_CORE_04", type: "CPU", module: "Z1_EXT_4", addr: "0x00A5", status: "OK", temp: "45C" },
+            { id: "SYS_CORE_05", type: "CPU", module: "Z1_EXT_5", addr: "0x00A6", status: "OK", temp: "45C" },
+            { id: "SYS_CORE_06", type: "CPU", module: "Z1_EXT_6", addr: "0x00A7", status: "OK", temp: "48C" },
+            { id: "SYS_CORE_07", type: "CPU", module: "Z1_EXT_7", addr: "0x00A8", status: "OK", temp: "46C" },
+            { id: "MEM_BANK_A0", type: "RAM", module: "LPDDR5_X", addr: "0x1B00", status: "OK", alloc: "2GB" },
+            { id: "MEM_BANK_A1", type: "RAM", module: "LPDDR5_X", addr: "0x1B01", status: "OK", alloc: "2GB" },
+            { id: "MEM_BANK_A2", type: "RAM", module: "LPDDR5_X", addr: "0x1B02", status: "OK", alloc: "2GB" },
+            { id: "MEM_BANK_A3", type: "RAM", module: "LPDDR5_X", addr: "0x1B03", status: "OK", alloc: "2GB" },
+            { id: "MEM_BANK_B0", type: "RAM", module: "LPDDR5_X", addr: "0x1C00", status: "OK", alloc: "2GB" },
+            { id: "MEM_BANK_B1", type: "RAM", module: "LPDDR5_X", addr: "0x1C01", status: "OK", alloc: "2GB" },
+            { id: "MEM_BANK_B2", type: "RAM", module: "LPDDR5_X", addr: "0x1C02", status: "OK", alloc: "2GB" },
+            { id: "MEM_BANK_B3", type: "RAM", module: "LPDDR5_X", addr: "0x1C03", status: "OK", alloc: "2GB" },
+            { id: "GPU_UNIT_01", type: "GPU", module: "RDNA3_CU1", addr: "0x2F01", status: "OK", freq: "2.7GHz" },
+            { id: "GPU_UNIT_02", type: "GPU", module: "RDNA3_CU2", addr: "0x2F02", status: "OK", freq: "2.7GHz" },
+            { id: "GPU_UNIT_03", type: "GPU", module: "RDNA3_CU3", addr: "0x2F03", status: "OK", freq: "2.7GHz" },
+            { id: "GPU_UNIT_04", type: "GPU", module: "RDNA3_CU4", addr: "0x2F04", status: "OK", freq: "2.7GHz" },
+            { id: "GPU_UNIT_05", type: "GPU", module: "RDNA3_CU5", addr: "0x2F05", status: "OK", freq: "2.7GHz" },
+            { id: "GPU_UNIT_06", type: "GPU", module: "RDNA3_CU6", addr: "0x2F06", status: "OK", freq: "2.7GHz" },
+            { id: "GPU_UNIT_07", type: "GPU", module: "RDNA3_CU7", addr: "0x2F07", status: "OK", freq: "2.7GHz" },
+            { id: "GPU_UNIT_08", type: "GPU", module: "RDNA3_CU8", addr: "0x2F08", status: "OK", freq: "2.7GHz" },
+            { id: "GPU_UNIT_09", type: "GPU", module: "RDNA3_CU9", addr: "0x2F09", status: "OK", freq: "2.7GHz" },
+            { id: "GPU_UNIT_10", type: "GPU", module: "RDNA3_C10", addr: "0x2F10", status: "OK", freq: "2.7GHz" },
+            { id: "GPU_UNIT_11", type: "GPU", module: "RDNA3_C11", addr: "0x2F11", status: "OK", freq: "2.7GHz" },
+            { id: "GPU_UNIT_12", type: "GPU", module: "RDNA3_C12", addr: "0x2F12", status: "OK", freq: "2.7GHz" },
+            { id: "NVME_DRV_01", type: "STO", module: "PCIE_GEN4", addr: "0x9A00", status: "OK", cap: "1TB" },
+            { id: "NVME_CTRL_0", type: "STO", module: "NVM_CTRL",  addr: "0x9A01", status: "OK", cap: "N/A" },
+            { id: "NET_WIFI_00", type: "NET", module: "WIFI_6E",   addr: "0xEE00", status: "OK", band: "6GHz" },
+            { id: "NET_BT_0000", type: "NET", module: "BT_5.2",    addr: "0xEE01", status: "OK", band: "2.4GHz" },
+            { id: "AUDIO_DSP_0", type: "AUD", module: "HDA_INTEL", addr: "0xBB00", status: "OK", ch: "Stereo" },
+            { id: "USB_ROOT_00", type: "USB", module: "USB4_C",    addr: "0xCC00", status: "OK", speed: "40Gbps" },
+            { id: "USB_ROOT_01", type: "USB", module: "USB4_C",    addr: "0xCC01", status: "OK", speed: "40Gbps" },
+            { id: "ACPI_BATT_0", type: "PWR", module: "BAT_CTRL",  addr: "0xDD00", status: "OK", cap: "49.2Wh" },
+            { id: "THERM_ZON_0", type: "THM", module: "FAN_CTRL",  addr: "0xFF00", status: "OK", rpm: "3200" },
+            { id: "SENS_GYRO_0", type: "SEN", module: "IMU_6AXIS", addr: "0x1100", status: "OK", mode: "Active" },
+            { id: "DISP_EDP_00", type: "DIS", module: "LCD_PANEL", addr: "0x2200", status: "OK", res: "2560x1600" },
+            { id: "VFS_ROOT_00", type: "VFS", module: "EXT4_MNT",  addr: "0x0000", status: "OK", type: "Root" },
+            { id: "VFS_BOOT_00", type: "VFS", module: "FAT32_MNT", addr: "0x0001", status: "OK", type: "Boot" },
+            { id: "SEC_TPM_200", type: "SEC", module: "AMD_fTPM",  addr: "0x7700", status: "OK", state: "Locked" },
+            { id: "KRN_SCHED_0", type: "KRN", module: "CFS_CORE",  addr: "0x8800", status: "OK", state: "Running" },
+            { id: "KRN_MM_0000", type: "KRN", module: "VM_MGR",    addr: "0x8801", status: "OK", state: "Active" },
+            { id: "KRN_IPC_000", type: "KRN", module: "DBUS_SYS",  addr: "0x8802", status: "OK", state: "Active" },
+            { id: "KRN_NET_000", type: "KRN", module: "TCP_STCK",  addr: "0x8803", status: "OK", state: "Active" },
+            { id: "KRN_FS_0000", type: "KRN", module: "VFS_CORE",  addr: "0x8804", status: "OK", state: "Active" },
+            { id: "KRN_DRV_000", type: "KRN", module: "MOD_LDR",   addr: "0x8805", status: "OK", state: "Active" },
+            { id: "KRN_SEC_000", type: "KRN", module: "SELINUX",   addr: "0x8806", status: "OK", state: "Enforcing" },
+            { id: "KRN_LOG_000", type: "KRN", module: "KMSG_BUF",  addr: "0x8807", status: "OK", state: "Active" }
+        ]; // Database extends logic limits for deep system simulation.
+
         // --- 1. CONFIG & GLOBALS ---
-        const PIN_DIRECT = "20268"; // Direkt Sisteme Girer
-        const PIN_MENU = "13132";   // Boot Menüsüne Atar
+        const PIN_DIRECT = "20268"; 
+        const PIN_MENU = "13132";   
         
         const FB_CONFIG = {
             apiKey: "DummyForArchitecture", authDomain: "coderacoon.firebaseapp.com",
             databaseURL: "https://coderacoon.firebaseio.com", projectId: "coderacoon"
         };
-        try { firebase.initializeApp(FB_CONFIG); } catch(e) {} // Silent Mock Firebase
+        try { firebase.initializeApp(FB_CONFIG); } catch(e) {}
 
-        let SYSTEM_ACTIVE_LEVEL = 2; // Default level integer
+        let SYSTEM_ACTIVE_LEVEL = 2; 
         let SYSTEM_ACTIVE_LEVEL_NAME = "Standart";
 
         // --- 2. LOGIN LOGIC ---
@@ -551,11 +671,9 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             
             if (pin.length === 5) {
                 if (pin === PIN_DIRECT) {
-                    // Bypass to System (Level 2 Default)
                     document.getElementById('login-screen').style.display = 'none';
                     SYS_CORE.launchDesktop("Level 2 - Standart", 2);
                 } else if (pin === PIN_MENU) {
-                    // Go to Boot Menu
                     document.getElementById('login-screen').style.display = 'none';
                     document.getElementById('boot-menu-screen').style.display = 'flex';
                 } else {
@@ -567,9 +685,9 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             }
         }
 
-        // --- 3. BOOT MANAGER (STRICT BLACK & WHITE) ---
+        // --- 3. BOOT MANAGER (TAMAMEN BEYAZ-SİYAH) ---
         const BOOT_LOG_MESSAGES = [
-            "Initializing Code:Racoon Kernel v18.5-Z1-Extreme...",
+            "Initializing Code:Racoon Kernel v19.0-Z1-Extreme...",
             "Loading ACPI tables and BIOS interrupts...",
             "Probing PCI devices...",
             "[OK] Found Quantum Core Processor Array",
@@ -614,7 +732,6 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
 
             function processLog() {
                 if (currentStep < BOOT_LOG_MESSAGES.length) {
-                    // Create line
                     const line = document.createElement('div');
                     line.className = 'boot-log-line';
                     const now = new Date();
@@ -626,18 +743,14 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                     logArea.appendChild(line);
                     logArea.scrollTop = logArea.scrollHeight;
 
-                    // Update Percent
                     let percent = Math.floor(((currentStep + 1) / BOOT_LOG_MESSAGES.length) * 100);
                     if (percent > 100) percent = 100;
                     percentText.innerText = `BOOT SEQUENCE: ${percent}%`;
                     progressBar.style.width = `${percent}%`;
 
                     currentStep++;
-                    
-                    // Random delay (50 - 150ms)
                     setTimeout(processLog, Math.floor(Math.random() * 100) + 50);
                 } else {
-                    // 100% REACHED
                     percentText.innerText = `BOOT SEQUENCE: 100%`;
                     progressBar.style.width = `100%`;
                     
@@ -648,7 +761,6 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                     logArea.appendChild(finishLine);
                     logArea.scrollTop = logArea.scrollHeight;
 
-                    // KURAL 1: Boot tamamlamadan önce 2 saniye bekle
                     setTimeout(() => {
                         const handoffLine = document.createElement('div');
                         handoffLine.className = 'boot-log-line';
@@ -656,25 +768,20 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                         logArea.appendChild(handoffLine);
                         logArea.scrollTop = logArea.scrollHeight;
 
-                        // KURAL 2: 1 saniye sonra Hangi levele geçildiğini yaz (Transition Box)
                         setTimeout(() => {
                             bootScreen.style.display = 'none';
                             transitionScreen.style.display = 'flex';
                             transitionText.innerText = `[ ${levelName.toUpperCase()} ] SEVİYESİNE GEÇİLİYOR`;
 
-                            // KURAL 3: 3 saniye bekle ve bizi oraya gönder (Desktop)
                             setTimeout(() => {
                                 transitionScreen.style.display = 'none';
                                 SYS_CORE.launchDesktop(levelName, levelNumber);
                             }, 3000);
 
                         }, 1000);
-
                     }, 2000);
                 }
             }
-
-            // Start Boot Loop
             setTimeout(processLog, 500);
         }
 
@@ -752,7 +859,6 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                 this.inputField = document.getElementById('term-input-field');
                 this.inputField.addEventListener('keydown', (e) => this.handleInput(e));
                 
-                // Dummy File System
                 this.fs = {
                     '/': ['root', 'home', 'boot', 'sys'],
                     '/root': ['ninja_build_logs.txt', 'secret_key.bin'],
@@ -799,10 +905,15 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                     case 'root':
                         this.print(`Current Privilege Level: ${SYSTEM_ACTIVE_LEVEL} (${SYSTEM_ACTIVE_LEVEL_NAME})`); break;
                     case 'neofetch':
-                        this.print("OS: Code:Racoon OS v18.5");
-                        this.print("Host: Lenovo Legion Go");
-                        this.print("Kernel: Cordex-Z1-Extreme");
-                        this.print("Shell: racoon-bash 6.1");
+                        const art = `
+   /\\___/\\    Code:Racoon OS v19.0
+  ( o   o )   Host: Lenovo Legion Go
+  (  =^=  )   Kernel: Cordex-Z1-Extreme
+  (        )  Shell: racoon-bash 6.1
+  (         ) CPU: Z1 Extreme (8C/16T)
+  (          )))))))))))
+                        `;
+                        this.print(art);
                         break;
                     default:
                         this.print(`bash: ${command}: command not found`);
@@ -829,7 +940,10 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                     this.term = new TerminalApp();
                 }
 
-                // Check for lockdown
+                // KURAL 3: Seviyeye göre ikonları göster/gizle
+                document.getElementById('icon-iso').style.display = (levelNumber <= 8) ? 'flex' : 'none';
+                document.getElementById('icon-kernel').style.display = (levelNumber === 4 || levelNumber === 5) ? 'flex' : 'none';
+
                 if(localStorage.getItem('racoon_lockdown') === 'true') {
                     document.getElementById('lockdown-screen').style.display = 'flex';
                 } else {
@@ -848,7 +962,7 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
 
         const SYS_CORE = new SystemCore();
 
-        // --- 5. APP LOGIC (ISO, MESSAGING, SON EMİR, REPAIR) ---
+        // --- 5. APP LOGIC ---
         function downloadGoogleIso() {
             const btn = document.querySelector('.drive-btn');
             const status = document.getElementById('iso-download-status');
@@ -856,11 +970,11 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             status.style.display = 'block';
             
             setTimeout(() => {
-                const blob = new Blob(["CODE:RACOON_OS_ISO_BLOB"], {type: "application/x-iso9660-image"});
+                const blob = new Blob(["CODE:RACOON_OS_ISO_BLOB_V19"], {type: "application/x-iso9660-image"});
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement("a");
                 a.href = url;
-                a.download = "Cordex_OS_v18_Z1_Edition.iso";
+                a.download = "Cordex_OS_v19_Z1_Edition.iso";
                 document.body.appendChild(a);
                 a.click();
                 window.URL.revokeObjectURL(url);
@@ -868,36 +982,57 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             }, 1500);
         }
 
-        // Global Message System (Level 8+ can close)
-        function sendGlobalMsg() {
-            const msg = document.getElementById('global-msg-input').value;
-            if(!msg) return;
-            document.getElementById('global-msg-text').innerText = msg;
-            document.getElementById('global-message-modal').style.display = 'flex';
+        // KURAL 4: Parti Modu ve İstila Modu
+        function triggerPartyMode() {
+            const overlay = document.getElementById('party-overlay');
+            overlay.style.display = 'flex';
             
-            const dismissBtn = document.getElementById('msg-dismiss-btn');
-            const noAuth = document.getElementById('msg-no-auth');
-            
-            if (SYSTEM_ACTIVE_LEVEL >= 8) {
-                dismissBtn.style.display = 'block';
-                noAuth.style.display = 'none';
-            } else {
-                dismissBtn.style.display = 'none';
-                noAuth.style.display = 'block';
+            // Konfeti üretimi
+            for(let i=0; i<100; i++) {
+                let conf = document.createElement('div');
+                conf.className = 'confetti';
+                conf.style.backgroundColor = ['#ff0', '#f0f', '#0ff', '#0f0', '#f00'][Math.floor(Math.random()*5)];
+                conf.style.left = Math.random() * 100 + 'vw';
+                conf.style.top = '-20px';
+                conf.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                overlay.appendChild(conf);
             }
-            document.getElementById('global-msg-input').value = '';
+
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                overlay.innerHTML = '<div class="party-text">İSO RELEASE! 🚀</div>'; // Temizle
+            }, 6000);
         }
 
-        function closeGlobalMsg() {
-            document.getElementById('global-message-modal').style.display = 'none';
+        function triggerInvasionMode() {
+            const overlay = document.getElementById('invasion-overlay');
+            overlay.style.display = 'flex';
+            setTimeout(() => { overlay.style.display = 'none'; }, 5000);
         }
 
-        // Son Emir & Repair (Cowboy Auto-Recovery)
-        function triggerSonEmir() {
-            if(confirm("DİKKAT: Son Emir sistemi mühürleyecektir. Onaylıyor musunuz?")) {
-                localStorage.setItem("racoon_lockdown", "true");
+        // Kernel System Log (Level 4/5 için)
+        function logKernel(msg) {
+            const logs = document.getElementById('kernel-logs');
+            const ts = new Date().toISOString().split('T')[1].slice(0,-1);
+            logs.innerHTML += `<br>[${ts}] ${msg}`;
+            logs.scrollTop = logs.scrollHeight;
+            
+            // Rastgele sıcaklık dalgalanması
+            document.getElementById('k-temp').innerText = (Math.floor(Math.random() * 15) + 40) + '°C';
+        }
+
+        // KAPANMA TUŞU MANTIĞI VE ANİMASYONU
+        function shutdownSystem() {
+            document.body.classList.add('crt-shutdown-active');
+            setTimeout(() => {
                 window.location.reload();
-            }
+            }, 1500);
+        }
+
+        // --- 6. LOCKDOWN (SON EMİR) & REPAIR ---
+        function triggerSonEmir() {
+            localStorage.setItem("racoon_lockdown", "true");
+            window.location.reload();
         }
 
         function openRepairScreen() {
@@ -905,53 +1040,100 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             document.getElementById('repair-screen').style.display = 'flex';
         }
 
+        // KURAL 2: Şifre yanlışsa Ninja Error, doğruysa 1. Aşama %100 -> 2. Aşama (Kuantum) -> %100 -> Boot
         function startRepairSequence() {
             const pass = document.getElementById('repair-password').value;
+            
+            // NINJA ERROR KONTROLÜ
             if (pass !== "RECOVER") {
-                alert("HATALI ŞİFRE! KERNEL PANIC.");
+                alert("NINJA ERROR: YETKİSİZ ERİŞİM TESPİT EDİLDİ! KERNEL PANIC.");
                 window.location.reload();
                 return;
             }
 
+            // ŞİFRE DOĞRU (RECOVER)
             document.getElementById('repair-auth-layer').style.display = 'none';
             document.getElementById('repair-process').style.display = 'flex';
             
             const logs = document.getElementById('repair-logs');
             const fill = document.getElementById('repair-fill');
             const status = document.getElementById('repair-status');
+            const mainTitle = document.getElementById('process-main-title');
             
-            const logLines = [
-                "[ REPAIR ] Z1 Extreme mimarisi analiz ediliyor...",
-                "[ PURGE ] Son Emir kalıntıları temizleniyor...",
-                "[ FS ] Dosya sistemi bütünlüğü onarılıyor...",
-                "[ SUCCESS ] ÇEKİRDEK ONARIMI TAMAMLANDI."
-            ];
+            logs.innerHTML += `<div>> NINJA PROTOKOLÜ BYPASS EDİLDİ.</div>`;
+            logs.innerHTML += `<div>> 1. AŞAMA ONARIM BAŞLATILIYOR...</div>`;
 
-            let step = 0;
             let percent = 0;
-
-            let interval = setInterval(() => {
+            
+            // PHASE 1
+            let phase1 = setInterval(() => {
                 percent += 2;
                 if(percent > 100) percent = 100;
                 fill.style.width = percent + '%';
-                status.innerText = `ONARIM SÜRÜYOR... ${percent}%`;
+                status.innerText = `1. AŞAMA ONARIM SÜRÜYOR... ${percent}%`;
 
-                if(step < logLines.length && percent >= (step * 25)) {
-                    logs.innerHTML += `<div>> ${logLines[step]}</div>`;
+                if(percent % 20 === 0) {
+                    logs.innerHTML += `<div>> Temel Sistem Modülü Onarıldı: ${percent}%</div>`;
                     logs.scrollTop = logs.scrollHeight;
-                    step++;
                 }
 
                 if(percent >= 100) {
-                    clearInterval(interval);
-                    status.innerText = "SİSTEM KURTARILDI. YENİDEN BAŞLATILIYOR...";
-                    localStorage.removeItem("racoon_lockdown");
-                    setTimeout(() => window.location.reload(), 2000);
+                    clearInterval(phase1);
+                    logs.innerHTML += `<div style="color: yellow; margin-top:10px;">> 1. AŞAMA %100 TAMAMLANDI.</div>`;
+                    
+                    // 2. AŞAMAYA GEÇİŞ
+                    setTimeout(() => {
+                        mainTitle.innerText = "🚀 2 AŞAMAYA GEÇİLİYOR";
+                        mainTitle.style.color = "var(--neon-blue)";
+                        status.innerText = "KUANTUM RECOVER BAŞLATILIYOR...";
+                        fill.style.width = "0%";
+                        fill.classList.add("quantum-bar-fill");
+                        
+                        setTimeout(startQuantumPhase, 1500);
+                    }, 1000);
                 }
             }, 50);
         }
 
-        // Security check on boot
+        // QUANTUM PHASE (PHASE 2)
+        function startQuantumPhase() {
+            const logs = document.getElementById('repair-logs');
+            const fill = document.getElementById('repair-fill');
+            const status = document.getElementById('repair-status');
+            const mainTitle = document.getElementById('process-main-title');
+
+            mainTitle.innerText = "🌌 KUANTUM RECOVER";
+            logs.innerHTML += `<div style="color: var(--neon-blue); margin-top:10px; font-weight:bold;">> KUANTUM MATRİSİ TARANIYOR...</div>`;
+
+            let qPercent = 0;
+            let qInterval = setInterval(() => {
+                qPercent += 1;
+                if(qPercent > 100) qPercent = 100;
+                fill.style.width = qPercent + '%';
+                status.innerText = `KUANTUM RECOVER... ${qPercent}%`;
+
+                // Veritabanından sahte loglar çek
+                if(qPercent % 5 === 0) {
+                    let randomNode = KERNEL_MOCK_DATABASE[Math.floor(Math.random() * KERNEL_MOCK_DATABASE.length)];
+                    logs.innerHTML += `<div style="color: #0ff">> Onarılıyor: [${randomNode.id}] - Tür: ${randomNode.type} - Durum: ${randomNode.status}</div>`;
+                    logs.scrollTop = logs.scrollHeight;
+                }
+
+                if(qPercent >= 100) {
+                    clearInterval(qInterval);
+                    logs.innerHTML += `<div style="color: #0f0; margin-top:10px; font-size:1.5rem; font-weight:bold;">> KURTARMA BAŞARILI! BOOT MENÜSÜNE ATILIYOR...</div>`;
+                    status.innerText = "SİSTEM KURTARILDI.";
+                    
+                    localStorage.removeItem("racoon_lockdown");
+                    
+                    setTimeout(() => {
+                        // En başa (Boot) at
+                        window.location.reload();
+                    }, 2500);
+                }
+            }, 60);
+        }
+
         window.onload = function() {
             if(localStorage.getItem('racoon_lockdown') === 'true') {
                 document.getElementById('login-screen').style.display = 'none';
