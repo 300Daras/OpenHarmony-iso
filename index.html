@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code:Racoon OS - Ultimate Z1 Architecture v19.0</title>
+    <title>Code:Racoon OS - Ultimate Z1 Architecture v20.0</title>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -15,209 +15,156 @@
 
     <style>
         /* ==========================================================================
-           CODE:RACOON OS - CORE STYLESHEET 
-           VERSION: 19.0.0 ULTIMATE
+           CODE:RACOON OS - ADVANCED ARCHITECTURE AND THEME CORE DEFINITIONS
            ========================================================================== */
         :root {
-            --bg-dark: #050505;
-            --bg-panel: #0a0a0c;
-            --bg-window: rgba(10, 10, 15, 0.95);
+            --bg-dark: #020203;
+            --bg-panel: #08080c;
+            --bg-window: rgba(8, 8, 12, 0.98);
             --primary-orange: #ff6600;
-            --hyper-orange: #ff4500;
+            --hyper-orange: #ff3300;
             --matrix-green: #00ff41;
             --neon-white: #ffffff;
             --neon-blue: #00e5ff;
             --pure-black: #000000;
-            --gray-light: #cccccc;
-            --gray-dark: #333333;
-            --error-red: #ff0033;
+            --gray-light: #dbdbdb;
+            --gray-dark: #222226;
+            --error-red: #ff003c;
+            --alert-red-bg: rgba(255, 0, 60, 0.15);
             --purple-nambow: #bc13fe;
             --gold-cowboy: #ffaa00;
             
-            /* Boot Theme (Tamamen Beyaz Arkaplan) */
+            /* White Boot Theme Requirements */
             --boot-bg: #ffffff;
             --boot-text: #000000;
+            --boot-muted: #555555;
 
             /* Fonts */
             --font-mono: 'Courier New', Courier, monospace;
-            --font-ui: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --font-ui: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             
-            /* UI Elements */
-            --window-border: 1px solid var(--primary-orange);
+            /* Z-Index Control Matrix */
             --z-bg: 0;
             --z-desktop: 10;
             --z-window: 100;
-            --z-modal: 500;
-            --z-lockdown: 9000;
+            --z-modal: 1000;
+            --z-lockdown: 9500;
             --z-boot: 9999;
-            --z-transition: 10000;
+            --z-login-anim: 20000;
             --z-overlay: 999999;
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         html, body {
-            width: 100vw; height: 100vh;
+            width: 100vw;
+            height: 100vh;
             background-color: var(--bg-dark);
             color: var(--neon-white);
             font-family: var(--font-mono);
             overflow: hidden;
             user-select: none;
             -webkit-user-select: none;
-            transition: all 0.5s ease;
         }
 
-        /* --------------------------------------------------------------------------
-           A. GLOBAL EFFECTS & MODES
-           -------------------------------------------------------------------------- */
+        /* Scanline Simulated CRT Overlay */
         .scanline-effect {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.12) 50%, rgba(0,0,0,0.12));
             background-size: 100% 4px; z-index: var(--z-overlay); pointer-events: none;
         }
 
-        /* CRT SHUTDOWN ANIMATION */
-        .crt-shutdown-active { animation: crt-turn-off 1.2s forwards !important; }
+        /* --------------------------------------------------------------------------
+           CRT & TRANSITION EFFECTS
+           -------------------------------------------------------------------------- */
+        .crt-shutdown-active { animation: crt-turn-off 1.2s cubic-bezier(0.1, 0.8, 0.1, 1) forwards !important; }
         @keyframes crt-turn-off {
             0% { transform: scale(1, 1.3) translate3d(0, 0, 0); filter: brightness(1); }
-            60% { transform: scale(1, 0.001) translate3d(0, 0, 0); filter: brightness(10); }
-            100% { transform: scale(0, 0.001) translate3d(0, 0, 0); filter: brightness(0); }
+            50% { transform: scale(1, 0.002) translate3d(0, 0, 0); filter: brightness(8); }
+            100% { transform: scale(0, 0.002) translate3d(0, 0, 0); filter: brightness(0); }
         }
 
-        /* WINDOWS TARZI KAPANMA OVERLAY */
+        /* WINDOWS SHUTDOWN OVERLAY EFFECT */
         #win-shutdown-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #1c1f22 0%, #000000 100%);
+            background: radial-gradient(circle at center, #1e2226 0%, #020204 100%);
             display: none; flex-direction: column; align-items: center; justify-content: center;
-            z-index: var(--z-transition); opacity: 0; transition: opacity 0.7s ease;
+            z-index: var(--z-overlay); opacity: 0; transition: opacity 0.6s ease;
         }
         #win-shutdown-overlay.active { display: flex; opacity: 1; }
 
-        .win-spinner { position: relative; width: 70px; height: 70px; margin-bottom: 35px; }
-        .win-spinner div {
-            position: absolute; width: 9px; height: 9px; border-radius: 50%;
-            background: #ffffff; top: 50%; left: 50%; margin: -4.5px;
-            animation: win-spin-fade 1.2s linear infinite;
-        }
-        .win-spinner div:nth-child(1)  { transform: rotate(0deg) translate(30px, 0);   animation-delay: -1.1s; }
-        .win-spinner div:nth-child(2)  { transform: rotate(30deg) translate(30px, 0);  animation-delay: -1.0s; }
-        .win-spinner div:nth-child(3)  { transform: rotate(60deg) translate(30px, 0);  animation-delay: -0.9s; }
-        .win-spinner div:nth-child(4)  { transform: rotate(90deg) translate(30px, 0);  animation-delay: -0.8s; }
-        .win-spinner div:nth-child(5)  { transform: rotate(120deg) translate(30px, 0); animation-delay: -0.7s; }
-        .win-spinner div:nth-child(6)  { transform: rotate(150deg) translate(30px, 0); animation-delay: -0.6s; }
-        .win-spinner div:nth-child(7)  { transform: rotate(180deg) translate(30px, 0); animation-delay: -0.5s; }
-        .win-spinner div:nth-child(8)  { transform: rotate(210deg) translate(30px, 0); animation-delay: -0.4s; }
-        .win-spinner div:nth-child(9)  { transform: rotate(240deg) translate(30px, 0); animation-delay: -0.3s; }
-        .win-spinner div:nth-child(10) { transform: rotate(270deg) translate(30px, 0); animation-delay: -0.2s; }
-        .win-spinner div:nth-child(11) { transform: rotate(300deg) translate(30px, 0); animation-delay: -0.1s; }
-        .win-spinner div:nth-child(12) { transform: rotate(330deg) translate(30px, 0); animation-delay: 0s; }
-
-        @keyframes win-spin-fade {
-            0%, 39%, 100% { opacity: 0.15; }
-            40% { opacity: 1; }
-        }
-
-        .win-shutdown-text {
-            color: #ffffff; font-family: var(--font-ui); font-size: 1.4rem;
-            font-weight: 300; letter-spacing: 0.5px; opacity: 0.95;
-            transition: opacity 0.4s ease;
-        }
-
-        /* LEVEL DEĞİŞTİRME MODALI */
+        /* MULTI-LEVEL SECURITY RULES */
         #level-switch-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: var(--z-modal); align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.9); z-index: var(--z-modal); align-items: center; justify-content: center;
         }
         #level-switch-overlay.active { display: flex; }
         .level-switch-box {
-            background: var(--bg-window); border: var(--window-border); border-radius: 10px;
-            padding: 30px; width: 520px; box-shadow: 0 0 40px rgba(255,102,0,0.3);
+            background: var(--bg-window); border: 2px solid var(--primary-orange); border-radius: 12px;
+            padding: 35px; width: 550px; box-shadow: 0 0 50px rgba(255,102,0,0.25);
         }
         .level-switch-title {
-            color: var(--primary-orange); font-size: 1.3rem; font-weight: bold; text-align: center;
-            margin-bottom: 20px; border-bottom: 1px dashed var(--primary-orange); padding-bottom: 10px;
+            color: var(--primary-orange); font-size: 1.4rem; font-weight: bold; text-align: center;
+            margin-bottom: 25px; border-bottom: 2px dashed var(--primary-orange); padding-bottom: 12px;
         }
-        .level-switch-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .level-switch-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
         .level-switch-btn {
-            background: #111; border: 1px solid var(--primary-orange); color: var(--primary-orange);
-            padding: 12px 5px; font-family: var(--font-mono); font-weight: bold; cursor: pointer;
-            transition: 0.2s; font-size: 0.8rem; line-height: 1.4;
+            background: #0d0d11; border: 1px solid var(--primary-orange); color: var(--primary-orange);
+            padding: 14px 8px; font-family: var(--font-mono); font-weight: bold; cursor: pointer;
+            transition: 0.2s; font-size: 0.85rem; text-align: center;
         }
         .level-switch-btn:hover { background: var(--primary-orange); color: var(--pure-black); }
         .level-switch-close {
-            width: 100%; padding: 12px; background: transparent; border: 1px solid #666;
-            color: #ccc; cursor: pointer; font-family: var(--font-mono); font-weight: bold; transition: 0.2s;
+            width: 100%; padding: 14px; background: transparent; border: 1px solid #555;
+            color: #bbb; cursor: pointer; font-family: var(--font-mono); font-weight: bold; transition: 0.2s;
         }
         .level-switch-close:hover { border-color: #fff; color: #fff; }
 
         .level-switch-btn-kiosk {
             grid-column: 1 / -1; border-color: var(--gold-cowboy); color: var(--gold-cowboy);
-            background: linear-gradient(135deg, rgba(255,170,0,0.14), rgba(255,255,255,0.04));
-            font-size: 0.95rem; padding: 14px 5px;
+            background: linear-gradient(135deg, rgba(255,170,0,0.12), rgba(255,255,255,0.02));
+            font-size: 1rem; padding: 16px; font-weight: 900;
         }
         .level-switch-btn-kiosk:hover { background: var(--gold-cowboy); color: var(--pure-black); }
 
-        /* HIZLI GEÇİŞ ŞİFRE DOĞRULAMA PANELİ (Her levele ortak giriş şifresi) */
         .level-switch-auth-panel { display: none; text-align: center; }
         .level-switch-box.auth-mode .level-switch-grid,
         .level-switch-box.auth-mode .level-switch-close { display: none; }
         .level-switch-box.auth-mode .level-switch-auth-panel { display: block; }
-        .level-switch-auth-title {
-            color: var(--primary-orange); font-size: 0.95rem; font-weight: bold; margin-bottom: 15px;
-            letter-spacing: 0.5px; line-height: 1.5;
-        }
+        
         .level-switch-auth-input {
-            width: 100%; padding: 14px; background: #111; border: 1px solid var(--primary-orange); color: #fff;
-            text-align: center; font-family: var(--font-mono); font-size: 1.2rem; letter-spacing: 4px; outline: none; margin-bottom: 15px;
+            width: 100%; padding: 15px; background: #0b0b0f; border: 1px solid var(--primary-orange); color: #fff;
+            text-align: center; font-family: var(--font-mono); font-size: 1.4rem; letter-spacing: 6px; outline: none; margin-bottom: 20px;
         }
-        .level-switch-auth-input:focus { box-shadow: 0 0 15px rgba(255,102,0,0.4); }
-        .level-switch-auth-actions { display: flex; gap: 10px; margin-bottom: 12px; }
-        .level-switch-auth-confirm, .level-switch-auth-cancel {
-            flex: 1; padding: 12px; font-family: var(--font-mono); font-weight: bold; cursor: pointer; transition: 0.2s; border-radius: 2px;
-        }
-        .level-switch-auth-confirm { background: var(--primary-orange); border: 1px solid var(--primary-orange); color: var(--pure-black); }
-        .level-switch-auth-confirm:hover { background: var(--hyper-orange); }
-        .level-switch-auth-cancel { background: transparent; border: 1px solid #666; color: #ccc; }
-        .level-switch-auth-cancel:hover { border-color: #fff; color: #fff; }
-        .level-switch-auth-error { display: none; color: var(--error-red); font-weight: bold; font-size: 0.85rem; }
 
         /* --------------------------------------------------------------------------
-           1. LOGIN SCREEN
+           1. PRIMARY SECURITY LOGIN SCREEN
            -------------------------------------------------------------------------- */
         #login-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #111, #000);
+            background: radial-gradient(circle at center, #0f1015, #010103);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             z-index: var(--z-modal);
-            animation: loginEntrance 1.5s cubic-bezier(0.25, 1, 0.5, 1);
         }
-
-        @keyframes loginEntrance {
-            0% { opacity: 0; transform: scale(1.1) translateY(-30px); filter: blur(10px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
-        }
-
         .login-box {
-            border: 2px solid var(--primary-orange); padding: 50px; text-align: center;
-            box-shadow: 0 0 40px rgba(255,102,0,0.3), inset 0 0 20px rgba(0,0,0,0.8);
-            background: rgba(5,5,10,0.95); border-radius: 15px; width: 650px;
+            border: 2px solid var(--primary-orange); padding: 55px; text-align: center;
+            box-shadow: 0 0 50px rgba(255,102,0,0.2), inset 0 0 30px rgba(0,0,0,0.9);
+            background: rgba(4,4,6,0.97); border-radius: 16px; width: 680px;
         }
-
-        .login-brand-title { font-size: 3rem; color: var(--primary-orange); font-weight: 900; margin-bottom: 10px; text-shadow: 0 0 20px var(--hyper-orange); }
-        .login-brand-subtitle { font-size: 1rem; color: var(--matrix-green); margin-bottom: 30px; font-weight: bold; letter-spacing: 3px; }
-
-        .pin-container { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
+        .login-brand-title { font-size: 3.2rem; color: var(--primary-orange); font-weight: 900; margin-bottom: 8px; text-shadow: 0 0 25px var(--hyper-orange); }
+        .login-brand-subtitle { font-size: 1.05rem; color: var(--matrix-green); margin-bottom: 35px; font-weight: bold; letter-spacing: 4px; }
+        .pin-container { display: flex; gap: 16px; justify-content: center; margin-top: 25px; }
         .pin-slot {
-            width: 65px; height: 85px; background: rgba(255, 102, 0, 0.05);
+            width: 65px; height: 85px; background: rgba(255, 102, 0, 0.03);
             border: 2px solid var(--primary-orange); color: var(--primary-orange);
-            font-size: 45px; text-align: center; border-radius: 10px; outline: none;
-            transition: all 0.3s;
+            font-size: 45px; text-align: center; border-radius: 12px; outline: none;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .pin-slot:focus { box-shadow: 0 0 25px var(--primary-orange); background: rgba(255, 102, 0, 0.2); transform: scale(1.1); }
+        .pin-slot:focus { box-shadow: 0 0 30px var(--primary-orange); background: rgba(255, 102, 0, 0.15); transform: scale(1.08); }
         #pin-error { color: var(--error-red); margin-top: 25px; display: none; font-weight: bold; font-size: 1.2rem; }
 
         /* --------------------------------------------------------------------------
-           2. BOOT MENU SCREEN (BEMBEYAZ - SİYAH BUTONLAR)
+           2. BOOT LOADER LEVEL SELECTION ARCHITECTURE
            -------------------------------------------------------------------------- */
         #boot-menu-screen {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -225,1190 +172,1075 @@
             flex-direction: column; align-items: center; justify-content: center;
             z-index: var(--z-modal);
         }
-
-        .boot-menu-box { width: 900px; border: 4px solid var(--boot-text); padding: 40px; background: var(--boot-bg); text-align: center; }
-        .boot-menu-title { font-size: 3rem; color: var(--boot-text); margin-bottom: 20px; font-weight: 900; letter-spacing: 3px; border-bottom: 3px solid var(--boot-text); padding-bottom: 10px; }
-        .boot-menu-subtitle { font-size: 1.2rem; color: #333; margin-bottom: 40px; font-weight: bold; }
-        
+        .boot-menu-box { width: 950px; border: 4px solid var(--boot-text); padding: 45px; background: var(--boot-bg); text-align: center; }
+        .boot-menu-title { font-size: 3.2rem; color: var(--boot-text); margin-bottom: 25px; font-weight: 900; letter-spacing: 4px; border-bottom: 4px solid var(--boot-text); padding-bottom: 12px; }
         .level-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        
         .level-btn {
             background: var(--boot-bg); border: 2px solid var(--boot-text); color: var(--boot-text);
-            padding: 20px; font-size: 1.2rem; font-family: var(--font-mono); font-weight: 900;
-            cursor: pointer; transition: all 0.2s; text-transform: uppercase; box-shadow: 4px 4px 0px var(--boot-text);
+            padding: 22px; font-size: 1.2rem; font-family: var(--font-mono); font-weight: 900;
+            cursor: pointer; transition: all 0.15s; text-transform: uppercase; box-shadow: 5px 5px 0px var(--boot-text);
         }
-        .level-btn:hover { background: var(--boot-text); color: var(--boot-bg); transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--boot-text); }
+        .level-btn:hover { background: var(--boot-text); color: var(--boot-bg); transform: translate(3px, 3px); box-shadow: 2px 2px 0px var(--boot-text); }
 
         /* --------------------------------------------------------------------------
-           3. COWBOY+ SYSTEM BOOT MANAGER
+           3. COMPLEX KERNEL BOOT ANIMATION (COWBOY MANAGER)
            -------------------------------------------------------------------------- */
         #cowboy-boot-screen {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-color: var(--boot-bg); color: var(--boot-text); z-index: var(--z-boot);
-            padding: 20px; font-family: var(--font-mono);
+            padding: 30px; font-family: var(--font-mono); overflow: hidden;
         }
-
-        .boot-header-container { text-align: center; border-bottom: 4px solid var(--boot-text); padding-bottom: 20px; margin-bottom: 20px; }
-        .boot-header-title { font-size: 2.8rem; font-weight: 900; letter-spacing: 4px; text-transform: uppercase; }
-        .boot-header-subtitle { font-size: 1rem; font-weight: bold; margin-top: 5px; }
-
-        #boot-log-area { width: 100%; height: calc(100% - 200px); overflow-y: hidden; font-size: 1.2rem; line-height: 1.6; font-weight: bold; padding: 10px; }
-        .boot-log-line { margin-bottom: 4px; display: flex; align-items: flex-start; }
-        .boot-log-timestamp { margin-right: 15px; min-width: 120px; }
-        .boot-log-module { margin-right: 15px; min-width: 150px; }
+        .boot-header-container { text-align: center; border-bottom: 4px solid var(--boot-text); padding-bottom: 20px; margin-bottom: 25px; }
+        .boot-header-title { font-size: 3rem; font-weight: 900; letter-spacing: 5px; text-transform: uppercase; }
+        #boot-log-area { 
+            width: 100%; height: calc(100% - 240px); 
+            overflow-y: hidden; font-size: 1.25rem; line-height: 1.5; 
+            font-weight: bold; padding: 15px; background: #ffffff;
+        }
+        .boot-log-line { margin-bottom: 5px; display: flex; }
         .boot-log-message { flex-grow: 1; }
+        .boot-log-message.kernel-code { color: #222222; font-weight: 500; font-size: 1.15rem; font-style: italic; }
+        .boot-log-message.success-hook { color: #008800; font-weight: 900; }
 
-        .boot-footer { position: absolute; bottom: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: flex-end; border-top: 3px solid var(--boot-text); padding-top: 15px; }
-        .boot-progress-container { flex-grow: 1; margin-right: 30px; }
-        .boot-progress-text { font-size: 1.8rem; font-weight: 900; margin-bottom: 10px; }
-        .boot-progress-bar-bg { width: 100%; height: 30px; background: transparent; border: 3px solid var(--boot-text); padding: 3px; }
-        .boot-progress-bar-fill { height: 100%; width: 0%; background: var(--boot-text); transition: width 0.1s linear; }
-        .boot-system-info { text-align: right; font-size: 1.1rem; font-weight: bold; line-height: 1.4; }
-
-        /* --------------------------------------------------------------------------
-           4. TRANSITION SCREEN
-           -------------------------------------------------------------------------- */
-        #transition-screen {
-            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--boot-bg); z-index: var(--z-transition); align-items: center; justify-content: center;
-        }
-
-        .transition-box {
-            border: 10px solid var(--boot-text); padding: 50px 80px; text-align: center;
-            box-shadow: 15px 15px 0px var(--boot-text);
-            animation: glitch-box 0.15s infinite;
-        }
-        @keyframes glitch-box {
-            0% { transform: translate(0) }
-            20% { transform: translate(-3px, 3px) }
-            40% { transform: translate(-3px, -3px) }
-            60% { transform: translate(3px, 3px) }
-            80% { transform: translate(3px, -3px) }
-            100% { transform: translate(0) }
-        }
-        .transition-text { font-size: 3.5rem; font-weight: 900; color: var(--boot-text); text-transform: uppercase; letter-spacing: 5px; }
+        .boot-footer { position: absolute; bottom: 30px; left: 30px; right: 30px; display: flex; justify-content: space-between; align-items: flex-end; border-top: 4px solid var(--boot-text); padding-top: 20px; }
+        .boot-progress-container { flex-grow: 1; margin-right: 40px; }
+        .boot-progress-text { font-size: 2rem; font-weight: 900; margin-bottom: 12px; text-transform: uppercase; }
+        .boot-progress-bar-bg { width: 100%; height: 35px; background: transparent; border: 4px solid var(--boot-text); padding: 4px; }
+        .boot-progress-bar-fill { height: 100%; width: 0%; background: var(--boot-text); transition: width 0.05s linear; }
 
         /* --------------------------------------------------------------------------
-           5. OS DESKTOP & TASKBAR (İKONLAR ORTADA)
+           4. MODERN WINDOWS-STYLE LOGIN ANIMATION OVERLAY
            -------------------------------------------------------------------------- */
-        #os-desktop { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #030303; z-index: var(--z-desktop); }
-        .desktop-bg-pattern {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.1;
-            background-image: radial-gradient(var(--primary-orange) 1px, transparent 1px); background-size: 30px 30px; z-index: -1;
+        #win-login-anim-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #0f1c3f 0%, #070b19 100%);
+            z-index: var(--z-login-anim); display: none; flex-direction: column;
+            align-items: center; justify-content: center; font-family: var(--font-ui);
+            opacity: 1; transition: transform 0.85s cubic-bezier(0.85, 0, 0.15, 1), opacity 0.6s ease;
         }
-
-        /* İKONLARI ORTALAMAK İÇİN GÜNCELLENEN CSS */
-        .desktop-icons { 
-            display: flex; 
-            flex-direction: row; 
-            flex-wrap: wrap; 
-            align-content: center; 
-            justify-content: center; 
-            gap: 40px; 
-            padding: 25px; 
-            height: calc(100% - 50px); 
-        }
+        #win-login-anim-screen.fade-out-step { opacity: 0; pointer-events: none; }
+        #win-login-anim-screen.slide-up-step { transform: translateY(-100%); }
         
-        .icon { width: 90px; display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; }
-        .icon:hover { transform: scale(1.1); }
-        .icon-img {
-            width: 65px; height: 65px; background: rgba(255, 102, 0, 0.15); border: 1px solid var(--primary-orange);
-            border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 32px;
-            color: var(--primary-orange); margin-bottom: 10px; box-shadow: 0 0 15px rgba(255, 102, 0, 0.2);
+        .win-blur-bg {
+            position: absolute; width: 100%; height: 100%;
+            background: rgba(10, 15, 35, 0.3); backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px); top: 0; left: 0; z-index: -1;
         }
-        .icon-label { font-size: 0.9rem; text-align: center; text-shadow: 1px 1px 2px #000; background: rgba(0,0,0,0.7); padding: 5px 10px; border-radius: 6px; font-weight: bold; }
+        .win-login-avatar-container {
+            width: 170px; height: 170px; border-radius: 50%; overflow: hidden;
+            border: 4px solid rgba(255,255,255,0.25); margin-bottom: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;
+            background: #111424;
+        }
+        .win-login-avatar-container svg { width: 100px; height: 100px; fill: var(--primary-orange); }
+        .win-login-username { color: #ffffff; font-size: 2.2rem; font-weight: 400; margin-bottom: 30px; letter-spacing: 0.5px; }
+        
+        .win-loading-wrapper { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .win-circle-spinner { position: relative; width: 50px; height: 50px; }
+        .win-circle-spinner .dot {
+            position: absolute; width: 6px; height: 6px; background: #ffffff; border-radius: 50%;
+            top: 0; left: 22px; transform-origin: 3px 25px;
+            animation: winCircleSpin 2.5s infinite cubic-bezier(0.2, 0, 0.1, 1);
+        }
+        .win-circle-spinner .dot:nth-child(1) { animation-delay: 0.15s; }
+        .win-circle-spinner .dot:nth-child(2) { animation-delay: 0.3s; }
+        .win-circle-spinner .dot:nth-child(3) { animation-delay: 0.45s; }
+        .win-circle-spinner .dot:nth-child(4) { animation-delay: 0.6s; }
+        .win-circle-spinner .dot:nth-child(5) { animation-delay: 0.75s; }
+
+        @keyframes winCircleSpin {
+            0% { transform: rotate(0deg); opacity: 1; }
+            100% { transform: rotate(360deg); opacity: 1; }
+        }
+        .win-login-status-text { color: #ffffff; font-size: 1.2rem; font-weight: 300; opacity: 0.9; letter-spacing: 0.5px; }
+
+        /* --------------------------------------------------------------------------
+           5. OS CORE DESKTOP & WORKSPACE ARCHITECTURE
+           -------------------------------------------------------------------------- */
+        #os-desktop { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #030305; z-index: var(--z-desktop); }
+        .desktop-bg-pattern {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.06;
+            background-image: radial-gradient(var(--primary-orange) 1px, transparent 1px); background-size: 25px 25px; z-index: -1;
+        }
+        .desktop-icons { display: flex; flex-direction: column; gap: 25px; padding: 30px; height: calc(100% - 50px); }
+        .icon { width: 90px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .icon-img {
+            width: 60px; height: 60px; background: rgba(255, 102, 0, 0.1); border: 1px solid var(--primary-orange);
+            border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 30px;
+            color: var(--primary-orange); margin-bottom: 10px; box-shadow: 0 0 15px rgba(255, 102, 0, 0.15);
+        }
+        .icon-label { font-size: 0.85rem; text-align: center; text-shadow: 1px 1px 2px #000; background: rgba(0,0,0,0.8); padding: 5px 10px; border-radius: 5px; font-weight: bold; font-family: var(--font-ui); }
 
         #taskbar {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 50px; background: var(--bg-panel);
-            border-top: 1px solid var(--primary-orange); display: flex; align-items: center; padding: 0 10px;
-            z-index: calc(var(--z-window) + 100); box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.8);
+            border-top: 1px solid var(--primary-orange); display: flex; align-items: center; padding: 0 15px;
+            z-index: calc(var(--z-window) + 100);
         }
         .start-btn {
-            background: var(--primary-orange); color: var(--pure-black); border: none; padding: 0 20px; height: 35px;
+            background: var(--primary-orange); color: var(--pure-black); border: none; padding: 0 25px; height: 36px;
             font-weight: 900; font-family: var(--font-ui); font-size: 1.1rem; cursor: pointer;
-            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); margin-right: 15px; transition: filter 0.2s;
+            clip-path: polygon(8% 0, 100% 0, 92% 100%, 0 100%); margin-right: 20px;
         }
-        .start-btn:hover { filter: brightness(1.3); }
-        
         .power-btn {
-            background: var(--error-red); color: var(--neon-white); border: 2px solid #fff; padding: 0 20px; height: 35px;
-            font-weight: 900; font-family: var(--font-ui); font-size: 1.1rem; cursor: pointer; margin-left: 15px;
-            transition: all 0.2s; box-shadow: 0 0 10px var(--error-red);
+            background: var(--error-red); color: var(--neon-white); border: 2px solid #fff; padding: 0 20px; height: 36px;
+            font-weight: 900; font-family: var(--font-ui); font-size: 1.1rem; cursor: pointer; margin-left: 20px;
+            box-shadow: 0 0 12px var(--error-red);
         }
-        .power-btn:hover { background: #fff; color: var(--error-red); border-color: var(--error-red); transform: scale(1.05); }
-
         .switch-btn {
-            background: transparent; color: var(--primary-orange); border: 2px solid var(--primary-orange); padding: 0 20px; height: 35px;
+            background: transparent; color: var(--primary-orange); border: 2px solid var(--primary-orange); padding: 0 20px; height: 36px;
             font-weight: 900; font-family: var(--font-ui); font-size: 1.1rem; cursor: pointer; margin-left: 15px;
-            transition: all 0.2s;
         }
-        .switch-btn:hover { background: var(--primary-orange); color: var(--pure-black); transform: scale(1.05); }
-
-        .taskbar-items { display: flex; flex-grow: 1; gap: 8px; }
+        .taskbar-items { display: flex; flex-grow: 1; gap: 10px; }
         .taskbar-item {
-            background: rgba(255, 102, 0, 0.1); border: 1px solid var(--primary-orange); color: var(--neon-white);
-            padding: 0 15px; height: 35px; display: flex; align-items: center; cursor: pointer; font-size: 0.9rem; font-weight: bold;
+            background: rgba(255, 102, 0, 0.08); border: 1px solid var(--primary-orange); color: var(--neon-white);
+            padding: 0 18px; height: 36px; display: flex; align-items: center; cursor: pointer; font-size: 0.9rem; font-weight: bold; font-family: var(--font-ui);
         }
-        .taskbar-item.active { background: rgba(255, 102, 0, 0.4); border-bottom: 3px solid var(--primary-orange); }
-        .taskbar-tray { display: flex; align-items: center; gap: 20px; color: var(--primary-orange); font-size: 1rem; font-weight: bold; }
+        .taskbar-item.active { background: rgba(255, 102, 0, 0.35); border-bottom: 3px solid var(--neon-white); }
+        .taskbar-tray { display: flex; align-items: center; gap: 25px; color: var(--primary-orange); font-size: 1.05rem; font-weight: bold; }
 
         /* --------------------------------------------------------------------------
-           6. WINDOW SYSTEM & APPS
+           6. MULTI-WINDOW CONTAINER SYSTEM
            -------------------------------------------------------------------------- */
         .window {
-            position: absolute; top: 100px; left: 100px; background: var(--bg-window); border: var(--window-border);
-            border-radius: 6px; display: flex; flex-direction: column; box-shadow: 0 15px 40px rgba(0,0,0,0.9), 0 0 20px rgba(255, 102, 0, 0.15);
-            z-index: var(--z-window); backdrop-filter: blur(8px); resize: both; overflow: hidden; display: none;
+            position: absolute; top: 120px; left: 150px; background: var(--bg-window); border: var(--window-border);
+            border-radius: 8px; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.95), 0 0 25px rgba(255, 102, 0, 0.1);
+            z-index: var(--z-window); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); overflow: hidden; display: none;
         }
         .window-header {
-            background: rgba(255, 102, 0, 0.15); border-bottom: 1px solid var(--primary-orange); height: 40px;
-            display: flex; align-items: center; justify-content: space-between; padding: 0 15px; cursor: move; user-select: none;
+            background: rgba(255, 102, 0, 0.12); border-bottom: 1px solid var(--primary-orange); height: 45px;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 18px; cursor: move;
         }
-        .window-title { font-weight: bold; font-size: 1rem; color: var(--primary-orange); display: flex; align-items: center; gap: 10px; }
-        .window-controls { display: flex; gap: 8px; }
+        .window-title { font-weight: bold; font-size: 1.05rem; color: var(--primary-orange); display: flex; align-items: center; gap: 12px; font-family: var(--font-ui); }
+        .window-controls { display: flex; gap: 10px; }
         .win-btn { width: 16px; height: 16px; border-radius: 50%; border: none; cursor: pointer; }
         .btn-min { background: #ffbd44; } .btn-max { background: #00ca4e; } .btn-close { background: #ff605c; }
-        .window-content { flex-grow: 1; padding: 15px; overflow: auto; position: relative; }
-
-        /* Terminal App */
-        .terminal-app { background: rgba(0, 0, 0, 0.95); color: var(--matrix-green); font-family: var(--font-mono); font-size: 1.1rem; }
-        .term-output { margin-bottom: 10px; white-space: pre-wrap; line-height: 1.4; }
-        .term-input-line { display: flex; align-items: center; }
-        .term-prompt { color: var(--primary-orange); margin-right: 10px; font-weight: bold; }
-        .term-input { background: transparent; border: none; color: var(--neon-white); font-family: var(--font-mono); font-size: 1.1rem; flex-grow: 1; outline: none; font-weight: bold; }
-
-        /* Google ISO Downloader App */
-        .google-iso-window { background: #ffffff !important; color: #333 !important; font-family: var(--font-ui) !important; border: 1px solid #ddd !important; border-radius: 8px !important; }
-        .google-iso-header { background: #f8f9fa !important; border-bottom: 1px solid #dadce0 !important; }
-        .google-iso-title { color: #202124 !important; font-family: 'Product Sans', Arial, sans-serif !important; }
-        .drive-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #fff; }
-        .drive-icon { font-size: 80px; margin-bottom: 20px; }
-        .drive-filename { font-size: 1.5rem; color: #202124; font-weight: 500; margin-bottom: 10px; }
-        .drive-details { font-size: 1rem; color: #5f6368; margin-bottom: 30px; }
-        .drive-btn { background: #1a73e8; color: #fff; border: none; padding: 12px 30px; font-size: 1.1rem; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background 0.2s; box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3); }
-        .drive-btn:hover { background: #1557b0; }
-
-        /* Control Panel App */
-        .cpanel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .cpanel-card { border: 1px solid var(--primary-orange); background: rgba(0,0,0,0.6); padding: 20px; border-radius: 6px; }
-        .cpanel-title { color: var(--primary-orange); font-size: 1.2rem; border-bottom: 1px dashed var(--primary-orange); padding-bottom: 10px; margin-bottom: 15px; font-weight: bold; }
-        .cpanel-input { width: 100%; padding: 12px; background: #111; border: 1px solid #555; color: #fff; margin-bottom: 15px; font-family: var(--font-mono); font-size: 1rem; outline: none; }
-        .cpanel-input:focus { border-color: var(--primary-orange); }
-        .cpanel-btn { width: 100%; padding: 15px; background: #111; border: 1px solid var(--primary-orange); color: var(--primary-orange); font-weight: bold; cursor: pointer; transition: 0.3s; font-family: var(--font-mono); font-size: 1rem; text-transform: uppercase; }
-        .cpanel-btn:hover { background: var(--primary-orange); color: #000; }
-        .btn-danger { border-color: var(--error-red); color: var(--error-red); }
-        .btn-danger:hover { background: var(--error-red); color: #fff; box-shadow: 0 0 20px var(--error-red); }
-
-        /* KERNEL SYSTEM APP */
-        .kernel-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 15px; height: 100%; }
-        .kernel-sidebar { border-right: 2px solid var(--neon-blue); padding-right: 15px; }
-        .kernel-main { padding-left: 10px; display: flex; flex-direction: column; }
-        .kernel-btn { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); width: 100%; padding: 10px; margin-bottom: 10px; cursor: pointer; font-family: var(--font-mono); font-weight: bold; transition: 0.2s; }
-        .kernel-btn:hover { background: var(--neon-blue); color: #000; }
-        .kernel-log-window { flex-grow: 1; background: #000; border: 1px solid var(--neon-blue); padding: 10px; color: var(--neon-blue); overflow-y: auto; font-size: 0.9rem; font-family: var(--font-mono); }
-        .kernel-stat-box { border: 1px dashed var(--neon-blue); padding: 10px; margin-top: 10px; text-align: center; font-size: 1.2rem; }
+        .window-content { flex-grow: 1; padding: 20px; overflow: auto; position: relative; }
 
         /* --------------------------------------------------------------------------
-           7. MOD OVERLAYS (PARTİ & İSTİLA)
+           7. KIOSK HUB PANEL ARCHITECTURE & UNIFIED ENVIRONMENT
            -------------------------------------------------------------------------- */
-        #party-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8); z-index: var(--z-overlay);
-            justify-content: center; align-items: center; overflow: hidden;
+        .kiosk-grid-container {
+            display: grid; grid-template-columns: 320px 1fr; gap: 20px; height: 100%; width: 100%; min-width: 1100px; min-height: 650px;
         }
-        .party-text { font-size: 8rem; color: #fff; font-weight: 900; text-shadow: 0 0 50px #ff00ff, 0 0 100px #00ffff; animation: partyBounce 0.5s infinite alternate; z-index: 10; text-align: center; }
-        @keyframes partyBounce { from { transform: scale(1); } to { transform: scale(1.1); } }
-        .confetti { position: absolute; width: 15px; height: 15px; z-index: 1; animation: confetti-fall 3s linear forwards; }
-        @keyframes confetti-fall { to { transform: translateY(120vh) rotate(720deg); } }
+        .kiosk-sidebar {
+            background: #09090e; border-right: 1px solid rgba(255,102,0,0.3); padding: 20px;
+            display: flex; flex-direction: column; gap: 20px;
+        }
+        .kiosk-main-viewport {
+            background: #040406; border: 1px solid rgba(255,102,0,0.2); border-radius: 6px;
+            padding: 20px; display: flex; flex-direction: column; position: relative; overflow: hidden;
+        }
+        
+        /* POS DEVICE RENDER MATRIX */
+        .pos-ultimate-wrapper {
+            width: 100%; height: 100%; flex-grow: 1;
+            display: flex; flex-direction: column; background: #0e0e14;
+            border: 3px solid #2d3238; border-radius: 12px; position: relative; overflow: hidden;
+        }
+        .pos-hardware-screen {
+            flex-grow: 1; background: #010103; margin: 15px; border: 2px solid #1a1d24;
+            border-radius: 6px; padding: 20px; display: flex; flex-direction: column;
+        }
+        .pos-card-slot-container {
+            height: 45px; background: #181a21; border-top: 3px solid #22262f;
+            position: relative; display: flex; justify-content: center; align-items: center;
+        }
+        .pos-physical-slot-line {
+            width: 240px; height: 6px; background: #000; border-radius: 3px; position: relative; overflow: visible;
+        }
+        
+        /* Virtual Card CSS Insertion Tracking Animation */
+        .pos-virtual-card {
+            position: absolute; width: 160px; height: 100px; background: linear-gradient(135deg, #bc13fe 0%, #450661 100%);
+            border-radius: 6px; bottom: -110px; left: 50%; transform: translateX(-50%);
+            border: 1px solid rgba(255,255,255,0.3); display: none; z-index: 50;
+        }
+        .pos-virtual-card::before {
+            content: ''; position: absolute; width: 35px; height: 25px; background: #ffd700; top: 20px; left: 15px; border-radius: 4px;
+        }
+        @keyframes cardInsertionSequence {
+            0% { bottom: -110px; transform: translateX(-50%) scale(1); }
+            40% { bottom: -15px; transform: translateX(-50%) scale(1); }
+            70% { bottom: -35px; transform: translateX(-50%) scale(0.96); }
+            100% { bottom: -30px; transform: translateX(-50%) scale(0.96); }
+        }
+        .pos-virtual-card.inserted { display: block; animation: cardInsertionSequence 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
 
-        #invasion-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 0, 0, 0.5); z-index: var(--z-overlay);
-            justify-content: center; align-items: center; animation: invasionPulse 0.3s infinite alternate;
+        /* POS UI Flow States */
+        .pos-welcome-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; }
+        .pos-payment-choice-state { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
+        .pos-pin-entry-state { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
+        
+        .pos-action-button {
+            width: 80%; padding: 16px; margin: 10px 0; background: #0a0a0f; border: 2px solid var(--primary-orange);
+            color: var(--primary-orange); font-size: 1.1rem; font-weight: bold; cursor: pointer; text-align: center;
         }
-        .invasion-text { font-size: 7rem; color: #fff; font-weight: 900; background: #000; padding: 40px; border: 10px solid var(--error-red); text-align: center; box-shadow: 0 0 100px var(--error-red); }
-        @keyframes invasionPulse { from { background: rgba(255, 0, 0, 0.4); } to { background: rgba(255, 0, 0, 0.8); } }
+        .pos-action-button:hover { background: var(--primary-orange); color: #000; }
+        
+        .pos-pin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 220px; margin-top: 15px; }
+        .pos-pin-btn { background: #161822; border: 1px solid #3d4251; color: #fff; padding: 12px; font-weight: bold; font-size: 1.2rem; cursor: pointer; text-align: center; }
+        .pos-pin-btn:hover { background: #2a2f3f; }
+        .pos-pin-display { font-size: 2rem; letter-spacing: 10px; margin-bottom: 10px; height: 40px; color: var(--gold-cowboy); text-align: center; }
 
         /* --------------------------------------------------------------------------
-           8. LOCKDOWN & REPAIR
+           8. INTERNAL SKIOSK APP WITH INTEGRATED HARDWARE MATRIX
            -------------------------------------------------------------------------- */
+        #skiosk-app-embedded {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #020204; z-index: 600; flex-direction: column; padding: 15px;
+        }
+        .skiosk-restricted-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5,5,8,0.96); z-index: 1000; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center; padding: 30px;
+        }
+        .skiosk-header-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding-bottom: 12px; border-bottom: 2px solid var(--gold-cowboy); margin-bottom: 15px;
+        }
+        .skiosk-unified-logo { display: flex; align-items: center; gap: 10px; color: var(--gold-cowboy); font-weight: 900; }
+        .skiosk-unified-logo svg { width: 32px; height: 32px; fill: var(--gold-cowboy); }
+
+        .skiosk-dashboard-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; flex-grow: 1; overflow: hidden; }
+        .skiosk-card-panel { background: #0a0a0f; border: 1px solid rgba(255,170,0,0.3); border-radius: 6px; padding: 15px; display: flex; flex-direction: column; }
+        .skiosk-panel-title { color: var(--gold-cowboy); font-size: 1.1rem; font-weight: bold; margin-bottom: 12px; border-bottom: 1px dashed rgba(255,170,0,0.4); padding-bottom: 6px; }
+
+        /* Slip Log Simulation UI */
+        .skiosk-slip-output-screen {
+            background: #fff; color: #000; font-family: var(--font-mono); padding: 15px;
+            font-size: 0.85rem; flex-grow: 1; overflow-y: auto; border-radius: 4px; box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        /* Hardware Injection Matrix Framework */
+        .matrix-port-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
+        .matrix-port-node {
+            background: #111; border: 1px solid #ffaa00; padding: 10px; border-radius: 4px; text-align: center; cursor: pointer;
+        }
+        .matrix-port-node.connected { border-color: var(--matrix-green); background: rgba(0,255,65,0.05); }
+        .matrix-port-label { font-size: 0.75rem; color: #888; display: block; margin-bottom: 5px; }
+        .matrix-port-status { font-size: 0.8rem; font-weight: bold; color: var(--gold-cowboy); }
+        .matrix-port-node.connected .matrix-port-status { color: var(--matrix-green); }
+        .matrix-console-log { background: #000; border: 1px solid #333; color: var(--matrix-green); padding: 10px; font-size: 0.85rem; height: 120px; overflow-y: auto; flex-grow: 1; }
+
+        /* Emergency Lockdown Trigger Trigger */
+        .skiosk-lockdown-trigger-btn {
+            background: linear-gradient(180deg, #ff003c 0%, #990022 100%);
+            color: #fff; border: 2px solid #fff; padding: 15px; font-size: 1.2rem;
+            font-weight: 900; cursor: pointer; border-radius: 6px; text-shadow: 0 2px 4px #000;
+            box-shadow: 0 0 15px var(--error-red); transition: transform 0.1s;
+        }
+        .skiosk-lockdown-trigger-btn:active { transform: scale(0.97); }
+
+        /* Red Flashing Emergency Lockdown Overlay Screen */
         #lockdown-screen {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #050000; z-index: var(--z-lockdown); flex-direction: column; justify-content: center; align-items: center;
-            border: 15px solid var(--error-red); box-shadow: inset 0 0 200px var(--error-red);
+            background-color: #000000; z-index: var(--z-lockdown); flex-direction: column;
+            align-items: center; justify-content: center; font-family: var(--font-mono);
         }
-        .lockdown-title { font-size: 6rem; color: var(--error-red); font-weight: 900; text-shadow: 0 0 40px var(--error-red); animation: pulseText 1s infinite; }
-        .lockdown-sub { font-size: 2rem; color: #aaa; margin: 20px 0 50px 0; text-align: center; }
-        @keyframes pulseText { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        
-        #repair-screen {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: var(--z-lockdown); flex-direction: column; padding: 50px;
-            border: 8px solid #fff; box-shadow: inset 0 0 150px rgba(255,255,255,0.3); font-family: var(--font-mono);
+        #lockdown-screen.active { display: flex; animation: redAlertPanicFlash 0.8s infinite alternate; }
+        @keyframes redAlertPanicFlash {
+            0% { background-color: #3a000d; }
+            100% { background-color: #050002; }
         }
-        .repair-auth { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); border: 3px solid #fff; padding: 50px; text-align: center; width: 600px; }
-        .repair-input { width: 100%; padding: 20px; font-size: 24px; background: #111; border: 2px solid #fff; color: #fff; text-align: center; margin-bottom: 30px; outline: none; letter-spacing: 5px; }
-        .repair-btn { background: #fff; color: #000; padding: 20px; font-size: 1.5rem; font-weight: bold; border: none; width: 100%; cursor: pointer; transition: 0.3s; }
-        .repair-btn:hover { background: #000; color: #fff; border: 3px solid #fff; box-shadow: 0 0 40px #fff; }
+        .lockdown-inner-frame { border: 4px dashed var(--error-red); padding: 50px; text-align: center; background: rgba(0,0,0,0.85); box-shadow: 0 0 50px var(--error-red); }
+        .lockdown-title { font-size: 3.5rem; color: var(--error-red); font-weight: 900; margin-bottom: 20px; text-shadow: 0 0 20px var(--error-red); }
         
-        #repair-process { display: none; flex-direction: column; height: 100%; }
-        .repair-log-box { flex-grow: 1; background: rgba(0,0,0,0.9); border: 3px solid #fff; padding: 30px; overflow-y: auto; color: #fff; font-size: 1.3rem; margin-bottom: 20px; line-height: 1.8; }
-        .repair-bar-bg { width: 100%; height: 40px; border: 3px solid #fff; background: #111; }
-        .repair-bar-fill { height: 100%; width: 0%; background: #fff; box-shadow: 0 0 30px #fff; transition: 0.1s; }
-
         /* --------------------------------------------------------------------------
-           9. KIOSK HUB & POS UI (YENİ EKLENDİ)
+           9. SYSTEM RECOVERY STAGE CONTROLLER AND LOGIC
            -------------------------------------------------------------------------- */
-        @keyframes scaleInPop {
-            0% { opacity: 0; transform: scale(0.9); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        .window.scale-in-pop { animation: scaleInPop 0.25s cubic-bezier(0.25, 1, 0.5, 1); }
+        .repair-progress-container { width: 600px; margin-top: 30px; text-align: left; }
+        .repair-progress-bar-bg { width: 100%; height: 25px; background: #222; border: 1px solid #ff003c; padding: 2px; margin-top: 10px; }
+        .repair-progress-bar-fill { height: 100%; width: 0%; background: var(--error-red); transition: width 0.1s ease; }
+        #repair-log-terminal { background: #050505; border: 1px solid #ff003c; width: 600px; height: 180px; margin-top: 20px; padding: 12px; overflow-y: auto; font-size: 0.9rem; color: #ff6666; text-align: left; }
 
-        .kiosk-window {
-            background: linear-gradient(160deg, rgba(14,11,6,0.97), rgba(5,5,5,0.98)) !important;
-            border: 1px solid var(--gold-cowboy) !important;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.85), 0 0 40px rgba(255,170,0,0.15) !important;
-        }
-        .kiosk-header { background: rgba(255,170,0,0.08) !important; border-color: var(--gold-cowboy) !important; }
-        .kiosk-header .window-title { color: var(--gold-cowboy) !important; }
-
-        .kiosk-content {
-            display: flex !important; flex-direction: column; align-items: center; justify-content: center; gap: 26px;
-            padding: 24px !important;
-            background-image: radial-gradient(rgba(255,170,0,0.05) 1px, transparent 1px); background-size: 26px 26px;
-        }
-
-        /* --- POS CİHAZI ARAYÜZÜ --- */
-        .pos-terminal-ui {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%);
-            width: 100%; height: calc(100% - 40px);
-            position: absolute; top: 40px; left: 0; z-index: 50;
-            border-radius: 0 0 6px 6px;
-        }
-        .pos-device {
-            background: #ffffff; width: 380px; height: 580px; border-radius: 24px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 0 8px #f1f3f5;
-            display: flex; flex-direction: column; align-items: center; padding: 25px;
-            position: relative; overflow: hidden;
-        }
-        .pos-camera {
-            width: 12px; height: 12px; background: #222; border-radius: 50%; margin-bottom: 20px;
-            box-shadow: inset 0 0 4px #000;
-        }
-        .pos-screen {
-            background: #000; width: 100%; height: 280px; border-radius: 12px; color: #fff;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center; padding: 20px; border: 2px solid #222;
-            box-shadow: inset 0 0 20px rgba(255,255,255,0.1);
-        }
-        .pos-screen h2 { color: #fff; margin-bottom: 8px; font-family: 'Segoe UI', Tahoma, sans-serif; font-weight: 600; letter-spacing: 1px; font-size: 1.8rem; }
-        .pos-screen p { color: #ccc; font-size: 0.9rem; margin-bottom: 25px; font-family: 'Segoe UI', sans-serif;}
-        .pos-amount { font-size: 3rem; font-weight: 700; color: #fff; font-family: 'Courier New', monospace; }
-        
-        .pos-nfc-reader {
-            margin-top: 35px; width: 85%; height: 130px; background: #f8f9fa; border-radius: 16px;
-            border: 3px dashed #ced4da; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-        .pos-nfc-reader:hover { background: #e7f1ff; border-color: #0d6efd; transform: translateY(-5px); box-shadow: 0 10px 20px rgba(13, 110, 253, 0.15); }
-        .nfc-icon { font-size: 3.5rem; color: #0d6efd; margin-bottom: 10px; animation: pulseNfc 2s infinite; }
-        @keyframes pulseNfc { 0% { opacity: 0.6; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 0.6; transform: scale(0.95); } }
-        .pos-nfc-reader p { font-size: 0.9rem; color: #495057; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; font-family: 'Segoe UI', sans-serif; }
-        
-        .pos-status-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95);
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 10; border-radius: 24px; text-align: center;
-        }
-        .pos-success-check { font-size: 5rem; color: #00ca4e; margin-bottom: 15px; animation: scaleInPop 0.4s ease; }
-        .pos-status-overlay h3 { color: #333; font-family: 'Segoe UI', sans-serif; margin-bottom: 10px; font-size: 1.5rem; }
-        .pos-status-overlay p { color: #666; font-size: 1rem; font-family: 'Segoe UI', sans-serif; }
-
-        /* One UI tarzı gerçek zamanlı durum çubuğu */
-        .kiosk-statusbar { width: 100%; max-width: 760px; display: flex; gap: 12px; flex-wrap: wrap; }
-        .kiosk-status-pill {
-            flex: 1; min-width: 150px; background: rgba(255,255,255,0.05); backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px;
-            padding: 14px 18px; display: flex; flex-direction: column; gap: 6px; font-family: var(--font-ui);
-        }
-        .kiosk-status-label { font-size: 0.72rem; color: rgba(255,255,255,0.5); letter-spacing: 0.5px; font-weight: 600; text-transform: uppercase; }
-        .kiosk-status-value { font-size: 1.5rem; font-weight: 700; color: #fff; }
-        .kiosk-status-track { width: 100%; height: 5px; border-radius: 5px; background: rgba(255,255,255,0.08); overflow: hidden; margin-top: 2px; }
-        .kiosk-status-fill { height: 100%; border-radius: 5px; width: 0%; transition: width 0.6s ease, background 0.6s ease; }
-        .kiosk-status-pill.integrity.warn .kiosk-status-value { color: var(--error-red); }
-
-        /* 4x4 Merkezi Hub Grid */
-        .kiosk-hub-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 760px; width: 100%; }
-        .kiosk-tile {
-            position: relative; aspect-ratio: 1 / 0.95; background: rgba(255,255,255,0.04); backdrop-filter: blur(16px);
-            border: 1px solid rgba(255,255,255,0.09); border-radius: 18px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-            cursor: pointer; transition: all 0.2s ease; animation: scaleInPop 0.35s cubic-bezier(0.25, 1, 0.5, 1) both;
-        }
-        .kiosk-tile:hover { background: rgba(255,170,0,0.1); border-color: var(--gold-cowboy); transform: translateY(-3px) scale(1.03); }
-        .kiosk-tile-icon { font-size: 1.9rem; }
-        .kiosk-tile-label { font-size: 0.72rem; font-weight: bold; color: #eee; text-align: center; letter-spacing: 0.5px; text-transform: uppercase; line-height: 1.3; }
-        .kiosk-tile-sub { font-size: 0.62rem; color: var(--gold-cowboy); font-weight: bold; }
-        .kiosk-tile.locked { opacity: 0.4; cursor: not-allowed; }
-        .kiosk-tile.locked .kiosk-tile-label { color: #888; }
-        .kiosk-tile.locked::after { content: '🔒'; position: absolute; top: 8px; right: 10px; font-size: 0.8rem; }
-
-        /* --------------------------------------------------------------------------
-           10. CHAOS MODU (VOLATILITY / CRT BOOT)
-           -------------------------------------------------------------------------- */
-        #chaos-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: var(--z-overlay); flex-direction: column; align-items: center; justify-content: center;
-        }
-        #chaos-overlay.active { display: flex; }
-        .chaos-warning-text {
-            color: var(--error-red); font-size: 3rem; font-weight: 900; letter-spacing: 3px; text-align: center;
-            text-shadow: 0 0 30px var(--error-red); animation: pulseText 0.5s infinite; font-family: var(--font-mono);
-        }
-        .chaos-warning-sub { color: #fff; font-size: 1.1rem; margin-top: 15px; opacity: 0.8; font-family: var(--font-mono); text-align: center; }
-        .chaos-boot-mini {
-            width: 700px; font-family: var(--font-mono); color: var(--boot-text); background: var(--boot-bg);
-            padding: 30px; display: none; border: 4px solid var(--boot-text);
-        }
-        .chaos-boot-mini.active { display: block; }
-        .chaos-boot-mini-line { font-size: 1.1rem; font-weight: bold; margin-bottom: 6px; }
-
-        @keyframes crtTurnOn {
-            0% { transform: scale(1, 0.005); background-color: #ffffff; }
-            30% { transform: scale(1, 0.005); background-color: #ffffff; }
-            55% { transform: scale(1, 1); background-color: #ffffff; }
-            100% { transform: scale(1, 1); background-color: #000000; }
-        }
-        .crt-boot-on-active { animation: crtTurnOn 0.8s ease-out forwards; }
     </style>
 </head>
 <body>
-    
+
     <div class="scanline-effect"></div>
 
-    <!-- 1. LOGIN SCREEN -->
-    <div id="login-screen">
-        <div class="login-box">
-            <h1 class="login-brand-title">CODE:RACOON OS</h1>
-            <p class="login-brand-subtitle">Z1 EXTREME APU | ÇİFT AŞAMALI GÜVENLİK AĞI</p>
-            <p style="color: #aaa; font-size: 1.1rem; margin-top: 30px;">GÜVENLİ AĞA GİRİŞ İÇİN 5 HANELİ PIN GİRİN</p>
-            <div class="pin-container">
-                <input type="text" class="pin-slot" maxlength="1" oninput="moveToNext(this, 'pin2')" id="pin1" autocomplete="off" autofocus>
-                <input type="text" class="pin-slot" maxlength="1" oninput="moveToNext(this, 'pin3')" id="pin2" autocomplete="off">
-                <input type="text" class="pin-slot" maxlength="1" oninput="moveToNext(this, 'pin4')" id="pin3" autocomplete="off">
-                <input type="text" class="pin-slot" maxlength="1" oninput="moveToNext(this, 'pin5')" id="pin4" autocomplete="off">
-                <input type="text" class="pin-slot" maxlength="1" oninput="checkFullPin()" id="pin5" autocomplete="off">
-            </div>
-            <p id="pin-error">HATA: YETKİSİZ PIN DENEMESİ</p>
-        </div>
-    </div>
-
-    <!-- 2. BOOT MENU SCREEN (BEYAZ) -->
-    <div id="boot-menu-screen">
-        <div class="boot-menu-box">
-            <h1 class="boot-menu-title">CODE:RACOON - BOOT MANAGER</h1>
-            <p class="boot-menu-subtitle">Sistem ve veri matrisi başarıyla onarıldı. Hangi hiyerarşi düzeyinde boot etmek istersiniz?</p>
-            
-            <div class="level-grid">
-                <button class="level-btn" onclick="triggerBootSequence('Level 1 - Konuk', 1)">LEVEL 1 - KONUK</button>
-                <button class="level-btn" onclick="triggerBootSequence('Level 2 - Standart', 2)">LEVEL 2 - STANDART</button>
-                <button class="level-btn" onclick="triggerBootSequence('Level 3 - Geliştirici', 3)">LEVEL 3 - GELİŞTİRİCİ</button>
-                <button class="level-btn" onclick="triggerBootSequence('Level 4 - Yönetici', 4)">LEVEL 4 - YÖNETİCİ</button>
-                <button class="level-btn" onclick="triggerBootSequence('Level 5 - Mimari', 5)">LEVEL 5 - MİMARİ</button>
-                <button class="level-btn" onclick="triggerBootSequence('Level 6 - Ghost', 6)">LEVEL 6 - GHOST</button>
-                <button class="level-btn" onclick="triggerBootSequence('Level 7 - Nebula', 7)">LEVEL 7 - NEBULA</button>
-                <button class="level-btn" onclick="triggerBootSequence('Level 8 - Nambow Master', 8)">LEVEL 8 - NAMBOW MASTER</button>
-                <button class="level-btn" onclick="triggerBootSequence('Level 10 - Cowboy+', 10)">LEVEL 10 - COWBOY+</button>
-                <button class="level-btn" onclick="triggerBootSequence('Level 11 - Kiosk', 11)" style="grid-column: 1 / -1;">👑 LEVEL 11 - KIOSK (MUTLAK YETKİ)</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 3. COWBOY BOOT SCREEN -->
-    <div id="cowboy-boot-screen">
-        <div class="boot-header-container">
-            <div class="boot-header-title">Cowboy+ System Boot Manager</div>
-            <div class="boot-header-subtitle">Copyright (C) 2026 Code:Racoon Inc. All Rights Reserved. Z1 Architecture.</div>
-        </div>
-        <div id="boot-log-area"></div>
-        <div class="boot-footer">
-            <div class="boot-progress-container">
-                <div class="boot-progress-text" id="boot-percent-text">BOOT SEQUENCE: 0%</div>
-                <div class="boot-progress-bar-bg">
-                    <div class="boot-progress-bar-fill" id="boot-progress-fill"></div>
-                </div>
-            </div>
-            <div class="boot-system-info">
-                MEM: 640K Base / 32768K Ext<br>
-                CPU: Z1 Extreme APU<br>
-                ARCH: x86_64 / UNIX
-            </div>
-        </div>
-    </div>
-
-    <!-- 4. TRANSITION SCREEN -->
-    <div id="transition-screen">
-        <div class="transition-box">
-            <div class="transition-text" id="transition-msg-text">[ LEVEL ] SEVİYESİNE GEÇİLİYOR</div>
-        </div>
-    </div>
-
-    <!-- 5. LOCKDOWN (SON EMİR) & REPAIR SCREEN -->
-    <div id="lockdown-screen">
-        <h1 class="lockdown-title">SİSTEM YOK EDİLDİ</h1>
-        <p class="lockdown-sub">SON EMİR PROTOKOLÜ GEREĞİ ÇEKİRDEK KENDİNİ MÜHÜRLEDİ.</p>
-        <button class="cpanel-btn btn-danger" style="width: 400px; padding: 25px; font-size: 1.5rem;" onclick="openRepairScreen()">SİSTEMİ ZORLA (REPAIR MODU)</button>
-    </div>
-
-    <div id="repair-screen">
-        <div class="repair-auth" id="repair-auth-layer">
-            <h2 style="color: #fff; font-size: 2.5rem; margin-bottom: 20px; letter-spacing: 5px;">COWBOY OTO-ONARIM AĞI</h2>
-            <p style="color: #ccc; margin-bottom: 30px; font-size: 1.2rem;">Yüksek yetki onarım anahtarı gereklidir.</p>
-            <input type="password" id="repair-password" class="repair-input" placeholder="GÜVENLİK ANAHTARI..." autocomplete="off">
-            <button class="repair-btn" onclick="startRepairSequence()">DOĞRULA VE ÇEKİRDEĞİ ONAR</button>
-        </div>
-        <div id="repair-process">
-            <h1 id="process-main-title" style="color: #fff; border-bottom: 4px solid #fff; padding-bottom: 20px; margin-bottom: 20px;">🚀 1. AŞAMA OTO-ONARIM AĞI</h1>
-            <div class="repair-log-box" id="repair-logs"></div>
-            <div class="repair-bar-bg"><div class="repair-bar-fill" id="repair-fill"></div></div>
-            <h2 style="color: #fff; margin-top: 20px;" id="repair-status">ONARIM BAŞLATILIYOR...</h2>
-        </div>
-    </div>
-
-    <!-- 6. MOD OVERLAYS -->
-    <div id="party-overlay">
-        <div class="party-text">İSO RELEASE! 🚀</div>
-    </div>
-    <div id="invasion-overlay">
-        <div class="invasion-text">SİTEDEN HEMEN AYRILIN!</div>
-    </div>
-
-    <!-- CHAOS MODU (VOLATILITY / CRT BOOT) -->
-    <div id="chaos-overlay">
-        <div id="chaos-warning-block">
-            <div class="chaos-warning-text">⚠ SYSTEM VOLATILITY DETECTED ⚠</div>
-            <div class="chaos-warning-sub">Z1 KARARSIZLIK TESPİT EDİLDİ — SİSTEM YENİDEN BAŞLATILIYOR...</div>
-        </div>
-        <div class="chaos-boot-mini" id="chaos-boot-mini">
-            <div style="font-weight:900; font-size:1.4rem; border-bottom: 3px solid var(--boot-text); padding-bottom: 10px; margin-bottom: 10px;">CRT BOOT — HIZLI YENİDEN BAŞLATMA</div>
-            <div id="chaos-boot-mini-lines"></div>
-        </div>
-    </div>
-
-    <!-- WINDOWS TARZI KAPANMA OVERLAY -->
     <div id="win-shutdown-overlay">
         <div class="win-spinner">
             <div></div><div></div><div></div><div></div><div></div><div></div>
             <div></div><div></div><div></div><div></div><div></div><div></div>
         </div>
-        <div class="win-shutdown-text" id="win-shutdown-text">Oturumunuz kapatılıyor</div>
+        <div class="win-shutdown-text" id="win-shutdown-msg">Sistem Kapatılıyor...</div>
     </div>
 
-    <!-- LEVEL DEĞİŞTİRME MODALI -->
-    <div id="level-switch-overlay">
-        <div class="level-switch-box" id="level-switch-box">
-            <div class="level-switch-title">⇄ HIZLI SEVİYE DEĞİŞTİR</div>
-            <div class="level-switch-grid">
-                <button class="level-switch-btn" onclick="requestLevelSwitch('Level 1 - Konuk', 1)">LVL 1<br>KONUK</button>
-                <button class="level-switch-btn" onclick="requestLevelSwitch('Level 2 - Standart', 2)">LVL 2<br>STANDART</button>
-                <button class="level-switch-btn" onclick="requestLevelSwitch('Level 3 - Geliştirici', 3)">LVL 3<br>GELİŞTİRİCİ</button>
-                <button class="level-switch-btn" onclick="requestLevelSwitch('Level 4 - Yönetici', 4)">LVL 4<br>YÖNETİCİ</button>
-                <button class="level-switch-btn" onclick="requestLevelSwitch('Level 5 - Mimari', 5)">LVL 5<br>MİMARİ</button>
-                <button class="level-switch-btn" onclick="requestLevelSwitch('Level 6 - Ghost', 6)">LVL 6<br>GHOST</button>
-                <button class="level-switch-btn" onclick="requestLevelSwitch('Level 7 - Nebula', 7)">LVL 7<br>NEBULA</button>
-                <button class="level-switch-btn" onclick="requestLevelSwitch('Level 8 - Nambow Master', 8)">LVL 8<br>NAMBOW</button>
-                <button class="level-switch-btn" onclick="requestLevelSwitch('Level 10 - Cowboy+', 10)">LVL 10<br>COWBOY+</button>
-                <button class="level-switch-btn level-switch-btn-kiosk" onclick="requestLevelSwitch('Level 11 - Kiosk', 11)">👑 LVL 11 — KIOSK (MUTLAK YETKİ)</button>
+    <div id="login-screen">
+        <div class="login-box">
+            <div class="login-brand-title">CODE:RACOON OS</div>
+            <div class="login-brand-subtitle">ULTIMATE ARCHITECTURE SYSTEM ACCESS</div>
+            <div style="font-size: 1.1rem; color: var(--primary-orange); font-weight: bold;">SİSTEM ŞİFRESİNİ GİRİNİZ</div>
+            <div class="pin-container">
+                <input type="password" class="pin-slot" maxlength="1" id="pin1" oninput="movePinFocus(this, 'pin2')">
+                <input type="password" class="pin-slot" maxlength="1" id="pin2" oninput="movePinFocus(this, 'pin3')">
+                <input type="password" class="pin-slot" maxlength="1" id="pin3" oninput="movePinFocus(this, 'pin4')">
+                <input type="password" class="pin-slot" maxlength="1" id="pin4" oninput="evaluateSystemPin(this)">
             </div>
-            <button class="level-switch-close" onclick="closeLevelSwitcher()">KAPAT</button>
+            <div id="pin-error">GEÇERSİZ ERİŞİM JOTUNU REJECTED!</div>
+        </div>
+    </div>
 
-            <!-- HIZLI GEÇİŞ ŞİFRE DOĞRULAMA PANELİ -->
-            <div class="level-switch-auth-panel" id="level-switch-auth">
-                <div class="level-switch-auth-title">🔒 <span id="lsa-target-name">SEVİYE</span><br>SEVİYESİNE GEÇMEK İÇİN ERİŞİM ŞİFRESİNİ GİRİN</div>
-                <input type="password" id="lsa-password" class="level-switch-auth-input" placeholder="• • • • •" maxlength="10" autocomplete="off" onkeydown="if(event.key==='Enter') confirmLevelSwitch();">
-                <div class="level-switch-auth-actions">
-                    <button class="level-switch-auth-confirm" onclick="confirmLevelSwitch()">ONAYLA</button>
-                    <button class="level-switch-auth-cancel" onclick="cancelLevelSwitch()">VAZGEÇ</button>
-                </div>
-                <p class="level-switch-auth-error" id="lsa-error">HATA: GEÇERSİZ ERİŞİM ŞİFRESİ</p>
+    <div id="boot-menu-screen">
+        <div class="boot-menu-box">
+            <div class="boot-menu-title">COWBOY BOOT MANAGER v20.00</div>
+            <div style="font-size: 1.2rem; margin-bottom: 35px; font-weight: bold; color: var(--boot-muted);">BAŞLATILACAK ÇEKİRDEK SEVİYESİNİ SEÇİNİZ:</div>
+            <div class="level-grid">
+                <button class="level-btn" onclick="initializeKernelBoot('Level 1 - Guest', 1)">LVL 1 - GUEST</button>
+                <button class="level-btn" onclick="initializeKernelBoot('Level 4 - Admin', 4)">LVL 4 - ADMIN</button>
+                <button class="level-btn" onclick="initializeKernelBoot('Level 11 - Kiosk', 11)">LVL 11 - KIOSK</button>
             </div>
         </div>
     </div>
 
-    <!-- 7. DESKTOP ENVIRONMENT -->
+    <div id="cowboy-boot-screen">
+        <div class="boot-header-container">
+            <div class="boot-header-title">Cowboy Çekirdek Boot Alt Sistemi</div>
+            <div style="font-size: 1.05rem; font-weight: bold; color: var(--boot-muted);">Copyright (C) 2026 Code:Racoon Inc. Tüm Hakları Saklıdır. Z1 Mimarisi.</div>
+        </div>
+        <div id="boot-log-area"></div>
+        <div class="boot-footer">
+            <div class="boot-progress-container">
+                <div class="boot-progress-text" id="boot-percent-indicator">YÜKLEME AŞAMASI: 0%</div>
+                <div class="boot-progress-bar-bg">
+                    <div class="boot-progress-bar-fill" id="boot-progress-fill-bar"></div>
+                </div>
+            </div>
+            <div style="text-align: right; font-size: 1.1rem; font-weight: bold; line-height: 1.4;">
+                BELLEK: 1048576K Kiosk Base Core<br>İŞLEMCİ: Z1 Extreme Custom APU<br>MİMARİ: x86_64 / CodeRacoon Kernel
+            </div>
+        </div>
+    </div>
+
+    <div id="win-login-anim-screen">
+        <div class="win-blur-bg"></div>
+        <div class="win-login-avatar-container">
+            <svg viewBox="0 0 100 100">
+                <path d="M50 15c-9.3 0-16.8 7.5-16.8 16.8S40.7 48.6 50 48.6s16.8-7.5 16.8-16.8S59.3 15 50 15zm0 38.2c-15.5 0-42 7.8-42 23.3V85h84v-8.5c0-15.5-26.5-23.3-42-23.3z"/>
+            </svg>
+        </div>
+        <div class="win-login-username" id="win-login-target-user">Code:Racoon Operator</div>
+        <div class="win-loading-wrapper">
+            <div class="win-circle-spinner">
+                <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+            </div>
+            <div class="win-login-status-text">Sisteme Giriş Yapılıyor...</div>
+        </div>
+    </div>
+
+    <div id="level-switch-overlay">
+        <div class="level-switch-box" id="level-modal-box">
+            <div class="level-switch-title">Çekirdek Yetki Seviyesi Değişimi</div>
+            <div class="level-switch-grid">
+                <button class="level-switch-btn" onclick="execLevelSwitchRequest('Guest Level 1', 1)">LVL 1<br>GUEST</button>
+                <button class="level-switch-btn" onclick="execLevelSwitchRequest('Admin Level 4', 4)">LVL 4<br>ADMIN</button>
+                <button class="level-switch-btn level-switch-btn-kiosk" onclick="execLevelSwitchRequest('Kiosk Level 11', 11)">👑 MUTLAK KIOSK SEVİYESİ (LVL 11)</button>
+            </div>
+            <button class="level-switch-close" onclick="toggleLevelSwitchModal(false)">PANELİ KAPAT</button>
+            
+            <div class="level-switch-auth-panel">
+                <div class="level-switch-auth-title" id="auth-panel-prompt-text">LEVEL DOĞRULAMA ANAHTARI</div>
+                <input type="password" class="level-switch-auth-input" id="level-auth-token-input" maxlength="4">
+                <div class="level-switch-auth-actions">
+                    <button class="level-switch-auth-confirm" onclick="verifyLevelTokenAuth()">KODU DOĞRULA</button>
+                    <button class="level-switch-auth-cancel" onclick="abortLevelAuthMode()">İPTAL ET</button>
+                </div>
+                <div id="level-auth-error-log" style="color:var(--error-red); font-weight:bold; margin-top:10px; display:none;">YETKİLENDİRME REDDEDİLDİ!</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="lockdown-screen">
+        <div class="lockdown-inner-frame">
+            <h1 class="lockdown-title">SİS-TEM Kİ-LİT-LEN-Dİ</h1>
+            <div style="font-size:1.4rem; color:#fff; margin-bottom:30px; font-weight:bold;">EMERGENCY LOCKDOWN INITIATED VIA SKIOSK ROOT APP</div>
+            <div style="color:var(--error-red); font-weight:bold; font-size:1.1rem; margin-bottom:20px;">Sistem kurtarma moduna geçmek için onarım algoritmasını başlatın.</div>
+            <button class="pos-action-button" style="border-color:var(--error-red); color:#fff; background:var(--error-red);" onclick="triggerSystemRecoveryChain()">SİSTEMİ ONAR / RECOVERY</button>
+            
+            <div class="repair-progress-container" id="repair-panel-visuals" style="display:none;">
+                <div style="color:#fff; font-weight:bold;" id="repair-stage-status">Onarım Hazırlanıyor...</div>
+                <div class="repair-progress-bar-bg">
+                    <div class="repair-progress-bar-fill" id="repair-bar-fill"></div>
+                </div>
+                <div id="repair-log-terminal"></div>
+            </div>
+        </div>
+    </div>
+
     <div id="os-desktop">
         <div class="desktop-bg-pattern"></div>
-        
         <div class="desktop-icons">
-            <div class="icon" ondblclick="SYS_WM.openWindow('term-win')">
-                <div class="icon-img">>_</div>
-                <div class="icon-label">Terminal</div>
-            </div>
-            <div class="icon" id="icon-cpanel" style="display: none;" ondblclick="SYS_WM.openWindow('cpanel-win')">
-                <div class="icon-img">⚙️</div>
-                <div class="icon-label">Control Panel</div>
-            </div>
-            <!-- ISO ICON -->
-            <div class="icon" id="icon-iso" style="display: none;" ondblclick="SYS_WM.openWindow('iso-win')">
-                <div class="icon-img" style="border-color: #1a73e8; color: #1a73e8; background: rgba(26, 115, 232, 0.1);">💿</div>
-                <div class="icon-label">Cordex ISO</div>
-            </div>
-            <!-- KERNEL SYSTEM ICON -->
-            <div class="icon" id="icon-kernel" style="display: none;" ondblclick="SYS_WM.openWindow('kernel-win')">
-                <div class="icon-img" style="border-color: var(--neon-blue); color: var(--neon-blue); background: rgba(0, 229, 255, 0.1);">🖧</div>
-                <div class="icon-label">Kernel System</div>
-            </div>
-            <!-- KIOSK ICON (POS EMOJİSİ EKLENDİ) -->
-            <div class="icon" id="icon-kiosk" style="display: none;" ondblclick="SYS_WM.openWindow('kiosk-win')">
-                <div class="icon-img" style="border-color: var(--gold-cowboy); color: var(--gold-cowboy); background: rgba(255, 170, 0, 0.12);">💳</div>
-                <div class="icon-label">Kiosk</div>
+            <div class="icon" onclick="openApplicationWindow('kiosk-hub-app-window')">
+                <div class="icon-img">🏪</div>
+                <div class="icon-label">Kiosk Hub Panel</div>
             </div>
         </div>
 
-        <!-- APP WINDOW: TERMINAL -->
-        <div class="window" id="term-win" style="top: 50px; left: 80px; width: 750px; height: 500px;">
-            <div class="window-header">
-                <div class="window-title">⚙️ root@coderacoon:~</div>
+        <div class="window" id="kiosk-hub-app-window" style="width: 1200px; height: 750px;">
+            <div class="window-header" onmousedown="dragWindowCore(event, 'kiosk-hub-app-window')">
+                <div class="window-title">🏪 Kiosk Hub Operational Management Interface [MİMARİ]</div>
                 <div class="window-controls">
-                    <button class="win-btn btn-min"></button>
+                    <button class="win-btn btn-min" onclick="minimizeWindowTrack()"></button>
                     <button class="win-btn btn-max"></button>
-                    <button class="win-btn btn-close" onclick="SYS_WM.closeWindow('term-win')"></button>
+                    <button class="win-btn btn-close" onclick="closeApplicationWindow('kiosk-hub-app-window')"></button>
                 </div>
             </div>
-            <div class="window-content terminal-app" id="term-content" onclick="document.getElementById('term-input-field').focus()">
-                <div class="term-output" id="term-history">
-Code:Racoon OS v19.0 Ultimate (tty1)
-Type 'help' for a list of available commands. System running on Z1 Extreme.
-                </div>
-                <div class="term-input-line">
-                    <span class="term-prompt">root@coderacoon:~#</span>
-                    <input type="text" class="term-input" id="term-input-field" autocomplete="off" spellcheck="false">
-                </div>
-            </div>
-        </div>
-
-        <!-- APP WINDOW: CONTROL PANEL -->
-        <div class="window" id="cpanel-win" style="top: 100px; left: 150px; width: 800px; height: 550px;">
-            <div class="window-header">
-                <div class="window-title">⚙️ Control Panel - System Settings</div>
-                <div class="window-controls">
-                    <button class="win-btn btn-min"></button>
-                    <button class="win-btn btn-max"></button>
-                    <button class="win-btn btn-close" onclick="SYS_WM.closeWindow('cpanel-win')"></button>
-                </div>
-            </div>
-            <div class="window-content cpanel-grid">
-                <div class="cpanel-card">
-                    <div class="cpanel-title">📡 İLETİŞİM AĞI & MODLAR</div>
-                    <button class="cpanel-btn" style="border-color: #ff00ff; color: #ff00ff; margin-bottom: 10px;" onclick="triggerPartyMode()">🎉 PARTİ MODU (İSO RELEASE)</button>
-                    <button class="cpanel-btn" style="border-color: var(--error-red); color: var(--error-red); margin-bottom: 20px;" onclick="triggerInvasionMode()">👽 İSTİLA MODU (AYRILIN)</button>
-                </div>
-                <div class="cpanel-card">
-                    <div class="cpanel-title">🧬 KUANTUM+ ÖZEL VERİ GİRİŞİ</div>
-                    <input type="text" class="cpanel-input" style="border-color: #00ffff;" placeholder="Örn: VFS_NODE_KEY=0x99A">
-                    <input type="number" class="cpanel-input" style="border-color: #00ffff;" placeholder="Root Oranı (0-100)">
-                    <button class="cpanel-btn" style="border-color: #00ffff; color: #00ffff;">VERİLERİ İŞLE</button>
-                </div>
-                <div class="cpanel-card" style="grid-column: 1 / -1; border-color: var(--error-red); background: rgba(255,0,0,0.1);">
-                    <div class="cpanel-title" style="color: var(--error-red); border-color: var(--error-red); text-align: center; font-size: 1.5rem;">⚠️ COWBOY MUTLAK KONTROL ⚠️</div>
-                    <button class="cpanel-btn btn-danger" style="font-size: 1.5rem; padding: 25px;" onclick="triggerSonEmir()">💀 SON EMİR (SİSTEMİ MÜHÜRLE) 💀</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- APP WINDOW: GOOGLE ISO DOWNLOADER -->
-        <div class="window google-iso-window" id="iso-win" style="top: 150px; left: 200px; width: 600px; height: 400px;">
-            <div class="window-header google-iso-header">
-                <div class="window-title google-iso-title" style="color: #202124;">Google Drive - File Preview</div>
-                <div class="window-controls">
-                    <button class="win-btn btn-close" onclick="SYS_WM.closeWindow('iso-win')"></button>
-                </div>
-            </div>
-            <div class="window-content" style="padding: 0;">
-                <div class="drive-container">
-                    <div class="drive-icon">📦</div>
-                    <div class="drive-filename">Cordex_OS_v19_Z1_Edition.iso</div>
-                    <div class="drive-details">ISO Archive • 3.2 GB • Modified by Code:Racoon</div>
-                    <button class="drive-btn" onclick="downloadGoogleIso()">Download anyway</button>
-                    <p id="iso-download-status" style="margin-top: 20px; color: #1a73e8; font-weight: bold; display: none;">Downloading...</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- APP WINDOW: KERNEL SYSTEM -->
-        <div class="window" id="kernel-win" style="top: 200px; left: 250px; width: 850px; height: 500px; background: rgba(0,20,30,0.95); border-color: var(--neon-blue);">
-            <div class="window-header" style="background: rgba(0, 229, 255, 0.1); border-color: var(--neon-blue);">
-                <div class="window-title" style="color: var(--neon-blue);">🖧 KERNEL SYSTEM PANEL - LEVEL ARCHITECTURE</div>
-                <div class="window-controls">
-                    <button class="win-btn btn-min"></button>
-                    <button class="win-btn btn-max"></button>
-                    <button class="win-btn btn-close" onclick="SYS_WM.closeWindow('kernel-win')"></button>
-                </div>
-            </div>
-            <div class="window-content kernel-grid">
-                <div class="kernel-sidebar">
-                    <button class="kernel-btn" onclick="logKernel('Z1 APU Çekirdekleri Dengeleniyor...')">Z1 CORE BALANCE</button>
-                    <button class="kernel-btn" onclick="logKernel('Bellek Sızıntıları İzole Edildi.')">MEMORY ISOLATION</button>
-                    <button class="kernel-btn" onclick="logKernel('ACPI Güç Tabloları Güncelleniyor...')">ACPI OVERRIDE</button>
-                    <button class="kernel-btn" onclick="logKernel('Ninja Build Sistemi Tetiklendi.')">NINJA BUILD START</button>
-                    <button class="kernel-btn" style="border-color: red; color: red;" onclick="logKernel('DİKKAT: Termal Limitler Kaldırıldı!')">THERMAL BYPASS</button>
+            <div class="window-content" style="background:#050508;">
+                <div class="kiosk-grid-container">
                     
-                    <div class="kernel-stat-box">
-                        <span style="color: #aaa; font-size: 0.9rem;">Z1 EXTREME TEMP</span><br>
-                        <span id="k-temp">48°C</span>
+                    <div class="kiosk-sidebar">
+                        <div style="border: 1px solid rgba(255,102,0,0.4); padding:15px; background:rgba(0,0,0,0.5); border-radius:6px;">
+                            <div style="color:var(--primary-orange); font-weight:bold; margin-bottom:8px; font-size:0.95rem;">AKTİF ÇEKİRDEK SEVİYESİ</div>
+                            <div style="font-size:1.3rem; font-weight:900; color:var(--matrix-green);" id="desktop-current-level-tag">LEVEL 11 - KIOSK</div>
+                        </div>
+                        <button class="pos-action-button" style="margin:0; padding:12px;" onclick="openEmbeddedSKioskApp()">🔒 SKIOSK UYGULAMASINI AÇ</button>
+                        <div style="flex-grow:1;"></div>
+                        <div style="color:#555; font-size:0.8rem; text-align:center;">Code:Racoon Terminal Environment v20</div>
                     </div>
-                </div>
-                <div class="kernel-main">
-                    <div class="kernel-log-window" id="kernel-logs">
-                        [SYSTEM] Kernel System Monitoring Activated.<br>
-                        [SYSTEM] Connected to Legion Go Hardware Interface.<br>
+
+                    <div class="kiosk-main-viewport">
+                        
+                        <div id="skiosk-app-embedded">
+                            <div class="skiosk-restricted-overlay" id="skiosk-lockout-mask">
+                                <div style="font-size:4rem; margin-bottom:15px;">🚫</div>
+                                <div style="color:var(--error-red); font-size:1.8rem; font-weight:900; margin-bottom:10px;">ERİŞİM ENGELLENDİ / RESTRICTED ACCESS</div>
+                                <div style="color:#fff; font-size:1.1rem; max-width:500px; font-family:var(--font-ui);">SKiosk uygulamasına sadece mutlak <span style="color:var(--gold-cowboy); font-weight:bold;">Kiosk Seviyesi (Level 11)</span> kimlik doğrulamasına sahip operatörler erişebilir!</div>
+                            </div>
+
+                            <div class="skiosk-header-bar">
+                                <div class="skiosk-unified-logo">
+                                    <svg viewBox="0 0 100 100">
+                                        <path d="M50 5C25.1 5 5 25.1 5 50s20.1 45 45 45 45-20.1 45-45S74.9 5 50 5zm0 13.5c6.4 0 11.6 5.2 11.6 11.6S56.4 41.7 50 41.7s-11.6-5.2-11.6-11.6 5.2-11.6 11.6-11.6zm0 65.2c-19.1 0-35.3-12.2-41.2-29.2 4.1-6.2 11.2-10.3 19.2-10.3 3.6 0 7 1 10 2.7 3.5 2 7.6 3.1 12 3.1s8.5-1.1 12-3.1c3-1.7 6.4-2.7 10-2.7 8 0 15.1 4.1 19.2 10.3-5.9 17-22.1 29.2-41.2 29.2z"/>
+                                    </svg>
+                                    <span>SKIOSK CORE APP v20.0</span>
+                                </div>
+                                <button class="level-switch-btn" style="padding:5px 15px; border-color:var(--gold-cowboy); color:var(--gold-cowboy);" onclick="closeEmbeddedSKioskApp()">GERİ DÖN / ÇIK</button>
+                            </div>
+
+                            <div class="skiosk-dashboard-layout">
+                                <div class="skiosk-card-panel">
+                                    <div class="skiosk-panel-title">Slip & Makbuz Çıktı Simülatörü (Slip Generator)</div>
+                                    <div class="skiosk-slip-output-screen" id="skiosk-receipt-view">
+                                        [SİSTEM HAZIR] Herhangi bir işlem makbuzu henüz üretilmedi...
+                                    </div>
+                                    <button class="pos-action-button" style="width:100%; margin-top:10px; font-size:0.9rem; border-color:var(--gold-cowboy); color:var(--gold-cowboy);" onclick="clearSkioskReceiptSim()">EKRANI TEMİZLE</button>
+                                </div>
+
+                                <div style="display:flex; flex-direction:column; gap:15px;">
+                                    <div class="skiosk-card-panel" style="flex-grow:1;">
+                                        <div class="skiosk-panel-title">Donanım Enjeksiyon Matrisi (Hardware Injection Matrix)</div>
+                                        <div class="matrix-port-grid">
+                                            <div class="matrix-port-node" id="hwm-port-usb1" onclick="injectVirtualHardwareExploit('USB-PORT-1')">
+                                                <span class="matrix-port-label">USB_01</span>
+                                                <span class="matrix-port-status" id="hwm-status-usb1">BOŞ</span>
+                                            </div>
+                                            <div class="matrix-port-node" id="hwm-port-usb2" onclick="injectVirtualHardwareExploit('USB-PORT-2')">
+                                                <span class="matrix-port-label">USB_02</span>
+                                                <span class="matrix-port-status" id="hwm-status-usb2">BOŞ</span>
+                                            </div>
+                                            <div class="matrix-port-node" id="hwm-port-eth" onclick="injectVirtualHardwareExploit('ETH-LAN')">
+                                                <span class="matrix-port-label">LAN_ETH</span>
+                                                <span class="matrix-port-status" id="hwm-status-eth">BAĞLI</span>
+                                            </div>
+                                            <div class="matrix-port-node" id="hwm-port-com" onclick="injectVirtualHardwareExploit('COM-SERIAL')">
+                                                <span class="matrix-port-label">COM_PRN</span>
+                                                <span class="matrix-port-status" id="hwm-status-com">BAĞLI</span>
+                                            </div>
+                                        </div>
+                                        <div class="matrix-console-log" id="hwm-matrix-console"></div>
+                                    </div>
+
+                                    <div class="skiosk-card-panel" style="justify-content:center; align-items:center; background:rgba(255,0,60,0.05);">
+                                        <div class="skiosk-panel-title" style="color:var(--error-red); border-color:var(--error-red); width:100%; text-align:center;">KRİTİK ACİL DURUM MODÜLÜ</div>
+                                        <button class="skiosk-lockdown-trigger-btn" onclick="executeEmergencyLockdownCommand()">EMERGENCY LOCKDOWN</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pos-ultimate-wrapper" id="pos-central-container-box">
+                            <div class="pos-hardware-screen">
+                                
+                                <div class="pos-welcome-state" id="pos-ui-welcome">
+                                    <div style="font-size:1.6rem; color:var(--matrix-green); font-weight:bold; margin-bottom:15px;">ÖDENECEK TUTAR</div>
+                                    <div style="font-size:3.5rem; font-weight:900; color:#fff; margin-bottom:20px;" id="pos-charge-amount-text">1.250,00 TL</div>
+                                    <button class="pos-action-button" onclick="transitionToPaymentChoiceState()">ÖDEME YAPMAYA GEÇ</button>
+                                </div>
+
+                                <div class="pos-payment-choice-state" id="pos-ui-choice">
+                                    <div style="font-size:1.3rem; font-weight:bold; color:var(--primary-orange); margin-bottom:20px;">ÖDEME YÖNTEMİNİ SEÇİNİZ</div>
+                                    <button class="pos-action-button" onclick="executePaymentFlowDirect('TEMASSIZ')">[1] TEMASSIZ ÖDEME</button>
+                                    <button class="pos-action-button" onclick="triggerContactPaymentFlowCardAnimation()">[2] KARTI TAK (TEMASLI ÖDEME)</button>
+                                    <button class="pos-action-button" style="border-color:#555; color:#aaa; margin-top:15px;" onclick="resetPosDeviceFlowState()">İPTAL ET</button>
+                                </div>
+
+                                <div class="pos-pin-entry-state" id="pos-ui-pin-pad">
+                                    <div style="font-size:1.1rem; color:#fff; font-weight:bold; margin-bottom:10px;">LÜTFEN ŞİFRENİZİ GİRİNİZ</div>
+                                    <div class="pos-pin-display" id="pos-pin-asterisk-mask"></div>
+                                    <div class="pos-pin-grid">
+                                        <button class="pos-pin-btn" onclick="appendPosPinDigit('1')">1</button>
+                                        <button class="pos-pin-btn" onclick="appendPosPinDigit('2')">2</button>
+                                        <button class="pos-pin-btn" onclick="appendPosPinDigit('3')">3</button>
+                                        <button class="pos-pin-btn" onclick="appendPosPinDigit('4')">4</button>
+                                        <button class="pos-pin-btn" onclick="appendPosPinDigit('5')">5</button>
+                                        <button class="pos-pin-btn" onclick="appendPosPinDigit('6')">6</button>
+                                        <button class="pos-pin-btn" onclick="appendPosPinDigit('7')">7</button>
+                                        <button class="pos-pin-btn" onclick="appendPosPinDigit('8')">8</button>
+                                        <button class="pos-pin-btn" onclick="appendPosPinDigit('9')">9</button>
+                                        <button class="pos-pin-btn" style="color:var(--error-red);" onclick="clearPosPinField()">C</button>
+                                        <button class="pos-pin-btn" onclick="appendPosPinDigit('0')">0</button>
+                                        <button class="pos-pin-btn" style="color:var(--matrix-green);" onclick="submitPosPinVerification()">E</button>
+                                    </div>
+                                    <div id="pos-pin-error-tag" style="color:var(--error-red); font-weight:bold; margin-top:10px; display:none;">HATALI ŞİFRE! TEKRAR DENEYİN.</div>
+                                </div>
+
+                            </div>
+                            <div class="pos-card-slot-container">
+                                <div class="pos-physical-slot-line">
+                                    <div class="pos-virtual-card" id="pos-hardware-card-element"></div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- APP WINDOW: KIOSK HUB (POS EKLENDİ) -->
-        <div class="window kiosk-window" id="kiosk-win" style="top: 45px; left: 60px; width: calc(100% - 120px); height: calc(100% - 150px);">
-            <div class="window-header kiosk-header">
-                <div class="window-title">👑 KIOSK CONTROL HUB — LEVEL 11</div>
-                <div class="window-controls">
-                    <button class="win-btn btn-min"></button>
-                    <button class="win-btn btn-max"></button>
-                    <button class="win-btn btn-close" onclick="SYS_WM.closeWindow('kiosk-win')"></button>
-                </div>
-            </div>
-
-            <!-- POS CİHAZI ARAYÜZÜ (ÖNCE BU GÖRÜNÜR) -->
-            <div class="pos-terminal-ui" id="pos-terminal-content">
-                <div class="pos-device">
-                    <div class="pos-camera"></div>
-                    <div class="pos-screen">
-                        <h2>SAMSUNG KIOSK</h2>
-                        <p>Lütfen Ödeme Yöntemi Seçin veya Temassız Okutun</p>
-                        <div class="pos-amount">₺0.00</div>
-                    </div>
-                    <div class="pos-nfc-reader" onclick="triggerPosNfc()">
-                        <div class="nfc-icon">💳)))</div>
-                        <p>TEMASSIZ OKUTMA</p>
-                    </div>
-                    
-                    <div class="pos-status-overlay" id="pos-status-overlay">
-                        <div class="pos-success-check">✓</div>
-                        <h3>İşlem Onaylandı</h3>
-                        <p>Menüye Yönlendiriliyor...</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ORİJİNAL KIOSK HUB İÇERİĞİ -->
-            <div class="window-content kiosk-content">
-                <div class="kiosk-statusbar">
-                    <div class="kiosk-status-pill">
-                        <div class="kiosk-status-label">Z1 APU Kullanımı</div>
-                        <span class="kiosk-status-value" id="kiosk-stat-apu">--%</span>
-                        <div class="kiosk-status-track"><div class="kiosk-status-fill" id="kiosk-stat-apu-fill" style="background: var(--primary-orange);"></div></div>
-                    </div>
-                    <div class="kiosk-status-pill">
-                        <div class="kiosk-status-label">RAM</div>
-                        <span class="kiosk-status-value" id="kiosk-stat-ram">-- GB</span>
-                        <div class="kiosk-status-track"><div class="kiosk-status-fill" id="kiosk-stat-ram-fill" style="background: var(--neon-blue);"></div></div>
-                    </div>
-                    <div class="kiosk-status-pill integrity" id="kiosk-stat-integrity-pill">
-                        <div class="kiosk-status-label">Kernel Bütünlüğü</div>
-                        <span class="kiosk-status-value" id="kiosk-stat-integrity">--%</span>
-                        <div class="kiosk-status-track"><div class="kiosk-status-fill" id="kiosk-stat-integrity-fill" style="background: var(--matrix-green);"></div></div>
-                    </div>
-                </div>
-
-                <div class="kiosk-hub-grid">
-                    <div class="kiosk-tile" onclick="SYS_WM.openWindow('term-win')">
-                        <div class="kiosk-tile-icon">&gt;_</div>
-                        <div class="kiosk-tile-label">Terminal</div>
-                    </div>
-                    <div class="kiosk-tile" onclick="SYS_WM.openWindow('cpanel-win')">
-                        <div class="kiosk-tile-icon">⚙️</div>
-                        <div class="kiosk-tile-label">Control Panel</div>
-                    </div>
-                    <div class="kiosk-tile" onclick="SYS_WM.openWindow('iso-win')">
-                        <div class="kiosk-tile-icon">💿</div>
-                        <div class="kiosk-tile-label">Cordex ISO</div>
-                    </div>
-                    <div class="kiosk-tile" onclick="SYS_WM.openWindow('kernel-win')">
-                        <div class="kiosk-tile-icon">🖧</div>
-                        <div class="kiosk-tile-label">Kernel System</div>
-                    </div>
-                    <div class="kiosk-tile" onclick="openLevelSwitcher()">
-                        <div class="kiosk-tile-icon">⇄</div>
-                        <div class="kiosk-tile-label">Level Değiştir</div>
-                    </div>
-                    <div class="kiosk-tile" onclick="triggerPartyMode()">
-                        <div class="kiosk-tile-icon">🎉</div>
-                        <div class="kiosk-tile-label">Parti Modu</div>
-                    </div>
-                    <div class="kiosk-tile" onclick="triggerInvasionMode()">
-                        <div class="kiosk-tile-icon">👽</div>
-                        <div class="kiosk-tile-label">İstila Modu</div>
-                    </div>
-                    <div class="kiosk-tile" onclick="kioskQuickDeepClean(this)">
-                        <div class="kiosk-tile-icon">🧹</div>
-                        <div class="kiosk-tile-label" id="kiosk-deepclean-label">Deep Clean</div>
-                    </div>
-                    <div class="kiosk-tile" onclick="kioskShowAccessLog()">
-                        <div class="kiosk-tile-icon">📜</div>
-                        <div class="kiosk-tile-label">Access Log</div>
-                    </div>
-                    <div class="kiosk-tile">
-                        <div class="kiosk-tile-icon">☢️</div>
-                        <div class="kiosk-tile-label">Chaos Monitor</div>
-                        <div class="kiosk-tile-sub" id="kiosk-chaos-countdown">--:--</div>
-                    </div>
-                    <div class="kiosk-tile" onclick="shutdownSystem()">
-                        <div class="kiosk-tile-icon">⏻</div>
-                        <div class="kiosk-tile-label">Sistemi Kapat</div>
-                    </div>
-                    <div class="kiosk-tile locked" onclick="kioskLockedTileClick(this)">
-                        <div class="kiosk-tile-icon">🧠</div>
-                        <div class="kiosk-tile-label">AI Core</div>
-                    </div>
-                    <div class="kiosk-tile locked" onclick="kioskLockedTileClick(this)">
-                        <div class="kiosk-tile-icon">🌐</div>
-                        <div class="kiosk-tile-label">Network Matrix</div>
-                    </div>
-                    <div class="kiosk-tile locked" onclick="kioskLockedTileClick(this)">
-                        <div class="kiosk-tile-icon">🔑</div>
-                        <div class="kiosk-tile-label">Crypto Vault</div>
-                    </div>
-                    <div class="kiosk-tile locked" onclick="kioskLockedTileClick(this)">
-                        <div class="kiosk-tile-icon">🧪</div>
-                        <div class="kiosk-tile-label">Sandbox Env</div>
-                    </div>
-                    <div class="kiosk-tile locked" onclick="kioskLockedTileClick(this)">
-                        <div class="kiosk-tile-icon">🛰️</div>
-                        <div class="kiosk-tile-label">Firmware Lab</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- TASKBAR -->
         <div id="taskbar">
-            <button class="start-btn">CODE:RACOON</button>
-            <div class="taskbar-items" id="taskbar-items-container"></div>
-            
-            <div class="taskbar-tray">
-                <span id="tray-level-indicator">LVL: --</span>
-                <span>Z1-APU</span>
-                <span class="tray-clock" id="tray-time">00:00</span>
-                <button class="switch-btn" onclick="openLevelSwitcher()">⇄ LEVEL DEĞİŞTİR</button>
-                <button class="power-btn" onclick="shutdownSystem()">SİSTEMİ KAPAT</button>
+            <button class="start-btn" onclick="toggleLevelSwitchModal(true)">BAŞLAT</button>
+            <div class="taskbar-items">
+                <div class="taskbar-item active" id="tb-kiosk-hub-tab" onclick="toggleApplicationWindowFocus('kiosk-hub-app-window')">🏪 Kiosk Hub Operational Management</div>
             </div>
+            <div class="taskbar-tray">
+                <span id="tb-current-role-indicator" style="color:var(--matrix-green); font-weight:bold;">[KIOSK ROLE]</span>
+                <span id="system-clock-string">12:00:00</span>
+            </div>
+            <button class="switch-btn" onclick="toggleLevelSwitchModal(true)">SEVİYE DEĞİŞTİR</button>
+            <button class="power-btn" onclick="triggerWindowsShutdownSequence()">KAPAT</button>
         </div>
     </div>
 
     <script>
         // ==========================================================================
-        // DEVASA KERNEL DONANIM VERİTABANI
+        // FIREBASE BACKWARD COMPATIBILITY ARCHITECTURE WRAPPERS (STUBS & HOOKS)
         // ==========================================================================
-        const KERNEL_MOCK_DATABASE = [
-            { id: "SYS_CORE_00", type: "CPU", module: "Z1_EXT_0", addr: "0x00A1", status: "OK", temp: "45C" },
-            { id: "SYS_CORE_01", type: "CPU", module: "Z1_EXT_1", addr: "0x00A2", status: "OK", temp: "46C" },
-            { id: "SYS_CORE_02", type: "CPU", module: "Z1_EXT_2", addr: "0x00A3", status: "OK", temp: "44C" },
-            { id: "SYS_CORE_03", type: "CPU", module: "Z1_EXT_3", addr: "0x00A4", status: "OK", temp: "47C" }
-        ];
+        const mockFirebaseConfig = { apiKey: "AIzaSyFakeKey_RacoonOS_v20", authDomain: "coderacoon-os.firebaseapp.com", projectId: "coderacoon-os" };
+        try {
+            if (typeof firebase !== 'undefined') {
+                firebase.initializeApp(mockFirebaseConfig);
+            }
+        } catch(e) { console.warn("Firebase stub initialized:", e); }
 
-        // --- 1. CONFIG & GLOBALS ---
-        const LEVEL_ACCESS_CODES = {
-            "10001": { name: "Level 1 - Konuk",        level: 1  },
-            "20268": { name: "Level 2 - Standart",     level: 2  },
-            "30003": { name: "Level 3 - Geliştirici",  level: 3  },
-            "40004": { name: "Level 4 - Yönetici",     level: 4  },
-            "50005": { name: "Level 5 - Mimari",       level: 5  },
-            "60006": { name: "Level 6 - Ghost",        level: 6  },
-            "70007": { name: "Level 7 - Nebula",       level: 7  },
-            "80008": { name: "Level 8 - Nambow Master", level: 8 },
-            "10010": { name: "Level 10 - Cowboy+",     level: 10 }
-        };
-        const PIN_MENU = "13132";   
-        
-        let SYSTEM_ACTIVE_LEVEL = 2; 
-        let SYSTEM_ACTIVE_LEVEL_NAME = "Standart";
+        // CORE GLOBAL RECON ENVIRONMENT VARIABLES
+        let activeAccessLevel = 11; // Starting primary level execution context
+        let activeAccessRoleString = "Level 11 - Kiosk";
+        let capturedPosPinBuffer = "";
+        const SYSTEM_MASTER_GATE_PIN = "5678"; // Core login screen pin validator
+        const POS_REQUIRED_PAYMENT_PIN = "9034"; // Requested contact card authorization pin
 
-        // --- 2. LOGIN LOGIC ---
-        function moveToNext(current, nextId) {
-            if (current.value.length >= current.maxLength && nextId) {
-                document.getElementById(nextId).focus();
+        // Dragging application windows matrix variables
+        let trackedActiveDraggedWindowId = null;
+        let windowDragOffsetX = 0; let windowDragOffsetY = 0;
+
+        // --------------------------------------------------------------------------
+        // ACCESS CONTROL LOGIN PIN HOOKS
+        // --------------------------------------------------------------------------
+        function movePinFocus(currentElement, nextInputId) {
+            if (currentElement.value.length >= 1 && nextInputId) {
+                document.getElementById(nextInputId).focus();
             }
         }
 
-        function checkFullPin() {
-            let pin = "";
-            for(let i=1; i<=5; i++) pin += document.getElementById("pin"+i).value;
+        function evaluateSystemPin(element) {
+            if (element.value.length < 1) return;
             
-            if (pin.length === 5) {
-                if (LEVEL_ACCESS_CODES[pin]) {
-                    const target = LEVEL_ACCESS_CODES[pin];
-                    SYSTEM_ACTIVE_LEVEL = target.level;
-                    SYSTEM_ACTIVE_LEVEL_NAME = target.name;
-                    document.getElementById('login-screen').style.display = 'none';
-                    SYS_CORE.launchDesktop(target.name, target.level);
-                } else if (pin === PIN_MENU) {
-                    document.getElementById('login-screen').style.display = 'none';
-                    document.getElementById('boot-menu-screen').style.display = 'flex';
-                } else {
-                    document.getElementById('pin-error').style.display = 'block';
-                    for(let i=1; i<=5; i++) document.getElementById("pin"+i).value = "";
-                    document.getElementById("pin1").focus();
-                    setTimeout(() => document.getElementById('pin-error').style.display = 'none', 2000);
-                }
-            }
-        }
+            const p1 = document.getElementById('pin1').value;
+            const p2 = document.getElementById('pin2').value;
+            const p3 = document.getElementById('pin3').value;
+            const p4 = document.getElementById('pin4').value;
+            const integratedPinString = p1 + p2 + p3 + p4;
 
-        // --- 3. BOOT MANAGER ---
-        const BOOT_LOG_MESSAGES = [
-            "Initializing Code:Racoon Kernel v19.0-Z1-Extreme...",
-            "Loading Arch Linux compatibility drivers...",
-            "Initializing memory management subsystems...",
-            "Starting Code:Racoon Desktop Environment...",
-            "All core subsystems nominal. Ready for handoff."
-        ];
-
-        function triggerBootSequence(levelName, levelNumber) {
-            SYSTEM_ACTIVE_LEVEL_NAME = levelName;
-            SYSTEM_ACTIVE_LEVEL = levelNumber;
-
-            document.getElementById('boot-menu-screen').style.display = 'none';
-            const bootScreen = document.getElementById('cowboy-boot-screen');
-            const logArea = document.getElementById('boot-log-area');
-            const percentText = document.getElementById('boot-percent-text');
-            const progressBar = document.getElementById('boot-progress-fill');
-            const transitionScreen = document.getElementById('transition-screen');
-            const transitionText = document.getElementById('transition-msg-text');
-
-            bootScreen.style.display = 'block';
-            logArea.innerHTML = '';
-            percentText.innerText = 'BOOT SEQUENCE: 0%';
-            progressBar.style.width = '0%';
-
-            let currentStep = 0;
-
-            function processLog() {
-                if (currentStep < BOOT_LOG_MESSAGES.length) {
-                    const line = document.createElement('div');
-                    line.className = 'boot-log-line';
-                    const now = new Date();
-                    const ts = `[${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}]`;
-                    line.innerHTML = `<span class="boot-log-timestamp">${ts}</span><span class="boot-log-message">${BOOT_LOG_MESSAGES[currentStep]}</span>`;
-                    
-                    logArea.appendChild(line);
-                    logArea.scrollTop = logArea.scrollHeight;
-
-                    let percent = Math.floor(((currentStep + 1) / BOOT_LOG_MESSAGES.length) * 100);
-                    percentText.innerText = `BOOT SEQUENCE: ${percent}%`;
-                    progressBar.style.width = `${percent}%`;
-
-                    currentStep++;
-                    setTimeout(processLog, 150);
-                } else {
-                    setTimeout(() => {
-                        bootScreen.style.display = 'none';
-                        transitionScreen.style.display = 'flex';
-                        transitionText.innerText = `[ ${levelName.toUpperCase()} ] SEVİYESİNE GEÇİLİYOR`;
-
-                        setTimeout(() => {
-                            transitionScreen.style.display = 'none';
-                            SYS_CORE.launchDesktop(levelName, levelNumber);
-                        }, 2000);
-                    }, 1000);
-                }
-            }
-            setTimeout(processLog, 500);
-        }
-
-        // --- 4. OS DESKTOP CORE & WINDOW MANAGER ---
-        class WindowManager {
-            constructor() {
-                this.zIndexCounter = 100;
-                this.taskbarContainer = document.getElementById('taskbar-items-container');
-                this.setupDraggable();
-            }
-
-            openWindow(id) {
-                if (id === 'cpanel-win' && SYSTEM_ACTIVE_LEVEL < 8) return;
-                if (id === 'kiosk-win' && SYSTEM_ACTIVE_LEVEL < 11) return;
-                
-                const win = document.getElementById(id);
-                if (win) {
-                    win.style.display = 'flex';
-                    win.classList.remove('scale-in-pop');
-                    void win.offsetWidth; 
-                    win.classList.add('scale-in-pop');
-                    this.bringToFront(win);
-                    this.updateTaskbar(id, true);
-                    
-                    if(id === 'term-win') document.getElementById('term-input-field').focus();
-                    
-                    // KIOSK AÇILDIĞINDA POS EKRANINI AKTİF ET
-                    if(id === 'kiosk-win') {
-                        document.getElementById('pos-terminal-content').style.display = 'flex';
-                    }
-                }
-            }
-
-            closeWindow(id) {
-                const win = document.getElementById(id);
-                if (win) {
-                    win.style.display = 'none';
-                    this.updateTaskbar(id, false);
-                }
-            }
-
-            bringToFront(element) {
-                this.zIndexCounter++;
-                element.style.zIndex = this.zIndexCounter;
-            }
-
-            updateTaskbar(id, isOpen) {
-                let tbItem = document.getElementById('tb-' + id);
-                if (isOpen) {
-                    if (!tbItem) {
-                        tbItem = document.createElement('div');
-                        tbItem.className = 'taskbar-item active';
-                        tbItem.id = 'tb-' + id;
-                        tbItem.innerText = id.replace('-win', '').toUpperCase();
-                        tbItem.onclick = () => this.bringToFront(document.getElementById(id));
-                        this.taskbarContainer.appendChild(tbItem);
-                    }
-                } else {
-                    if (tbItem) tbItem.remove();
-                }
-            }
-
-            setupDraggable() {
-                const headers = document.querySelectorAll('.window-header');
-                headers.forEach(header => {
-                    let isDown = false; let offset = [0, 0]; let currentWindow;
-                    header.addEventListener('mousedown', (e) => {
-                        isDown = true; currentWindow = header.parentElement;
-                        this.bringToFront(currentWindow);
-                        offset = [currentWindow.offsetLeft - e.clientX, currentWindow.offsetTop - e.clientY];
-                    }, true);
-                    document.addEventListener('mouseup', () => { isDown = false; }, true);
-                    document.addEventListener('mousemove', (e) => {
-                        e.preventDefault();
-                        if (isDown && currentWindow) {
-                            currentWindow.style.left = (e.clientX + offset[0]) + 'px';
-                            currentWindow.style.top  = (e.clientY + offset[1]) + 'px';
-                        }
-                    }, true);
-                });
-            }
-        }
-
-        class TerminalApp {
-            constructor() {
-                this.historyElement = document.getElementById('term-history');
-                this.inputField = document.getElementById('term-input-field');
-                this.inputField.addEventListener('keydown', (e) => this.handleInput(e));
-                this.currentDir = '/';
-            }
-
-            print(text) {
-                const line = document.createElement('div');
-                line.innerText = text;
-                this.historyElement.appendChild(line);
-                this.historyElement.scrollTop = this.historyElement.scrollHeight;
-            }
-
-            handleInput(e) {
-                if (e.key === 'Enter') {
-                    const cmd = this.inputField.value.trim();
-                    this.print(`root@coderacoon:${this.currentDir}# ${cmd}`);
-                    this.processCommand(cmd);
-                    this.inputField.value = '';
-                }
-            }
-
-            processCommand(cmd) {
-                const args = cmd.toLowerCase().split(' ');
-                if(args[0] === 'clear') this.historyElement.innerHTML = '';
-                else if(args[0] === 'root') this.print(`Current Privilege Level: ${SYSTEM_ACTIVE_LEVEL}`);
-                else if(args[0] !== '') this.print(`bash: ${args[0]}: command not found`);
-            }
-        }
-
-        class SystemCore {
-            constructor() {
-                this.wm = null;
-                this.term = null;
-                this.startClock();
-            }
-
-            launchDesktop(levelName, levelNumber) {
-                document.getElementById('os-desktop').style.display = 'block';
-                document.getElementById('tray-level-indicator').innerText = `LVL: ${levelNumber}`;
-                
-                if (!this.wm) { this.wm = new WindowManager(); window.SYS_WM = this.wm; }
-                if (!this.term) { this.term = new TerminalApp(); }
-
-                document.getElementById('icon-iso').style.display = (levelNumber <= 8 || levelNumber >= 11) ? 'flex' : 'none';
-                document.getElementById('icon-kernel').style.display = (levelNumber === 4 || levelNumber === 5 || levelNumber >= 11) ? 'flex' : 'none';
-
-                const cpanelUnlocked = levelNumber >= 8;
-                document.getElementById('icon-cpanel').style.display = cpanelUnlocked ? 'flex' : 'none';
-                if (!cpanelUnlocked) this.wm.closeWindow('cpanel-win');
-
-                const kioskUnlocked = levelNumber >= 11;
-                document.getElementById('icon-kiosk').style.display = kioskUnlocked ? 'flex' : 'none';
-                if (!kioskUnlocked) this.wm.closeWindow('kiosk-win');
-
-                if(localStorage.getItem('racoon_lockdown') === 'true') {
-                    document.getElementById('lockdown-screen').style.display = 'flex';
-                } else {
-                    this.wm.openWindow('term-win');
-                    this.term.print(`[SYSTEM LOG] Authenticated and booted into: ${levelName}`);
-                    if (kioskUnlocked) {
-                        this.wm.openWindow('kiosk-win'); 
-                    }
-                }
-            }
-
-            startClock() {
-                setInterval(() => {
-                    const d = new Date();
-                    document.getElementById('tray-time').innerText = d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
-                }, 1000);
-            }
-        }
-
-        const SYS_CORE = new SystemCore();
-
-        // --- 5. APP LOGIC & POS LOGIC ---
-        function downloadGoogleIso() {
-            const btn = document.querySelector('.drive-btn');
-            const status = document.getElementById('iso-download-status');
-            btn.style.display = 'none'; status.style.display = 'block';
-            setTimeout(() => { status.innerText = "Download Complete."; }, 1500);
-        }
-
-        function triggerPartyMode() {
-            const overlay = document.getElementById('party-overlay');
-            overlay.style.display = 'flex';
-            setTimeout(() => { overlay.style.display = 'none'; }, 6000);
-        }
-
-        function triggerInvasionMode() {
-            const overlay = document.getElementById('invasion-overlay');
-            overlay.style.display = 'flex';
-            setTimeout(() => { overlay.style.display = 'none'; }, 5000);
-        }
-
-        function logKernel(msg) {
-            const logs = document.getElementById('kernel-logs');
-            const ts = new Date().toISOString().split('T')[1].slice(0,-1);
-            logs.innerHTML += `<br>[${ts}] ${msg}`;
-            logs.scrollTop = logs.scrollHeight;
-        }
-
-        // --- POS CİHAZI NFC OKUTMA MANTIĞI ---
-        function triggerPosNfc() {
-            const overlay = document.getElementById('pos-status-overlay');
-            overlay.style.display = 'flex';
-            
-            setTimeout(() => {
-                // POS Ekranını Kapat, Altındaki Menü Zaten Görünür Olacak
-                document.getElementById('pos-terminal-content').style.display = 'none';
-                
-                // Bir sonraki giriş için overlay'i gizle
-                setTimeout(() => {
-                    overlay.style.display = 'none';
-                }, 500);
-            }, 1500);
-        }
-
-        // --- LEVEL DEĞİŞTİRME ---
-        function openLevelSwitcher() { document.getElementById('level-switch-overlay').classList.add('active'); }
-        function closeLevelSwitcher() { 
-            document.getElementById('level-switch-overlay').classList.remove('active');
-            document.getElementById('level-switch-box').classList.remove('auth-mode');
-        }
-
-        const LEVEL_SWITCH_PASSWORD = "20268";
-        let pendingLevelSwitch = null;
-
-        function requestLevelSwitch(levelName, levelNumber) {
-            pendingLevelSwitch = { name: levelName, number: levelNumber };
-            document.getElementById('lsa-target-name').innerText = levelName.toUpperCase();
-            document.getElementById('lsa-password').value = '';
-            document.getElementById('lsa-error').style.display = 'none';
-            document.getElementById('level-switch-box').classList.add('auth-mode');
-            setTimeout(() => document.getElementById('lsa-password').focus(), 50);
-        }
-
-        function confirmLevelSwitch() {
-            const entered = document.getElementById('lsa-password').value;
-            if (pendingLevelSwitch && entered === LEVEL_SWITCH_PASSWORD) {
-                const target = pendingLevelSwitch;
-                pendingLevelSwitch = null;
-                document.getElementById('level-switch-box').classList.remove('auth-mode');
-                switchLevelInstant(target.name, target.number);
+            if (integratedPinString === SYSTEM_MASTER_GATE_PIN) {
+                document.getElementById('pin-error').style.display = 'none';
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('boot-menu-screen').style.display = 'flex';
             } else {
-                document.getElementById('lsa-error').style.display = 'block';
-                document.getElementById('lsa-password').value = '';
-                document.getElementById('lsa-password').focus();
+                document.getElementById('pin-error').style.display = 'block';
+                // Reset fields
+                document.getElementById('pin1').value = ""; document.getElementById('pin2').value = "";
+                document.getElementById('pin3').value = ""; document.getElementById('pin4').value = "";
+                document.getElementById('pin1').focus();
             }
         }
 
-        function cancelLevelSwitch() {
-            pendingLevelSwitch = null;
-            document.getElementById('level-switch-box').classList.remove('auth-mode');
+        // --------------------------------------------------------------------------
+        // COMPLEX KERNEL BOOT LOADER SEQUENCER
+        // --------------------------------------------------------------------------
+        function initializeKernelBoot(label, targetLvl) {
+            activeAccessLevel = targetLvl;
+            activeAccessRoleString = label;
+            
+            document.getElementById('boot-menu-screen').style.display = 'none';
+            document.getElementById('cowboy-boot-screen').style.display = 'block';
+            
+            const logConsoleArea = document.getElementById('boot-log-area');
+            logConsoleArea.innerHTML = "";
+            
+            // Build the absolute non-simplified automated stage pipelines
+            executeComplexBootStage1(logConsoleArea);
         }
 
-        function switchLevelInstant(levelName, levelNumber) {
-            SYSTEM_ACTIVE_LEVEL = levelNumber;
-            SYSTEM_ACTIVE_LEVEL_NAME = levelName;
-            closeLevelSwitcher();
-            SYS_CORE.launchDesktop(levelName, levelNumber); 
+        // STAGE 1: HARDWARE INTERFACE SCANNING & SCANNING LOG OUTPUTS (IMITATING IMAGE LAYOUTS)
+        function executeComplexBootStage1(consoleDOM) {
+            const stage1HardwareLogs = [
+                { type: 'info', msg: 'COWBOY BOOTING SYSTEM SCAN MATRIX INITIALIZED...' },
+                { type: 'hw', msg: '[ OK ] Checking Thermal Printer Hub Interface Connection... Operational.' },
+                { type: 'hw', msg: '[ OK ] Card Reader Device Interface Matrix: Ready and Mounted on Bus.' },
+                { type: 'hw', msg: '[ OK ] Intel/Windows Subsystem Hooked Successfully via Native Layer.' },
+                { type: 'hw', msg: '[ OK ] Core Display Kiosk Native Touch Resolution Grid Synced: 1920x1080.' },
+                { type: 'hw', msg: '[ OK ] Encrypted PIN Pad Terminal Hardware Node Verified.' },
+                { type: 'info', msg: 'STAGE 1 HARDWARE TESTING STACK COMPLETE. COMMENCING CORE SYSTEM INITIALIZATION...' }
+            ];
+
+            let index = 0;
+            function printNextHwLog() {
+                if (index < stage1HardwareLogs.length) {
+                    const currentLogItem = stage1HardwareLogs[index];
+                    const logRowElement = document.createElement('div');
+                    logRowElement.className = 'boot-log-line';
+                    
+                    let timestampString = `[${(new Date()).toISOString().split('T')[1].slice(0, 8)}]`;
+                    let completeLineString = `<span style="color:var(--boot-muted); margin-right:12px;">${timestampString}</span> `;
+                    
+                    if (currentLogItem.type === 'hw') {
+                        completeLineString += `<span class="boot-log-message success-hook">${currentLogItem.msg}</span>`;
+                    } else {
+                        completeLineString += `<span class="boot-log-message" style="color:var(--boot-text);">${currentLogItem.msg}</span>`;
+                    }
+                    
+                    logRowElement.innerHTML = completeLineString;
+                    consoleDOM.appendChild(logRowElement);
+                    index++;
+                    
+                    // Progress updating representation
+                    let calculatedProgress = Math.floor((index / stage1HardwareLogs.length) * 40);
+                    document.getElementById('boot-progress-fill-bar').style.width = `${calculatedProgress}%`;
+                    document.getElementById('boot-percent-indicator').innerText = `YÜKLEME AŞAMASI: ${calculatedProgress}%`;
+                    
+                    setTimeout(printNextHwLog, 220);
+                } else {
+                    // Smoothly transition immediately into fast-scrolling stage 2 services initiation
+                    executeComplexBootStage2(consoleDOM);
+                }
+            }
+            printNextHwLog();
         }
 
-        function shutdownSystem() {
-            const overlay = document.getElementById('win-shutdown-overlay');
-            const text = document.getElementById('win-shutdown-text');
-            text.innerText = 'Oturumunuz kapatılıyor'; text.style.opacity = '0.95';
-            overlay.classList.add('active');
+        // STAGE 2: RAPID DAEMON INITIALIZATION MATRIX (LINUX TERMINAL HIGH-SPEED LOG LINES FLOW)
+        function executeComplexBootStage2(consoleDOM) {
+            // High intensity logs arrays to ensure non-simplified presentation profile
+            const stage2DaemonLogs = [
+                "Loading target module: code_racoon_core_daemon...", "Starting service subsystem: cowboy_boot_manager_daemon",
+                "Hooking network controller interfaces...", "Configuring local loopback loops...", "Mounting secure virtual partitions...",
+                "Mounting sysfs file systems...", "Allocating Z1 system heap registries...", "Optimizing graphics acceleration units...",
+                "Initializing Kiosk Level Security protocols...", "Executing sandbox encapsulation policies...", "Verifying internal cryptography tokens...",
+                "Starting background service logging systems...", "Enabling dynamic memory optimization stacks...", "Loading input event handlers...",
+                "Checking background integrity checks...", "Mounting /dev/mapper/secure_kiosk...", "Synchronizing local hardware runtime clocks...",
+                "System level variables injected.", "Establishing DBus internal signaling channels...", "Launching UI compositing system daemons..."
+            ];
+
+            let serviceIndex = 0;
+            function printNextDaemonLog() {
+                if (serviceIndex < stage2DaemonLogs.length) {
+                    const logRowElement = document.createElement('div');
+                    logRowElement.className = 'boot-log-line';
+                    
+                    let timestampString = `[${(new Date()).toISOString().split('T')[1].slice(0, 8)}]`;
+                    let completeLineString = `<span style="color:var(--boot-muted); margin-right:12px;">${timestampString}</span> `;
+                    completeLineString += `<span class="boot-log-message kernel-code">>> ${stage2DaemonLogs[serviceIndex]} [DONE]</span>`;
+                    
+                    logRowElement.innerHTML = completeLineString;
+                    consoleDOM.appendChild(logRowElement);
+                    serviceIndex++;
+                    
+                    let calculatedProgress = 40 + Math.floor((serviceIndex / stage2DaemonLogs.length) * 60);
+                    document.getElementById('boot-progress-fill-bar').style.width = `${calculatedProgress}%`;
+                    document.getElementById('boot-percent-indicator').innerText = `YÜKLEME AŞAMASI: ${calculatedProgress}%`;
+                    
+                    setTimeout(printNextDaemonLog, 60);
+                } else {
+                    // Core boot finishes cleanly. Launch the modern blurred Windows-style login screen sequence.
+                    triggerWindowsStyleLoginAnimation();
+                }
+            }
+            printNextDaemonLog();
+        }
+
+        // --------------------------------------------------------------------------
+        // MODERN WINDOWS-STYLE LOGIN ANIMATION TIMINGS & EXECUTION
+        // --------------------------------------------------------------------------
+        function triggerWindowsStyleLoginAnimation() {
+            // Transition from white background boot panel into the beautiful lockscreen simulator
+            document.getElementById('cowboy-boot-screen').style.display = 'none';
+            
+            const targetUsernameField = document.getElementById('win-login-target-user');
+            targetUsernameField.innerText = activeAccessRoleString.toUpperCase() + " OPERATOR";
+            
+            const winLoginOverlayScreen = document.getElementById('win-login-anim-screen');
+            winLoginOverlayScreen.style.display = 'flex';
+            
+            // Hold and spin for a realistic windows verification timing
             setTimeout(() => {
-                text.style.opacity = '0';
-                setTimeout(() => { text.innerText = 'Code:Racoon OS kapatılıyor'; text.style.opacity = '0.95'; }, 400);
-            }, 1800);
-            setTimeout(() => {
-                overlay.classList.remove('active');
-                document.body.classList.add('crt-shutdown-active');
-            }, 3600);
-            setTimeout(() => { window.location.reload(); }, 4900);
+                // Execute fluid slide-up upward sliding animation transition
+                winLoginOverlayScreen.classList.add('slide-up-step');
+                
+                // Expose core workspace desktop environments
+                document.getElementById('os-desktop').style.display = 'block';
+                openApplicationWindow('kiosk-hub-app-window');
+                updateDesktopEnvironmentStateTags();
+                
+                // Cleanup screen node state after slide-up concludes
+                setTimeout(() => {
+                    winLoginOverlayScreen.style.display = 'none';
+                    winLoginOverlayScreen.classList.remove('slide-up-step');
+                }, 900);
+
+            }, 3000);
         }
 
-        function triggerSonEmir() {
-            localStorage.setItem("racoon_lockdown", "true");
-            window.location.reload();
+        function updateDesktopEnvironmentStateTags() {
+            document.getElementById('desktop-current-level-tag').innerText = activeAccessRoleString.toUpperCase();
+            document.getElementById('tb-current-role-indicator').innerText = `[${activeAccessRoleString.toUpperCase()}]`;
+            
+            // Sync internal SKiosk App access rules validation instantly
+            const lockoutMaskNode = document.getElementById('skiosk-lockout-mask');
+            if (activeAccessLevel === 11) {
+                lockoutMaskNode.style.display = 'none'; // Authorized access
+            } else {
+                lockoutMaskNode.style.display = 'flex'; // Block unauthorized roles
+            }
         }
 
-        function openRepairScreen() {
-            document.getElementById('lockdown-screen').style.display = 'none';
-            document.getElementById('repair-screen').style.display = 'flex';
+        // --------------------------------------------------------------------------
+        // UNIFIED EMBEDDED APPS NAVIGATION & LAYER MANAGEMENT
+        // --------------------------------------------------------------------------
+        function openEmbeddedSKioskApp() {
+            document.getElementById('pos-central-container-box').style.display = 'none';
+            document.getElementById('skiosk-app-embedded').style.display = 'flex';
+            writeMatrixConsoleLine("SKiosk dahili güvenlik modülleri yüklendi. Erişim kontrolleri aktif.");
         }
 
-        function startRepairSequence() {
-            const pass = document.getElementById('repair-password').value;
-            if (pass !== "RECOVER") {
-                alert("NINJA ERROR: YETKİSİZ ERİŞİM TESPİT EDİLDİ! KERNEL PANIC.");
-                window.location.reload();
+        function closeEmbeddedSKioskApp() {
+            document.getElementById('skiosk-app-embedded').style.display = 'none';
+            document.getElementById('pos-central-container-box').style.display = 'flex';
+        }
+
+        function clearSkioskReceiptSim() {
+            document.getElementById('skiosk-receipt-view').innerHTML = "[EKRAN TEMİZLENDİ] Beklemede...";
+        }
+
+        // Feature 6: Hardware Matrix Exploit Injection Controllers
+        function injectVirtualHardwareExploit(portIdentifier) {
+            if (activeAccessLevel !== 11) {
+                writeMatrixConsoleLine(`Kritik Engelleme: Yetkisiz Port Manipülasyonu [${portIdentifier}] reddedildi.`);
                 return;
             }
-            document.getElementById('repair-auth-layer').style.display = 'none';
-            document.getElementById('repair-process').style.display = 'flex';
-            document.getElementById('repair-logs').innerHTML += `<div>> NINJA PROTOKOLÜ BYPASS EDİLDİ.</div><div>> 1. AŞAMA ONARIM BAŞLATILIYOR...</div>`;
+            
+            writeMatrixConsoleLine(`Port Seçildi: ${portIdentifier} üzerinde enjeksiyon taranıyor...`);
+            
+            if (portIdentifier === 'USB-PORT-1' || portIdentifier === 'USB-PORT-2') {
+                const targetNodeId = portIdentifier === 'USB-PORT-1' ? 'usb1' : 'usb2';
+                const nodeDOM = document.getElementById(`hwm-port-${targetNodeId}`);
+                const statusDOM = document.getElementById(`hwm-status-${targetNodeId}`);
+                
+                if (!nodeDOM.classList.contains('connected')) {
+                    nodeDOM.classList.add('connected');
+                    statusDOM.innerText = "EXPLOIT INJECTED";
+                    writeMatrixConsoleLine(`[ BAŞARILI ] Sanal Exploit USB'si ${portIdentifier} yuvasına enjekte edildi. Payload çalışıyor.`);
+                } else {
+                    nodeDOM.classList.remove('connected');
+                    statusDOM.innerText = "BOŞ";
+                    writeMatrixConsoleLine(`Sanal Exploit USB'si ${portIdentifier} yuvasından çıkartıldı.`);
+                }
+            } else {
+                writeMatrixConsoleLine(`Sistem Bildirimi: ${portIdentifier} hattı korumalı modda. Manipülasyon simülasyonu başlatıldı.`);
+            }
         }
+
+        function writeMatrixConsoleLine(textMessage) {
+            const consoleDOM = document.getElementById('hwm-matrix-console');
+            const logLine = document.createElement('div');
+            logLine.innerText = `[+] ${textMessage}`;
+            consoleDOM.appendChild(logLine);
+            consoleDOM.scrollTop = consoleDOM.scrollHeight;
+        }
+
+        // Feature 5: Emergency Critical Lockdown Red Alert State
+        function executeEmergencyLockdownCommand() {
+            writeMatrixConsoleLine("KRİTİK EMİR ALINDI: EMERGENCY LOCKDOWN BAŞLATILIYOR!");
+            setTimeout(() => {
+                document.getElementById('lockdown-screen').classList.add('active');
+            }, 500);
+        }
+
+        // --------------------------------------------------------------------------
+        // ADVANCED SYSTEM RECOVERY ENGINE STAGE CONTROLLER FIXED CHANNELS
+        // --------------------------------------------------------------------------
+        function triggerSystemRecoveryChain() {
+            document.getElementById('repair-panel-visuals').style.display = 'block';
+            const terminalDOM = document.getElementById('repair-log-terminal');
+            const fillingBar = document.getElementById('repair-bar-fill');
+            const statusLabel = document.getElementById('repair-stage-status');
+            
+            terminalDOM.innerHTML = "Onarım Algoritması Başlatıldı... v20.00 Fixed Recovery Node.<br>";
+            fillingBar.style.width = "0%";
+            
+            // Execute automated deterministic stage sequences via sequential timing anchors ensuring non-locking transitions
+            executeRecoveryStageController(1, statusLabel, fillingBar, terminalDOM);
+        }
+
+        function executeRecoveryStageController(currentStage, labelDOM, barDOM, termDOM) {
+            if (currentStage === 1) {
+                labelDOM.innerText = "Aşama 1: Çekirdek Dosya Bütünlüğü Tamiri Gerçekleştiriliyor...";
+                termDOM.innerHTML += "[INFO] Aşama 1 Başlatıldı. Dosya imzaları taranıyor...<br>";
+                barDOM.style.width = "25%";
+                
+                setTimeout(() => {
+                    termDOM.innerHTML += "[SUCCESS] Çekirdek bütünlüğü doğrulandı. Sektör haritası çıkartıldı.<br>";
+                    barDOM.style.width = "50%";
+                    // Proceed seamlessly into stage 2 without async breakage or looping locks
+                    executeRecoveryStageController(2, labelDOM, barDOM, termDOM);
+                }, 1800);
+                
+            } else if (currentStage === 2) {
+                labelDOM.innerText = "Aşama 2: Daemon Konfigürasyonları ve Güvenlik Katmanı Yeniden İnşa Ediliyor...";
+                termDOM.innerHTML += "[INFO] Aşama 2 Tetiklendi. Sandbox sınırları sıfırlanıyor...<br>";
+                barDOM.style.width = "75%";
+                
+                setTimeout(() => {
+                    termDOM.innerHTML += "[SUCCESS] Tüm sistem politikaları fabrika ayarlarına döndürüldü. Kilit kaldırılıyor.<br>";
+                    barDOM.style.width = "100%";
+                    
+                    setTimeout(() => {
+                        // Fully recovered. Return back cleanly to primary security authorization screens
+                        document.getElementById('lockdown-screen').classList.remove('active');
+                        document.getElementById('os-desktop').style.display = 'none';
+                        document.getElementById('login-screen').style.display = 'flex';
+                        document.getElementById('repair-panel-visuals').style.display = 'none';
+                        
+                        // Reset pin fields for fresh operations
+                        document.getElementById('pin1').value = ""; document.getElementById('pin2').value = "";
+                        document.getElementById('pin3').value = ""; document.getElementById('pin4').value = "";
+                        document.getElementById('pin1').focus();
+                    }, 1200);
+                    
+                }, 1800);
+            }
+        }
+
+        // --------------------------------------------------------------------------
+        // INTERACTIVE POS DEVICE FLOW ARCHITECTURE & CONTACT PAYMENT TIMINGS
+        // --------------------------------------------------------------------------
+        function transitionToPaymentChoiceState() {
+            document.getElementById('pos-ui-welcome').style.display = 'none';
+            document.getElementById('pos-ui-choice').style.display = 'flex';
+        }
+
+        function resetPosDeviceFlowState() {
+            document.getElementById('pos-ui-choice').style.display = 'none';
+            document.getElementById('pos-ui-pin-pad').style.display = 'none';
+            document.getElementById('pos-ui-welcome').style.display = 'flex';
+            document.getElementById('pos-pin-error-tag').style.display = 'none';
+            
+            // Clean virtual hardware card layout visibility profiles
+            const cardDOM = document.getElementById('pos-hardware-card-element');
+            cardDOM.classList.remove('inserted');
+            capturedPosPinBuffer = "";
+            document.getElementById('pos-pin-asterisk-mask').innerText = "";
+        }
+
+        function triggerContactPaymentFlowCardAnimation() {
+            // Fire CSS card animation sequence
+            const cardDOM = document.getElementById('pos-hardware-card-element');
+            cardDOM.classList.add('inserted');
+            
+            // Freeze UI choices, advance into PIN screen right after hardware animation finishes
+            setTimeout(() => {
+                document.getElementById('pos-ui-choice').style.display = 'none';
+                document.getElementById('pos-ui-pin-pad').style.display = 'flex';
+                capturedPosPinBuffer = "";
+                document.getElementById('pos-pin-asterisk-mask').innerText = "";
+            }, 1200);
+        }
+
+        function appendPosPinDigit(digitChar) {
+            if (capturedPosPinBuffer.length < 4) {
+                capturedPosPinBuffer += digitChar;
+                document.getElementById('pos-pin-asterisk-mask').innerText = "*".repeat(capturedPosPinBuffer.length);
+            }
+        }
+
+        function clearPosPinField() {
+            capturedPosPinBuffer = "";
+            document.getElementById('pos-pin-asterisk-mask').innerText = "";
+            document.getElementById('pos-pin-error-tag').style.display = 'none';
+        }
+
+        function submitPosPinVerification() {
+            if (capturedPosPinBuffer === POS_REQUIRED_PAYMENT_PIN) {
+                document.getElementById('pos-pin-error-tag').style.display = 'none';
+                executePaymentFlowDirect('TEMASLI (KART ENJEKTE)');
+            } else {
+                document.getElementById('pos-pin-error-tag').style.display = 'block';
+                capturedPosPinBuffer = "";
+                document.getElementById('pos-pin-asterisk-mask').innerText = "";
+            }
+        }
+
+        function executePaymentFlowDirect(methodLabelString) {
+            alert(`Ödeme Başarılı! Yöntem: ${methodLabelString}`);
+            
+            // Generate receipt details inside SKiosk application dashboard module automatically
+            const receiptArea = document.getElementById('skiosk-receipt-view');
+            const uniqueTransactionId = Math.floor(100000 + Math.random() * 900000);
+            
+            receiptArea.innerHTML = `
+-----------------------------------------
+         CODE:RACOON OS POS SLIP         
+-----------------------------------------
+İŞLEM ID : TXN-${uniqueTransactionId}
+TUTAR    : 1.250,00 TL
+YÖNTEM   : ${methodLabelString}
+DURUM    : ONAYLANDI / PAID
+TARİH    : ${(new Date()).toLocaleString()}
+MİMARİ   : LEVEL 11 KIOSK GATEWAY
+-----------------------------------------
+   TEŞEKKÜRLER - SLIP SIMULATION COMPLETED
+            `;
+            
+            resetPosDeviceFlowState();
+        }
+
+        // --------------------------------------------------------------------------
+        // RUNTIME LEVEL SWITCH VERIFICATION OPERATIONS
+        // --------------------------------------------------------------------------
+        let temporaryTargetLevelString = "";
+        let temporaryTargetLevelValue = 1;
+
+        function toggleLevelSwitchModal(shouldOpen) {
+            const overlayNode = document.getElementById('level-switch-overlay');
+            if (shouldOpen) {
+                overlayNode.style.display = 'flex';
+                abortLevelAuthMode();
+            } else {
+                overlayNode.style.display = 'none';
+            }
+        }
+
+        function execLevelSwitchRequest(label, lvl) {
+            temporaryTargetLevelString = label;
+            temporaryTargetLevelValue = lvl;
+            
+            // Engage auth code window framework request profile
+            document.getElementById('level-modal-box').classList.add('auth-mode');
+            document.getElementById('auth-panel-prompt-text').innerText = `${label.toUpperCase()} GEÇİŞ ŞİFRESİ`;
+            document.getElementById('level-auth-token-input').value = "";
+            document.getElementById('level-auth-token-input').focus();
+            document.getElementById('level-auth-error-log').style.display = 'none';
+        }
+
+        function abortLevelAuthMode() {
+            document.getElementById('level-modal-box').classList.remove('auth-mode');
+            document.getElementById('level-auth-error-log').style.display = 'none';
+        }
+
+        function verifyLevelTokenAuth() {
+            const insertedTokenValue = document.getElementById('level-auth-token-input').value;
+            // Common level switch bypass credential validation checking matching master pin rules
+            if (insertedTokenValue === "9034" || insertedTokenValue === SYSTEM_MASTER_GATE_PIN) {
+                activeAccessLevel = temporaryTargetLevelValue;
+                activeAccessRoleString = temporaryTargetLevelString;
+                
+                updateDesktopEnvironmentStateTags();
+                abortLevelAuthMode();
+                toggleLevelSwitchModal(false);
+                
+                // Print alert state to hardware console log frame if SKiosk tab view context is open
+                writeMatrixConsoleLine(`Sistem yetki düzeyi ${activeAccessRoleString} konumuna güncellendi.`);
+            } else {
+                document.getElementById('level-auth-error-log').style.display = 'block';
+                document.getElementById('level-auth-token-input').value = "";
+                document.getElementById('level-auth-token-input').focus();
+            }
+        }
+
+        // --------------------------------------------------------------------------
+        // APPLICATION CORE WINDOW MANIPULATION PROTOCOLS
+        // --------------------------------------------------------------------------
+        function openApplicationWindow(windowId) {
+            const winNode = document.getElementById(windowId);
+            winNode.style.display = 'flex';
+            document.getElementById('tb-kiosk-hub-tab').classList.add('active');
+        }
+
+        function closeApplicationWindow(windowId) {
+            document.getElementById(windowId).style.display = 'none';
+            document.getElementById('tb-kiosk-hub-tab').classList.remove('active');
+        }
+
+        function toggleApplicationWindowFocus(windowId) {
+            const winNode = document.getElementById(windowId);
+            const tabNode = document.getElementById('tb-kiosk-hub-tab');
+            if (winNode.style.display === 'none') {
+                winNode.style.display = 'flex';
+                tabNode.classList.add('active');
+            } else {
+                winNode.style.display = 'none';
+                tabNode.classList.remove('active');
+            }
+        }
+
+        function dragWindowCore(e, windowId) {
+            trackedActiveDraggedWindowId = windowId;
+            const winNode = document.getElementById(windowId);
+            windowDragOffsetX = e.clientX - winNode.offsetLeft;
+            windowDragOffsetY = e.clientY - winNode.offsetTop;
+            document.addEventListener('mousemove', moveWindowCursorListener);
+            document.addEventListener('mouseup', releaseWindowCursorListener);
+        }
+
+        function moveWindowCursorListener(e) {
+            if (trackedActiveDraggedWindowId) {
+                const winNode = document.getElementById(trackedActiveDraggedWindowId);
+                winNode.style.left = (e.clientX - windowDragOffsetX) + 'px';
+                winNode.style.top = (e.clientY - windowDragOffsetY) + 'px';
+            }
+        }
+
+        function releaseWindowCursorListener() {
+            trackedActiveDraggedWindowId = null;
+            document.removeEventListener('mousemove', moveWindowCursorListener);
+            document.removeEventListener('mouseup', releaseWindowCursorListener);
+        }
+
+        function triggerWindowsShutdownSequence() {
+            const shutdownOverlay = document.getElementById('win-shutdown-overlay');
+            shutdownOverlay.classList.add('active');
+            setTimeout(() => {
+                document.body.classList.add('crt-shutdown-active');
+            }, 2500);
+        }
+
+        // Initialize clock updates loop
+        setInterval(() => {
+            document.getElementById('system-clock-string').innerText = (new Date()).toTimeString().split(' ')[0];
+        }, 1000);
+
+        window.onload = function() {
+            document.getElementById('pin1').focus();
+        };
     </script>
 </body>
 </html>
