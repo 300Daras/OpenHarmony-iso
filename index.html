@@ -216,6 +216,22 @@
         .pin-slot:focus { box-shadow: 0 0 25px var(--primary-orange); background: rgba(255, 102, 0, 0.2); transform: scale(1.1); }
         #pin-error { color: var(--error-red); margin-top: 25px; display: none; font-weight: bold; font-size: 1.2rem; }
 
+        /* 20268 PIN ÖZEL SEÇİM EKRANI */
+        #login-pin-choice-screen {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #111, #000);
+            align-items: center; justify-content: center; z-index: var(--z-modal);
+            animation: loginEntrance 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        #login-pin-choice-screen.active { display: flex; }
+        .login-choice-row { display: flex; gap: 16px; justify-content: center; margin-top: 10px; }
+        .login-choice-btn {
+            background: rgba(255,102,0,0.08); border: 2px solid var(--primary-orange); color: var(--primary-orange);
+            padding: 16px 22px; border-radius: 8px; font-weight: 900; font-size: 0.95rem; cursor: pointer; transition: 0.2s;
+        }
+        .login-choice-btn:hover { background: var(--primary-orange); color: var(--pure-black); }
+        .login-choice-status { margin-top: 20px; color: var(--matrix-green); font-weight: bold; min-height: 1.2em; font-size: 0.9rem; }
+
         /* --------------------------------------------------------------------------
            2. BOOT MENU SCREEN (BEMBEYAZ - SİYAH BUTONLAR)
            -------------------------------------------------------------------------- */
@@ -520,32 +536,33 @@
         .kiosk-hub-view { display: none; flex-direction: column; align-items: center; justify-content: center; gap: 26px; width: 100%; }
         .kiosk-hub-view.active { display: flex; animation: scaleInPop 0.3s ease; }
 
-        /* --- POS CİHAZI (Samsung Kiosk tarzı, sade siyah/beyaz, onay tiki yeşil) --- */
-        .pos-device {
-            width: 320px; background: linear-gradient(160deg, #2b2b2b, #111); border-radius: 22px; padding: 18px;
-            border: 2px solid #000; box-shadow: 0 15px 40px rgba(0,0,0,0.6), inset 0 0 0 2px rgba(255,255,255,0.05);
-            display: flex; flex-direction: column; align-items: center; gap: 16px;
-        }
+        /* --- POS CİHAZI (artık tamamen ekrandan oluşuyor, sade siyah/beyaz, onay tiki TEK istisna: yeşil) --- */
         .pos-screen {
-            width: 100%; min-height: 190px; background: #000; border-radius: 8px; border: 3px solid #000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
-            padding: 18px; position: relative; overflow: hidden;
+            position: relative; width: 340px; min-height: 340px; background: #000; border: 3px solid #000;
+            border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 12px; padding: 26px 20px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.55);
         }
-        .pos-amount { color: #fff; font-size: 2rem; font-weight: 900; font-family: var(--font-mono); }
-        .pos-sub { color: #fff; font-size: 0.85rem; font-weight: 700; text-align: center; letter-spacing: 0.5px; }
-        .pos-method-row { display: flex; gap: 12px; width: 100%; margin-top: 6px; }
+        .pos-corner-brand {
+            position: absolute; top: 10px; left: 10px; background: #fff; color: #000; font-weight: 900;
+            font-size: 0.62rem; letter-spacing: 1.5px; padding: 3px 8px; border-radius: 3px; z-index: 5;
+        }
+        .pos-screen-content { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; width: 100%; }
+        .pos-amount { color: #fff; font-size: 1.9rem; font-weight: 900; font-family: var(--font-mono); }
+        .pos-sub { color: #fff; font-size: 0.82rem; font-weight: 700; text-align: center; letter-spacing: 0.5px; }
+        .pos-method-row { display: flex; gap: 10px; width: 100%; margin-top: 6px; }
+        .pos-method-col { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: 6px; }
         .pos-method-btn {
-            flex: 1; background: #fff; border: 3px solid #000; border-radius: 4px; padding: 10px 8px;
-            color: #1db954; font-weight: 800; font-size: 0.72rem; text-transform: uppercase; line-height: 1.6;
-            cursor: pointer; text-align: left; letter-spacing: 0.3px;
+            flex: 1; background: #fff; border: 3px solid #fff; border-radius: 4px; padding: 10px 8px;
+            color: #000; font-weight: 800; font-size: 0.68rem; text-transform: uppercase; line-height: 1.5;
+            cursor: pointer; text-align: center; letter-spacing: 0.3px;
         }
-        .pos-method-btn:hover { background: #f2f2f2; }
+        .pos-method-btn:hover { background: #ddd; }
 
-        .pos-card-slot { width: 90px; height: 10px; background: #000; border-radius: 3px; margin: 10px auto 0; position: relative; }
+        .pos-card-slot { width: 90px; height: 10px; background: #fff; border-radius: 3px; margin: 10px auto 0; position: relative; }
         .pos-card-anim {
             position: absolute; left: 50%; top: -46px; transform: translateX(-50%);
-            width: 62px; height: 40px; background: linear-gradient(135deg, #eee, #ccc); border-radius: 5px;
-            border: 2px solid #000; animation: posCardInsert 1.1s ease-in forwards;
+            width: 62px; height: 40px; background: #fff; border-radius: 5px;
+            border: 2px solid #fff; animation: posCardInsert 1.1s ease-in forwards;
         }
         @keyframes posCardInsert {
             0% { top: -46px; opacity: 1; }
@@ -556,21 +573,40 @@
         .pos-pin-dots { display: flex; gap: 10px; margin-top: 4px; }
         .pos-pin-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff; background: transparent; }
         .pos-pin-dot.filled { background: #fff; }
-        .pos-pin-error { display: none; color: #ff4d4d; font-size: 0.75rem; font-weight: 800; margin-top: 4px; }
+        .pos-pin-error { display: none; color: #fff; background: #333; border: 1px solid #fff; padding: 4px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 800; margin-top: 4px; }
 
-        .pos-approved-check { font-size: 3.4rem; color: #1db954; line-height: 1; }
+        .pos-approved-check { font-size: 3.4rem; color: #1db954; line-height: 1; } /* TEK RENKLİ İSTİSNA: onay tiki */
         .pos-approved-text { color: #fff; font-weight: 900; font-size: 1.05rem; letter-spacing: 1px; }
+        .pos-error-text { color: #fff; background: #222; border: 1px solid #fff; padding: 8px 14px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; text-align: center; }
 
-        .pos-contactless-icon { font-size: 2.4rem; color: #fff; animation: posPulse 0.9s ease-in-out infinite; }
-        @keyframes posPulse { 0%,100% { opacity: 0.4; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.08); } }
+        .pos-contactless-icon { font-size: 2.3rem; color: #fff; animation: posPulse 0.9s ease-in-out infinite; }
+        @keyframes posPulse { 0%,100% { opacity: 0.35; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.1); } }
 
-        .pos-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; }
+        /* QR KODU ANİMASYONU (beyaz kare + siyah/beyaz sahte kare desen + taranan çizgi) */
+        .pos-qr-box { position: relative; width: 110px; height: 110px; background: #fff; border-radius: 6px; overflow: hidden; }
+        .pos-qr-grid { position: absolute; inset: 8px; display: grid; grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(6, 1fr); gap: 2px; }
+        .pos-qr-grid div { background: #fff; }
+        .pos-qr-grid div:nth-child(odd) { background: #000; }
+        .pos-qr-scanline { position: absolute; left: 0; width: 100%; height: 3px; background: #fff; box-shadow: 0 0 8px #fff, 0 0 8px #fff; animation: posQrScan 1.3s linear infinite; mix-blend-mode: difference; }
+        @keyframes posQrScan { 0% { top: 0; } 100% { top: 100%; } }
+
+        /* NFC DALGA ANİMASYONU */
+        .pos-nfc-wrap { position: relative; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; }
+        .pos-nfc-ring { position: absolute; border: 2px solid #fff; border-radius: 50%; opacity: 0; animation: posNfcRing 1.4s ease-out infinite; }
+        .pos-nfc-ring:nth-child(2) { animation-delay: 0.4s; }
+        .pos-nfc-ring:nth-child(3) { animation-delay: 0.8s; }
+        @keyframes posNfcRing { 0% { width: 30px; height: 30px; opacity: 1; } 100% { width: 90px; height: 90px; opacity: 0; } }
+        .pos-nfc-icon { font-size: 1.7rem; color: #fff; position: relative; z-index: 2; }
+
+        /* CİHAZ TAMAMEN EKRANDAN OLUŞUYOR: fiziksel keypad kalktı, gerektiğinde ekran içinde beliriyor */
+        .pos-onscreen-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; width: 100%; margin-top: 8px; }
         .pos-key {
-            background: #1a1a1a; border: 1px solid #444; color: #fff; font-weight: 700; font-size: 1rem;
-            padding: 12px 0; border-radius: 6px; cursor: pointer; font-family: var(--font-mono);
+            background: #000; border: 1px solid #fff; color: #fff; font-weight: 700; font-size: 0.9rem;
+            padding: 9px 0; border-radius: 5px; cursor: pointer; font-family: var(--font-mono);
         }
-        .pos-key:hover { background: #2c2c2c; border-color: #fff; }
-        .pos-key-func { color: #ff9900; }
+        .pos-key:hover { background: #fff; color: #000; }
+        .pos-key-func { color: #bbb; }
+        .pos-key-func:hover { color: #000; }
 
         /* One UI tarzı gerçek zamanlı durum çubuğu */
         .kiosk-statusbar { width: 100%; max-width: 760px; display: flex; gap: 12px; flex-wrap: wrap; }
@@ -659,6 +695,10 @@
         .skiosk-btn.danger { background: rgba(255,0,0,0.08); border-color: var(--error-red); color: var(--error-red); width: 100%; margin-top: 4px; }
         .skiosk-btn.danger:hover { background: var(--error-red); color: #fff; }
 
+        .skiosk-bes-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+        .skiosk-bes-balance-label { color: rgba(255,255,255,0.6); font-size: 0.8rem; }
+        .skiosk-bes-balance-value { color: var(--gold-cowboy); font-weight: 900; font-size: 1.2rem; font-family: var(--font-mono); }
+
         .hw-port-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
         .hw-port {
             background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #ccc;
@@ -717,6 +757,50 @@
         .slip-footer { text-align: center; margin-top: 8px; font-weight: 700; }
         .slip-close-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
         .slip-close-btn:hover { background: rgba(255,255,255,0.2); }
+
+        /* --------------------------------------------------------------------------
+           14. BES DOLDURMA MERKEZİ (tüm levellerde, sahte/kozmetik bakiye sistemi)
+           -------------------------------------------------------------------------- */
+        .bes-window { border-color: var(--matrix-green) !important; }
+        .bes-header { background: rgba(0,255,100,0.08) !important; border-color: var(--matrix-green) !important; }
+        .bes-header .window-title { color: var(--matrix-green) !important; }
+        .bes-content { display: flex; flex-direction: column; gap: 12px; }
+
+        .bes-balance-box {
+            background: rgba(0,255,100,0.06); border: 1px solid var(--matrix-green); border-radius: 10px;
+            padding: 12px 16px; text-align: center;
+        }
+        .bes-balance-label { font-size: 0.7rem; color: rgba(255,255,255,0.55); letter-spacing: 1px; margin-bottom: 4px; }
+        .bes-balance-value { font-size: 1.5rem; font-weight: 900; color: var(--matrix-green); font-family: var(--font-mono); }
+
+        .bes-field-label { font-size: 0.8rem; color: rgba(255,255,255,0.7); font-weight: bold; }
+        .bes-amount-input {
+            background: #111; border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 10px;
+            border-radius: 6px; font-size: 1rem; outline: none; font-family: var(--font-mono);
+        }
+        .bes-amount-input:focus { border-color: var(--matrix-green); box-shadow: 0 0 10px rgba(0,255,100,0.3); }
+
+        .bes-preview { text-align: center; font-weight: 900; font-size: 1.1rem; color: #fff; }
+        .bes-rate-note { font-size: 0.7rem; color: rgba(255,255,255,0.45); line-height: 1.5; }
+
+        .bes-confirm-btn {
+            background: var(--matrix-green); color: #000; border: none; padding: 12px; border-radius: 6px;
+            font-weight: 900; cursor: pointer; font-size: 0.9rem; letter-spacing: 0.5px;
+        }
+        .bes-confirm-btn:hover { background: #6dff9e; }
+        .bes-confirm-msg { text-align: center; font-size: 0.8rem; color: var(--matrix-green); font-weight: bold; min-height: 1.1em; }
+
+        .bes-dlc-section { display: flex; gap: 8px; margin-top: 6px; }
+        .bes-dlc-input {
+            flex: 1; background: #111; border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 9px;
+            border-radius: 6px; font-family: var(--font-mono); outline: none;
+        }
+        .bes-dlc-btn {
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.3); color: #fff;
+            padding: 9px 14px; border-radius: 6px; cursor: pointer; font-weight: bold;
+        }
+        .bes-dlc-btn:hover { background: rgba(255,255,255,0.18); }
+        .bes-dlc-msg { text-align: center; font-size: 0.78rem; color: rgba(255,255,255,0.6); min-height: 1.1em; }
     </style>
 </head>
 <body>
@@ -737,6 +821,19 @@
                 <input type="text" class="pin-slot" maxlength="1" oninput="checkFullPin()" id="pin5" autocomplete="off">
             </div>
             <p id="pin-error">HATA: YETKİSİZ PIN DENEMESİ</p>
+        </div>
+    </div>
+
+    <!-- 1b. 20268 PIN ÖZEL SEÇİM EKRANI: İso İndir mi, Ana Menü mü? -->
+    <div id="login-pin-choice-screen">
+        <div class="login-box">
+            <h1 class="login-brand-title" style="font-size: 2rem;">CODE:RACOON OS</h1>
+            <p style="color: #ddd; font-size: 1.1rem; margin: 20px 0 30px;">İso indirmemi, yoksa Ana menümü açayım?</p>
+            <div class="login-choice-row">
+                <button class="login-choice-btn" onclick="loginChoiceDownloadIso()">📥 İSO İNDİR</button>
+                <button class="login-choice-btn" onclick="loginChoiceMainMenu()">🖥️ ANA MENÜ</button>
+            </div>
+            <p class="login-choice-status" id="login-choice-status"></p>
         </div>
     </div>
 
@@ -923,6 +1020,11 @@
                 <div class="icon-img" style="border-color: var(--gold-cowboy); color: var(--gold-cowboy); background: rgba(255, 170, 0, 0.12);">💳</div>
                 <div class="icon-label">Kiosk</div>
             </div>
+            <!-- BES DOLDURMA ICON (TÜM LEVELLERDE GÖRÜNÜR, YETKİ KISITLAMASI YOK) -->
+            <div class="icon" ondblclick="SYS_WM.openWindow('bes-win')">
+                <div class="icon-img" style="border-color: var(--matrix-green); color: var(--matrix-green); background: rgba(0, 255, 100, 0.08);">🪙</div>
+                <div class="icon-label">BES Doldurma</div>
+            </div>
         </div>
 
         <!-- APP WINDOW: TERMINAL -->
@@ -1039,25 +1141,12 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             </div>
             <div class="window-content kiosk-content">
 
-                <!-- POS GİRİŞ KAPISI: Kiosk paneline girmeden önce ödeme simülasyonu -->
+                <!-- POS GİRİŞ KAPISI: Kiosk paneline girmeden önce ödeme simülasyonu (artık tamamen ekrandan oluşuyor) -->
                 <div class="kiosk-pos-gate" id="kiosk-pos-gate">
-                    <div class="pos-device">
-                        <div class="pos-screen" id="pos-screen">
-                            <!-- JS ile dinamik olarak dolduruluyor: tutar / yöntem / kart / pin / onay -->
-                        </div>
-                        <div class="pos-keypad" id="pos-keypad">
-                            <button class="pos-key" onclick="kioskGateKeypadPress('1')">1</button>
-                            <button class="pos-key" onclick="kioskGateKeypadPress('2')">2</button>
-                            <button class="pos-key" onclick="kioskGateKeypadPress('3')">3</button>
-                            <button class="pos-key" onclick="kioskGateKeypadPress('4')">4</button>
-                            <button class="pos-key" onclick="kioskGateKeypadPress('5')">5</button>
-                            <button class="pos-key" onclick="kioskGateKeypadPress('6')">6</button>
-                            <button class="pos-key" onclick="kioskGateKeypadPress('7')">7</button>
-                            <button class="pos-key" onclick="kioskGateKeypadPress('8')">8</button>
-                            <button class="pos-key" onclick="kioskGateKeypadPress('9')">9</button>
-                            <button class="pos-key pos-key-func" onclick="kioskGateKeypadClear()">C</button>
-                            <button class="pos-key" onclick="kioskGateKeypadPress('0')">0</button>
-                            <button class="pos-key pos-key-func" onclick="kioskGateBackToMethods()">◀</button>
+                    <div class="pos-screen" id="pos-screen">
+                        <div class="pos-corner-brand">KIOSK</div>
+                        <div class="pos-screen-content" id="pos-screen-content">
+                            <!-- JS ile dinamik olarak dolduruluyor: tutar / yöntem / QR/NFC/Kart / pin / onay -->
                         </div>
                     </div>
                 </div>
@@ -1169,6 +1258,27 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             <div class="window-content skiosk-content">
 
                 <div class="skiosk-section">
+                    <div class="skiosk-section-title">🖥️ POS CİHAZI KONTROLÜ</div>
+                    <div class="skiosk-section-desc">Kiosk'a girişte oynayan POS ödeme kapısını aç/kapat. Kapalıyken Kiosk paneline direkt girilir.</div>
+                    <button class="skiosk-btn" id="skiosk-pos-toggle-btn" onclick="toggleSkioskPosDevice()">⏻ POS Cihazını Kapat</button>
+                </div>
+
+                <div class="skiosk-section">
+                    <div class="skiosk-section-title">🪙 BES BAKİYE YÖNETİMİ</div>
+                    <div class="skiosk-section-desc">Mevcut BES bakiyesini buradan manuel olarak artırıp azaltabilirsin. (Sahte/kozmetik bakiyedir.)</div>
+                    <div class="skiosk-bes-row">
+                        <span class="skiosk-bes-balance-label">Mevcut Bakiye:</span>
+                        <span class="skiosk-bes-balance-value" id="skiosk-bes-balance">0.00 BES</span>
+                    </div>
+                    <div class="skiosk-btn-row">
+                        <button class="skiosk-btn" onclick="addBesBalance(10)">+10 BES</button>
+                        <button class="skiosk-btn" onclick="addBesBalance(50)">+50 BES</button>
+                        <button class="skiosk-btn" onclick="addBesBalance(-10)">-10 BES</button>
+                        <button class="skiosk-btn danger" onclick="setBesBalance(0)">Bakiyeyi Sıfırla</button>
+                    </div>
+                </div>
+
+                <div class="skiosk-section">
                     <div class="skiosk-section-title">🧾 SLIP & LOG GENERATOR</div>
                     <div class="skiosk-section-desc">Başarılı ödeme veya sistem arıza raporunu slip (makbuz) olarak simüle et.</div>
                     <div class="skiosk-btn-row">
@@ -1198,6 +1308,39 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                     <div class="hw-inject-log" id="hw-inject-log"></div>
                 </div>
 
+            </div>
+        </div>
+
+        <!-- APP WINDOW: BES DOLDURMA MERKEZİ (TÜM LEVELLERDE ERİŞİLEBİLİR) -->
+        <div class="window bes-window" id="bes-win" style="top: 130px; left: 200px; width: 420px; height: 520px;">
+            <div class="window-header bes-header">
+                <div class="window-title">🪙 BES Doldurma Merkezi</div>
+                <div class="window-controls">
+                    <button class="win-btn btn-min"></button>
+                    <button class="win-btn btn-max"></button>
+                    <button class="win-btn btn-close" onclick="SYS_WM.closeWindow('bes-win')"></button>
+                </div>
+            </div>
+            <div class="window-content bes-content">
+                <div class="bes-balance-box">
+                    <div class="bes-balance-label">MEVCUT BAKİYE</div>
+                    <div class="bes-balance-value" id="bes-win-balance">0.00 BES</div>
+                </div>
+
+                <div class="bes-field-label">Yatırılacak Tutar (TL)</div>
+                <input type="number" min="0" step="1" class="bes-amount-input" id="bes-tl-input" placeholder="Örn: 100" oninput="besUpdatePreview()">
+
+                <div class="bes-preview" id="bes-preview">0 TL → 0.00 BES</div>
+                <div class="bes-rate-note">Her 1 TL karşılığında 0.50 BES yüklenir. Bu sahte/kozmetik bir bakiyedir; gerçek paranız kullanılmaz ve harcanmaz.</div>
+
+                <button class="bes-confirm-btn" onclick="besConfirmDeposit()">Ödemeyi Gerçekleştir</button>
+                <div class="bes-confirm-msg" id="bes-confirm-msg"></div>
+
+                <div class="bes-dlc-section">
+                    <input type="text" class="bes-dlc-input" id="bes-dlc-input" placeholder="DLC KODU GİR">
+                    <button class="bes-dlc-btn" onclick="besEnterDlcCode()">Gönder</button>
+                </div>
+                <div class="bes-dlc-msg" id="bes-dlc-msg"></div>
             </div>
         </div>
 
@@ -1314,7 +1457,12 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             for(let i=1; i<=5; i++) pin += document.getElementById("pin"+i).value;
             
             if (pin.length === 5) {
-                if (LEVEL_ACCESS_CODES[pin]) {
+                if (pin === "20268") {
+                    // ÖZEL DURUM: 20268 artık direkt Level 2'ye atmıyor, seçim ekranı açıyor
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('login-choice-status').innerText = '';
+                    document.getElementById('login-pin-choice-screen').classList.add('active');
+                } else if (LEVEL_ACCESS_CODES[pin]) {
                     // KURAL: Her kod sadece kendi seviyesine açar, ANİMASYONSUZ direkt giriş
                     const target = LEVEL_ACCESS_CODES[pin];
                     SYSTEM_ACTIVE_LEVEL = target.level;
@@ -1331,6 +1479,36 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                     setTimeout(() => document.getElementById('pin-error').style.display = 'none', 2000);
                 }
             }
+        }
+
+        // 20268 SEÇİM EKRANI: İso indir (indirip siteyi kapatmayı dener) veya Ana Menü (1. veya 2. levele rastgele atar)
+        function loginChoiceDownloadIso() {
+            const status = document.getElementById('login-choice-status');
+            status.innerText = 'İso indiriliyor...';
+            downloadGoogleIso();
+            setTimeout(() => {
+                status.innerText = 'İndirme tamamlandı. Pencere kapatılıyor...';
+                setTimeout(() => {
+                    window.close();
+                    // Tarayıcı güvenliği nedeniyle otomatik kapanmayabilir; bu durumda kullanıcıyı bilgilendir.
+                    setTimeout(() => {
+                        status.innerText = 'İndirme tamamlandı. Artık bu pencereyi kapatabilirsiniz.';
+                    }, 400);
+                }, 1200);
+            }, 1600);
+        }
+
+        function loginChoiceMainMenu() {
+            const choices = [
+                { name: "Level 1 - Konuk", level: 1 },
+                { name: "Level 2 - Standart", level: 2 }
+            ];
+            const pick = choices[Math.floor(Math.random() * choices.length)];
+            SYSTEM_ACTIVE_LEVEL = pick.level;
+            SYSTEM_ACTIVE_LEVEL_NAME = pick.name;
+            document.getElementById('login-pin-choice-screen').classList.remove('active');
+            for(let i=1; i<=5; i++) document.getElementById("pin"+i).value = "";
+            SYS_CORE.launchDesktop(pick.name, pick.level);
         }
 
         // --- 3. BOOT MANAGER (TAMAMEN BEYAZ-SİYAH) ---
@@ -1519,6 +1697,10 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                     // KIOSK: Her taze açılışta önce POS ÖDEME KAPISI gösterilir (panele girmeden önce)
                     if (id === 'kiosk-win' && win.style.display !== 'flex') {
                         kioskResetPosGate();
+                    }
+                    // BES bakiye ekranlarını her açılışta güncel tut
+                    if (id === 'bes-win' || id === 'skiosk-win') {
+                        updateBesDisplaysEverywhere();
                     }
                     win.style.display = 'flex';
                     // PÜRÜZSÜZ SCALE-IN GEÇİŞİ (Kiosk hub ve tüm pencereler için)
@@ -1990,16 +2172,43 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             }, 2600);
         }
 
-        // --- POS GİRİŞ KAPISI (Kiosk paneline girmeden önce oynayan ödeme simülasyonu) ---
-        let posGateState = 'method'; // 'method' | 'contactless-processing' | 'card-inserting' | 'pin' | 'approved'
+        // --- BES: SAHTE/KOZMETİK BAKİYE SİSTEMİ (gerçek para değildir, sadece bu tarayıcıda saklanır) ---
+        const BES_BALANCE_KEY = 'racoon_bes_balance';
+        function getBesBalance() {
+            const v = localStorage.getItem(BES_BALANCE_KEY);
+            return v ? parseFloat(v) : 0;
+        }
+        function setBesBalance(v) {
+            if (v < 0) v = 0;
+            localStorage.setItem(BES_BALANCE_KEY, v.toFixed(2));
+            updateBesDisplaysEverywhere();
+        }
+        function addBesBalance(delta) { setBesBalance(getBesBalance() + delta); }
+        function updateBesDisplaysEverywhere() {
+            const bal = getBesBalance().toFixed(2);
+            const skioskEl = document.getElementById('skiosk-bes-balance');
+            if (skioskEl) skioskEl.innerText = bal + ' BES';
+            const besWinEl = document.getElementById('bes-win-balance');
+            if (besWinEl) besWinEl.innerText = bal + ' BES';
+        }
+
+        // --- POS GİRİŞ KAPISI (Kiosk paneline girmeden önce oynayan ödeme simülasyonu, artık tamamen ekrandan oluşuyor) ---
+        let posDeviceEnabled = true; // SKiosk üzerindeki açma/kapama tuşuyla kontrol edilir
+        let posGateState = 'method'; // 'method' | 'contactless-menu' | 'qr' | 'nfc' | 'card-tap' | 'card-inserting' | 'pin' | 'approved' | 'insufficient'
         let posPinBuffer = '';
         let posCurrentAmount = 0;
         const POS_PIN_CODE = "9034";
 
         function kioskResetPosGate() {
+            if (!posDeviceEnabled) {
+                // POS CİHAZI KAPALI: kapıyı atla, direkt hub'a geç
+                document.getElementById('kiosk-pos-gate').classList.add('hidden');
+                document.getElementById('kiosk-hub-view').classList.add('active');
+                return;
+            }
             posGateState = 'method';
             posPinBuffer = '';
-            posCurrentAmount = Math.round((Math.random() * 430 + 20) * 100) / 100;
+            posCurrentAmount = Math.round((Math.random() * 40 + 5) * 100) / 100; // BES tutarı
             document.getElementById('kiosk-hub-view').classList.remove('active');
             document.getElementById('kiosk-pos-gate').classList.remove('hidden');
             renderPosMethodScreen();
@@ -2007,28 +2216,73 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
 
         function renderPosMethodScreen() {
             posGateState = 'method';
-            document.getElementById('pos-screen').innerHTML = `
-                <div class="pos-amount">${posCurrentAmount.toFixed(2)} TRY</div>
+            document.getElementById('pos-screen-content').innerHTML = `
+                <div class="pos-amount">${posCurrentAmount.toFixed(2)} BES</div>
                 <div class="pos-sub">ÖDEME YÖNTEMİNİZİ SEÇİN</div>
                 <div class="pos-method-row">
-                    <div class="pos-method-btn" onclick="kioskGateSelectContactless()">[1] NFC ÖDEME<br>TEMASSIZ ÖDEME</div>
-                    <div class="pos-method-btn" onclick="kioskGateSelectInsert()">[2] TEMASLI ÖDEME<br>(KARTI TAK)</div>
+                    <div class="pos-method-btn" onclick="kioskGateShowContactlessMenu()">[1] TEMASSIZ<br>ÖDEME</div>
+                    <div class="pos-method-btn" onclick="kioskGateSelectInsert()">[2] TEMASLI<br>(KARTI TAK)</div>
                 </div>
             `;
         }
 
-        function kioskGateSelectContactless() {
-            posGateState = 'contactless-processing';
-            document.getElementById('pos-screen').innerHTML = `
-                <div class="pos-contactless-icon">📶</div>
-                <div class="pos-sub">TEMAS ALGILANIYOR...</div>
+        // TEMASSIZ ÖDEME SEÇİLİNCE: QR mı, Temassız(Kart) mı, Temassız(NFC) mi diye sorar
+        function kioskGateShowContactlessMenu() {
+            posGateState = 'contactless-menu';
+            document.getElementById('pos-screen-content').innerHTML = `
+                <div class="pos-sub">TEMASSIZ YÖNTEMİ SEÇİN</div>
+                <div class="pos-method-col">
+                    <div class="pos-method-btn" onclick="kioskGateRunQr()">QR İLE ÖDE</div>
+                    <div class="pos-method-btn" onclick="kioskGateRunContactlessCard()">TEMASSIZ (KART)</div>
+                    <div class="pos-method-btn" onclick="kioskGateRunNfc()">TEMASSIZ (NFC)</div>
+                </div>
+                <div class="pos-onscreen-keypad">
+                    <button class="pos-key pos-key-func" style="grid-column: span 3;" onclick="kioskGateBackToMethods()">◀ GERİ</button>
+                </div>
             `;
-            setTimeout(() => kioskGateApprove('Temassız'), 1300);
+        }
+
+        // QR animasyonu: sahte QR kare deseni + taranan çizgi
+        function kioskGateRunQr() {
+            posGateState = 'qr';
+            document.getElementById('pos-screen-content').innerHTML = `
+                <div class="pos-sub">QR KODU OKUTUN</div>
+                <div class="pos-qr-box">
+                    <div class="pos-qr-grid">${'<div></div>'.repeat(36)}</div>
+                    <div class="pos-qr-scanline"></div>
+                </div>
+            `;
+            setTimeout(() => kioskGateApprove('QR'), 1600);
+        }
+
+        // Temassız (Kart) animasyonu: karta yaklaştırma nabzı
+        function kioskGateRunContactlessCard() {
+            posGateState = 'card-tap';
+            document.getElementById('pos-screen-content').innerHTML = `
+                <div class="pos-contactless-icon">💳</div>
+                <div class="pos-sub">KARTINIZI EKRANA YAKLAŞTIRIN</div>
+            `;
+            setTimeout(() => kioskGateApprove('Temassız (Kart)'), 1400);
+        }
+
+        // Temassız (NFC) animasyonu: NFC dalga halkaları
+        function kioskGateRunNfc() {
+            posGateState = 'nfc';
+            document.getElementById('pos-screen-content').innerHTML = `
+                <div class="pos-nfc-wrap">
+                    <div class="pos-nfc-ring"></div>
+                    <div class="pos-nfc-ring"></div>
+                    <div class="pos-nfc-ring"></div>
+                    <div class="pos-nfc-icon">📶</div>
+                </div>
+                <div class="pos-sub">CİHAZINIZI OKUTUN (NFC)</div>
+            `;
+            setTimeout(() => kioskGateApprove('Temassız (NFC)'), 1400);
         }
 
         function kioskGateSelectInsert() {
             posGateState = 'card-inserting';
-            document.getElementById('pos-screen').innerHTML = `
+            document.getElementById('pos-screen-content').innerHTML = `
                 <div class="pos-sub">KARTINIZI TAKIN</div>
                 <div class="pos-card-slot"><div class="pos-card-anim"></div></div>
             `;
@@ -2038,10 +2292,24 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         function renderPinScreen() {
             posGateState = 'pin';
             posPinBuffer = '';
-            document.getElementById('pos-screen').innerHTML = `
-                <div class="pos-sub">ŞİFRENİZİ POS ÜZERİNDEN GİRİN</div>
+            document.getElementById('pos-screen-content').innerHTML = `
+                <div class="pos-sub">ŞİFRENİZİ EKRANDAKİ TUŞLARLA GİRİN</div>
                 <div class="pos-pin-dots" id="pos-pin-dots"></div>
                 <div class="pos-pin-error" id="pos-pin-error">HATALI ŞİFRE, TEKRAR DENEYİN</div>
+                <div class="pos-onscreen-keypad">
+                    <button class="pos-key" onclick="kioskGateKeypadPress('1')">1</button>
+                    <button class="pos-key" onclick="kioskGateKeypadPress('2')">2</button>
+                    <button class="pos-key" onclick="kioskGateKeypadPress('3')">3</button>
+                    <button class="pos-key" onclick="kioskGateKeypadPress('4')">4</button>
+                    <button class="pos-key" onclick="kioskGateKeypadPress('5')">5</button>
+                    <button class="pos-key" onclick="kioskGateKeypadPress('6')">6</button>
+                    <button class="pos-key" onclick="kioskGateKeypadPress('7')">7</button>
+                    <button class="pos-key" onclick="kioskGateKeypadPress('8')">8</button>
+                    <button class="pos-key" onclick="kioskGateKeypadPress('9')">9</button>
+                    <button class="pos-key pos-key-func" onclick="kioskGateKeypadClear()">C</button>
+                    <button class="pos-key" onclick="kioskGateKeypadPress('0')">0</button>
+                    <button class="pos-key pos-key-func" onclick="kioskGateBackToMethods()">◀</button>
+                </div>
             `;
             renderPinDots();
         }
@@ -2058,11 +2326,6 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         }
 
         function kioskGateKeypadPress(digit) {
-            if (posGateState === 'method') {
-                if (digit === '1') kioskGateSelectContactless();
-                else if (digit === '2') kioskGateSelectInsert();
-                return;
-            }
             if (posGateState !== 'pin') return;
             if (posPinBuffer.length >= 4) return;
             posPinBuffer += digit;
@@ -2079,9 +2342,7 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         }
 
         function kioskGateBackToMethods() {
-            if (posGateState === 'pin' || posGateState === 'card-inserting') {
-                renderPosMethodScreen();
-            }
+            if (posGateState !== 'method') renderPosMethodScreen();
         }
 
         function kioskGateCheckPin() {
@@ -2096,15 +2357,30 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         }
 
         function kioskGateApprove(method) {
+            // BES BAKİYE KONTROLÜ: sadece kendi biriktirdiğin BES'i kullanabilirsin
+            if (getBesBalance() < posCurrentAmount) {
+                posGateState = 'insufficient';
+                document.getElementById('pos-screen-content').innerHTML = `
+                    <div class="pos-error-text">YETERSİZ BES BAKİYESİ<br>Bakiye: ${getBesBalance().toFixed(2)} BES</div>
+                    <div class="pos-sub">"BES Doldurma" uygulamasından bakiye yükleyin.</div>
+                    <div class="pos-onscreen-keypad">
+                        <button class="pos-key pos-key-func" style="grid-column: span 3;" onclick="renderPosMethodScreen()">◀ GERİ</button>
+                    </div>
+                `;
+                return;
+            }
+
             posGateState = 'approved';
-            document.getElementById('pos-screen').innerHTML = `
+            document.getElementById('pos-screen-content').innerHTML = `
                 <div class="pos-approved-check">✓</div>
                 <div class="pos-approved-text">ONAYLANDI</div>
             `;
 
+            addBesBalance(-posCurrentAmount);
+
             setTimeout(() => {
                 printSlip('payment', {
-                    amount: posCurrentAmount.toFixed(2) + ' TRY',
+                    amount: posCurrentAmount.toFixed(2) + ' BES',
                     method: method,
                     ref: 'CR-' + Math.floor(Math.random() * 900000 + 100000)
                 });
@@ -2159,7 +2435,7 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         // --- SKIOSK: SLIP & LOG GENERATOR ---
         function skioskPrintPaymentSlip() {
             printSlip('payment', {
-                amount: (Math.random() * 300 + 20).toFixed(2) + ' TRY',
+                amount: (Math.random() * 30 + 2).toFixed(2) + ' BES',
                 method: Math.random() < 0.5 ? 'Temassız' : 'Kartı Tak',
                 ref: 'CR-' + Math.floor(Math.random() * 900000 + 100000)
             });
@@ -2171,6 +2447,48 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                 code: SKIOSK_ERROR_CODES[Math.floor(Math.random() * SKIOSK_ERROR_CODES.length)],
                 desc: 'Otomatik tanılama tarafından tespit edildi. Teknik ekip bilgilendirildi.'
             });
+        }
+
+        // --- BES DOLDURMA MERKEZİ (tüm levellerde erişilebilir) ---
+        function besUpdatePreview() {
+            const tl = parseFloat(document.getElementById('bes-tl-input').value) || 0;
+            const bes = tl * 0.5;
+            document.getElementById('bes-preview').innerText = `${tl} TL → ${bes.toFixed(2)} BES`;
+        }
+
+        function besConfirmDeposit() {
+            const tl = parseFloat(document.getElementById('bes-tl-input').value) || 0;
+            const msg = document.getElementById('bes-confirm-msg');
+            if (tl <= 0) {
+                msg.style.color = 'var(--error-red)';
+                msg.innerText = 'Lütfen geçerli bir tutar girin.';
+                return;
+            }
+            const bes = tl * 0.5;
+            addBesBalance(bes);
+            msg.style.color = 'var(--matrix-green)';
+            msg.innerText = `✓ ${bes.toFixed(2)} BES bakiyenize eklendi. (Sahte bakiye — gerçek paranız harcanmadı.)`;
+            document.getElementById('bes-tl-input').value = '';
+            besUpdatePreview();
+        }
+
+        function besEnterDlcCode() {
+            const code = document.getElementById('bes-dlc-input').value.trim();
+            const msg = document.getElementById('bes-dlc-msg');
+            if (!code) {
+                msg.innerText = 'Lütfen bir kod girin.';
+                return;
+            }
+            msg.innerText = 'Bu özellik sonra açılacak.';
+            document.getElementById('bes-dlc-input').value = '';
+        }
+
+        // --- SKIOSK: POS CİHAZI AÇMA/KAPAMA ---
+        function toggleSkioskPosDevice() {
+            posDeviceEnabled = !posDeviceEnabled;
+            const btn = document.getElementById('skiosk-pos-toggle-btn');
+            if (btn) btn.innerText = posDeviceEnabled ? '⏻ POS Cihazını Kapat' : '⏻ POS Cihazını Aç';
+            if (SYS_CORE.term) SYS_CORE.term.print(`[KIOSK] POS Cihazı ${posDeviceEnabled ? 'AÇILDI' : 'KAPATILDI'}.`);
         }
 
         // --- SKIOSK: ACİL DURUM KİLİDİ (EMERGENCY LOCKDOWN) ---
