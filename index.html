@@ -801,6 +801,126 @@
         }
         .bes-dlc-btn:hover { background: rgba(255,255,255,0.18); }
         .bes-dlc-msg { text-align: center; font-size: 0.78rem; color: rgba(255,255,255,0.6); min-height: 1.1em; }
+
+        /* --------------------------------------------------------------------------
+           15. KİMLİK MODALI (SAHTE GMAIL GİRİŞİ - FIREBASE AUTH'UN YERİNİ TUTAR)
+           -------------------------------------------------------------------------- */
+        #identity-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: var(--z-overlay); align-items: center; justify-content: center;
+        }
+        #identity-modal.active { display: flex; }
+        .identity-box {
+            background: var(--bg-window); border: var(--window-border); border-radius: 10px;
+            padding: 35px; width: 440px; text-align: center; box-shadow: 0 0 40px rgba(255,102,0,0.3);
+        }
+        .identity-title { color: var(--primary-orange); font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; }
+        .identity-desc { color: #ccc; font-size: 0.85rem; margin-bottom: 20px; line-height: 1.5; }
+        .identity-input {
+            width: 100%; padding: 14px; background: #111; border: 1px solid var(--primary-orange); color: #fff;
+            text-align: center; font-family: var(--font-mono); font-size: 1rem; outline: none; margin-bottom: 12px;
+        }
+        .identity-confirm-btn {
+            width: 100%; padding: 12px; background: var(--primary-orange); color: var(--pure-black); border: none;
+            font-weight: 900; cursor: pointer; border-radius: 4px;
+        }
+        .identity-confirm-btn:hover { background: var(--hyper-orange); }
+        .identity-error { display: none; color: var(--error-red); font-weight: bold; font-size: 0.8rem; margin-top: 10px; }
+
+        /* --------------------------------------------------------------------------
+           16. KALICI BAN EKRANI
+           -------------------------------------------------------------------------- */
+        #ban-screen {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 99999999; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+        }
+        #ban-screen.active { display: flex; }
+        .ban-screen-icon { font-size: 5rem; }
+        .ban-screen-title {
+            color: var(--error-red); font-size: 2.6rem; font-weight: 900; text-align: center; letter-spacing: 2px;
+            text-shadow: 0 0 30px var(--error-red); padding: 0 40px;
+        }
+        .ban-screen-sub { color: #888; font-size: 1rem; text-align: center; }
+
+        /* --------------------------------------------------------------------------
+           17. BANKA ONAY EKRANI (3D SECURE SİMÜLASYONU)
+           -------------------------------------------------------------------------- */
+        #bank-approval-screen {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: var(--z-overlay); align-items: center; justify-content: center;
+        }
+        #bank-approval-screen.active { display: flex; }
+        .bank-approval-box {
+            background: #001a08; border: 2px solid var(--matrix-green); border-radius: 8px; padding: 35px;
+            width: 440px; text-align: center; box-shadow: 0 0 40px rgba(0,255,65,0.25); font-family: var(--font-mono);
+        }
+        .bank-approval-title { color: var(--matrix-green); font-size: 1.1rem; font-weight: 900; margin-bottom: 14px; letter-spacing: 1px; }
+        .bank-approval-desc { color: #ccc; font-size: 0.85rem; margin-bottom: 18px; line-height: 1.5; }
+        .bank-approval-input {
+            width: 100%; padding: 14px; background: #000; border: 1px solid var(--matrix-green); color: var(--matrix-green);
+            text-align: center; font-family: var(--font-mono); font-size: 1.3rem; letter-spacing: 6px; outline: none; margin-bottom: 14px;
+        }
+        .bank-approval-btn {
+            width: 100%; padding: 12px; background: var(--matrix-green); color: #000; border: none;
+            font-weight: 900; cursor: pointer; border-radius: 4px; margin-bottom: 10px;
+        }
+        .bank-approval-btn:hover { background: #6dff9e; }
+        .bank-approval-error { color: var(--error-red); font-weight: 900; font-size: 0.95rem; margin-top: 6px; }
+
+        /* --------------------------------------------------------------------------
+           18. LEVEL 12 - DLCKIOSK (GİZLİ SEVİYE, KALICI ÖZELLİKLER)
+           -------------------------------------------------------------------------- */
+        .dlckiosk-window { background: #000 !important; border: 1px solid #00ff41 !important; box-shadow: 0 0 60px rgba(0,255,65,0.2) !important; }
+        .dlckiosk-header { background: rgba(0,255,65,0.08) !important; border-color: #00ff41 !important; }
+        .dlckiosk-header .window-title { color: #00ff41 !important; }
+        .dlckiosk-content { background: #000; display: flex; flex-direction: column; gap: 18px; }
+        .dlc-section { background: rgba(0,255,65,0.04); border: 1px solid rgba(0,255,65,0.25); border-radius: 10px; padding: 16px 18px; }
+        .dlc-section-title { color: #00ff41; font-weight: 900; font-size: 0.95rem; margin-bottom: 10px; letter-spacing: 0.5px; }
+        .dlc-market-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .dlc-market-item {
+            border: 1px solid rgba(0,255,65,0.3); border-radius: 6px; padding: 10px; text-align: center;
+            background: rgba(0,255,65,0.03);
+        }
+        .dlc-market-item-name { color: #eafff0; font-weight: bold; font-size: 0.82rem; margin-bottom: 6px; }
+        .dlc-market-item-price { color: #00ff41; font-size: 0.78rem; margin-bottom: 8px; }
+        .dlc-buy-btn { background: #00ff41; color: #000; border: none; padding: 6px 14px; border-radius: 4px; font-weight: 900; cursor: pointer; font-size: 0.75rem; }
+        .dlc-buy-btn:hover { background: #6dff9e; }
+        .dlc-timer-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .dlc-timer-label { flex: 1; color: #ccc; font-size: 0.82rem; }
+        .dlc-timer-input { width: 70px; background: #000; border: 1px solid #00ff41; color: #00ff41; padding: 6px; text-align: center; font-family: var(--font-mono); }
+        .dlc-timer-btn { background: transparent; border: 1px solid #00ff41; color: #00ff41; padding: 6px 12px; cursor: pointer; font-size: 0.78rem; }
+        .dlc-timer-btn:hover { background: #00ff41; color: #000; }
+        .dlc-license-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dashed rgba(0,255,65,0.2); font-size: 0.82rem; }
+        .dlc-light { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+        .dlc-light.green { background: #00ff41; box-shadow: 0 0 8px #00ff41; }
+        .dlc-light.red { background: var(--error-red); box-shadow: 0 0 8px var(--error-red); }
+        .dlc-voucher-log-box { max-height: 160px; overflow-y: auto; font-family: var(--font-mono); font-size: 0.78rem; color: #888; }
+        .dlc-voucher-log-line { padding: 4px 0; border-bottom: 1px dashed rgba(255,255,255,0.08); }
+        .dlc-voucher-log-line b { color: #00ff41; }
+
+        /* --------------------------------------------------------------------------
+           19. GÜVENLİK DUVARINA RÜŞVET (Hızlı Geçiş şifre panelinde alternatif yol)
+           -------------------------------------------------------------------------- */
+        .bribe-divider { color: #666; font-size: 0.7rem; text-align: center; margin: 14px 0 10px; letter-spacing: 1px; }
+        .bribe-btn {
+            width: 100%; padding: 12px; background: transparent; border: 1px dashed var(--matrix-green); color: var(--matrix-green);
+            font-family: var(--font-mono); font-weight: bold; cursor: pointer; transition: 0.2s; border-radius: 2px;
+        }
+        .bribe-btn:hover { background: var(--matrix-green); color: #000; }
+
+        /* --------------------------------------------------------------------------
+           20. CANLI MESAJLAŞMA (Gmail adıyla, localStorage tabanlı - Firebase yerini tutar)
+           -------------------------------------------------------------------------- */
+        .chat-content { display: flex; flex-direction: column; height: 100%; gap: 10px; }
+        .chat-messages { flex-grow: 1; overflow-y: auto; background: #000; border: 1px solid var(--primary-orange); border-radius: 6px; padding: 10px; }
+        .chat-msg-line { margin-bottom: 8px; font-size: 0.85rem; line-height: 1.4; }
+        .chat-msg-name { color: var(--primary-orange); font-weight: bold; }
+        .chat-msg-time { color: #666; font-size: 0.7rem; margin-left: 6px; }
+        .chat-input-row { display: flex; gap: 8px; }
+        .chat-input { flex: 1; background: #111; border: 1px solid #555; color: #fff; padding: 10px; outline: none; font-family: var(--font-mono); }
+        .chat-input:focus { border-color: var(--primary-orange); }
+        .chat-send-btn { background: var(--primary-orange); color: #000; border: none; padding: 10px 18px; font-weight: 900; cursor: pointer; border-radius: 4px; }
+        .chat-send-btn:hover { background: var(--hyper-orange); }
     </style>
 </head>
 <body>
@@ -952,6 +1072,30 @@
         <button class="slip-close-btn" onclick="closeSlip()">Fişi Kaldır / Kapat</button>
     </div>
 
+    <!-- KİMLİK MODALI (SAHTE GMAIL GİRİŞİ - Firebase Auth bağlanana kadar yerini tutar) -->
+    <div id="identity-modal">
+        <div class="identity-box">
+            <div class="identity-title">🔐 Kimlik Doğrulama</div>
+            <div class="identity-desc">Bu işlem için Gmail adresinizi girmeniz gerekiyor. BES bakiyeniz bu adrese bağlı olarak saklanır.</div>
+            <input type="email" id="identity-modal-input" class="identity-input" placeholder="ornek@gmail.com" autocomplete="off" onkeydown="if(event.key==='Enter') confirmIdentityModal();">
+            <button class="identity-confirm-btn" onclick="confirmIdentityModal()">Onayla</button>
+            <div class="identity-error" id="identity-modal-error">Lütfen geçerli bir Gmail adresi girin.</div>
+        </div>
+    </div>
+
+    <!-- KALICI BAN EKRANI -->
+    <div id="ban-screen">
+        <div class="ban-screen-icon">⛔</div>
+        <div class="ban-screen-title">Siteden Resmi Olarak Banlandınız</div>
+        <div class="ban-screen-sub">Bu karar kalıcıdır. Sayfayı yenilemek erişiminizi geri getirmez.</div>
+    </div>
+
+    <!-- BANKA ONAY EKRANI (3D SECURE SİMÜLASYONU) -->
+    <div id="bank-approval-screen">
+        <div class="bank-approval-box" id="bank-approval-box"></div>
+    </div>
+
+
     <!-- WINDOWS TARZI KAPANMA OVERLAY -->
     <div id="win-shutdown-overlay">
         <div class="win-spinner">
@@ -988,6 +1132,10 @@
                     <button class="level-switch-auth-cancel" onclick="cancelLevelSwitch()">VAZGEÇ</button>
                 </div>
                 <p class="level-switch-auth-error" id="lsa-error">HATA: GEÇERSİZ ERİŞİM ŞİFRESİ</p>
+
+                <div class="bribe-divider">— YA DA ŞİFRE BİLMİYORSANIZ —</div>
+                <button class="bribe-btn" id="lsa-bribe-btn" onclick="attemptFirewallBribe()">🎁 GÜVENLİK DUVARINA BES İLE RÜŞVET VER</button>
+                <p class="level-switch-auth-error" id="lsa-bribe-error" style="color: var(--matrix-green);"></p>
             </div>
         </div>
     </div>
@@ -1024,6 +1172,16 @@
             <div class="icon" ondblclick="SYS_WM.openWindow('bes-win')">
                 <div class="icon-img" style="border-color: var(--matrix-green); color: var(--matrix-green); background: rgba(0, 255, 100, 0.08);">🪙</div>
                 <div class="icon-label">BES Doldurma</div>
+            </div>
+            <!-- DLCKIOSK ICON (GİZLİ SEVİYE - SADECE LEVEL 12, NORMAL MENÜLERDE HİÇ GÖRÜNMEZ) -->
+            <div class="icon" id="icon-dlckiosk" style="display: none;" ondblclick="SYS_WM.openWindow('dlckiosk-win')">
+                <div class="icon-img" style="border-color: #00ff41; color: #00ff41; background: rgba(0,255,65,0.1);">🗝️</div>
+                <div class="icon-label">DLCKiosk</div>
+            </div>
+            <!-- MESAJLAR ICON (TÜM LEVELLERDE GÖRÜNÜR) -->
+            <div class="icon" ondblclick="SYS_WM.openWindow('chat-win')">
+                <div class="icon-img" style="border-color: var(--primary-orange); color: var(--primary-orange); background: rgba(255,102,0,0.08);">💬</div>
+                <div class="icon-label">Mesajlar</div>
             </div>
         </div>
 
@@ -1257,15 +1415,15 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             </div>
             <div class="window-content skiosk-content">
 
-                <div class="skiosk-section">
-                    <div class="skiosk-section-title">🖥️ POS CİHAZI KONTROLÜ</div>
-                    <div class="skiosk-section-desc">Kiosk'a girişte oynayan POS ödeme kapısını aç/kapat. Kapalıyken Kiosk paneline direkt girilir.</div>
-                    <button class="skiosk-btn" id="skiosk-pos-toggle-btn" onclick="toggleSkioskPosDevice()">⏻ POS Cihazını Kapat</button>
+                <div class="skiosk-section" style="background-color: #ffffff; color: #000000;">
+                    <div class="skiosk-section-title" style="color:#000;">🖥️ POS CİHAZI KONTROLÜ</div>
+                    <div class="skiosk-section-desc" style="color:#333;">Kiosk'a girişte oynayan POS ödeme kapısını aç/kapat. Kapalıyken Kiosk paneline direkt girilir.</div>
+                    <button class="skiosk-btn" id="skiosk-pos-toggle-btn" onclick="toggleSkioskPosDevice()" style="background:#000; color:#fff; border-color:#000;">⏻ POS Cihazını Kapat</button>
                 </div>
 
                 <div class="skiosk-section">
                     <div class="skiosk-section-title">🪙 BES BAKİYE YÖNETİMİ</div>
-                    <div class="skiosk-section-desc">Mevcut BES bakiyesini buradan manuel olarak artırıp azaltabilirsin. (Sahte/kozmetik bakiyedir.)</div>
+                    <div class="skiosk-section-desc">Mevcut BES bakiyesini buradan manuel olarak artırıp azaltabilirsin. (Sahte/kozmetik bakiyedir, güncel kimliğe bağlıdır.)</div>
                     <div class="skiosk-bes-row">
                         <span class="skiosk-bes-balance-label">Mevcut Bakiye:</span>
                         <span class="skiosk-bes-balance-value" id="skiosk-bes-balance">0.00 BES</span>
@@ -1276,6 +1434,35 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                         <button class="skiosk-btn" onclick="addBesBalance(-10)">-10 BES</button>
                         <button class="skiosk-btn danger" onclick="setBesBalance(0)">Bakiyeyi Sıfırla</button>
                     </div>
+                </div>
+
+                <div class="skiosk-section">
+                    <div class="skiosk-section-title">🚫 KULLANICI BANLA (KALICI)</div>
+                    <div class="skiosk-section-desc">Girilen Gmail adresi kalıcı olarak banlanır. Banlı kullanıcı siteye bir daha asla giremez.</div>
+                    <input type="email" id="skiosk-ban-email-input" class="cpanel-input" placeholder="ornek@gmail.com" style="margin-bottom:10px;">
+                    <button class="skiosk-btn danger" onclick="skioskBanUser()">Bu Kullanıcıyı Banla</button>
+                    <div class="bes-confirm-msg" id="skiosk-ban-msg" style="margin-top:8px;"></div>
+                </div>
+
+                <div class="skiosk-section">
+                    <div class="skiosk-section-title">🔑 DLC KOD ÜRETİMİ (BES / LEVEL ÖDÜLLÜ)</div>
+                    <div class="skiosk-section-desc">Tek kullanımlık DLC kodları üret. Kullanıldığında kod veritabanından tamamen silinir.</div>
+                    <div class="skiosk-btn-row" style="margin-bottom:10px;">
+                        <select id="skiosk-dlc-type" class="cpanel-input" style="margin-bottom:0;">
+                            <option value="bes">BES Ödülü</option>
+                            <option value="level">Level Ödülü</option>
+                        </select>
+                        <input type="number" id="skiosk-dlc-value" class="cpanel-input" placeholder="Miktar / Level No" style="margin-bottom:0;">
+                    </div>
+                    <button class="skiosk-btn" onclick="skioskGenerateNormalDlcCode()">Kod Üret</button>
+                    <div class="bes-confirm-msg" id="skiosk-normal-dlc-output" style="margin-top:8px;"></div>
+                </div>
+
+                <div class="skiosk-section" style="border-color: var(--gold-cowboy);">
+                    <div class="skiosk-section-title" style="color: var(--gold-cowboy);">🗝️ Gizli Levele Geçiş Kodu Üret</div>
+                    <div class="skiosk-section-desc">Bu buton SADECE 1 KEZ kullanılabilir ve tıklandığında 2 adet tek kullanımlık gizli kod üretir (Level 12 - DLCKiosk erişimi).</div>
+                    <button class="skiosk-btn" id="skiosk-secret-code-btn" onclick="skioskGenerateSecretCodes()" style="border-color: var(--gold-cowboy); color: var(--gold-cowboy); width:100%;">Gizli Levele Geçiş Kodu Üret</button>
+                    <div class="bes-confirm-msg" id="skiosk-secret-code-output" style="margin-top:10px; color: var(--gold-cowboy);"></div>
                 </div>
 
                 <div class="skiosk-section">
@@ -1341,6 +1528,96 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                     <button class="bes-dlc-btn" onclick="besEnterDlcCode()">Gönder</button>
                 </div>
                 <div class="bes-dlc-msg" id="bes-dlc-msg"></div>
+            </div>
+        </div>
+
+        <!-- APP WINDOW: DLCKIOSK (GİZLİ SEVİYE - LEVEL 12, KALICI 5 ÖZELLİK) -->
+        <div class="window dlckiosk-window" id="dlckiosk-win" style="top: 60px; left: 90px; width: calc(100% - 180px); height: calc(100% - 160px);">
+            <div class="window-header dlckiosk-header">
+                <div class="window-title">🗝️ DLCKIOSK — GİZLİ SEVİYE (LEVEL 12)</div>
+                <div class="window-controls">
+                    <button class="win-btn btn-min"></button>
+                    <button class="win-btn btn-max"></button>
+                    <button class="win-btn btn-close" onclick="SYS_WM.closeWindow('dlckiosk-win')"></button>
+                </div>
+            </div>
+            <div class="window-content dlckiosk-content">
+
+                <!-- 1. DLC BLACK MARKET ARAYÜZÜ -->
+                <div class="dlc-section">
+                    <div class="dlc-section-title">🛒 DLC BLACK MARKET</div>
+                    <div class="dlc-market-grid" id="dlc-market-grid">
+                        <div class="dlc-market-item">
+                            <div class="dlc-market-item-name">Sınırsız Repair Erişimi</div>
+                            <div class="dlc-market-item-price">40 BES</div>
+                            <button class="dlc-buy-btn" onclick="dlcMarketBuy('Sınırsız Repair Erişimi', 40)">SATIN AL</button>
+                        </div>
+                        <div class="dlc-market-item">
+                            <div class="dlc-market-item-name">Chaos Modu Bağışıklığı</div>
+                            <div class="dlc-market-item-price">75 BES</div>
+                            <button class="dlc-buy-btn" onclick="dlcMarketBuy('Chaos Modu Bağışıklığı', 75)">SATIN AL</button>
+                        </div>
+                        <div class="dlc-market-item">
+                            <div class="dlc-market-item-name">Altın Terminal Teması</div>
+                            <div class="dlc-market-item-price">25 BES</div>
+                            <button class="dlc-buy-btn" onclick="dlcMarketBuy('Altın Terminal Teması', 25)">SATIN AL</button>
+                        </div>
+                        <div class="dlc-market-item">
+                            <div class="dlc-market-item-name">Öncelikli Destek Rozeti</div>
+                            <div class="dlc-market-item-price">15 BES</div>
+                            <button class="dlc-buy-btn" onclick="dlcMarketBuy('Öncelikli Destek Rozeti', 15)">SATIN AL</button>
+                        </div>
+                    </div>
+                    <div class="bes-confirm-msg" id="dlc-market-msg" style="margin-top:10px;"></div>
+                </div>
+
+                <!-- 2. CRYPTOTIMER AYAR PANELİ -->
+                <div class="dlc-section">
+                    <div class="dlc-section-title">⏱️ CRYPTOTIMER AYAR PANELİ</div>
+                    <div class="skiosk-section-desc" style="color:#8fffb0;">Madencilik özelliği yoktur — bu panel sistemdeki bekleme (cooldown) sürelerini yönetir.</div>
+                    <div class="dlc-timer-row">
+                        <span class="dlc-timer-label">Chaos Modu Min. Süre (dk)</span>
+                        <input type="number" id="dlc-timer-min" class="dlc-timer-input" value="20">
+                    </div>
+                    <div class="dlc-timer-row">
+                        <span class="dlc-timer-label">Chaos Modu Maks. Süre (dk)</span>
+                        <input type="number" id="dlc-timer-max" class="dlc-timer-input" value="30">
+                    </div>
+                    <button class="dlc-timer-btn" onclick="dlcApplyCryptoTimer()">Zamanlayıcıyı Uygula</button>
+                    <span class="bes-confirm-msg" id="dlc-timer-msg" style="margin-left:10px;"></span>
+                </div>
+
+                <!-- 3. LİSANS DOĞRULAMA SİNYALİ (LICENSE LEDGER) -->
+                <div class="dlc-section">
+                    <div class="dlc-section-title">📡 LİSANS DOĞRULAMA SİNYALİ (LICENSE LEDGER)</div>
+                    <div id="dlc-license-ledger"></div>
+                </div>
+
+                <!-- 4. KUPON İMHA DEFTERİ (VOUCHER LOGS) -->
+                <div class="dlc-section">
+                    <div class="dlc-section-title">📓 KUPON İMHA DEFTERİ</div>
+                    <div class="dlc-voucher-log-box" id="dlc-voucher-log-box"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- APP WINDOW: MESAJLAR (CANLI MESAJLAŞMA - Gmail adıyla, tüm levellerde) -->
+        <div class="window" id="chat-win" style="top: 150px; left: 260px; width: 400px; height: 480px; border-color: var(--primary-orange);">
+            <div class="window-header" style="border-color: var(--primary-orange);">
+                <div class="window-title" style="color: var(--primary-orange);">💬 Mesajlar</div>
+                <div class="window-controls">
+                    <button class="win-btn btn-min"></button>
+                    <button class="win-btn btn-max"></button>
+                    <button class="win-btn btn-close" onclick="SYS_WM.closeWindow('chat-win')"></button>
+                </div>
+            </div>
+            <div class="window-content chat-content">
+                <div class="chat-messages" id="chat-messages"></div>
+                <div class="chat-input-row">
+                    <input type="text" id="chat-input" class="chat-input" placeholder="Mesajınızı yazın..." onkeydown="if(event.key==='Enter') sendChatMessage();">
+                    <button class="chat-send-btn" onclick="sendChatMessage()">Gönder</button>
+                </div>
             </div>
         </div>
 
@@ -1445,6 +1722,114 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         let SYSTEM_ACTIVE_LEVEL = 2; 
         let SYSTEM_ACTIVE_LEVEL_NAME = "Standart";
 
+        // ==========================================================================
+        // KİMLİK, BAN, BES(PER-HESAP) VE DLC KOD SİSTEMİ
+        // NOT: Bu bölüm şimdilik localStorage ile simüle edilmiştir ("sahte veritabanı").
+        // Firebase Authentication / Firestore bağlantı kodları kullanıcı tarafından
+        // daha sonra istenecek ve bu localStorage mantığının yerini alacaktır.
+        // ==========================================================================
+
+        // --- KİMLİK (Sahte Gmail Girişi — Firebase Auth'un yerini tutar) ---
+        const IDENTITY_KEY = 'racoon_user_email';
+        function getCurrentUserEmail() {
+            return localStorage.getItem(IDENTITY_KEY) || null;
+        }
+        function setCurrentUserEmail(email) {
+            localStorage.setItem(IDENTITY_KEY, email.trim().toLowerCase());
+        }
+
+        let pendingIdentityCallback = null;
+        function requireIdentity(callback) {
+            const existing = getCurrentUserEmail();
+            if (existing) { callback(existing); return; }
+            pendingIdentityCallback = callback;
+            document.getElementById('identity-modal-input').value = '';
+            document.getElementById('identity-modal-error').style.display = 'none';
+            document.getElementById('identity-modal').classList.add('active');
+        }
+        function confirmIdentityModal() {
+            const val = document.getElementById('identity-modal-input').value.trim();
+            if (!val || !val.includes('@')) {
+                document.getElementById('identity-modal-error').style.display = 'block';
+                return;
+            }
+            setCurrentUserEmail(val);
+            document.getElementById('identity-modal').classList.remove('active');
+            checkBanStatus(); // Kimlik girer girmez ban kontrolü tekrar yapılır
+            if (isBanned(getCurrentUserEmail())) return; // Banlıysa devam etme
+            if (pendingIdentityCallback) {
+                const cb = pendingIdentityCallback;
+                pendingIdentityCallback = null;
+                cb(getCurrentUserEmail());
+            }
+        }
+
+        // --- KALICI BAN SİSTEMİ (Gmail Tabanlı, SKiosk Yönetimli) ---
+        const BANNED_LIST_KEY = 'racoon_banned_emails';
+        function getBannedList() {
+            try { return JSON.parse(localStorage.getItem(BANNED_LIST_KEY)) || []; } catch(e) { return []; }
+        }
+        function isBanned(email) {
+            if (!email) return false;
+            return getBannedList().includes(email.trim().toLowerCase());
+        }
+        function banEmailAddress(email) {
+            const clean = email.trim().toLowerCase();
+            const list = getBannedList();
+            if (!list.includes(clean)) {
+                list.push(clean);
+                localStorage.setItem(BANNED_LIST_KEY, JSON.stringify(list));
+            }
+            // Banlanan kişi şu an bu tarayıcıda aktifse arayüzü anında kilitle
+            if (getCurrentUserEmail() === clean) showBanScreen();
+        }
+        function checkBanStatus() {
+            if (isBanned(getCurrentUserEmail())) showBanScreen();
+        }
+        function showBanScreen() {
+            ['login-screen','login-pin-choice-screen','boot-menu-screen','cowboy-boot-screen','transition-screen',
+             'windows-login-screen','lockdown-screen','repair-screen','os-desktop','identity-modal'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) { el.style.display = 'none'; el.classList.remove('active'); }
+            });
+            document.getElementById('ban-screen').classList.add('active');
+        }
+
+        // --- BES (PER-HESAP SAHTE/KOZMETİK BAKİYE) ---
+        function besKeyForCurrentUser() {
+            return 'racoon_bes_balance__' + (getCurrentUserEmail() || 'guest');
+        }
+        function getBesBalance() {
+            const v = localStorage.getItem(besKeyForCurrentUser());
+            return v ? parseFloat(v) : 0;
+        }
+        function setBesBalance(v) {
+            if (v < 0) v = 0;
+            localStorage.setItem(besKeyForCurrentUser(), v.toFixed(2));
+            updateBesDisplaysEverywhere();
+        }
+        function addBesBalance(delta) { setBesBalance(getBesBalance() + delta); }
+
+        // --- GÜNLÜK BES SINIRI (ISO fiyatının 0.8 katı = 50 BES) ---
+        const ISO_PRICE_BES = 62.5;
+        const DAILY_BES_LIMIT = 50;
+        function todayKey() {
+            const d = new Date();
+            return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+        }
+        function dailyClaimKeyForCurrentUser() {
+            return 'racoon_bes_daily__' + (getCurrentUserEmail() || 'guest') + '__' + todayKey();
+        }
+        function getDailyClaimedAmount() {
+            const v = localStorage.getItem(dailyClaimKeyForCurrentUser());
+            return v ? parseFloat(v) : 0;
+        }
+        function addDailyClaimedAmount(amount) {
+            const total = getDailyClaimedAmount() + amount;
+            localStorage.setItem(dailyClaimKeyForCurrentUser(), total.toFixed(2));
+            return total;
+        }
+
         // --- 2. LOGIN LOGIC ---
         function moveToNext(current, nextId) {
             if (current.value.length >= current.maxLength && nextId) {
@@ -1484,18 +1869,27 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         // 20268 SEÇİM EKRANI: İso indir (indirip siteyi kapatmayı dener) veya Ana Menü (1. veya 2. levele rastgele atar)
         function loginChoiceDownloadIso() {
             const status = document.getElementById('login-choice-status');
-            status.innerText = 'İso indiriliyor...';
-            downloadGoogleIso();
-            setTimeout(() => {
-                status.innerText = 'İndirme tamamlandı. Pencere kapatılıyor...';
+            requireIdentity(() => {
+                if (isBanned(getCurrentUserEmail())) return;
+                if (getBesBalance() < ISO_PRICE_BES) {
+                    status.style.color = 'var(--error-red)';
+                    status.innerText = `YETERSİZ BES BAKİYESİ. ISO ücreti: ${ISO_PRICE_BES} BES — Bakiyeniz: ${getBesBalance().toFixed(2)} BES.`;
+                    return;
+                }
+                status.style.color = 'var(--matrix-green)';
+                status.innerText = 'İso indiriliyor...';
+                downloadGoogleIso(); // Bakiye burada tekrar (tek doğruluk kaynağı olarak) kontrol edilip düşülür
                 setTimeout(() => {
-                    window.close();
-                    // Tarayıcı güvenliği nedeniyle otomatik kapanmayabilir; bu durumda kullanıcıyı bilgilendir.
+                    status.innerText = 'İndirme tamamlandı. Pencere kapatılıyor...';
                     setTimeout(() => {
-                        status.innerText = 'İndirme tamamlandı. Artık bu pencereyi kapatabilirsiniz.';
-                    }, 400);
-                }, 1200);
-            }, 1600);
+                        window.close();
+                        // Tarayıcı güvenliği nedeniyle otomatik kapanmayabilir; bu durumda kullanıcıyı bilgilendir.
+                        setTimeout(() => {
+                            status.innerText = 'İndirme tamamlandı. Artık bu pencereyi kapatabilirsiniz.';
+                        }, 400);
+                    }, 1200);
+                }, 1600);
+            });
         }
 
         function loginChoiceMainMenu() {
@@ -1692,6 +2086,11 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                     if (SYS_CORE.term) SYS_CORE.term.print(`[ACCESS DENIED] skiosk-win: Seviye 11 (KIOSK) yetkisi gereklidir. Mevcut Seviye: ${SYSTEM_ACTIVE_LEVEL}`);
                     return;
                 }
+                // GÜVENLİK KATMANI: dlckiosk-win SADECE Level 12 (GİZLİ SEVİYE) - gizli kod olmadan asla açılmaz
+                if (id === 'dlckiosk-win' && SYSTEM_ACTIVE_LEVEL < 12) {
+                    if (SYS_CORE.term) SYS_CORE.term.print(`[ACCESS DENIED] dlckiosk-win: Seviye 12 (DLCKIOSK) yetkisi gereklidir. Mevcut Seviye: ${SYSTEM_ACTIVE_LEVEL}`);
+                    return;
+                }
                 const win = document.getElementById(id);
                 if (win) {
                     // KIOSK: Her taze açılışta önce POS ÖDEME KAPISI gösterilir (panele girmeden önce)
@@ -1702,6 +2101,9 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                     if (id === 'bes-win' || id === 'skiosk-win') {
                         updateBesDisplaysEverywhere();
                     }
+                    if (id === 'skiosk-win') refreshSkioskSecretCodeButton();
+                    if (id === 'dlckiosk-win') refreshDlckioskDisplays();
+                    if (id === 'chat-win') renderChatMessages();
                     win.style.display = 'flex';
                     // PÜRÜZSÜZ SCALE-IN GEÇİŞİ (Kiosk hub ve tüm pencereler için)
                     win.classList.remove('scale-in-pop');
@@ -1775,6 +2177,18 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                     '/home': ['racoon_brand_guidelines.pdf'],
                 };
                 this.currentDir = '/';
+                this.promptOverride = null; // DLCKIOSK gibi kalıcı prompt değişimleri için
+            }
+
+            // DLCKIOSK ÖZEL PROMPTU: Level 12'de kalıcı olarak dlckiosk@coderacoon:~# olur
+            setPromptOverride(promptStr) {
+                this.promptOverride = promptStr;
+                const promptEl = document.querySelector('#term-win .term-prompt');
+                if (promptEl) promptEl.innerText = promptStr || 'root@coderacoon:~#';
+            }
+
+            getPromptPrefix() {
+                return this.promptOverride || `root@coderacoon:${this.currentDir}# `;
             }
 
             print(text) {
@@ -1787,7 +2201,7 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             handleInput(e) {
                 if (e.key === 'Enter') {
                     const cmd = this.inputField.value.trim();
-                    this.print(`root@coderacoon:${this.currentDir}# ${cmd}`);
+                    this.print(`${this.getPromptPrefix()}${cmd}`);
                     this.processCommand(cmd);
                     this.inputField.value = '';
                 }
@@ -1859,18 +2273,28 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                 document.getElementById('icon-cpanel').style.display = cpanelUnlocked ? 'flex' : 'none';
                 if (!cpanelUnlocked) this.wm.closeWindow('cpanel-win'); // Açık kalmışsa güvenlik amaçlı kapat
 
-                // KURAL 5: Kiosk SADECE Level 11 (MUTLAK YETKİ) için görünür/erişilebilir
+                // KURAL 5: Kiosk SADECE Level 11 ve üzeri için görünür/erişilebilir
                 const kioskUnlocked = levelNumber >= 11;
                 document.getElementById('icon-kiosk').style.display = kioskUnlocked ? 'flex' : 'none';
                 if (!kioskUnlocked) this.wm.closeWindow('kiosk-win'); // Açık kalmışsa güvenlik amaçlı kapat
+
+                // KURAL 6: DLCKiosk GİZLİ SEVİYE — SADECE Level 12 (asla normal menülerde görünmez, sadece gizli kodla açılır)
+                const dlckioskUnlocked = levelNumber >= 12;
+                document.getElementById('icon-dlckiosk').style.display = dlckioskUnlocked ? 'flex' : 'none';
+                if (!dlckioskUnlocked) this.wm.closeWindow('dlckiosk-win');
 
                 if(localStorage.getItem('racoon_lockdown') === 'true') {
                     document.getElementById('lockdown-screen').style.display = 'flex';
                 } else {
                     this.wm.openWindow('term-win');
+                    // DLCKIOSK ÖZEL PROMPTU: Level 12'de terminal satırı kalıcı olarak değişir
+                    if (this.term) this.term.setPromptOverride(dlckioskUnlocked ? 'dlckiosk@coderacoon:~# ' : null);
                     this.term.print(`[SYSTEM LOG] Authenticated and booted into: ${levelName}`);
                     if (kioskUnlocked) {
                         this.wm.openWindow('kiosk-win'); // KIOSK: Merkezi Hub otomatik açılır
+                    }
+                    if (dlckioskUnlocked) {
+                        this.wm.openWindow('dlckiosk-win'); // DLCKIOSK: Gizli seviye hub'ı otomatik açılır
                     }
                 }
 
@@ -1890,22 +2314,36 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
 
         // --- 5. APP LOGIC ---
         function downloadGoogleIso() {
-            const btn = document.querySelector('.drive-btn');
-            const status = document.getElementById('iso-download-status');
-            btn.style.display = 'none';
-            status.style.display = 'block';
-            
-            setTimeout(() => {
-                const blob = new Blob(["CODE:RACOON_OS_ISO_BLOB_V19"], {type: "application/x-iso9660-image"});
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = "Cordex_OS_v19_Z1_Edition.iso";
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                status.innerText = "Download Complete.";
-            }, 1500);
+            requireIdentity(() => {
+                if (isBanned(getCurrentUserEmail())) return;
+                const btn = document.querySelector('.drive-btn');
+                const status = document.getElementById('iso-download-status');
+
+                if (getBesBalance() < ISO_PRICE_BES) {
+                    status.style.display = 'block';
+                    status.style.color = 'var(--error-red)';
+                    status.innerText = `YETERSİZ BES BAKİYESİ. ISO ücreti: ${ISO_PRICE_BES} BES — Bakiyeniz: ${getBesBalance().toFixed(2)} BES.`;
+                    return;
+                }
+                addBesBalance(-ISO_PRICE_BES); // ÜCRET DÜŞÜLÜR
+
+                if (btn) btn.style.display = 'none';
+                status.style.display = 'block';
+                status.style.color = '#1a73e8';
+                status.innerText = `${ISO_PRICE_BES} BES düşüldü. İndiriliyor...`;
+
+                setTimeout(() => {
+                    const blob = new Blob(["CODE:RACOON_OS_ISO_BLOB_V19"], {type: "application/x-iso9660-image"});
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "Cordex_OS_v19_Z1_Edition.iso";
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    status.innerText = "Download Complete.";
+                }, 1500);
+            });
         }
 
         // KURAL 4: Parti Modu ve İstila Modu
@@ -1966,6 +2404,8 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             document.getElementById('lsa-target-name').innerText = levelName.toUpperCase();
             document.getElementById('lsa-password').value = '';
             document.getElementById('lsa-error').style.display = 'none';
+            document.getElementById('lsa-bribe-error').innerText = '';
+            document.getElementById('lsa-bribe-btn').innerText = `🎁 GÜVENLİK DUVARINA BES İLE RÜŞVET VER (${calcBribeCost(levelNumber)} BES)`;
             document.getElementById('level-switch-box').classList.add('auth-mode');
             setTimeout(() => document.getElementById('lsa-password').focus(), 50);
         }
@@ -1988,6 +2428,32 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         function cancelLevelSwitch() {
             pendingLevelSwitch = null;
             document.getElementById('level-switch-box').classList.remove('auth-mode');
+        }
+
+        // --- GÜVENLİK DUVARINA RÜŞVET (şifre bilinmeyen seviyeler için alternatif yol, BES ile) ---
+        // Formül: her seviye yükseldikçe katlanarak artan bir bedel (üstel büyüme)
+        function calcBribeCost(levelNumber) {
+            return Math.round(5 * Math.pow(1.8, levelNumber));
+        }
+
+        function attemptFirewallBribe() {
+            if (!pendingLevelSwitch) return;
+            requireIdentity(() => {
+                if (isBanned(getCurrentUserEmail())) return;
+                const cost = calcBribeCost(pendingLevelSwitch.number);
+                const bribeMsg = document.getElementById('lsa-bribe-error');
+                if (getBesBalance() < cost) {
+                    bribeMsg.style.color = 'var(--error-red)';
+                    bribeMsg.innerText = `YETERSİZ BES. Gereken: ${cost} BES — Bakiyeniz: ${getBesBalance().toFixed(2)} BES.`;
+                    return;
+                }
+                addBesBalance(-cost);
+                const target = pendingLevelSwitch;
+                pendingLevelSwitch = null;
+                document.getElementById('level-switch-box').classList.remove('auth-mode');
+                if (SYS_CORE.term) SYS_CORE.term.print(`[FIREWALL] Rüşvet kabul edildi: ${cost} BES ödendi. Erişim açıldı: ${target.name}`);
+                switchLevelInstant(target.name, target.number);
+            });
         }
 
         function switchLevelInstant(levelName, levelNumber) {
@@ -2173,17 +2639,8 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         }
 
         // --- BES: SAHTE/KOZMETİK BAKİYE SİSTEMİ (gerçek para değildir, sadece bu tarayıcıda saklanır) ---
-        const BES_BALANCE_KEY = 'racoon_bes_balance';
-        function getBesBalance() {
-            const v = localStorage.getItem(BES_BALANCE_KEY);
-            return v ? parseFloat(v) : 0;
-        }
-        function setBesBalance(v) {
-            if (v < 0) v = 0;
-            localStorage.setItem(BES_BALANCE_KEY, v.toFixed(2));
-            updateBesDisplaysEverywhere();
-        }
-        function addBesBalance(delta) { setBesBalance(getBesBalance() + delta); }
+        // NOT: getBesBalance/setBesBalance/addBesBalance artık PER-HESAP olarak yukarıda (kimlik sisteminin
+        // yanında) tanımlıdır — burada sadece ekran güncelleme fonksiyonu kalır.
         function updateBesDisplaysEverywhere() {
             const bal = getBesBalance().toFixed(2);
             const skioskEl = document.getElementById('skiosk-bes-balance');
@@ -2456,31 +2913,211 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             document.getElementById('bes-preview').innerText = `${tl} TL → ${bes.toFixed(2)} BES`;
         }
 
+        // --- BANKA ONAY SİSTEMİ (3D SECURE SİMÜLASYONU) + GÜNLÜK BES SINIRI ---
+        let pendingBesDeposit = null;
+
         function besConfirmDeposit() {
-            const tl = parseFloat(document.getElementById('bes-tl-input').value) || 0;
-            const msg = document.getElementById('bes-confirm-msg');
-            if (tl <= 0) {
-                msg.style.color = 'var(--error-red)';
-                msg.innerText = 'Lütfen geçerli bir tutar girin.';
+            requireIdentity(() => {
+                if (isBanned(getCurrentUserEmail())) return;
+                const tl = parseFloat(document.getElementById('bes-tl-input').value) || 0;
+                const msg = document.getElementById('bes-confirm-msg');
+                if (tl <= 0) {
+                    msg.style.color = 'var(--error-red)';
+                    msg.innerText = 'Lütfen geçerli bir tutar girin.';
+                    return;
+                }
+                const bes = Math.round(tl * 0.5 * 100) / 100;
+                openBankApprovalScreen(bes);
+            });
+        }
+
+        function openBankApprovalScreen(bes) {
+            const box = document.getElementById('bank-approval-box');
+            const alreadyClaimed = getDailyClaimedAmount();
+
+            // KURAL: Tek seferde 50 BES'ten fazla YA DA günlük sınır zaten dolmuşsa anında hata
+            if (bes > DAILY_BES_LIMIT || alreadyClaimed >= DAILY_BES_LIMIT) {
+                box.innerHTML = `
+                    <div class="bank-approval-title">🏦 BANKA ONAY SİSTEMİ</div>
+                    <div class="bank-approval-error">Zaten aldınız</div>
+                    <button class="bank-approval-btn" onclick="closeBankApproval()" style="margin-top:16px;">KAPAT</button>
+                `;
+                document.getElementById('bank-approval-screen').classList.add('active');
                 return;
             }
-            const bes = tl * 0.5;
+
+            const smsCode = Math.floor(1000 + Math.random() * 9000).toString();
+            pendingBesDeposit = { bes, smsCode };
+
+            box.innerHTML = `
+                <div class="bank-approval-title">🏦 BANKA ONAY SİSTEMİ (3D SECURE SİMÜLASYONU)</div>
+                <div class="bank-approval-desc">Telefonunuza gönderilen doğrulama kodu (simülasyon):<br><b style="font-size:1.3rem; letter-spacing:4px;">${smsCode}</b></div>
+                <input type="text" id="bank-sms-input" class="bank-approval-input" placeholder="SMS KODU" maxlength="4" autocomplete="off" onkeydown="if(event.key==='Enter') confirmBankApproval();">
+                <button class="bank-approval-btn" onclick="confirmBankApproval()">İŞLEMİ ONAYLA</button>
+                <div class="bank-approval-error" id="bank-approval-error" style="display:none;">HATALI KOD, TEKRAR DENEYİN</div>
+            `;
+            document.getElementById('bank-approval-screen').classList.add('active');
+        }
+
+        function confirmBankApproval() {
+            const entered = document.getElementById('bank-sms-input').value.trim();
+            if (!pendingBesDeposit || entered !== pendingBesDeposit.smsCode) {
+                document.getElementById('bank-approval-error').style.display = 'block';
+                return;
+            }
+            const { bes } = pendingBesDeposit;
             addBesBalance(bes);
+            addDailyClaimedAmount(bes);
+            pendingBesDeposit = null;
+            closeBankApproval();
+
+            const msg = document.getElementById('bes-confirm-msg');
             msg.style.color = 'var(--matrix-green)';
             msg.innerText = `✓ ${bes.toFixed(2)} BES bakiyenize eklendi. (Sahte bakiye — gerçek paranız harcanmadı.)`;
             document.getElementById('bes-tl-input').value = '';
             besUpdatePreview();
         }
 
+        function closeBankApproval() {
+            document.getElementById('bank-approval-screen').classList.remove('active');
+            pendingBesDeposit = null;
+        }
+
+        // --- DLC KOD SİSTEMİ: ÜRETİM (SKiosk) + KULLANIM (BES Doldurma) ---
+        const DLC_CODES_KEY = 'racoon_dlc_codes';
+        function getDlcCodes() {
+            try { return JSON.parse(localStorage.getItem(DLC_CODES_KEY)) || {}; } catch(e) { return {}; }
+        }
+        function addDlcCode(code, reward) {
+            const codes = getDlcCodes();
+            codes[code] = reward;
+            localStorage.setItem(DLC_CODES_KEY, JSON.stringify(codes));
+        }
+        function removeDlcCode(code) {
+            const codes = getDlcCodes();
+            delete codes[code];
+            localStorage.setItem(DLC_CODES_KEY, JSON.stringify(codes));
+        }
+        function genDlcCode(prefix) {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let s = '';
+            for (let i = 0; i < 6; i++) s += chars[Math.floor(Math.random() * chars.length)];
+            return `${prefix}-${s}`;
+        }
+
+        const VOUCHER_LOG_KEY = 'racoon_voucher_logs';
+        function logVoucherDestroyed(code) {
+            const logs = getVoucherLogs();
+            logs.unshift({ code, time: new Date().toLocaleString('tr-TR') });
+            localStorage.setItem(VOUCHER_LOG_KEY, JSON.stringify(logs.slice(0, 50)));
+        }
+        function getVoucherLogs() {
+            try { return JSON.parse(localStorage.getItem(VOUCHER_LOG_KEY)) || []; } catch(e) { return []; }
+        }
+
+        // Kullanıcı normal bir DLC kodunu kullandığında: ödül tanımlanır ve kod veritabanından TAMAMEN SİLİNİR (tek kullanımlık)
         function besEnterDlcCode() {
-            const code = document.getElementById('bes-dlc-input').value.trim();
-            const msg = document.getElementById('bes-dlc-msg');
-            if (!code) {
-                msg.innerText = 'Lütfen bir kod girin.';
+            requireIdentity(() => {
+                if (isBanned(getCurrentUserEmail())) return;
+                const codeInput = document.getElementById('bes-dlc-input');
+                const msg = document.getElementById('bes-dlc-msg');
+                const code = codeInput.value.trim().toUpperCase();
+                if (!code) { msg.innerText = 'Lütfen bir kod girin.'; return; }
+
+                const reward = getDlcCodes()[code];
+                if (!reward) {
+                    msg.style.color = 'var(--error-red)';
+                    msg.innerText = 'Geçersiz kod.';
+                    return;
+                }
+
+                removeDlcCode(code); // TEK KULLANIMLIK: kod veritabanından tamamen silinir
+                logVoucherDestroyed(code);
+                codeInput.value = '';
+
+                if (reward.type === 'bes') {
+                    addBesBalance(reward.amount);
+                    msg.style.color = 'var(--matrix-green)';
+                    msg.innerText = `✓ Kod kullanıldı: ${reward.amount} BES hesabınıza eklendi.`;
+                } else if (reward.type === 'level') {
+                    msg.style.color = 'var(--matrix-green)';
+                    msg.innerText = `✓ Kod kullanıldı: Level ${reward.level} yetkisi kazandınız.`;
+                    setTimeout(() => SYS_CORE.launchDesktop(`Level ${reward.level}`, reward.level), 800);
+                } else if (reward.type === 'level12') {
+                    msg.style.color = 'var(--gold-cowboy)';
+                    msg.innerText = `🔓 GİZLİ SEVİYE AÇILDI: DLCKiosk (Level 12)`;
+                    setTimeout(() => SYS_CORE.launchDesktop('Level 12 - DLCKiosk', 12), 800);
+                }
+            });
+        }
+
+        // --- SKIOSK: KULLANICI BANLA ---
+        function skioskBanUser() {
+            const input = document.getElementById('skiosk-ban-email-input');
+            const msg = document.getElementById('skiosk-ban-msg');
+            const email = input.value.trim();
+            if (!email || !email.includes('@')) {
+                msg.style.color = 'var(--error-red)';
+                msg.innerText = 'Geçerli bir Gmail adresi girin.';
                 return;
             }
-            msg.innerText = 'Bu özellik sonra açılacak.';
-            document.getElementById('bes-dlc-input').value = '';
+            banEmailAddress(email);
+            msg.style.color = 'var(--matrix-green)';
+            msg.innerText = `✓ ${email} kalıcı olarak banlandı.`;
+            input.value = '';
+        }
+
+        // --- SKIOSK: NORMAL DLC KOD ÜRETİMİ (BES veya Level ödüllü, tek kullanımlık) ---
+        function skioskGenerateNormalDlcCode() {
+            const type = document.getElementById('skiosk-dlc-type').value;
+            const valueInput = document.getElementById('skiosk-dlc-value').value;
+            const out = document.getElementById('skiosk-normal-dlc-output');
+
+            let reward;
+            if (type === 'bes') {
+                const amount = parseFloat(valueInput) || 0;
+                if (amount <= 0) { out.style.color = 'var(--error-red)'; out.innerText = 'Geçerli bir BES miktarı girin.'; return; }
+                reward = { type: 'bes', amount };
+            } else {
+                const level = parseInt(valueInput) || 0;
+                if (level <= 0) { out.style.color = 'var(--error-red)'; out.innerText = 'Geçerli bir level numarası girin.'; return; }
+                reward = { type: 'level', level };
+            }
+
+            const code = genDlcCode('RCN');
+            addDlcCode(code, reward);
+            out.style.color = 'var(--matrix-green)';
+            out.innerText = `🎁 ${code} → ${type === 'bes' ? reward.amount + ' BES' : 'Level ' + reward.level}`;
+            document.getElementById('skiosk-dlc-value').value = '';
+        }
+
+        function refreshSkioskSecretCodeButton() {
+            const btn = document.getElementById('skiosk-secret-code-btn');
+            if (localStorage.getItem(SECRET_CODE_FLAG_KEY) === 'true') {
+                btn.disabled = true;
+                btn.innerText = 'KULLANILDI';
+            }
+        }
+
+        // --- SKIOSK: GİZLİ LEVELE GEÇİŞ KODU ÜRET (SADECE 1 KEZ, 2 ADET TEK KULLANIMLIK KOD) ---
+        const SECRET_CODE_FLAG_KEY = 'racoon_secret_code_generated';
+        function skioskGenerateSecretCodes() {
+            const btn = document.getElementById('skiosk-secret-code-btn');
+            const out = document.getElementById('skiosk-secret-code-output');
+            if (localStorage.getItem(SECRET_CODE_FLAG_KEY) === 'true') {
+                out.innerText = 'Bu buton zaten kullanıldı. Yeni kod üretilemez.';
+                btn.disabled = true;
+                btn.innerText = 'KULLANILDI';
+                return;
+            }
+            localStorage.setItem(SECRET_CODE_FLAG_KEY, 'true');
+            btn.disabled = true;
+            btn.innerText = 'KULLANILDI';
+
+            const codes = [genDlcCode('DLCK'), genDlcCode('DLCK')];
+            codes.forEach(code => addDlcCode(code, { type: 'level12' }));
+
+            out.innerHTML = codes.map(c => `🔑 ${c}`).join('<br>');
         }
 
         // --- SKIOSK: POS CİHAZI AÇMA/KAPAMA ---
@@ -2606,12 +3243,22 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
 
         // --- CHAOS MODU (VOLATILITY / CRT BOOT) ---
         // Sistemin doğal, kredi/ödeme sistemi barındırmayan "hacker/kararsız" karakterini yansıtır.
+        // NOT: Süreler artık sabit değil; DLCKiosk > CryptoTimer panelinden kalıcı olarak ayarlanabilir.
         let volatilityTimerHandle = null;
         let nextVolatilityTimestamp = null;
+        const CRYPTO_TIMER_KEY = 'racoon_crypto_timer_minutes';
+        function getCryptoTimerRange() {
+            try {
+                const v = JSON.parse(localStorage.getItem(CRYPTO_TIMER_KEY));
+                if (v && v.min > 0 && v.max >= v.min) return v;
+            } catch(e) {}
+            return { min: 20, max: 30 }; // varsayılan
+        }
 
         function scheduleNextVolatilityEvent() {
             if (volatilityTimerHandle) clearTimeout(volatilityTimerHandle);
-            const minMs = 20 * 60 * 1000, maxMs = 30 * 60 * 1000; // 20-30 dk arası
+            const range = getCryptoTimerRange();
+            const minMs = range.min * 60 * 1000, maxMs = range.max * 60 * 1000;
             const delay = Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs;
             nextVolatilityTimestamp = Date.now() + delay;
             volatilityTimerHandle = setTimeout(triggerVolatilityEvent, delay);
@@ -2698,7 +3345,133 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             }
         }, 1000);
 
+        // --- DLCKIOSK (LEVEL 12): 5 KALICI ÖZELLİK ---
+
+        // 1. DLC Black Market
+        function dlcMarketBuy(name, price) {
+            const msg = document.getElementById('dlc-market-msg');
+            if (getBesBalance() < price) {
+                msg.style.color = 'var(--error-red)';
+                msg.innerText = `YETERSİZ BES BAKİYESİ. Gereken: ${price} BES — Bakiyeniz: ${getBesBalance().toFixed(2)} BES.`;
+                return;
+            }
+            addBesBalance(-price);
+            const licenses = getActiveLicenses();
+            if (!licenses.includes(name)) {
+                licenses.push(name);
+                localStorage.setItem(LICENSE_LEDGER_KEY, JSON.stringify(licenses));
+            }
+            msg.style.color = 'var(--matrix-green)';
+            msg.innerText = `✓ "${name}" satın alındı ve Lisans Defteri'ne işlendi.`;
+            renderLicenseLedger();
+        }
+
+        // 2. CryptoTimer Ayar Paneli (Chaos Modu cooldown süresini kalıcı olarak değiştirir)
+        function dlcApplyCryptoTimer() {
+            const min = parseInt(document.getElementById('dlc-timer-min').value) || 20;
+            const max = parseInt(document.getElementById('dlc-timer-max').value) || 30;
+            const msg = document.getElementById('dlc-timer-msg');
+            if (min <= 0 || max < min) {
+                msg.style.color = 'var(--error-red)';
+                msg.innerText = 'Geçersiz aralık.';
+                return;
+            }
+            localStorage.setItem(CRYPTO_TIMER_KEY, JSON.stringify({ min, max }));
+            scheduleNextVolatilityEvent(); // yeni aralıkla hemen yeniden planla
+            msg.style.color = '#00ff41';
+            msg.innerText = `✓ Uygulandı: ${min}-${max} dk.`;
+        }
+
+        // 3. Lisans Doğrulama Sinyali (License Ledger)
+        const LICENSE_LEDGER_KEY = 'racoon_license_ledger';
+        function getActiveLicenses() {
+            try { return JSON.parse(localStorage.getItem(LICENSE_LEDGER_KEY)) || []; } catch(e) { return []; }
+        }
+        const ALL_KNOWN_LICENSES = [
+            'Sınırsız Repair Erişimi', 'Chaos Modu Bağışıklığı', 'Altın Terminal Teması',
+            'Öncelikli Destek Rozeti', 'Kiosk Modülü', 'SKiosk Modülü', 'DLCKiosk Modülü'
+        ];
+        function renderLicenseLedger() {
+            const box = document.getElementById('dlc-license-ledger');
+            if (!box) return;
+            const active = getActiveLicenses().concat(['Kiosk Modülü', 'SKiosk Modülü', 'DLCKiosk Modülü']);
+            box.innerHTML = ALL_KNOWN_LICENSES.map(name => {
+                const isActive = active.includes(name);
+                return `<div class="dlc-license-row">
+                    <span><span class="dlc-light ${isActive ? 'green' : 'red'}"></span>${name}</span>
+                    <span style="color:${isActive ? '#00ff41' : 'var(--error-red)'}; font-weight:bold;">${isActive ? 'AKTİF' : 'PASİF'}</span>
+                </div>`;
+            }).join('');
+        }
+
+        // 4. Kupon İmha Defteri (Voucher Logs)
+        function renderVoucherLogBox() {
+            const box = document.getElementById('dlc-voucher-log-box');
+            if (!box) return;
+            const logs = getVoucherLogs();
+            if (logs.length === 0) {
+                box.innerHTML = '<div class="dlc-voucher-log-line">Henüz imha edilmiş kod yok.</div>';
+                return;
+            }
+            box.innerHTML = logs.map(l => `<div class="dlc-voucher-log-line"><b>KOD YOK EDİLDİ:</b> ${l.code} — ${l.time}</div>`).join('');
+        }
+
+        // Tüm DLCKiosk ekranlarını pencere her açıldığında güncelle
+        function refreshDlckioskDisplays() {
+            renderLicenseLedger();
+            renderVoucherLogBox();
+            const range = getCryptoTimerRange();
+            const minEl = document.getElementById('dlc-timer-min');
+            const maxEl = document.getElementById('dlc-timer-max');
+            if (minEl) minEl.value = range.min;
+            if (maxEl) maxEl.value = range.max;
+        }
+
+        // --- CANLI MESAJLAŞMA SİSTEMİ ---
+        // NOT: Şu an localStorage ile simüle edilmiştir (aynı tarayıcı içinde kalıcıdır).
+        // Firebase Realtime Database/Firestore bağlanınca buradaki get/add fonksiyonları
+        // gerçek zamanlı bir 'on value changed' dinleyicisiyle değiştirilecek; arayüz aynı kalacak.
+        const CHAT_MESSAGES_KEY = 'racoon_chat_messages';
+        function getChatMessages() {
+            try { return JSON.parse(localStorage.getItem(CHAT_MESSAGES_KEY)) || []; } catch(e) { return []; }
+        }
+        function renderChatMessages() {
+            const box = document.getElementById('chat-messages');
+            if (!box) return;
+            const msgs = getChatMessages();
+            box.innerHTML = msgs.length === 0
+                ? '<div class="chat-msg-line" style="color:#666;">Henüz mesaj yok. İlk mesajı sen yaz!</div>'
+                : msgs.map(m => `<div class="chat-msg-line"><span class="chat-msg-name">${m.name}:</span> ${m.text}<span class="chat-msg-time">${m.time}</span></div>`).join('');
+            box.scrollTop = box.scrollHeight;
+        }
+        function sendChatMessage() {
+            requireIdentity(() => {
+                if (isBanned(getCurrentUserEmail())) return;
+                const input = document.getElementById('chat-input');
+                const text = input.value.trim();
+                if (!text) return;
+                const msgs = getChatMessages();
+                msgs.push({
+                    name: getCurrentUserEmail(),
+                    text: text,
+                    time: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
+                });
+                localStorage.setItem(CHAT_MESSAGES_KEY, JSON.stringify(msgs.slice(-100)));
+                input.value = '';
+                renderChatMessages();
+            });
+        }
+        setInterval(() => {
+            const win = document.getElementById('chat-win');
+            if (win && win.style.display === 'flex') renderChatMessages();
+        }, 2000);
+
         window.onload = function() {
+
+            if (isBanned(getCurrentUserEmail())) {
+                showBanScreen(); // BANLI KULLANICI: sayfa yenilense de ana menüye/girişe asla erişemez
+                return;
+            }
             if(localStorage.getItem('racoon_lockdown') === 'true') {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('lockdown-screen').style.display = 'flex';
