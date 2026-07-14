@@ -2124,7 +2124,7 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         }
         function isBanned(email) {
             if (!email) return false;
-     ...getBannedList().includes((email || "").trim().toLowerCase())
+        getBannedList().includes((email || "").trim().toLowerCase())
         }
         function banEmailAddress(email) {
            const clean = (email || "").trim().toLowerCase();
