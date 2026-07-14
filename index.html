@@ -2059,19 +2059,20 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         let SYSTEM_ACTIVE_LEVEL_NAME = "Standart";
 
 // ==========================================================================
-        // VERİTABANI SOYUTLAMA KATMANI (GEÇİCİ OLARAK LOCALSTORAGE DESTEKLİ)
+        // VERİTABANI SOYUTLAMA KATMANI (ÇÖKME OLMAYAN ZIRHLI SÜRÜM)
         // ==========================================================================
         const _metaMemoryStore = {};
 
         function dbGet(path, defaultValue) {
             if (!(path in _metaMemoryStore)) {
-                const storedValue = localStorage.getItem(path);
-                if (storedValue !== null) {
-                    try {
-                        _metaMemoryStore[path] = JSON.parse(storedValue);
-                    } catch (e) {
-                        _metaMemoryStore[path] = storedValue;
+                try {
+                    const storedValue = localStorage.getItem(path);
+                    if (storedValue !== null) {
+                        try { _metaMemoryStore[path] = JSON.parse(storedValue); } 
+                        catch (e) { _metaMemoryStore[path] = storedValue; }
                     }
+                } catch (err) {
+                    // Tarayıcı kalkanı engellese bile kod çökmeyecek, sessizce devam edecek!
                 }
             }
             return (path in _metaMemoryStore) ? _metaMemoryStore[path] : defaultValue;
@@ -2079,7 +2080,11 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
 
         function dbSet(path, value) {
             _metaMemoryStore[path] = value;
-            localStorage.setItem(path, JSON.stringify(value));
+            try {
+                localStorage.setItem(path, JSON.stringify(value));
+            } catch (err) {
+                // Kalkan kaydetmeyi engellerse kodu durdurma, bellekte tutmaya devam et!
+            }
         }
             // [FIREBASE BURAYA GELECEK]: return firebase.database().ref(path).once('value')...
         }
