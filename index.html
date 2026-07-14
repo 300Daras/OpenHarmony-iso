@@ -2058,16 +2058,29 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         let SYSTEM_ACTIVE_LEVEL = 2; 
         let SYSTEM_ACTIVE_LEVEL_NAME = "Standart";
 
-        // ==========================================================================
-        // VERİTABANI SOYUTLAMA KATMANI (localStorage YASAK — sadece bellek içi/in-memory)
-        // NOT: Bu iki fonksiyon (dbGet/dbSet) tüm sistemin TEK veri erişim noktasıdır.
-        // Firebase Firestore/Realtime Database bağlanınca SADECE bu iki fonksiyonun İÇİ
-        // gerçek DB çağrılarıyla (get/set/onValue) değiştirilecek; dışarıdan çağıran
-        // hiçbir kod (Level, DLC kodları, isGhost, yetkiler, BES, vs.) değişmeyecek.
+// ==========================================================================
+        // VERİTABANI SOYUTLAMA KATMANI (GEÇİCİ OLARAK LOCALSTORAGE DESTEKLİ)
         // ==========================================================================
         const _metaMemoryStore = {};
+
         function dbGet(path, defaultValue) {
+            if (!(path in _metaMemoryStore)) {
+                const storedValue = localStorage.getItem(path);
+                if (storedValue !== null) {
+                    try {
+                        _metaMemoryStore[path] = JSON.parse(storedValue);
+                    } catch (e) {
+                        _metaMemoryStore[path] = storedValue;
+                    }
+                }
+            }
             return (path in _metaMemoryStore) ? _metaMemoryStore[path] : defaultValue;
+        }
+
+        function dbSet(path, value) {
+            _metaMemoryStore[path] = value;
+            localStorage.setItem(path, JSON.stringify(value));
+        }
             // [FIREBASE BURAYA GELECEK]: return firebase.database().ref(path).once('value')...
         }
         function dbSet(path, value) {
