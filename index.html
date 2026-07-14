@@ -2088,7 +2088,7 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             return dbGet(IDENTITY_KEY, null);
         }
         function setCurrentUserEmail(email) {
-       ...IDENTITY_KEY, (email || "").trim().toLowerCase());
+        localStorage.setItem(IDENTITY_KEY, (email || "").trim().toLowerCase());
         }
 
         let pendingIdentityCallback = null;
