@@ -2088,7 +2088,7 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             return dbGet(IDENTITY_KEY, null);
         }
         function setCurrentUserEmail(email) {
-            dbSet(IDENTITY_KEY, email.trim().toLowerCase());
+       ...IDENTITY_KEY, (email || "").trim().toLowerCase());
         }
 
         let pendingIdentityCallback = null;
@@ -2124,10 +2124,10 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         }
         function isBanned(email) {
             if (!email) return false;
-            return getBannedList().includes(email.trim().toLowerCase());
+     ...getBannedList().includes((email || "").trim().toLowerCase())
         }
         function banEmailAddress(email) {
-            const clean = email.trim().toLowerCase();
+           const clean = (email || "").trim().toLowerCase();
             const list = getBannedList();
             if (!list.includes(clean)) {
                 list.push(clean);
@@ -2571,7 +2571,7 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             }
 
             processCommand(cmd) {
-                const args = cmd.toLowerCase().split(' ');
+                const args = (cmd || "").toLowerCase().split(' '); 
                 const command = args[0];
 
                 switch(command) {
