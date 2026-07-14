@@ -12,6 +12,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-performance-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/128/three.min.js"></script>
 
     <style>
         /* ==========================================================================
@@ -909,7 +910,7 @@
         .bribe-btn:hover { background: var(--matrix-green); color: #000; }
 
         /* --------------------------------------------------------------------------
-           20. CANLI MESAJLAŞMA (Gmail adıyla, localStorage tabanlı - Firebase yerini tutar)
+           20. CANLI MESAJLAŞMA (Gmail adıyla, bellek içi/in-memory - Firebase yerini tutar)
            -------------------------------------------------------------------------- */
         .chat-content { display: flex; flex-direction: column; height: 100%; gap: 10px; }
         .chat-messages { flex-grow: 1; overflow-y: auto; background: #000; border: 1px solid var(--primary-orange); border-radius: 6px; padding: 10px; }
@@ -921,6 +922,197 @@
         .chat-input:focus { border-color: var(--primary-orange); }
         .chat-send-btn { background: var(--primary-orange); color: #000; border: none; padding: 10px 18px; font-weight: 900; cursor: pointer; border-radius: 4px; }
         .chat-send-btn:hover { background: var(--hyper-orange); }
+
+        /* ==========================================================================
+           META+ OS — EVRENSEL ÖZELLİKLER (Level 1-15, TÜM SEVİYELER)
+           ========================================================================== */
+
+        /* 1. QUEST LOGIN SKIN: 3D derinlikli giriş ekranı (fare hareketiyle tilt) */
+        #login-screen .login-box {
+            transition: transform 0.15s ease-out;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        /* 2. SPATIAL CURSOR: İmleçte ivme/gecikme (inertia) efekti */
+        #spatial-cursor {
+            position: fixed; top: 0; left: 0; width: 22px; height: 22px; border-radius: 50%;
+            border: 2px solid var(--primary-orange); pointer-events: none; z-index: 999999999;
+            transform: translate(-50%, -50%); box-shadow: 0 0 12px rgba(255,102,0,0.6);
+            transition: width 0.15s, height 0.15s, border-color 0.15s; display: none;
+        }
+        #spatial-cursor.active { display: block; }
+        #spatial-cursor.clicking { width: 14px; height: 14px; border-color: #fff; }
+
+        /* 16. GESTURE SIMULATOR: İmleç arkası iz efekti (Level 15) */
+        .gesture-trail-dot {
+            position: fixed; width: 6px; height: 6px; border-radius: 50%;
+            background: radial-gradient(circle, #00e5ff, transparent); pointer-events: none;
+            z-index: 999999998; transform: translate(-50%, -50%);
+            animation: gestureTrailFade 0.6s forwards;
+        }
+        @keyframes gestureTrailFade { to { opacity: 0; transform: translate(-50%, -50%) scale(0.2); } }
+
+        /* 3. META PASS-THROUGH MOD: CSS backdrop-filter ile şeffaf/cam arayüz */
+        body.passthrough-mode .window { background: rgba(20,20,20,0.35) !important; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+        body.passthrough-mode #taskbar { background: rgba(10,10,10,0.35) !important; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+        body.passthrough-mode .desktop-icons .icon-label { text-shadow: 0 0 6px #000; }
+
+        /* 5. QUICK-ACTION DOCK: Kavisli, alt kısım sabit dock */
+        #quick-action-dock {
+            position: fixed; bottom: 68px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 14px; background: rgba(15,15,15,0.55); backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 30px; padding: 10px 22px; z-index: 500; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .dock-btn {
+            width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.15); color: #fff; font-size: 1.1rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: 0.2s;
+        }
+        .dock-btn:hover { background: var(--primary-orange); transform: translateY(-6px) scale(1.1); }
+        .dock-btn.on { background: var(--matrix-green); color: #000; border-color: var(--matrix-green); }
+
+        /* 7. HIDDEN SHADER 'QUEST VISION' */
+        body.quest-vision-mode #os-desktop { filter: contrast(1.4) saturate(1.8) hue-rotate(190deg); }
+
+        /* 9. ASSET UNLOADER: animasyonları durduran süper mod */
+        body.asset-unloader-mode * { animation: none !important; transition: none !important; }
+
+        /* 18. SPATIAL FOCUS: pencere odaklamalı DOF (blur) efekti */
+        body.spatial-focus-mode .window:not(.focused-window) { filter: blur(4px); opacity: 0.6; transition: filter 0.3s, opacity 0.3s; }
+        body.spatial-focus-mode .window.focused-window { filter: none; opacity: 1; }
+
+        /* 17. HOLOGRAPHIC WIDGETS */
+        .holo-widget {
+            position: fixed; width: 190px; background: rgba(0,229,255,0.06); backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,229,255,0.4); border-radius: 12px; padding: 14px; color: #aef6ff;
+            font-family: var(--font-mono); font-size: 0.78rem; box-shadow: 0 0 25px rgba(0,229,255,0.25);
+            z-index: 60; animation: holoFloat 4s ease-in-out infinite;
+        }
+        @keyframes holoFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .holo-widget-title { color: #fff; font-weight: 900; margin-bottom: 6px; letter-spacing: 0.5px; }
+
+        /* ==========================================================================
+           META+ OS — ÖZEL ÖZELLİKLER (Level 4-7: Yönetici / Mimari / Ghost / Nebula)
+           ========================================================================== */
+
+        /* 6. DEV-CONSOLE (Alt+Q) */
+        #dev-console {
+            display: none; position: fixed; bottom: 0; left: 0; width: 100%; height: 260px;
+            background: rgba(5,5,10,0.95); border-top: 2px solid #00e5ff; z-index: 9999999;
+            font-family: var(--font-mono); color: #7dfaff; padding: 14px; flex-direction: column;
+        }
+        #dev-console.active { display: flex; }
+        .dev-console-title { color: #fff; font-weight: 900; margin-bottom: 8px; font-size: 0.85rem; }
+        .dev-console-body { flex-grow: 1; overflow-y: auto; font-size: 0.78rem; line-height: 1.5; }
+        .dev-console-row { display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(0,229,255,0.15); padding: 3px 0; }
+
+        /* 8. GHOST MODE toggle indicator */
+        .ghost-mode-badge {
+            display: none; position: fixed; top: 10px; right: 10px; background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.3); color: #ccc; padding: 6px 12px; border-radius: 20px;
+            font-size: 0.72rem; z-index: 500; font-family: var(--font-mono);
+        }
+        .ghost-mode-badge.active { display: block; color: #aaa; opacity: 0.7; }
+
+        /* --------------------------------------------------------------------------
+           META+ OS — OP ÖZELLİKLER (Level 15 - GOD MODE)
+           -------------------------------------------------------------------------- */
+        /* 11. REALITY WARP: dinamik renk paleti değişimi (JS ile --primary-orange vs. döngüsel değişir) */
+        body.reality-warp-mode { transition: filter 1.5s ease; }
+
+        /* 12. UI SCALING: 360 derece dönebilen çalışma alanı */
+        #os-desktop { transition: transform 0.4s ease; transform-origin: center center; }
+
+        /* 19. BETA TESTER ROZETİ */
+        #beta-tester-badge {
+            display: none; position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--gold-cowboy), #ffe066); color: #000; font-weight: 900;
+            font-size: 0.72rem; padding: 6px 16px; border-radius: 20px; z-index: 500; letter-spacing: 1px;
+            box-shadow: 0 0 20px rgba(255,170,0,0.5);
+        }
+        #beta-tester-badge.active { display: block; }
+
+        /* 20. CUSTOM SPATIAL SKYBOX */
+        body.skybox-mode #os-desktop {
+            background: radial-gradient(ellipse at 20% 20%, #1a0b3d, #000 60%), radial-gradient(circle at 80% 70%, #0b2b3d, transparent 50%);
+            background-blend-mode: screen;
+        }
+        body.skybox-mode #os-desktop::before {
+            content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.6;
+            background-image: radial-gradient(white 1px, transparent 1px), radial-gradient(white 1px, transparent 1px);
+            background-size: 60px 60px, 140px 140px; background-position: 0 0, 30px 40px;
+        }
+
+        /* --------------------------------------------------------------------------
+           META+ OS — VR HEADSET (ISO) İNDİRME ANİMASYONU
+           -------------------------------------------------------------------------- */
+        #vr-headset-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000;
+            z-index: var(--z-overlay); flex-direction: column; align-items: center; justify-content: center; gap: 18px; overflow: hidden;
+        }
+        #vr-headset-overlay.active { display: flex; }
+        .vr-vignette { position: absolute; inset: 0; box-shadow: inset 0 0 220px 80px rgba(0,0,0,0.9); pointer-events: none; }
+        .vr-lens-flare {
+            position: absolute; width: 500px; height: 500px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,229,255,0.35), transparent 65%);
+            animation: vrFlarePulse 1.6s ease-in-out infinite; pointer-events: none;
+        }
+        @keyframes vrFlarePulse { 0%,100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.15); } }
+        .vr-headset-visual { font-size: 6rem; filter: drop-shadow(0 0 30px rgba(0,229,255,0.6)); animation: vrFloat 2.4s ease-in-out infinite; z-index: 2; }
+        @keyframes vrFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+        .vr-status-text { color: #aef6ff; font-family: var(--font-mono); font-size: 0.95rem; letter-spacing: 1px; z-index: 2; }
+        .vr-progress-track { width: 360px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; z-index: 2; }
+        .vr-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #00e5ff, #7dfaff); box-shadow: 0 0 15px #00e5ff; transition: width 0.2s; }
+        .vr-percent-text { color: #fff; font-family: var(--font-mono); font-weight: bold; z-index: 2; }
+
+        /* --------------------------------------------------------------------------
+           META+ OS — İŞBİRLİĞİ DUYURUSU MODALI
+           -------------------------------------------------------------------------- */
+        #collab-announcement-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: var(--z-overlay); align-items: center; justify-content: center;
+        }
+        #collab-announcement-modal.active { display: flex; }
+
+        #easter-egg-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: var(--z-overlay); align-items: center; justify-content: center;
+        }
+        #easter-egg-modal.active { display: flex; }
+
+        /* --------------------------------------------------------------------------
+           META+ OS — META QUEST UYGULAMASI (Level 15, Three.js canlı render)
+           -------------------------------------------------------------------------- */
+        .metaquest-window { background: #050508 !important; border: 1px solid #00e5ff !important; box-shadow: 0 0 60px rgba(0,229,255,0.25) !important; }
+        .metaquest-header { background: rgba(0,229,255,0.08) !important; border-color: #00e5ff !important; }
+        .metaquest-header .window-title { color: #00e5ff !important; }
+        .metaquest-content { display: flex; gap: 0; padding: 0 !important; overflow: hidden; }
+        .metaquest-left-panel { width: 280px; flex-shrink: 0; overflow-y: auto; padding: 18px; border-right: 1px solid rgba(0,229,255,0.2); background: rgba(0,229,255,0.02); }
+        .metaquest-right-panel { flex-grow: 1; position: relative; }
+        #metaquest-canvas-container { width: 100%; height: 100%; }
+        .vr-download-trigger-btn {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,229,255,0.12); border: 1px solid #00e5ff; color: #00e5ff;
+            padding: 12px 22px; border-radius: 8px; font-weight: 900; font-size: 0.85rem; cursor: pointer; transition: 0.2s; z-index: 5;
+        }
+        .vr-download-trigger-btn:hover { background: #00e5ff; color: #000; }
+        .mq-section { margin-bottom: 18px; }
+        .mq-section-title { color: #00e5ff; font-weight: 900; font-size: 0.8rem; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .mq-toggle-btn {
+            width: 100%; text-align: left; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12);
+            color: #ddd; padding: 9px 12px; border-radius: 6px; margin-bottom: 6px; cursor: pointer; font-size: 0.78rem; transition: 0.15s;
+        }
+        .mq-toggle-btn:hover { border-color: #00e5ff; color: #fff; }
+        .mq-toggle-btn.on { background: rgba(0,229,255,0.15); border-color: #00e5ff; color: #00e5ff; }
+        .mq-readout-box {
+            background: #000; border: 1px solid rgba(0,229,255,0.3); border-radius: 6px; padding: 8px 10px;
+            font-family: var(--font-mono); font-size: 0.7rem; color: #7dfaff; max-height: 110px; overflow-y: auto; margin-top: 6px;
+        }
+        .mq-perf-value { color: #00ff41; font-weight: 900; font-family: var(--font-mono); }
+        .mq-snapshot-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); font-size: 0.75rem; }
+        .mq-snapshot-restore-btn { background: #00e5ff; color: #000; border: none; padding: 4px 10px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.68rem; }
     </style>
 </head>
 <body>
@@ -1093,6 +1285,70 @@
     <!-- BANKA ONAY EKRANI (3D SECURE SİMÜLASYONU) -->
     <div id="bank-approval-screen">
         <div class="bank-approval-box" id="bank-approval-box"></div>
+    </div>
+
+    <!-- META+ OS: SPATIAL CURSOR (İvme/gecikme efektli özel imleç) -->
+    <div id="spatial-cursor"></div>
+
+    <!-- META+ OS: QUICK-ACTION DOCK (Kavisli, alt sabit dock — seviyeye göre butonlar değişir) -->
+    <div id="quick-action-dock">
+        <button class="dock-btn" id="dock-btn-passthrough" onclick="toggleMetaFeature('passthrough')" title="Meta Pass-through Mod">🌫️</button>
+        <button class="dock-btn" id="dock-btn-sound" onclick="playQuestNotificationSound()" title="Quest Bildirim Sesi">🔔</button>
+        <button class="dock-btn" id="dock-btn-questvision" style="display:none;" onclick="toggleMetaFeature('questvision')" title="Quest Vision Shader">👁️</button>
+        <button class="dock-btn" id="dock-btn-ghost" style="display:none;" onclick="toggleGhostMode()" title="Ghost Mode">👻</button>
+        <button class="dock-btn" id="dock-btn-unloader" style="display:none;" onclick="toggleMetaFeature('assetunloader')" title="Asset Unloader">⚡</button>
+        <button class="dock-btn" id="dock-btn-devconsole" style="display:none;" onclick="toggleDevConsole()" title="Dev-Console (Alt+Q)">🖥️</button>
+        <button class="dock-btn" id="dock-btn-warp" style="display:none;" onclick="toggleMetaFeature('realitywarp')" title="Reality Warp">🎨</button>
+        <button class="dock-btn" id="dock-btn-focus" style="display:none;" onclick="toggleMetaFeature('spatialfocus')" title="Spatial Focus (DOF)">🔭</button>
+        <button class="dock-btn" id="dock-btn-skybox" style="display:none;" onclick="toggleMetaFeature('skybox')" title="Custom Spatial Skybox">🌌</button>
+        <button class="dock-btn" id="dock-btn-gesture" style="display:none;" onclick="toggleMetaFeature('gesture')" title="Gesture Simulator">✋</button>
+        <button class="dock-btn" id="dock-btn-questapp" style="display:none;" onclick="SYS_WM.openWindow('metaquest-win')" title="Meta Quest Uygulaması">🥽</button>
+    </div>
+
+    <!-- META+ OS: DEV-CONSOLE (Alt+Q, Level 4-7) -->
+    <div id="dev-console">
+        <div class="dev-console-title">🖥️ DEV-CONSOLE — SİSTEM HATA AYIKLAMA TERMİNALİ (Alt+Q ile aç/kapat)</div>
+        <div class="dev-console-body" id="dev-console-body"></div>
+    </div>
+
+    <!-- META+ OS: GHOST MODE GÖSTERGESİ -->
+    <div class="ghost-mode-badge" id="ghost-mode-badge">👻 GHOST MODE AKTİF — Sistem izleri gizli</div>
+
+    <!-- META+ OS: HOLOGRAPHIC WIDGET (Level 15) -->
+    <div class="holo-widget" id="holo-widget" style="top: 90px; right: 20px; display:none;">
+        <div class="holo-widget-title">◈ HOLOGRAPHIC STATUS</div>
+        <div id="holo-widget-body">Bekleniyor...</div>
+    </div>
+
+    <!-- META+ OS: BETA TESTER ROZETİ (Level 15) -->
+    <div id="beta-tester-badge" style="display:none;">🏆 BETA TESTER</div>
+
+    <!-- META+ OS: İŞBİRLİĞİ DUYURUSU (Her kullanıcıya sadece 1 kez gösterilir) -->
+    <div id="collab-announcement-modal">
+        <div class="identity-box">
+            <div class="identity-title">🤝 İşbirliği Duyurusu</div>
+            <div class="identity-desc">Meta+ OS artık Code:Racoon OS ile birleşti! Yeni "Spatial" özellikleri, Quest entegrasyonu ve gizli seviyeler seni bekliyor. İyi eğlenceler!</div>
+            <button class="identity-confirm-btn" onclick="closeCollabAnnouncement()">Anladım, Kapat</button>
+        </div>
+    </div>
+
+    <!-- META+ OS: EASTER EGG 3D MODEL GÖRÜNTÜLEYİCİ ('meta-quest-3' terminal komutu) -->
+    <div id="easter-egg-modal">
+        <div class="identity-box" style="width: 360px;">
+            <div class="identity-title">🥽 Gizli Spatial Model Bulundu!</div>
+            <div id="easter-egg-canvas-container" style="width: 100%; height: 220px; margin-bottom: 16px;"></div>
+            <button class="identity-confirm-btn" onclick="closeEasterEggModel()">Kapat</button>
+        </div>
+    </div>
+
+    <!-- META+ OS: VR HEADSET (ISO) İNDİRME ANİMASYONU -->
+    <div id="vr-headset-overlay">
+        <div class="vr-vignette"></div>
+        <div class="vr-lens-flare" id="vr-lens-flare"></div>
+        <div class="vr-headset-visual">🥽</div>
+        <div class="vr-status-text" id="vr-status-text">Spatial Data Bağlantısı Kuruluyor...</div>
+        <div class="vr-progress-track"><div class="vr-progress-fill" id="vr-progress-fill"></div></div>
+        <div class="vr-percent-text" id="vr-percent-text">0%</div>
     </div>
 
 
@@ -1621,6 +1877,86 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             </div>
         </div>
 
+        <!-- APP WINDOW: META QUEST UYGULAMASI (LEVEL 15 - GOD MODE, Three.js canlı render) -->
+        <div class="window metaquest-window" id="metaquest-win" style="top: 55px; left: 100px; width: calc(100% - 200px); height: calc(100% - 150px);">
+            <div class="window-header metaquest-header">
+                <div class="window-title">🥽 META QUEST UYGULAMASI — LEVEL 15</div>
+                <div class="window-controls">
+                    <button class="win-btn btn-min"></button>
+                    <button class="win-btn btn-max"></button>
+                    <button class="win-btn btn-close" onclick="SYS_WM.closeWindow('metaquest-win')"></button>
+                </div>
+            </div>
+            <div class="window-content metaquest-content">
+
+                <!-- SOL PANEL: ÖZELLİK AYAR BUTONLARI -->
+                <div class="metaquest-left-panel">
+
+                    <div class="mq-section">
+                        <div class="mq-section-title">🎨 GÖRSEL & ALAN</div>
+                        <button class="mq-toggle-btn" id="mq-btn-warp" onclick="toggleMetaFeature('realitywarp')">Reality Warp (Dinamik Renk Paleti)</button>
+                        <button class="mq-toggle-btn" id="mq-btn-focus" onclick="toggleMetaFeature('spatialfocus')">Spatial Focus (Pencere DOF)</button>
+                        <button class="mq-toggle-btn" id="mq-btn-skybox" onclick="toggleMetaFeature('skybox')">Custom Spatial Skybox</button>
+                        <div class="dlc-timer-row" style="margin-top:8px;">
+                            <span class="dlc-timer-label" style="color:#aaa;">UI Scaling (360°)</span>
+                            <input type="range" id="mq-ui-scaling-slider" min="0" max="360" value="0" oninput="applyUiScaling(this.value)" style="width:120px;">
+                        </div>
+                    </div>
+
+                    <div class="mq-section">
+                        <div class="mq-section-title">✋ GİRDİ & JEST</div>
+                        <button class="mq-toggle-btn" id="mq-btn-gesture" onclick="toggleMetaFeature('gesture')">Gesture Simulator (Mouse Trail)</button>
+                    </div>
+
+                    <div class="mq-section">
+                        <div class="mq-section-title">🧬 KERNEL & SİSTEM (OP)</div>
+                        <button class="mq-toggle-btn" onclick="openKernelInjectionPrompt()">Kernel Injection (Plugin Yükle)</button>
+                        <button class="mq-toggle-btn" onclick="toggleGodModeTerminal()" id="mq-btn-godmode">God Mode Terminal (sudo)</button>
+                        <button class="mq-toggle-btn" onclick="openGlobalOverwritePrompt()">Global Overwrite (Sistem Mesajı)</button>
+                        <div class="mq-readout-box" id="kernel-injection-log">Henüz modül yüklenmedi.</div>
+                    </div>
+
+                    <div class="mq-section">
+                        <div class="mq-section-title">🔴 VERY OP — Root Memory Access</div>
+                        <button class="mq-toggle-btn" id="mq-btn-ram" onclick="toggleRootMemoryAccess()">Canlı RAM Verisine Bağlan</button>
+                        <div class="mq-readout-box" id="ram-access-readout" style="display:none;"></div>
+                    </div>
+
+                    <div class="mq-section">
+                        <div class="mq-section-title">🔴 VERY OP — Neural AI Overclock</div>
+                        <button class="mq-toggle-btn" id="mq-btn-overclock" onclick="toggleNeuralOverclock()">AI Overclock'u Etkinleştir</button>
+                        <div class="mq-readout-box" id="overclock-readout" style="display:none;">Performans: <span class="mq-perf-value" id="overclock-value">%0</span></div>
+                    </div>
+
+                    <div class="mq-section">
+                        <div class="mq-section-title">🔴 VERY OP — Spatial Persistence Bridge</div>
+                        <button class="mq-toggle-btn" onclick="runSpatialPersistenceBridge()">Bulut Senkronizasyonu Başlat</button>
+                        <div class="mq-readout-box" id="bridge-readout">Bağlantı bekleniyor...</div>
+                    </div>
+
+                    <div class="mq-section">
+                        <div class="mq-section-title">🔴 VERY OP — Remote Kernel Debugger</div>
+                        <button class="mq-toggle-btn" id="mq-btn-debugger" onclick="toggleRemoteKernelDebugger()">Uzak Kernel Log Akışına Bağlan</button>
+                        <div class="mq-readout-box" id="remote-debugger-readout" style="display:none;"></div>
+                    </div>
+
+                    <div class="mq-section">
+                        <div class="mq-section-title">🔴 VERY OP — Temporal State Recovery</div>
+                        <button class="mq-toggle-btn" onclick="createTemporalSnapshot()">📸 Anlık Görüntü (Snapshot) Al</button>
+                        <div id="temporal-snapshot-list"></div>
+                    </div>
+
+                </div>
+
+                <!-- SAĞ PANEL: THREE.JS CANLI RENDER (PROSEDÜREL QUEST 3 MODELİ) -->
+                <div class="metaquest-right-panel">
+                    <div id="metaquest-canvas-container"></div>
+                    <button class="vr-download-trigger-btn" onclick="startVrHeadsetDownload()">🥽 VR Headset ISO'sunu İndir</button>
+                </div>
+
+            </div>
+        </div>
+
         <!-- TASKBAR -->
         <div id="taskbar">
             <button class="start-btn">CODE:RACOON</button>
@@ -1723,19 +2059,36 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         let SYSTEM_ACTIVE_LEVEL_NAME = "Standart";
 
         // ==========================================================================
+        // VERİTABANI SOYUTLAMA KATMANI (localStorage YASAK — sadece bellek içi/in-memory)
+        // NOT: Bu iki fonksiyon (dbGet/dbSet) tüm sistemin TEK veri erişim noktasıdır.
+        // Firebase Firestore/Realtime Database bağlanınca SADECE bu iki fonksiyonun İÇİ
+        // gerçek DB çağrılarıyla (get/set/onValue) değiştirilecek; dışarıdan çağıran
+        // hiçbir kod (Level, DLC kodları, isGhost, yetkiler, BES, vs.) değişmeyecek.
+        // ==========================================================================
+        const _metaMemoryStore = {};
+        function dbGet(path, defaultValue) {
+            return (path in _metaMemoryStore) ? _metaMemoryStore[path] : defaultValue;
+            // [FIREBASE BURAYA GELECEK]: return firebase.database().ref(path).once('value')...
+        }
+        function dbSet(path, value) {
+            _metaMemoryStore[path] = value;
+            // [FIREBASE BURAYA GELECEK]: firebase.database().ref(path).set(value);
+        }
+
+        // ==========================================================================
         // KİMLİK, BAN, BES(PER-HESAP) VE DLC KOD SİSTEMİ
-        // NOT: Bu bölüm şimdilik localStorage ile simüle edilmiştir ("sahte veritabanı").
+        // NOT: Bu bölüm şimdilik bellek içi (in-memory) simüle edilmiştir ("sahte veritabanı").
         // Firebase Authentication / Firestore bağlantı kodları kullanıcı tarafından
-        // daha sonra istenecek ve bu localStorage mantığının yerini alacaktır.
+        // daha sonra istenecek ve bu bellek içi mantığın yerini alacaktır.
         // ==========================================================================
 
         // --- KİMLİK (Sahte Gmail Girişi — Firebase Auth'un yerini tutar) ---
         const IDENTITY_KEY = 'racoon_user_email';
         function getCurrentUserEmail() {
-            return localStorage.getItem(IDENTITY_KEY) || null;
+            return dbGet(IDENTITY_KEY, null);
         }
         function setCurrentUserEmail(email) {
-            localStorage.setItem(IDENTITY_KEY, email.trim().toLowerCase());
+            dbSet(IDENTITY_KEY, email.trim().toLowerCase());
         }
 
         let pendingIdentityCallback = null;
@@ -1767,7 +2120,7 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         // --- KALICI BAN SİSTEMİ (Gmail Tabanlı, SKiosk Yönetimli) ---
         const BANNED_LIST_KEY = 'racoon_banned_emails';
         function getBannedList() {
-            try { return JSON.parse(localStorage.getItem(BANNED_LIST_KEY)) || []; } catch(e) { return []; }
+            return dbGet(BANNED_LIST_KEY, []);
         }
         function isBanned(email) {
             if (!email) return false;
@@ -1778,7 +2131,7 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             const list = getBannedList();
             if (!list.includes(clean)) {
                 list.push(clean);
-                localStorage.setItem(BANNED_LIST_KEY, JSON.stringify(list));
+                dbSet(BANNED_LIST_KEY, list);
             }
             // Banlanan kişi şu an bu tarayıcıda aktifse arayüzü anında kilitle
             if (getCurrentUserEmail() === clean) showBanScreen();
@@ -1800,12 +2153,11 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             return 'racoon_bes_balance__' + (getCurrentUserEmail() || 'guest');
         }
         function getBesBalance() {
-            const v = localStorage.getItem(besKeyForCurrentUser());
-            return v ? parseFloat(v) : 0;
+            return dbGet(besKeyForCurrentUser(), 0);
         }
         function setBesBalance(v) {
             if (v < 0) v = 0;
-            localStorage.setItem(besKeyForCurrentUser(), v.toFixed(2));
+            dbSet(besKeyForCurrentUser(), Math.round(v * 100) / 100);
             updateBesDisplaysEverywhere();
         }
         function addBesBalance(delta) { setBesBalance(getBesBalance() + delta); }
@@ -1821,12 +2173,11 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             return 'racoon_bes_daily__' + (getCurrentUserEmail() || 'guest') + '__' + todayKey();
         }
         function getDailyClaimedAmount() {
-            const v = localStorage.getItem(dailyClaimKeyForCurrentUser());
-            return v ? parseFloat(v) : 0;
+            return dbGet(dailyClaimKeyForCurrentUser(), 0);
         }
         function addDailyClaimedAmount(amount) {
             const total = getDailyClaimedAmount() + amount;
-            localStorage.setItem(dailyClaimKeyForCurrentUser(), total.toFixed(2));
+            dbSet(dailyClaimKeyForCurrentUser(), Math.round(total * 100) / 100);
             return total;
         }
 
@@ -2091,6 +2442,11 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                     if (SYS_CORE.term) SYS_CORE.term.print(`[ACCESS DENIED] dlckiosk-win: Seviye 12 (DLCKIOSK) yetkisi gereklidir. Mevcut Seviye: ${SYSTEM_ACTIVE_LEVEL}`);
                     return;
                 }
+                // GÜVENLİK KATMANI: metaquest-win SADECE Level 15 (GOD MODE)
+                if (id === 'metaquest-win' && SYSTEM_ACTIVE_LEVEL < 15) {
+                    if (SYS_CORE.term) SYS_CORE.term.print(`[ACCESS DENIED] metaquest-win: Seviye 15 (GOD MODE) yetkisi gereklidir. Mevcut Seviye: ${SYSTEM_ACTIVE_LEVEL}`);
+                    return;
+                }
                 const win = document.getElementById(id);
                 if (win) {
                     // KIOSK: Her taze açılışta önce POS ÖDEME KAPISI gösterilir (panele girmeden önce)
@@ -2104,6 +2460,10 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                     if (id === 'skiosk-win') refreshSkioskSecretCodeButton();
                     if (id === 'dlckiosk-win') refreshDlckioskDisplays();
                     if (id === 'chat-win') renderChatMessages();
+                    if (id === 'metaquest-win') {
+                        renderTemporalSnapshots();
+                        setTimeout(initMetaQuestScene, 50); // pencere DOM'a yerleşip boyut alsın diye küçük gecikme
+                    }
                     win.style.display = 'flex';
                     // PÜRÜZSÜZ SCALE-IN GEÇİŞİ (Kiosk hub ve tüm pencereler için)
                     win.classList.remove('scale-in-pop');
@@ -2126,6 +2486,9 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             bringToFront(element) {
                 this.zIndexCounter++;
                 element.style.zIndex = this.zIndexCounter;
+                // 18. SPATIAL FOCUS: odaklanan pencere hariç diğerleri bulanıklaşır (Level 15, 'spatialfocus' modu açıkken)
+                document.querySelectorAll('.window').forEach(w => w.classList.remove('focused-window'));
+                element.classList.add('focused-window');
             }
 
             updateTaskbar(id, isOpen) {
@@ -2239,6 +2602,15 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                         `;
                         this.print(art);
                         break;
+                    case 'meta-quest-3':
+                        // 10. EASTER EGG (Level 4-7): gizli 3D model görüntüleyiciyi açar
+                        if (SYSTEM_ACTIVE_LEVEL >= 4 && SYSTEM_ACTIVE_LEVEL <= 7) {
+                            this.print('[EASTER EGG] Gizli spatial model bulundu! 3D görüntüleyici açılıyor...');
+                            showEasterEggModel();
+                        } else {
+                            this.print('bash: meta-quest-3: command not found');
+                        }
+                        break;
                     default:
                         this.print(`bash: ${command}: command not found`);
                 }
@@ -2283,7 +2655,28 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                 document.getElementById('icon-dlckiosk').style.display = dlckioskUnlocked ? 'flex' : 'none';
                 if (!dlckioskUnlocked) this.wm.closeWindow('dlckiosk-win');
 
-                if(localStorage.getItem('racoon_lockdown') === 'true') {
+                // META+ OS: SEVİYEYE GÖRE ÖZEL/OP ÖZELLİK GÖRÜNÜRLÜĞÜ
+                const metaSpecialUnlocked = levelNumber >= 4 && levelNumber <= 7; // Dev-Console, Quest Vision, Ghost Mode, Asset Unloader
+                const metaGodModeUnlocked = levelNumber >= 15; // OP + VERY OP özellikler
+                ['dock-btn-questvision','dock-btn-ghost','dock-btn-unloader','dock-btn-devconsole'].forEach(id => {
+                    document.getElementById(id).style.display = metaSpecialUnlocked ? 'flex' : 'none';
+                });
+                ['dock-btn-warp','dock-btn-focus','dock-btn-skybox','dock-btn-gesture','dock-btn-questapp'].forEach(id => {
+                    document.getElementById(id).style.display = metaGodModeUnlocked ? 'flex' : 'none';
+                });
+                document.getElementById('beta-tester-badge').classList.toggle('active', metaGodModeUnlocked);
+                document.getElementById('holo-widget').style.display = metaGodModeUnlocked ? 'block' : 'none';
+                if (!metaGodModeUnlocked) this.wm.closeWindow('metaquest-win');
+                if (!metaSpecialUnlocked) document.getElementById('dev-console').classList.remove('active');
+
+                // GHOST MODE rozeti: kalıcı (dbGet) bayrağa göre, sadece Level 4-7'de gösterilir
+                const ghostFlag = dbGet('isGhost_' + (getCurrentUserEmail() || 'guest'), false);
+                document.getElementById('ghost-mode-badge').classList.toggle('active', metaSpecialUnlocked && ghostFlag);
+
+                // İŞBİRLİĞİ DUYURUSU: kimlik zaten girilmişse ve daha önce görülmemişse bir kez göster
+                checkCollabAnnouncement();
+
+                if(dbGet('racoon_lockdown', false) === true) {
                     document.getElementById('lockdown-screen').style.display = 'flex';
                 } else {
                     this.wm.openWindow('term-win');
@@ -2496,7 +2889,7 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
 
         // --- 6. LOCKDOWN (SON EMİR) & REPAIR ---
         function triggerSonEmir() {
-            localStorage.setItem("racoon_lockdown", "true");
+            dbSet("racoon_lockdown", true);
             window.location.reload();
         }
 
@@ -2618,7 +3011,7 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         }
 
         function finishRepairSequence() {
-            localStorage.removeItem("racoon_lockdown");
+            dbSet("racoon_lockdown", false);
             document.getElementById('repair-status').innerText = "SİSTEM KURTARILDI — KIOSK YETKİSİ AKTİF.";
 
             setTimeout(() => {
@@ -2986,17 +3379,17 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         // --- DLC KOD SİSTEMİ: ÜRETİM (SKiosk) + KULLANIM (BES Doldurma) ---
         const DLC_CODES_KEY = 'racoon_dlc_codes';
         function getDlcCodes() {
-            try { return JSON.parse(localStorage.getItem(DLC_CODES_KEY)) || {}; } catch(e) { return {}; }
+            return dbGet(DLC_CODES_KEY, {});
         }
         function addDlcCode(code, reward) {
             const codes = getDlcCodes();
             codes[code] = reward;
-            localStorage.setItem(DLC_CODES_KEY, JSON.stringify(codes));
+            dbSet(DLC_CODES_KEY, codes);
         }
         function removeDlcCode(code) {
             const codes = getDlcCodes();
             delete codes[code];
-            localStorage.setItem(DLC_CODES_KEY, JSON.stringify(codes));
+            dbSet(DLC_CODES_KEY, codes);
         }
         function genDlcCode(prefix) {
             const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -3009,10 +3402,10 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         function logVoucherDestroyed(code) {
             const logs = getVoucherLogs();
             logs.unshift({ code, time: new Date().toLocaleString('tr-TR') });
-            localStorage.setItem(VOUCHER_LOG_KEY, JSON.stringify(logs.slice(0, 50)));
+            dbSet(VOUCHER_LOG_KEY, logs.slice(0, 50));
         }
         function getVoucherLogs() {
-            try { return JSON.parse(localStorage.getItem(VOUCHER_LOG_KEY)) || []; } catch(e) { return []; }
+            return dbGet(VOUCHER_LOG_KEY, []);
         }
 
         // Kullanıcı normal bir DLC kodunu kullandığında: ödül tanımlanır ve kod veritabanından TAMAMEN SİLİNİR (tek kullanımlık)
@@ -3093,7 +3486,7 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
 
         function refreshSkioskSecretCodeButton() {
             const btn = document.getElementById('skiosk-secret-code-btn');
-            if (localStorage.getItem(SECRET_CODE_FLAG_KEY) === 'true') {
+            if (dbGet(SECRET_CODE_FLAG_KEY, false) === true) {
                 btn.disabled = true;
                 btn.innerText = 'KULLANILDI';
             }
@@ -3104,13 +3497,13 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         function skioskGenerateSecretCodes() {
             const btn = document.getElementById('skiosk-secret-code-btn');
             const out = document.getElementById('skiosk-secret-code-output');
-            if (localStorage.getItem(SECRET_CODE_FLAG_KEY) === 'true') {
+            if (dbGet(SECRET_CODE_FLAG_KEY, false) === true) {
                 out.innerText = 'Bu buton zaten kullanıldı. Yeni kod üretilemez.';
                 btn.disabled = true;
                 btn.innerText = 'KULLANILDI';
                 return;
             }
-            localStorage.setItem(SECRET_CODE_FLAG_KEY, 'true');
+            dbSet(SECRET_CODE_FLAG_KEY, true);
             btn.disabled = true;
             btn.innerText = 'KULLANILDI';
 
@@ -3248,10 +3641,8 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         let nextVolatilityTimestamp = null;
         const CRYPTO_TIMER_KEY = 'racoon_crypto_timer_minutes';
         function getCryptoTimerRange() {
-            try {
-                const v = JSON.parse(localStorage.getItem(CRYPTO_TIMER_KEY));
-                if (v && v.min > 0 && v.max >= v.min) return v;
-            } catch(e) {}
+            const v = dbGet(CRYPTO_TIMER_KEY, null);
+            if (v && v.min > 0 && v.max >= v.min) return v;
             return { min: 20, max: 30 }; // varsayılan
         }
 
@@ -3359,7 +3750,7 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             const licenses = getActiveLicenses();
             if (!licenses.includes(name)) {
                 licenses.push(name);
-                localStorage.setItem(LICENSE_LEDGER_KEY, JSON.stringify(licenses));
+                dbSet(LICENSE_LEDGER_KEY, licenses);
             }
             msg.style.color = 'var(--matrix-green)';
             msg.innerText = `✓ "${name}" satın alındı ve Lisans Defteri'ne işlendi.`;
@@ -3376,7 +3767,7 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                 msg.innerText = 'Geçersiz aralık.';
                 return;
             }
-            localStorage.setItem(CRYPTO_TIMER_KEY, JSON.stringify({ min, max }));
+            dbSet(CRYPTO_TIMER_KEY, { min, max });
             scheduleNextVolatilityEvent(); // yeni aralıkla hemen yeniden planla
             msg.style.color = '#00ff41';
             msg.innerText = `✓ Uygulandı: ${min}-${max} dk.`;
@@ -3385,7 +3776,7 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         // 3. Lisans Doğrulama Sinyali (License Ledger)
         const LICENSE_LEDGER_KEY = 'racoon_license_ledger';
         function getActiveLicenses() {
-            try { return JSON.parse(localStorage.getItem(LICENSE_LEDGER_KEY)) || []; } catch(e) { return []; }
+            return dbGet(LICENSE_LEDGER_KEY, []);
         }
         const ALL_KNOWN_LICENSES = [
             'Sınırsız Repair Erişimi', 'Chaos Modu Bağışıklığı', 'Altın Terminal Teması',
@@ -3428,12 +3819,12 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
         }
 
         // --- CANLI MESAJLAŞMA SİSTEMİ ---
-        // NOT: Şu an localStorage ile simüle edilmiştir (aynı tarayıcı içinde kalıcıdır).
+        // NOT: Şu an bellek içi (in-memory) simüle edilmiştir (sayfa yenilenince sıfırlanır).
         // Firebase Realtime Database/Firestore bağlanınca buradaki get/add fonksiyonları
         // gerçek zamanlı bir 'on value changed' dinleyicisiyle değiştirilecek; arayüz aynı kalacak.
         const CHAT_MESSAGES_KEY = 'racoon_chat_messages';
         function getChatMessages() {
-            try { return JSON.parse(localStorage.getItem(CHAT_MESSAGES_KEY)) || []; } catch(e) { return []; }
+            return dbGet(CHAT_MESSAGES_KEY, []);
         }
         function renderChatMessages() {
             const box = document.getElementById('chat-messages');
@@ -3456,7 +3847,7 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
                     text: text,
                     time: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
                 });
-                localStorage.setItem(CHAT_MESSAGES_KEY, JSON.stringify(msgs.slice(-100)));
+                dbSet(CHAT_MESSAGES_KEY, msgs.slice(-100));
                 input.value = '';
                 renderChatMessages();
             });
@@ -3466,13 +3857,516 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             if (win && win.style.display === 'flex') renderChatMessages();
         }, 2000);
 
+        // ==========================================================================
+        // META+ OS — EVRENSEL / ÖZEL / OP / VERY OP ÖZELLİKLER
+        // ==========================================================================
+
+        // --- GENEL TOGGLE MEKANİZMASI (body sınıfı bazlı kozmetik modlar) ---
+        const metaFeatureState = {
+            passthrough: false, questvision: false, assetunloader: false,
+            realitywarp: false, spatialfocus: false, skybox: false, gesture: false
+        };
+        const META_FEATURE_CLASS = {
+            passthrough: 'passthrough-mode', questvision: 'quest-vision-mode', assetunloader: 'asset-unloader-mode',
+            realitywarp: 'reality-warp-mode', spatialfocus: 'spatial-focus-mode', skybox: 'skybox-mode', gesture: 'gesture-mode'
+        };
+        const META_FEATURE_DOCK_BTN = {
+            passthrough: 'dock-btn-passthrough', questvision: 'dock-btn-questvision', assetunloader: 'dock-btn-unloader',
+            realitywarp: 'dock-btn-warp', spatialfocus: 'dock-btn-focus', skybox: 'dock-btn-skybox', gesture: 'dock-btn-gesture'
+        };
+        const META_FEATURE_MQ_BTN = {
+            realitywarp: 'mq-btn-warp', spatialfocus: 'mq-btn-focus', skybox: 'mq-btn-skybox', gesture: 'mq-btn-gesture'
+        };
+
+        function toggleMetaFeature(name) {
+            metaFeatureState[name] = !metaFeatureState[name];
+            document.body.classList.toggle(META_FEATURE_CLASS[name], metaFeatureState[name]);
+
+            const dockBtn = document.getElementById(META_FEATURE_DOCK_BTN[name]);
+            if (dockBtn) dockBtn.classList.toggle('on', metaFeatureState[name]);
+            const mqBtn = document.getElementById(META_FEATURE_MQ_BTN[name]);
+            if (mqBtn) mqBtn.classList.toggle('on', metaFeatureState[name]);
+
+            if (name === 'realitywarp') {
+                if (metaFeatureState.realitywarp) startRealityWarpLoop(); else stopRealityWarpLoop();
+            }
+            if (name === 'gesture') {
+                document.getElementById('holo-widget').style.display = metaFeatureState.gesture ? 'block' : (SYSTEM_ACTIVE_LEVEL >= 15 ? 'block' : 'none');
+            }
+        }
+
+        // --- 4. QUEST BİLDİRİM SESİ (Web Audio API ile sentezlenmiş, dış ses dosyası gerektirmez) ---
+        let _audioCtx = null;
+        function getAudioCtx() {
+            if (!_audioCtx) {
+                try { _audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) { return null; }
+            }
+            return _audioCtx;
+        }
+        function playQuestNotificationSound() {
+            const ctx = getAudioCtx();
+            if (!ctx) return;
+            const t0 = ctx.currentTime;
+            [880, 1320].forEach((freq, i) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.0001, t0 + i * 0.12);
+                gain.gain.linearRampToValueAtTime(0.15, t0 + i * 0.12 + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.0001, t0 + i * 0.12 + 0.35);
+                osc.connect(gain).connect(ctx.destination);
+                osc.start(t0 + i * 0.12);
+                osc.stop(t0 + i * 0.12 + 0.4);
+            });
+        }
+        function playWooshSound() {
+            const ctx = getAudioCtx();
+            if (!ctx) return;
+            const bufferSize = ctx.sampleRate * 1.1;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1);
+            const noise = ctx.createBufferSource();
+            noise.buffer = buffer;
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.Q.value = 0.8;
+            const gain = ctx.createGain();
+            const t0 = ctx.currentTime;
+            filter.frequency.setValueAtTime(200, t0);
+            filter.frequency.exponentialRampToValueAtTime(3000, t0 + 0.55);
+            filter.frequency.exponentialRampToValueAtTime(200, t0 + 1.1);
+            gain.gain.setValueAtTime(0.0001, t0);
+            gain.gain.linearRampToValueAtTime(0.35, t0 + 0.2);
+            gain.gain.linearRampToValueAtTime(0.0001, t0 + 1.1);
+            noise.connect(filter).connect(gain).connect(ctx.destination);
+            noise.start(t0);
+            noise.stop(t0 + 1.1);
+        }
+
+        // --- 2. SPATIAL CURSOR: özel imleç + ivme/gecikme (inertia) efekti ---
+        let spatialCursorActive = true; // EVRENSEL ÖZELLİK: Level 1-15 hepsinde daima aktif
+        let scMouseX = 0, scMouseY = 0, scPosX = 0, scPosY = 0;
+        document.getElementById('spatial-cursor').classList.add('active');
+        document.addEventListener('mousemove', (e) => { scMouseX = e.clientX; scMouseY = e.clientY; });
+        function spatialCursorLoop() {
+            const el = document.getElementById('spatial-cursor');
+            if (spatialCursorActive && el) {
+                scPosX += (scMouseX - scPosX) * 0.18;
+                scPosY += (scMouseY - scPosY) * 0.18;
+                el.style.left = scPosX + 'px';
+                el.style.top = scPosY + 'px';
+            }
+            requestAnimationFrame(spatialCursorLoop);
+        }
+        requestAnimationFrame(spatialCursorLoop);
+        document.addEventListener('mousedown', () => { if (spatialCursorActive) document.getElementById('spatial-cursor').classList.add('clicking'); });
+        document.addEventListener('mouseup', () => { if (spatialCursorActive) document.getElementById('spatial-cursor').classList.remove('clicking'); });
+
+        // --- 16. GESTURE SIMULATOR: imleç arkası iz efekti (Level 15, 'gesture' modu açıkken) ---
+        let lastGestureTrailTime = 0;
+        document.addEventListener('mousemove', (e) => {
+            if (!metaFeatureState.gesture) return;
+            const now = Date.now();
+            if (now - lastGestureTrailTime < 35) return;
+            lastGestureTrailTime = now;
+            const dot = document.createElement('div');
+            dot.className = 'gesture-trail-dot';
+            dot.style.left = e.clientX + 'px';
+            dot.style.top = e.clientY + 'px';
+            document.body.appendChild(dot);
+            setTimeout(() => dot.remove(), 650);
+        });
+
+        // --- 1. QUEST LOGIN SKIN: fare hareketiyle 3D tilt efekti ---
+        document.addEventListener('mousemove', (e) => {
+            const box = document.querySelector('#login-screen .login-box');
+            if (!box || document.getElementById('login-screen').style.display === 'none') return;
+            const rect = box.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
+            const dx = (e.clientX - cx) / rect.width, dy = (e.clientY - cy) / rect.height;
+            box.style.transform = `rotateY(${dx * 8}deg) rotateX(${-dy * 8}deg)`;
+        });
+
+        // --- 6. DEV-CONSOLE (Alt+Q, Level 4-7) ---
+        function toggleDevConsole() {
+            const el = document.getElementById('dev-console');
+            el.classList.toggle('active');
+            if (el.classList.contains('active')) renderDevConsole();
+        }
+        function renderDevConsole() {
+            const body = document.getElementById('dev-console-body');
+            const rows = [
+                ['Aktif Seviye', `${SYSTEM_ACTIVE_LEVEL} — ${SYSTEM_ACTIVE_LEVEL_NAME}`],
+                ['Kimlik', getCurrentUserEmail() || '(kimlik girilmedi)'],
+                ['BES Bakiyesi', getBesBalance().toFixed(2) + ' BES'],
+                ['Ghost Mode', dbGet('isGhost_' + (getCurrentUserEmail() || 'guest'), false) ? 'AKTİF' : 'PASİF'],
+                ['Açık Pencereler', Array.from(document.querySelectorAll('.window')).filter(w => w.style.display === 'flex').length],
+                ['Chaos Sonraki Olay', nextVolatilityTimestamp ? new Date(nextVolatilityTimestamp).toLocaleTimeString('tr-TR') : '—'],
+                ['Bellek İçi DB Anahtar Sayısı', Object.keys(_metaMemoryStore).length],
+                ['User Agent', navigator.userAgent.slice(0, 60) + '...']
+            ];
+            body.innerHTML = rows.map(r => `<div class="dev-console-row"><span>${r[0]}</span><span>${r[1]}</span></div>`).join('');
+        }
+        document.addEventListener('keydown', (e) => {
+            if (e.altKey && (e.key === 'q' || e.key === 'Q')) {
+                if (SYSTEM_ACTIVE_LEVEL >= 4 && SYSTEM_ACTIVE_LEVEL <= 7) {
+                    e.preventDefault();
+                    toggleDevConsole();
+                }
+            }
+        });
+
+        // --- 8. GHOST MODE: isGhost=true ile sistem izlerini gizleme (Level 4-7) ---
+        function toggleGhostMode() {
+            const key = 'isGhost_' + (getCurrentUserEmail() || 'guest');
+            const current = dbGet(key, false);
+            dbSet(key, !current);
+            document.getElementById('ghost-mode-badge').classList.toggle('active', !current);
+            if (SYS_CORE.term) SYS_CORE.term.print(`[GHOST MODE] ${!current ? 'AKTİF — sistem izleriniz gizlendi.' : 'PASİF — izler yeniden görünür.'}`);
+        }
+
+        // --- 11. REALITY WARP: dinamik renk paleti değişimi (Level 15) ---
+        let realityWarpInterval = null;
+        function startRealityWarpLoop() {
+            const colors = ['#ff6600', '#00e5ff', '#00ff41', '#ff0044', '#ffaa00', '#aa00ff'];
+            let i = 0;
+            realityWarpInterval = setInterval(() => {
+                i = (i + 1) % colors.length;
+                document.documentElement.style.setProperty('--primary-orange', colors[i]);
+            }, 2000);
+        }
+        function stopRealityWarpLoop() {
+            if (realityWarpInterval) clearInterval(realityWarpInterval);
+            document.documentElement.style.setProperty('--primary-orange', '#ff6600');
+        }
+
+        // --- 12. UI SCALING: 360 derece dönebilen çalışma alanı (Level 15) ---
+        function applyUiScaling(deg) {
+            document.getElementById('os-desktop').style.transform = `rotate(${deg}deg)`;
+        }
+
+        // --- 13. KERNEL INJECTION: runtime plugin/modül yükleme (kozmetik simülasyon, Level 15) ---
+        function openKernelInjectionPrompt() {
+            const name = prompt('Yüklenecek plugin/modül adı:', 'quest-render-boost.dll');
+            if (!name) return;
+            const log = document.getElementById('kernel-injection-log');
+            log.innerHTML = `<div>&gt; ${name} enjekte ediliyor...</div>`;
+            const steps = ['Bellek alanı ayrılıyor...', 'Bağımlılıklar çözümleniyor...', 'Runtime hook uygulanıyor...', `${name} başarıyla yüklendi. ✅`];
+            let i = 0;
+            const timer = setInterval(() => {
+                if (i < steps.length) {
+                    log.innerHTML += `<div>&gt; ${steps[i]}</div>`;
+                    log.scrollTop = log.scrollHeight;
+                    i++;
+                } else clearInterval(timer);
+            }, 500);
+        }
+
+        // --- 14. GLOBAL OVERWRITE: sistem çapında mesaj gönderme (chat sistemine özel yayın olarak işlenir) ---
+        function openGlobalOverwritePrompt() {
+            const msg = prompt('Sistem çapında yayınlanacak mesaj:');
+            if (!msg) return;
+            requireIdentity(() => {
+                const msgs = getChatMessages();
+                msgs.push({ name: '📢 SYSTEM BROADCAST', text: msg, time: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }), broadcast: true });
+                dbSet(CHAT_MESSAGES_KEY, msgs.slice(-100));
+                renderChatMessages();
+                if (SYS_CORE.term) SYS_CORE.term.print(`[GLOBAL OVERWRITE] Yayınlandı: "${msg}"`);
+            });
+        }
+
+        // --- 15. GOD MODE TERMINAL: sudo/kök dizin erişimi (Level 15) ---
+        let godModeActive = false;
+        function toggleGodModeTerminal() {
+            if (SYSTEM_ACTIVE_LEVEL < 15) return;
+            godModeActive = !godModeActive;
+            document.getElementById('mq-btn-godmode').classList.toggle('on', godModeActive);
+            if (SYS_CORE.term) {
+                SYS_CORE.term.setPromptOverride(godModeActive ? 'sudo-root@GODMODE:/# ' : (SYSTEM_ACTIVE_LEVEL === 12 ? 'dlckiosk@coderacoon:~# ' : null));
+                SYS_CORE.term.print(`[GOD MODE TERMINAL] ${godModeActive ? 'sudo/kök erişimi AKTİF.' : 'Normal moda dönüldü.'}`);
+            }
+        }
+
+        // --- 21. ROOT MEMORY ACCESS (VERY OP, kozmetik simülasyon — tarayıcı sanal alanı gerçek RAM'e erişemez) ---
+        let ramAccessInterval = null;
+        function toggleRootMemoryAccess() {
+            const box = document.getElementById('ram-access-readout');
+            const btn = document.getElementById('mq-btn-ram');
+            if (ramAccessInterval) {
+                clearInterval(ramAccessInterval);
+                ramAccessInterval = null;
+                box.style.display = 'none';
+                btn.classList.remove('on');
+                return;
+            }
+            box.style.display = 'block';
+            btn.classList.add('on');
+            box.innerHTML = '<div style="color:#ff8;">[SİMÜLASYON] Tarayıcı güvenlik sanal alanı gerçek RAM erişimine izin vermez — aşağıdaki veriler tamamen kurgusaldır.</div>';
+            ramAccessInterval = setInterval(() => {
+                let hex = '';
+                for (let i = 0; i < 8; i++) hex += Math.floor(Math.random() * 65536).toString(16).padStart(4, '0') + ' ';
+                const line = document.createElement('div');
+                line.innerText = '0x' + Math.floor(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0') + ':  ' + hex;
+                box.appendChild(line);
+                box.scrollTop = box.scrollHeight;
+                if (box.children.length > 40) box.removeChild(box.children[1]);
+            }, 300);
+        }
+
+        // --- 22. NEURAL AI OVERCLOCK (VERY OP, kozmetik performans göstergesi) ---
+        let overclockInterval = null;
+        function toggleNeuralOverclock() {
+            const box = document.getElementById('overclock-readout');
+            const valEl = document.getElementById('overclock-value');
+            const btn = document.getElementById('mq-btn-overclock');
+            if (overclockInterval) {
+                clearInterval(overclockInterval);
+                overclockInterval = null;
+                box.style.display = 'none';
+                btn.classList.remove('on');
+                return;
+            }
+            box.style.display = 'block';
+            btn.classList.add('on');
+            let val = 0;
+            overclockInterval = setInterval(() => {
+                val = Math.min(140, val + Math.random() * 12);
+                valEl.innerText = '%' + Math.round(val);
+            }, 250);
+        }
+
+        // --- 23. SPATIAL PERSISTENCE BRIDGE (VERY OP, bulut senkronizasyon simülasyonu) ---
+        function runSpatialPersistenceBridge() {
+            const box = document.getElementById('bridge-readout');
+            box.innerHTML = '<div>&gt; Bulut köprüsüne bağlanılıyor...</div>';
+            const steps = ['Kimlik doğrulanıyor...', 'Yerel ayarlar (in-memory DB) okunuyor...', 'Uzak düğümle senkronize ediliyor...', 'Senkronizasyon tamamlandı. ✅ (Firebase bağlanınca gerçek zamanlı olacak)'];
+            let i = 0;
+            const timer = setInterval(() => {
+                if (i < steps.length) {
+                    box.innerHTML += `<div>&gt; ${steps[i]}</div>`;
+                    box.scrollTop = box.scrollHeight;
+                    i++;
+                } else clearInterval(timer);
+            }, 500);
+        }
+
+        // --- 24. REMOTE KERNEL DEBUGGER (VERY OP, kozmetik canlı log akışı) ---
+        let remoteDebuggerInterval = null;
+        const REMOTE_DEBUG_LOG_POOL = [
+            'kernel: heap allocation @ 0x7f3a...', 'net: uplink latency 14ms', 'gpu: shader cache warm',
+            'io: disk queue depth 2', 'sched: context switch #48213', 'mem: page fault handled',
+            'watchdog: heartbeat OK', 'audio: buffer underrun avoided'
+        ];
+        function toggleRemoteKernelDebugger() {
+            const box = document.getElementById('remote-debugger-readout');
+            const btn = document.getElementById('mq-btn-debugger');
+            if (remoteDebuggerInterval) {
+                clearInterval(remoteDebuggerInterval);
+                remoteDebuggerInterval = null;
+                box.style.display = 'none';
+                btn.classList.remove('on');
+                return;
+            }
+            box.style.display = 'block';
+            btn.classList.add('on');
+            box.innerHTML = '';
+            remoteDebuggerInterval = setInterval(() => {
+                const line = document.createElement('div');
+                const msg = REMOTE_DEBUG_LOG_POOL[Math.floor(Math.random() * REMOTE_DEBUG_LOG_POOL.length)];
+                line.innerText = `[${new Date().toLocaleTimeString('tr-TR')}] ${msg}`;
+                box.appendChild(line);
+                box.scrollTop = box.scrollHeight;
+                if (box.children.length > 40) box.removeChild(box.children[0]);
+            }, 400);
+        }
+
+        // --- 25. TEMPORAL STATE RECOVERY (VERY OP — GERÇEK ÇALIŞAN ÖZELLİK: in-memory DB'nin snapshot/restore mekanizması) ---
+        let temporalSnapshots = [];
+        function createTemporalSnapshot() {
+            const snapshot = {
+                id: Date.now(),
+                time: new Date().toLocaleString('tr-TR'),
+                data: JSON.parse(JSON.stringify(_metaMemoryStore))
+            };
+            temporalSnapshots.unshift(snapshot);
+            temporalSnapshots = temporalSnapshots.slice(0, 10);
+            renderTemporalSnapshots();
+        }
+        function restoreTemporalSnapshot(id) {
+            const snap = temporalSnapshots.find(s => s.id === id);
+            if (!snap) return;
+            if (!confirm('Bu anlık görüntüye dönmek istediğinize emin misiniz? Mevcut durum değişecek.')) return;
+            Object.keys(_metaMemoryStore).forEach(k => delete _metaMemoryStore[k]);
+            Object.assign(_metaMemoryStore, JSON.parse(JSON.stringify(snap.data)));
+            updateBesDisplaysEverywhere();
+            renderChatMessages();
+            if (SYS_CORE.term) SYS_CORE.term.print(`[TEMPORAL RECOVERY] Sistem ${snap.time} anına geri yüklendi.`);
+        }
+        function renderTemporalSnapshots() {
+            const box = document.getElementById('temporal-snapshot-list');
+            if (!box) return;
+            if (temporalSnapshots.length === 0) { box.innerHTML = '<div class="mq-readout-box">Henüz snapshot yok.</div>'; return; }
+            box.innerHTML = temporalSnapshots.map(s =>
+                `<div class="mq-snapshot-row"><span>${s.time}</span><button class="mq-snapshot-restore-btn" onclick="restoreTemporalSnapshot(${s.id})">GERİ YÜKLE</button></div>`
+            ).join('');
+        }
+
+        // --- VR HEADSET (ISO) İNDİRME ANİMASYONU ---
+        function startVrHeadsetDownload() {
+            const overlay = document.getElementById('vr-headset-overlay');
+            const statusText = document.getElementById('vr-status-text');
+            const fill = document.getElementById('vr-progress-fill');
+            const percentText = document.getElementById('vr-percent-text');
+
+            overlay.classList.add('active');
+            playWooshSound();
+            statusText.innerText = 'Spatial Data Bağlantısı Kuruluyor...';
+            fill.style.width = '0%';
+            percentText.innerText = '0%';
+
+            let percent = 0;
+            const timer = setInterval(() => {
+                percent += Math.floor(Math.random() * 8) + 3;
+                if (percent > 100) percent = 100;
+                fill.style.width = percent + '%';
+                percentText.innerText = percent + '%';
+                statusText.innerText = percent < 100 ? 'Downloading Spatial Data...' : 'İndirme Tamamlandı!';
+                if (percent >= 100) {
+                    clearInterval(timer);
+                    setTimeout(() => {
+                        const blob = new Blob(["META_QUEST_SPATIAL_PACKAGE_V1"], { type: "application/octet-stream" });
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.href = url; a.download = "MetaPlus_Spatial_Package.iso";
+                        document.body.appendChild(a); a.click();
+                        window.URL.revokeObjectURL(url);
+                        setTimeout(() => overlay.classList.remove('active'), 1200);
+                    }, 500);
+                }
+            }, 180);
+        }
+
+        // --- PAYLAŞILAN YARDIMCI: PROSEDÜREL QUEST 3 BENZERİ GÖVDE (gerçek .glb model dosyası olmadığı için temel geometrilerle yaklaşık temsil) ---
+        function buildQuestHeadsetGroup() {
+            const group = new THREE.Group();
+            const bodyMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.4, metalness: 0.6 });
+            const lensMat = new THREE.MeshStandardMaterial({ color: 0x00e5ff, emissive: 0x00e5ff, emissiveIntensity: 0.6, roughness: 0.2 });
+
+            const body = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.1, 0.9), bodyMat);
+            group.add(body);
+
+            [-0.55, 0.55].forEach(x => {
+                const lens = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.3, 24), lensMat);
+                lens.rotation.x = Math.PI / 2;
+                lens.position.set(x, 0, 0.5);
+                group.add(lens);
+            });
+
+            const strap = new THREE.Mesh(new THREE.TorusGeometry(1.35, 0.08, 12, 32, Math.PI), bodyMat);
+            strap.rotation.z = Math.PI;
+            strap.position.set(0, 0, -0.3);
+            group.add(strap);
+
+            return group;
+        }
+
+        // --- META QUEST APP: THREE.JS CANLI RENDER (PROSEDÜREL, GERÇEK 3D MODEL DOSYASI OLMADAN) ---
+        let mqThreeInitialized = false;
+        let mqRenderer, mqScene, mqCamera, mqHeadsetGroup;
+        function initMetaQuestScene() {
+            if (mqThreeInitialized || typeof THREE === 'undefined') return;
+            const container = document.getElementById('metaquest-canvas-container');
+            if (!container) return;
+            mqThreeInitialized = true;
+
+            mqScene = new THREE.Scene();
+            mqCamera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 100);
+            mqCamera.position.set(0, 0, 4.5);
+
+            mqRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            mqRenderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(mqRenderer.domElement);
+
+            mqScene.add(new THREE.AmbientLight(0x404060, 1.2));
+            const dirLight = new THREE.DirectionalLight(0x00e5ff, 1.4);
+            dirLight.position.set(3, 3, 5);
+            mqScene.add(dirLight);
+
+            mqHeadsetGroup = buildQuestHeadsetGroup();
+            mqScene.add(mqHeadsetGroup);
+
+            function animateMq() {
+                requestAnimationFrame(animateMq);
+                if (mqHeadsetGroup) mqHeadsetGroup.rotation.y += 0.008;
+                mqRenderer.render(mqScene, mqCamera);
+            }
+            animateMq();
+        }
+
+        // --- 10. EASTER EGG: 'meta-quest-3' terminal komutu ile açılan küçük 3D model görüntüleyici ---
+        let eggThreeInitialized = false;
+        let eggRenderer, eggScene, eggCamera, eggHeadsetGroup;
+        function showEasterEggModel() {
+            document.getElementById('easter-egg-modal').classList.add('active');
+            setTimeout(initEasterEggScene, 50);
+        }
+        function closeEasterEggModel() {
+            document.getElementById('easter-egg-modal').classList.remove('active');
+        }
+        function initEasterEggScene() {
+            if (eggThreeInitialized || typeof THREE === 'undefined') return;
+            const container = document.getElementById('easter-egg-canvas-container');
+            if (!container) return;
+            eggThreeInitialized = true;
+
+            eggScene = new THREE.Scene();
+            eggCamera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 100);
+            eggCamera.position.set(0, 0, 4.5);
+
+            eggRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            eggRenderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(eggRenderer.domElement);
+
+            eggScene.add(new THREE.AmbientLight(0x404060, 1.2));
+            const dirLight = new THREE.DirectionalLight(0x00e5ff, 1.4);
+            dirLight.position.set(3, 3, 5);
+            eggScene.add(dirLight);
+
+            eggHeadsetGroup = buildQuestHeadsetGroup();
+            eggScene.add(eggHeadsetGroup);
+
+            function animateEgg() {
+                requestAnimationFrame(animateEgg);
+                if (eggHeadsetGroup) eggHeadsetGroup.rotation.y += 0.012;
+                eggRenderer.render(eggScene, eggCamera);
+            }
+            animateEgg();
+        }
+
+        // --- İŞBİRLİĞİ DUYURUSU: her kullanıcıya sadece 1 kez ---
+        function checkCollabAnnouncement() {
+            const email = getCurrentUserEmail();
+            if (!email) return; // Kimlik henüz girilmemişse zorlamıyoruz, bir sonraki fırsatta tekrar kontrol edilir
+            const key = 'hasSeenCollaboration_' + email;
+            if (!dbGet(key, false)) {
+                document.getElementById('collab-announcement-modal').classList.add('active');
+            }
+        }
+        function closeCollabAnnouncement() {
+            const email = getCurrentUserEmail();
+            if (email) dbSet('hasSeenCollaboration_' + email, true);
+            document.getElementById('collab-announcement-modal').classList.remove('active');
+        }
+
         window.onload = function() {
 
             if (isBanned(getCurrentUserEmail())) {
                 showBanScreen(); // BANLI KULLANICI: sayfa yenilense de ana menüye/girişe asla erişemez
                 return;
             }
-            if(localStorage.getItem('racoon_lockdown') === 'true') {
+            if(dbGet('racoon_lockdown', false) === true) {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('lockdown-screen').style.display = 'flex';
             } else {
