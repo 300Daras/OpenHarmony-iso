@@ -2055,7 +2055,11 @@ Type 'help' for a list of available commands. System running on Z1 Extreme.
             apiKey: "DummyForArchitecture", authDomain: "coderacoon.firebaseapp.com",
             databaseURL: "https://coderacoon.firebaseio.com", projectId: "coderacoon"
         };
-        try { firebase.initializeApp(FB_CONFIG); } catch(e) {}
+       try { 
+    firebase.initializeApp(FB_CONFIG); 
+    // Tarayıcı kalkanını aşmak için bunu ekledik:
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
+} catch(e) {}
 
         let SYSTEM_ACTIVE_LEVEL = 2; 
         let SYSTEM_ACTIVE_LEVEL_NAME = "Standart";
