@@ -1,1 +1,634 @@
 
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BES Crystal Jackpot & RNG Test Simulation</title>
+    <style>
+        :root {
+            --bg-color: #080612;
+            --panel-bg: rgba(20, 14, 38, 0.75);
+            --crystal-border: rgba(255, 0, 128, 0.4);
+            --neon-pink: #ff007f;
+            --neon-cyan: #00f3ff;
+            --neon-purple: #b026ff;
+            --gold: #ffd700;
+            --text-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(176, 38, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(255, 0, 127, 0.15) 0%, transparent 40%);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .crystal-wrapper {
+            width: 100%;
+            max-width: 850px;
+            background: var(--panel-bg);
+            border: 1px solid var(--crystal-border);
+            border-radius: 24px;
+            padding: 30px;
+            backdrop-filter: blur(16px);
+            box-shadow: 
+                0 0 40px rgba(255, 0, 127, 0.15),
+                inset 0 0 20px rgba(176, 38, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .crystal-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-pink), var(--neon-cyan), transparent);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #fff 30%, var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bes-badge {
+            background: rgba(255, 0, 127, 0.15);
+            border: 1px solid var(--neon-pink);
+            border-radius: 30px;
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
+        }
+
+        .bes-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+        }
+
+        .bes-val {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        .reels-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr) 0.8fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .reel-card {
+            background: rgba(10, 8, 20, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px 10px;
+            text-align: center;
+            position: relative;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .reel-card.active-match {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4), inset 0 0 15px rgba(0, 243, 255, 0.2);
+        }
+
+        .reel-card.multiplier-card {
+            border-color: rgba(255, 215, 0, 0.3);
+            background: rgba(25, 20, 10, 0.6);
+        }
+
+        .reel-card.multiplier-card.active {
+            border-color: var(--gold);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.3);
+            animation: pulse-gold 1.5s infinite alternate;
+        }
+
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
+            100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.7); }
+        }
+
+        .reel-title {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .reel-number {
+            font-size: 3rem;
+            font-weight: 900;
+            font-family: 'Courier New', Courier, monospace;
+            color: #ffffff;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .multiplier-val {
+            color: var(--gold);
+            text-shadow: 0 0 15px var(--gold);
+        }
+
+        .multiplier-status {
+            font-size: 0.7rem;
+            margin-top: 5px;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 600;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            padding: 16px 24px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex: 2;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(255, 0, 127, 0.7);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            flex: 1;
+            font-size: 0.9rem;
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .output-banner {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            padding: 18px;
+            text-align: center;
+            margin-bottom: 25px;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .output-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--neon-cyan);
+            margin-bottom: 4px;
+        }
+
+        .output-formula {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-family: monospace;
+        }
+
+        .history-section {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 14px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .history-title {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .history-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 140px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .history-item.win {
+            border-left: 3px solid var(--neon-cyan);
+        }
+
+        .history-item.jackpot {
+            border-left: 3px solid var(--gold);
+            background: rgba(255, 215, 0, 0.08);
+        }
+
+        .history-item.loss {
+            border-left: 3px solid rgba(255, 255, 255, 0.2);
+            opacity: 0.6;
+        }
+
+        .test-options {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .test-options input[type="checkbox"] {
+            accent-color: var(--neon-pink);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="crystal-wrapper">
+        <header>
+            <h1>🔮 CRYSTAL BES JACKPOT</h1>
+            <div class="bes-badge">
+                <span class="bes-label">CÜZDAN:</span>
+                <span class="bes-val" id="besBalanceDisplay">10</span>
+                <span style="font-size: 0.8rem; color: var(--neon-pink);">BES</span>
+            </div>
+        </header>
+
+        <div class="reels-container">
+            <div class="reel-card" id="reelCard1">
+                <div class="reel-title">Makar 1 (1-100)</div>
+                <div class="reel-number" id="reel1">?</div>
+            </div>
+            <div class="reel-card" id="reelCard2">
+                <div class="reel-title">Makar 2 (1-100)</div>
+                <div class="reel-number" id="reel2">?</div>
+            </div>
+            <div class="reel-card" id="reelCard3">
+                <div class="reel-title">Makar 3 (1-100)</div>
+                <div class="reel-number" id="reel3">?</div>
+            </div>
+            <div class="reel-card multiplier-card" id="multiplierCard">
+                <div class="reel-title">Kat Çarpanı</div>
+                <div class="reel-number multiplier-val" id="multiplierReel">--</div>
+                <div class="multiplier-status" id="multiplierStatus">(1-50 x)</div>
+            </div>
+        </div>
+
+        <div class="test-options">
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="checkbox" id="forceMatchToggle">
+                🧪 Test Modu: Eşleşme İhtimalini Yükselt (%60)
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="checkbox" id="forceMultiplierToggle">
+                ⚡ Kat Çarpanını Garanti Et (1-50x)
+            </label>
+        </div>
+
+        <div class="controls">
+            <button class="btn" id="spinBtn" onclick="spinJackpot()">
+                <span>🎰 ÇEVİR (10 BES)</span>
+            </button>
+            <button class="btn btn-secondary" onclick="addTestBes(100)">
+                <span>+100 BES Ekleyin</span>
+            </button>
+        </div>
+
+        <div class="output-banner" id="outputBanner">
+            <div class="output-title">Sisteme Hoş Geldiniz!</div>
+            <div class="output-formula">Çevirmek için 10 BES gereklidir. Başlangıç bakiyeniz 10 BES'tir.</div>
+        </div>
+
+        <div class="history-section">
+            <div class="history-title">Çevrim Geçmişi</div>
+            <ul class="history-list" id="historyList">
+                <li class="history-item loss">
+                    <span>Sistem Hazır. Çevir butonuna basarak testi başlatabilirsiniz.</span>
+                    <span>--</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let besBalance = 10;
+        let isSpinning = false;
+
+        // Simple Web Audio API Synthesizer for Crystal Sounds
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'tick') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(200, now + 0.05);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            } else if (type === 'win') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(440, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.1);
+                osc.frequency.setValueAtTime(880, now + 0.2);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            } else if (type === 'jackpot') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.12);
+                osc.frequency.setValueAtTime(783.99, now + 0.24);
+                osc.frequency.setValueAtTime(1046.50, now + 0.36);
+                gain.gain.setValueAtTime(0.25, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.7);
+                osc.start(now);
+                osc.stop(now + 0.7);
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('besBalanceDisplay').textContent = besBalance;
+            const spinBtn = document.getElementById('spinBtn');
+            if (besBalance < 10) {
+                spinBtn.disabled = true;
+                spinBtn.style.opacity = '0.5';
+            } else if (!isSpinning) {
+                spinBtn.disabled = false;
+                spinBtn.style.opacity = '1';
+            }
+        }
+
+        function addTestBes(amount) {
+            besBalance += amount;
+            updateUI();
+            playSound('win');
+            const banner = document.getElementById('outputBanner');
+            banner.innerHTML = `
+                <div class="output-title" style="color: var(--neon-cyan);">+${amount} BES Eklendi!</div>
+                <div class="output-formula">Yeni Bakiye: ${besBalance} BES</div>
+            `;
+        }
+
+        function spinJackpot() {
+            if (isSpinning || besBalance < 10) return;
+
+            // Deduct 10 BES
+            besBalance -= 10;
+            isSpinning = true;
+            updateUI();
+
+            const spinBtn = document.getElementById('spinBtn');
+            spinBtn.disabled = true;
+
+            // Reset visual states
+            document.querySelectorAll('.reel-card').forEach(c => c.classList.remove('active-match', 'active'));
+            document.getElementById('multiplierCard').classList.remove('active');
+            document.getElementById('multiplierStatus').textContent = "(Çevriliyor...)";
+
+            let ticks = 0;
+            const maxTicks = 20;
+            const interval = setInterval(() => {
+                ticks++;
+                playSound('tick');
+
+                document.getElementById('reel1').textContent = Math.floor(Math.random() * 100) + 1;
+                document.getElementById('reel2').textContent = Math.floor(Math.random() * 100) + 1;
+                document.getElementById('reel3').textContent = Math.floor(Math.random() * 100) + 1;
+                document.getElementById('multiplierReel').textContent = Math.floor(Math.random() * 50) + 1;
+
+                if (ticks >= maxTicks) {
+                    clearInterval(interval);
+                    finalizeSpin();
+                }
+            }, 60);
+        }
+
+        function finalizeSpin() {
+            const forceMatch = document.getElementById('forceMatchToggle').checked;
+            const forceMultiplier = document.getElementById('forceMultiplierToggle').checked;
+
+            let r1, r2, r3;
+
+            // RNG Logic
+            if (forceMatch && Math.random() < 0.7) {
+                const target = Math.floor(Math.random() * 100) + 1;
+                r1 = target;
+                r2 = target;
+                r3 = Math.random() < 0.4 ? target : (Math.floor(Math.random() * 100) + 1);
+            } else {
+                r1 = Math.floor(Math.random() * 100) + 1;
+                r2 = Math.floor(Math.random() * 100) + 1;
+                r3 = Math.floor(Math.random() * 100) + 1;
+            }
+
+            document.getElementById('reel1').textContent = r1;
+            document.getElementById('reel2').textContent = r2;
+            document.getElementById('reel3').textContent = r3;
+
+            // Multiplier activation logic (30% base chance or forced)
+            const hasMultiplier = forceMultiplier || (Math.random() < 0.35);
+            let multiplierVal = 1;
+
+            if (hasMultiplier) {
+                multiplierVal = Math.floor(Math.random() * 50) + 1;
+                document.getElementById('multiplierReel').textContent = multiplierVal;
+                document.getElementById('multiplierStatus').textContent = "⚡ KAT ÇARPANI AKTİF!";
+                document.getElementById('multiplierCard').classList.add('active');
+            } else {
+                document.getElementById('multiplierReel').textContent = "--";
+                document.getElementById('multiplierStatus').textContent = "(Aktif Değil)";
+            }
+
+            let winAmount = 0;
+            let matchType = 'none'; // 'none', 'pair', 'triple'
+            let matchedValue = 0;
+            let formulaText = "";
+            let titleText = "";
+
+            // Check combinations
+            if (r1 === r2 && r2 === r3) {
+                // Triple Match (3 defa aynı)
+                matchType = 'triple';
+                matchedValue = r1;
+                document.getElementById('reelCard1').classList.add('active-match');
+                document.getElementById('reelCard2').classList.add('active-match');
+                document.getElementById('reelCard3').classList.add('active-match');
+            } else if (r1 === r2) {
+                matchType = 'pair';
+                matchedValue = r1;
+                document.getElementById('reelCard1').classList.add('active-match');
+                document.getElementById('reelCard2').classList.add('active-match');
+            } else if (r1 === r3) {
+                matchType = 'pair';
+                matchedValue = r1;
+                document.getElementById('reelCard1').classList.add('active-match');
+                document.getElementById('reelCard3').classList.add('active-match');
+            } else if (r2 === r3) {
+                matchType = 'pair';
+                matchedValue = r2;
+                document.getElementById('reelCard2').classList.add('active-match');
+                document.getElementById('reelCard3').classList.add('active-match');
+            }
+
+            // Payout calculation
+            if (matchType === 'pair') {
+                const sum = matchedValue + matchedValue;
+                if (hasMultiplier) {
+                    winAmount = sum * multiplierVal;
+                    titleText = `🎉 2'Lİ EŞLEŞME + ⚡ KAT ÇARPANI! (+${winAmount} BES)`;
+                    formulaText = `(${matchedValue} + ${matchedValue}) × ${multiplierVal} = ${winAmount} BES`;
+                } else {
+                    winAmount = sum * 2; // Default 2x multiplier for pair
+                    titleText = `✨ 2'Lİ EŞLEŞME KAZANÇ! (+${winAmount} BES)`;
+                    formulaText = `(${matchedValue} + ${matchedValue}) × 2 = ${winAmount} BES`;
+                }
+                playSound('win');
+            } else if (matchType === 'triple') {
+                const sum = matchedValue + matchedValue + matchedValue;
+                if (hasMultiplier) {
+                    winAmount = sum * multiplierVal;
+                    titleText = `🔥 MEGA JACKPOT + ⚡ KAT ÇARPANI! (+${winAmount} BES)`;
+                    formulaText = `(${matchedValue} + ${matchedValue} + ${matchedValue}) × ${multiplierVal} = ${winAmount} BES`;
+                } else {
+                    winAmount = sum * 3; // Default 3x multiplier for triple
+                    titleText = `🌟 3'LÜ JACKPOT KAZANÇ! (+${winAmount} BES)`;
+                    formulaText = `(${matchedValue} + ${matchedValue} + ${matchedValue}) × 3 = ${winAmount} BES`;
+                }
+                playSound('jackpot');
+            } else {
+                titleText = "Eşleşme Sağlanamadı";
+                formulaText = `Gelen: [${r1}] - [${r2}] - [${r3}] | Kazanç: 0 BES`;
+            }
+
+            // Update balance and output
+            besBalance += winAmount;
+            isSpinning = false;
+            updateUI();
+
+            const banner = document.getElementById('outputBanner');
+            banner.innerHTML = `
+                <div class="output-title" style="color: ${winAmount > 0 ? (matchType === 'triple' ? 'var(--gold)' : 'var(--neon-cyan)') : 'rgba(255,255,255,0.5)'};">
+                    ${titleText}
+                </div>
+                <div class="output-formula">${formulaText}</div>
+            `;
+
+            // Add history log
+            addHistoryLog(r1, r2, r3, matchType, hasMultiplier ? multiplierVal : null, winAmount);
+        }
+
+        function addHistoryLog(r1, r2, r3, matchType, multiplier, winAmount) {
+            const list = document.getElementById('historyList');
+            const item = document.createElement('li');
+            
+            let itemClass = 'loss';
+            if (matchType === 'triple') itemClass = 'jackpot';
+            else if (matchType === 'pair') itemClass = 'win';
+
+            item.className = `history-item ${itemClass}`;
+
+            const multTag = multiplier ? `<span style="color:var(--gold); font-weight:bold;"> [⚡ ${multiplier}x]</span>` : '';
+            
+            item.innerHTML = `
+                <span>[${r1}] - [${r2}] - [${r3}] ${multTag}</span>
+                <span style="font-weight: bold; color: ${winAmount > 0 ? 'var(--neon-cyan)' : 'inherit'}">
+                    ${winAmount > 0 ? '+' + winAmount + ' BES' : '0 BES'}
+                </span>
+            `;
+
+            list.insertBefore(item, list.firstChild);
+            if (list.children.length > 10) {
+                list.removeChild(list.lastChild);
+            }
+        }
+    </script>
+</body>
+</html>
